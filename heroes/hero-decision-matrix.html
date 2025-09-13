@@ -270,7 +270,8 @@
                     const responseKey = `${state.currentStep - 1}-${optionIndex}`;
                     const isSelected = state.responses[responseKey] === rating;
                     
-                    let ratingLabel = 'Not examined';
+                    let ratingLabel = '';
+                    if (rating === 1) ratingLabel = 'Not examined';
                     if (rating === 2) ratingLabel = 'Some thought';
                     if (rating === 3) ratingLabel = 'Deep thought';
                     
