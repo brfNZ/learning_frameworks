@@ -267,13 +267,12 @@
                 `;
                 
                 for (let rating = 1; rating <= 3; rating++) {
-                    const responseKey = `${state.currentStep - 1}-${i}`;
+                    const responseKey = `${state.currentStep - 1}-${optionIndex}`;
                     const isSelected = state.responses[responseKey] === rating;
                     
-                    let label = '';
-                    if (rating === 1) label = 'Not examined';
-                    else if (rating === 2) label = 'Some thought';
-                    else label = 'Deep thought';
+                    let ratingLabel = 'Not examined';
+                    if (rating === 2) ratingLabel = 'Some thought';
+                    if (rating === 3) ratingLabel = 'Deep thought';
                     
                     optionsHtml += `
                         <div class="text-center">
@@ -283,11 +282,11 @@
                                         ? 'bg-blue-600 border-blue-600 text-white'
                                         : 'border-gray-300 hover:border-blue-400'
                                 }"
-                                onclick="handleRatingClick(${state.currentStep - 1}, ${i}, ${rating})"
+                                onclick="handleRatingClick(${state.currentStep - 1}, ${optionIndex}, ${rating})"
                             >
                                 ${rating}
                             </button>
-                            <div class="text-xs text-gray-600 w-20">${label}</div>
+                            <div class="text-xs text-gray-600 w-20">${ratingLabel}</div>
                         </div>
                     `;
                 }
