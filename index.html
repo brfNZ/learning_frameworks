@@ -1343,116 +1343,115 @@
             }
         }
 
-        // Enhanced data collection (REMOVED: wedge from setups)
+        // Enhanced data collection (UPDATED: Safe values, removed maxDailyTrades)
         function collectAllData() {
             const data = {
                 timestamp: new Date().toISOString(),
                 version: '3.0',
                 daily: {
                     scores: { ...scores },
-                    keyStrength: document.getElementById('keyStrength').value,
-                    improvementArea: document.getElementById('improvementArea').value,
-                    entryTrigger: document.getElementById('entryTrigger').value,
-                    marketConditions: document.getElementById('marketConditions').value,
-                    riskPercent: document.getElementById('riskPercent').value,
-                    positionSize: document.getElementById('positionSize').value,
-                    setupUsed: document.getElementById('setupUsed').value,
-                    emotionalState: document.getElementById('emotionalState').value,
-                    exitReason: document.getElementById('exitReason').value,
-                    rMultiple: document.getElementById('rMultiple').value,
-                    keyTakeaway: document.getElementById('keyTakeaway').value
+                    keyStrength: getValue('keyStrength'),
+                    improvementArea: getValue('improvementArea'),
+                    entryTrigger: getValue('entryTrigger'),
+                    marketConditions: getValue('marketConditions'),
+                    riskPercent: getValue('riskPercent'),
+                    positionSize: getValue('positionSize'),
+                    setupUsed: getValue('setupUsed'),
+                    emotionalState: getValue('emotionalState'),
+                    exitReason: getValue('exitReason'),
+                    rMultiple: getValue('rMultiple'),
+                    keyTakeaway: getValue('keyTakeaway')
                 },
                 weekly: {
                     performance: {
-                        totalTrades: document.getElementById('totalTrades').value,
-                        winningTrades: document.getElementById('winningTrades').value,
-                        losingTrades: document.getElementById('losingTrades').value,
-                        accountStart: document.getElementById('accountStart').value,
-                        accountEnd: document.getElementById('accountEnd').value,
-                        avgWinner: document.getElementById('avgWinner').value,
-                        avgLoser: document.getElementById('avgLoser').value
+                        totalTrades: getValue('totalTrades'),
+                        winningTrades: getValue('winningTrades'),
+                        losingTrades: getValue('losingTrades'),
+                        accountStart: getValue('accountStart'),
+                        accountEnd: getValue('accountEnd'),
+                        avgWinner: getValue('avgWinner'),
+                        avgLoser: getValue('avgLoser')
                     },
                     setups: {
                         threeIndians: {
-                            count: document.getElementById('threeIndiansCount').value,
-                            win: document.getElementById('threeIndiansWin').value,
-                            r: document.getElementById('threeIndiansR').value
+                            count: getValue('threeIndiansCount'),
+                            win: getValue('threeIndiansWin'),
+                            r: getValue('threeIndiansR')
                         },
                         ma: {
-                            count: document.getElementById('maCount').value,
-                            win: document.getElementById('maWin').value,
-                            r: document.getElementById('maR').value
+                            count: getValue('maCount'),
+                            win: getValue('maWin'),
+                            r: getValue('maR')
                         },
                         sr: {
-                            count: document.getElementById('srCount').value,
-                            win: document.getElementById('srWin').value,
-                            r: document.getElementById('srR').value
+                            count: getValue('srCount'),
+                            win: getValue('srWin'),
+                            r: getValue('srR')
                         },
                         breakout: {
-                            count: document.getElementById('breakoutCount').value,
-                            win: document.getElementById('breakoutWin').value,
-                            r: document.getElementById('breakoutR').value
+                            count: getValue('breakoutCount'),
+                            win: getValue('breakoutWin'),
+                            r: getValue('breakoutR')
                         },
                         hs: {
-                            count: document.getElementById('hsCount').value,
-                            win: document.getElementById('hsWin').value,
-                            r: document.getElementById('hsR').value
+                            count: getValue('hsCount'),
+                            win: getValue('hsWin'),
+                            r: getValue('hsR')
                         },
                         cup: {
-                            count: document.getElementById('cupCount').value,
-                            win: document.getElementById('cupWin').value,
-                            r: document.getElementById('cupR').value
+                            count: getValue('cupCount'),
+                            win: getValue('cupWin'),
+                            r: getValue('cupR')
                         },
                         triangle: {
-                            count: document.getElementById('triangleCount').value,
-                            win: document.getElementById('triangleWin').value,
-                            r: document.getElementById('triangleR').value
+                            count: getValue('triangleCount'),
+                            win: getValue('triangleWin'),
+                            r: getValue('triangleR')
                         },
-                        // REMOVED: wedge object
                         flag: {
-                            count: document.getElementById('flagCount').value,
-                            win: document.getElementById('flagWin').value,
-                            r: document.getElementById('flagR').value
+                            count: getValue('flagCount'),
+                            win: getValue('flagWin'),
+                            r: getValue('flagR')
                         },
                         double: {
-                            count: document.getElementById('doubleCount').value,
-                            win: document.getElementById('doubleWin').value,
-                            r: document.getElementById('doubleR').value
+                            count: getValue('doubleCount'),
+                            win: getValue('doubleWin'),
+                            r: getValue('doubleR')
                         },
                         reversal: {
-                            count: document.getElementById('reversalCount').value,
-                            win: document.getElementById('reversalWin').value,
-                            r: document.getElementById('reversalR').value
+                            count: getValue('reversalCount'),
+                            win: getValue('reversalWin'),
+                            r: getValue('reversalR')
                         },
                         engulfing: {
-                            count: document.getElementById('engulfingCount').value,
-                            win: document.getElementById('engulfingWin').value,
-                            r: document.getElementById('engulfingR').value
+                            count: getValue('engulfingCount'),
+                            win: getValue('engulfingWin'),
+                            r: getValue('engulfingR')
                         },
                         multi: {
-                            count: document.getElementById('multiCount').value,
-                            win: document.getElementById('multiWin').value,
-                            r: document.getElementById('multiR').value
+                            count: getValue('multiCount'),
+                            win: getValue('multiWin'),
+                            r: getValue('multiR')
                         },
                         other: {
-                            count: document.getElementById('otherCount').value,
-                            win: document.getElementById('otherWin').value,
-                            r: document.getElementById('otherR').value
+                            count: getValue('otherCount'),
+                            win: getValue('otherWin'),
+                            r: getValue('otherR')
                         }
                     },
                     psychology: {
-                        overtradingIncidents: document.getElementById('overtradingIncidents').value,
-                        emotionalTrades: document.getElementById('emotionalTrades').value,
-                        riskViolations: document.getElementById('riskViolations').value,
-                        fomoTrades: document.getElementById('fomoTrades').value
+                        overtradingIncidents: getValue('overtradingIncidents'),
+                        emotionalTrades: getValue('emotionalTrades'),
+                        riskViolations: getValue('riskViolations'),
+                        fomoTrades: getValue('fomoTrades')
                     },
                     planning: {
-                        primaryFocus: document.getElementById('primaryFocus').value,
-                        riskGoal: document.getElementById('riskGoal').value,
-                        psychologyGoal: document.getElementById('psychologyGoal').value,
-                        maxDailyTrades: document.getElementById('maxDailyTrades').value,
-                        weeklyLesson: document.getElementById('weeklyLesson').value,
-                        nextWeekCommitment: document.getElementById('nextWeekCommitment').value
+                        primaryFocus: getValue('primaryFocus'),
+                        riskGoal: getValue('riskGoal'),
+                        psychologyGoal: getValue('psychologyGoal'),
+                        // REMOVED: maxDailyTrades
+                        weeklyLesson: getValue('weeklyLesson'),
+                        nextWeekCommitment: getValue('nextWeekCommitment')
                     },
                     redFlags: {
                         flag1: document.getElementById('flag1').checked,
