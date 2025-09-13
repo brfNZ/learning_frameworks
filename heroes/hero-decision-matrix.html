@@ -1,0 +1,321 @@
+import React, { useState } from 'react';
+import { Brain, Users, Heart, BookOpen, Plus, X, CheckCircle } from 'lucide-react';
+
+const HeroDecisionMatrix = () => {
+  const [decision, setDecision] = useState('');
+  const [options, setOptions] = useState(['', '']);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [responses, setResponses] = useState({});
+  const [showResults, setShowResults] = useState(false);
+
+  const addOption = () => {
+    if (options.length < 5) {
+      setOptions([...options, '']);
+    }
+  };
+
+  const removeOption = (index) => {
+    if (options.length > 2) {
+      const newOptions = options.filter((_, i) => i !== index);
+      setOptions(newOptions);
+    }
+  };
+
+  const updateOption = (index, value) => {
+    const newOptions = [...options];
+    newOptions[index] = value;
+    setOptions(newOptions);
+  };
+
+  const heroes = [
+    {
+      name: "Socrates",
+      icon: <Brain className="w-8 h-8" />,
+      color: "bg-blue-100 border-blue-300 text-blue-800",
+      questions: [
+        "What assumptions am I making that I haven't examined?",
+        "What would happen if I'm completely wrong about this?",
+        "What do I truly know vs. what do I think I know?",
+        "What questions should I be asking that I'm not?"
+      ],
+      focus: "Questioning assumptions and seeking truth"
+    },
+    {
+      name: "Ayn Rand",
+      icon: <Users className="w-8 h-8" />,
+      color: "bg-green-100 border-green-300 text-green-800",
+      questions: [
+        "Which option best serves my rational self-interest?",
+        "Am I making this choice based on my own judgment or others' expectations?",
+        "Which option creates the most genuine value?",
+        "Does this align with my core principles and values?"
+      ],
+      focus: "Independent rational judgment"
+    },
+    {
+      name: "Spiritual Wisdom",
+      icon: <Heart className="w-8 h-8" />,
+      color: "bg-purple-100 border-purple-300 text-purple-800",
+      questions: [
+        "What does my higher self/inner wisdom say about this?",
+        "Which option comes from love rather than fear?",
+        "How does this serve the greater good beyond just myself?",
+        "What would I choose if I were completely unattached to the outcome?"
+      ],
+      focus: "Divine guidance and compassion"
+    },
+    {
+      name: "Aristotle",
+      icon: <BookOpen className="w-8 h-8" />,
+      color: "bg-orange-100 border-orange-300 text-orange-800",
+      questions: [
+        "What are the logical consequences of each option?",
+        "Which choice leads to the most flourishing (eudaimonia)?",
+        "What would the virtuous person do in this situation?",
+        "Which option represents the golden mean between extremes?"
+      ],
+      focus: "Logical analysis and virtue"
+    }
+  ];
+
+  const handleResponse = (heroIndex, questionIndex, optionIndex, response) => {
+    const key = `${heroIndex}-${questionIndex}-${optionIndex}`;
+    setResponses(prev => ({
+      ...prev,
+      [key]: response
+    }));
+  };
+
+  const calculateScores = () => {
+    const scores = options.map(() => ({ total: 0, details: {} }));
+    
+    heroes.forEach((hero, heroIndex) => {
+      hero.questions.forEach((question, questionIndex) => {
+        options.forEach((option, optionIndex) => {
+          const key = `${heroIndex}-${questionIndex}-${optionIndex}`;
+          const response = responses[key] || 0;
+          scores[optionIndex].total += response;
+          if (!scores[optionIndex].details[hero.name]) {
+            scores[optionIndex].details[hero.name] = 0;
+          }
+          scores[optionIndex].details[hero.name] += response;
+        });
+      });
+    });
+
+    return scores;
+  };
+
+  const resetMatrix = () => {
+    setDecision('');
+    setOptions(['', '']);
+    setCurrentStep(0);
+    setResponses({});
+    setShowResults(false);
+  };
+
+  if (showResults) {
+    const scores = calculateScores();
+    const maxScore = Math.max(...scores.map(s => s.total));
+    
+    return (
+      <div className="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Decision Analysis Results</h1>
+          <p className="text-gray-600 mb-4">Decision: <span className="font-semibold">{decision}</span></p>
+          <button
+            onClick={resetMatrix}
+            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm"
+          >
+            New Decision
+          </button>
+        </div>
+
+        <div className="space-y-6">
+          {options.map((option, index) => {
+            const score = scores[index];
+            const isTop = score.total === maxScore;
+            
+            return (
+              <div key={index} className={`p-6 rounded-lg border-2 ${isTop ? 'bg-yellow-50 border-yellow-300' : 'bg-white border-gray-200'}`}>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-gray-800">Option {index + 1}: {option}</h3>
+                  <div className="flex items-center">
+                    {isTop && <CheckCircle className="w-6 h-6 text-yellow-600 mr-2" />}
+                    <span className="text-2xl font-bold text-gray-800">{score.total}</span>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {heroes.map(hero => (
+                    <div key={hero.name} className="text-center">
+                      <div className={`${hero.color} p-3 rounded-lg border-2`}>
+                        <div className="flex justify-center mb-2">{hero.icon}</div>
+                        <p className="text-sm font-semibold">{hero.name}</p>
+                        <p className="text-lg font-bold">{score.details[hero.name] || 0}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-8 p-6 bg-white rounded-lg border-2 border-gray-200">
+          <h3 className="text-lg font-bold text-gray-800 mb-3">Final Reflection</h3>
+          <div className="space-y-2 text-sm text-gray-600">
+            <p><strong>Highest scoring option:</strong> Consider why this resonated across multiple wisdom traditions.</p>
+            <p><strong>Low scoring options:</strong> What concerns did your heroes raise? Are these deal-breakers or manageable risks?</p>
+            <p><strong>Conflicting perspectives:</strong> Where did your heroes disagree? This often reveals the core tension in your decision.</p>
+            <p><strong>Trust your synthesis:</strong> The numbers guide you, but your final choice should integrate all perspectives with your intuitive wisdom.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 0) {
+    return (
+      <div className="max-w-2xl mx-auto p-6 bg-gray-50 min-h-screen">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Hero Decision Matrix</h1>
+          <p className="text-gray-600">Channel the wisdom of your heroes to make better decisions</p>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg border-2 border-gray-200">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">What decision are you facing?</h2>
+          <textarea
+            value={decision}
+            onChange={(e) => setDecision(e.target.value)}
+            placeholder="Describe the decision you need to make..."
+            className="w-full p-3 border border-gray-300 rounded-lg resize-none h-24"
+          />
+
+          <h3 className="text-lg font-bold text-gray-800 mt-6 mb-4">What are your options?</h3>
+          <div className="space-y-3">
+            {options.map((option, index) => (
+              <div key={index} className="flex items-center space-x-3">
+                <span className="text-sm font-semibold text-gray-600">Option {index + 1}:</span>
+                <input
+                  type="text"
+                  value={option}
+                  onChange={(e) => updateOption(index, e.target.value)}
+                  placeholder={`Enter option ${index + 1}...`}
+                  className="flex-1 p-2 border border-gray-300 rounded-lg"
+                />
+                {options.length > 2 && (
+                  <button
+                    onClick={() => removeOption(index)}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {options.length < 5 && (
+            <button
+              onClick={addOption}
+              className="mt-3 flex items-center text-blue-600 hover:text-blue-800"
+            >
+              <Plus className="w-5 h-5 mr-1" />
+              Add another option
+            </button>
+          )}
+
+          <button
+            onClick={() => setCurrentStep(1)}
+            disabled={!decision.trim() || options.some(opt => !opt.trim())}
+            className="w-full mt-6 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white py-3 rounded-lg font-semibold"
+          >
+            Begin Hero Analysis
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const currentHero = heroes[Math.floor((currentStep - 1) / heroes[0].questions.length)];
+  const currentQuestionIndex = (currentStep - 1) % heroes[0].questions.length;
+  const currentQuestion = currentHero.questions[currentQuestionIndex];
+  const totalSteps = heroes.length * heroes[0].questions.length;
+  const heroIndex = heroes.findIndex(h => h.name === currentHero.name);
+
+  return (
+    <div className="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Hero Decision Matrix</h1>
+        <p className="text-gray-600 mb-4">Decision: <span className="font-semibold">{decision}</span></p>
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+          ></div>
+        </div>
+        <p className="text-sm text-gray-600 mt-2">Question {currentStep} of {totalSteps}</p>
+      </div>
+
+      <div className={`${currentHero.color} p-6 rounded-lg border-2 mb-6`}>
+        <div className="flex items-center mb-4">
+          <div className="mr-4">{currentHero.icon}</div>
+          <div>
+            <h2 className="text-2xl font-bold">{currentHero.name}</h2>
+            <p className="text-sm opacity-80">{currentHero.focus}</p>
+          </div>
+        </div>
+        <h3 className="text-lg font-semibold mb-4">{currentQuestion}</h3>
+      </div>
+
+      <div className="space-y-4">
+        {options.map((option, optionIndex) => (
+          <div key={optionIndex} className="bg-white p-4 rounded-lg border-2 border-gray-200">
+            <h4 className="font-semibold text-gray-800 mb-3">Option {optionIndex + 1}: {option}</h4>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-600">Poor fit</span>
+              {[1, 2, 3, 4, 5].map(rating => (
+                <button
+                  key={rating}
+                  onClick={() => handleResponse(heroIndex, currentQuestionIndex, optionIndex, rating)}
+                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                    responses[`${heroIndex}-${currentQuestionIndex}-${optionIndex}`] === rating
+                      ? 'bg-blue-600 border-blue-600 text-white'
+                      : 'border-gray-300 hover:border-blue-400'
+                  }`}
+                >
+                  {rating}
+                </button>
+              ))}
+              <span className="text-sm text-gray-600">Perfect fit</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-between mt-8">
+        <button
+          onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg"
+        >
+          Previous
+        </button>
+        <button
+          onClick={() => {
+            if (currentStep < totalSteps) {
+              setCurrentStep(currentStep + 1);
+            } else {
+              setShowResults(true);
+            }
+          }}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+        >
+          {currentStep < totalSteps ? 'Next' : 'See Results'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default HeroDecisionMatrix;
