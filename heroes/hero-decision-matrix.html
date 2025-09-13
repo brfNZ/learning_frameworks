@@ -157,6 +157,7 @@
         function handleResponse(questionIndex, optionIndex, rating) {
             const key = `${questionIndex}-${optionIndex}`;
             state.responses[key] = rating;
+            console.log('Response recorded:', key, rating); // Debug log
         }
 
         function calculateScores() {
@@ -256,6 +257,47 @@
             const currentQuestion = state.selectedQuestions[state.currentStep - 1];
             const totalSteps = 9;
 
+            let optionsHtml = '';
+            for (let i = 0; i < state.options.length; i++) {
+                const option = state.options[i];
+                optionsHtml += `
+                    <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
+                        <h4 class="font-semibold text-gray-800 mb-3">Option ${i + 1}: ${option}</h4>
+                        <div class="flex items-center justify-center space-x-6">
+                `;
+                
+                for (let rating = 1; rating <= 3; rating++) {
+                    const responseKey = `${state.currentStep - 1}-${i}`;
+                    const isSelected = state.responses[responseKey] === rating;
+                    
+                    let label = '';
+                    if (rating === 1) label = 'Not examined';
+                    else if (rating === 2) label = 'Some thought';
+                    else label = 'Deep thought';
+                    
+                    optionsHtml += `
+                        <div class="text-center">
+                            <button
+                                class="rating-btn w-16 h-16 rounded-full border-2 transition-all text-lg font-bold mb-2 ${
+                                    isSelected
+                                        ? 'bg-blue-600 border-blue-600 text-white'
+                                        : 'border-gray-300 hover:border-blue-400'
+                                }"
+                                onclick="handleRatingClick(${state.currentStep - 1}, ${i}, ${rating})"
+                            >
+                                ${rating}
+                            </button>
+                            <div class="text-xs text-gray-600 w-20">${label}</div>
+                        </div>
+                    `;
+                }
+                
+                optionsHtml += `
+                        </div>
+                    </div>
+                `;
+            }
+
             return `
                 <div class="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
                     <div class="text-center mb-8">
@@ -287,50 +329,21 @@
                     </div>
 
                     <div class="space-y-4">
-                        ${state.options.map((option, optionIndex) => `
-                            <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
-                                <h4 class="font-semibold text-gray-800 mb-3">Option ${optionIndex + 1}: ${option}</h4>
-                                <div class="flex items-center justify-center space-x-6">
-                                    ${[1, 2, 3].map(rating => {
-                                        const isSelected = state.responses[`${state.currentStep - 1}-${optionIndex}`] === rating;
-                                        let label = '';
-                                        if (rating === 1) label = 'Not examined';
-                                        else if (rating === 2) label = 'Some thought';
-                                        else label = 'Thought through';
-                                        
-                                        return `
-                                            <div class="text-center">
-                                                <button
-                                                    class="rating-btn w-16 h-16 rounded-full border-2 transition-all text-lg font-bold mb-2 ${
-                                                        isSelected
-                                                            ? 'bg-blue-600 border-blue-600 text-white'
-                                                            : 'border-gray-300 hover:border-blue-400'
-                                                    }"
-                                                    data-question="${state.currentStep - 1}"
-                                                    data-option="${optionIndex}"
-                                                    data-rating="${rating}"
-                                                >
-                                                    ${rating}
-                                                </button>
-                                                <div class="text-xs text-gray-600 w-20">${label}</div>
-                                            </div>
-                                        `;
-                                    }).join('')}
-                                </div>
-                            </div>
-                        `).join('')}
+                        ${optionsHtml}
                     </div>
 
                     <div class="flex justify-between mt-8">
                         <button
                             id="prevBtn"
                             class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg"
+                            onclick="goToPrevious()"
                         >
                             Previous
                         </button>
                         <button
                             id="nextBtn"
                             class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+                            onclick="goToNext()"
                         >
                             ${state.currentStep < totalSteps ? 'Next' : 'See Results'}
                         </button>
@@ -404,6 +417,28 @@
             `;
         }
 
+        // Event handlers as global functions
+        function handleRatingClick(questionIndex, optionIndex, rating) {
+            handleResponse(questionIndex, optionIndex, rating);
+            render();
+        }
+
+        function goToPrevious() {
+            state.currentStep = Math.max(1, state.currentStep - 1);
+            render();
+        }
+
+        function goToNext() {
+            const totalSteps = 9;
+            if (state.currentStep < totalSteps) {
+                state.currentStep += 1;
+                render();
+            } else {
+                state.showResults = true;
+                render();
+            }
+        }
+
         function render() {
             const app = document.getElementById('app');
             
@@ -414,7 +449,6 @@
                 setupEventListeners();
             } else {
                 app.innerHTML = renderQuestions();
-                setupQuestionEventListeners();
             }
         }
 
@@ -454,44 +488,13 @@
             });
         }
 
-        function setupQuestionEventListeners() {
-            // Rating buttons
-            document.querySelectorAll('.rating-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const questionIndex = parseInt(btn.dataset.question);
-                    const optionIndex = parseInt(btn.dataset.option);
-                    const rating = parseInt(btn.dataset.rating);
-                    
-                    handleResponse(questionIndex, optionIndex, rating);
-                    render();
-                });
-            });
-
-            // Navigation buttons
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const totalSteps = 9;
-
-            prevBtn.addEventListener('click', () => {
-                state.currentStep = Math.max(1, state.currentStep - 1);
-                render();
-            });
-
-            nextBtn.addEventListener('click', () => {
-                if (state.currentStep < totalSteps) {
-                    state.currentStep += 1;
-                    render();
-                } else {
-                    state.showResults = true;
-                    render();
-                }
-            });
-        }
-
         // Make functions globally available
         window.addOption = addOption;
         window.removeOption = removeOption;
         window.resetMatrix = resetMatrix;
+        window.handleRatingClick = handleRatingClick;
+        window.goToPrevious = goToPrevious;
+        window.goToNext = goToNext;
 
         // Initial render
         document.addEventListener('DOMContentLoaded', () => {
