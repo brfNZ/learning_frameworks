@@ -279,7 +279,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h2 class="text-2xl font-bold">${currentQuestion.hero} ${currentQuestion.isCore ? '(Core)' : ''}</h2>
+                                <h2 class="text-2xl font-bold">${currentQuestion.hero}</h2>
                                 <p class="text-sm opacity-80">${currentQuestion.focus}</p>
                             </div>
                         </div>
@@ -287,7 +287,7 @@
                     </div>
 
                     <div class="space-y-4">
-                        ${state.options.map((optionIndex, option) => `
+                        ${state.options.map((option, optionIndex) => `
                             <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
                                 <h4 class="font-semibold text-gray-800 mb-3">Option ${optionIndex + 1}: ${option}</h4>
                                 <div class="flex items-center justify-center space-x-6">
