@@ -1169,6 +1169,12 @@
             results: 3
         };
 
+        // Safe getter to prevent null errors (NEW)
+        function getValue(id, defaultValue = '') {
+            const element = document.getElementById(id);
+            return element ? element.value : defaultValue;
+        }
+        
         // Show notification
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
