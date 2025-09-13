@@ -715,6 +715,459 @@
                 </div>
             </div>
 
+            <div class="section results">
+                <h3>RESULTS & REFLECTION</h3>
+                <div class="score-slider">
+                    <div class="slider-header">
+                        <div class="slider-label">Overall Trade Quality</div>
+                        <div class="score-display" id="resultsScore">3/5</div>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" min="1" max="5" value="3" class="slider" id="resultsSlider" oninput="updateScore('results', this.value)">
+                        <div class="slider-labels">
+                            <span>Poor (1)</span>
+                            <span>Excellent (5)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Key Lesson Learned</label>
+                    <textarea rows="3" placeholder="What did you learn from this trade?" id="lessonLearned"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Next Action Item</label>
+                    <input type="text" placeholder="What will you do differently next time?" id="actionItem">
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="saveDaily()">💾 Save Daily Review</button>
+                <button class="btn btn-info" onclick="exportDaily()">📄 Export PDF</button>
+                <button class="btn btn-warning" onclick="clearDaily()">🔄 Clear Form</button>
+            </div>
+        </div>
+
+        <!-- Weekly Review Tab -->
+        <div id="weekly" class="tab-content">
+            <div class="summary-card">
+                <div class="summary-score" id="weeklyAverage">3.2/5</div>
+                <div class="summary-label">Weekly Average Score</div>
+            </div>
+
+            <div class="section performance">
+                <h3>WEEKLY PERFORMANCE</h3>
+                <div class="performance-grid">
+                    <div class="performance-card">
+                        <div class="performance-value" id="weeklyPnL">+4.2%</div>
+                        <div class="performance-label">Weekly P&L</div>
+                    </div>
+                    <div class="performance-card">
+                        <div class="performance-value" id="winRate">65%</div>
+                        <div class="performance-label">Win Rate</div>
+                    </div>
+                    <div class="performance-card">
+                        <div class="performance-value" id="totalTrades">12</div>
+                        <div class="performance-label">Total Trades</div>
+                    </div>
+                    <div class="performance-card">
+                        <div class="performance-value" id="avgRisk">1.8%</div>
+                        <div class="performance-label">Avg Risk per Trade</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section psychology">
+                <h3>PSYCHOLOGICAL REVIEW</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>🎯 Biggest Win This Week</label>
+                        <textarea rows="2" placeholder="What was your best trade or decision?" id="biggestWin"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>⚠️ Biggest Challenge</label>
+                        <textarea rows="2" placeholder="What was your biggest struggle?" id="biggestChallenge"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>🧠 Mental State Assessment</label>
+                    <select id="weeklyMentalState">
+                        <option value="">Select Overall State</option>
+                        <option value="excellent">🌟 Excellent - Very disciplined</option>
+                        <option value="good">✅ Good - Mostly controlled</option>
+                        <option value="average">😐 Average - Some lapses</option>
+                        <option value="poor">😔 Poor - Multiple mistakes</option>
+                        <option value="terrible">💀 Terrible - Major discipline issues</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section flags">
+                <h3>RED FLAGS & ISSUES</h3>
+                <p style="margin-bottom: 15px; color: #6c757d;">Check any issues you experienced this week:</p>
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="redFlags" value="overtrading">
+                            🔥 Overtrading - Too many positions
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="redFlags" value="revenge">
+                            😡 Revenge trading after losses
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="redFlags" value="fomo">
+                            😱 FOMO - Fear of missing out
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="redFlags" value="oversizing">
+                            📏 Position oversizing
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="redFlags" value="noplan">
+                            📋 Trading without a plan
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="redFlags" value="emotional">
+                            💭 Emotional decision making
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="redFlags" value="stops">
+                            🛑 Not using stop losses
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label>
+                            <input type="checkbox" name="redFlags" value="moving">
+                            🔄 Moving stops against me
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section planning">
+                <h3>NEXT WEEK PLANNING</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>🎯 Primary Focus Areas</label>
+                        <textarea rows="3" placeholder="What will you focus on improving next week?" id="focusAreas"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>📊 Market Outlook</label>
+                        <textarea rows="3" placeholder="What's your view on next week's market?" id="marketOutlook"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📈 Risk Target (%)</label>
+                        <input type="number" step="0.1" placeholder="1.5%" id="riskTarget">
+                    </div>
+                    <div class="form-group">
+                        <label>🎲 Max Trades per Day</label>
+                        <input type="number" placeholder="3" id="maxTrades">
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="saveWeekly()">💾 Save Weekly Review</button>
+                <button class="btn btn-success" onclick="generateReport()">📊 Generate Report</button>
+                <button class="btn btn-info" onclick="exportWeekly()">📄 Export PDF</button>
+                <button class="btn btn-warning" onclick="clearWeekly()">🔄 Clear Form</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Global variables
+        let dailyData = {};
+        let weeklyData = {};
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedData();
+            updateDailyAverage();
+            updateWeeklyStats();
+            setupEventListeners();
+        });
+
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Score update functionality
+        function updateScore(category, value) {
+            document.getElementById(category + 'Score').textContent = value + '/5';
+            updateDailyAverage();
+        }
+
+        // Calculate and update daily average
+        function updateDailyAverage() {
+            const scores = [];
+            ['timing', 'risk', 'analysis', 'discipline', 'exit', 'results'].forEach(category => {
+                const slider = document.getElementById(category + 'Slider');
+                if (slider) {
+                    scores.push(parseInt(slider.value));
+                }
+            });
+            
+            const average = scores.length > 0 ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : 3.0;
+            document.getElementById('dailyAverage').textContent = average + '/5';
+        }
+
+        // Save daily review
+        function saveDaily() {
+            const dailyReview = {
+                date: new Date().toISOString().split('T')[0],
+                keyStrength: document.getElementById('keyStrength').value,
+                improvementArea: document.getElementById('improvementArea').value,
+                scores: {
+                    timing: document.getElementById('timingSlider').value,
+                    risk: document.getElementById('riskSlider').value,
+                    analysis: document.getElementById('analysisSlider').value,
+                    discipline: document.getElementById('disciplineSlider').value,
+                    exit: document.getElementById('exitSlider').value,
+                    results: document.getElementById('resultsSlider').value
+                },
+                entryTrigger: document.getElementById('entryTrigger').value,
+                marketConditions: document.getElementById('marketConditions').value,
+                riskPercent: document.getElementById('riskPercent').value,
+                positionSize: document.getElementById('positionSize').value,
+                setupUsed: document.getElementById('setupUsed').value,
+                emotionalState: document.getElementById('emotionalState').value,
+                exitTrigger: document.getElementById('exitTrigger').value,
+                pnlPercent: document.getElementById('pnlPercent').value,
+                lessonLearned: document.getElementById('lessonLearned').value,
+                actionItem: document.getElementById('actionItem').value
+            };
+
+            // Save to memory (in a real app, this would go to a database)
+            const savedReviews = JSON.parse(localStorage.getItem('dailyReviews') || '[]');
+            const existingIndex = savedReviews.findIndex(review => review.date === dailyReview.date);
+            
+            if (existingIndex >= 0) {
+                savedReviews[existingIndex] = dailyReview;
+            } else {
+                savedReviews.push(dailyReview);
+            }
+            
+            localStorage.setItem('dailyReviews', JSON.stringify(savedReviews));
+            showNotification('Daily review saved successfully!', 'success');
+        }
+
+        // Save weekly review
+        function saveWeekly() {
+            const weeklyReview = {
+                weekOf: getWeekStart(new Date()).toISOString().split('T')[0],
+                biggestWin: document.getElementById('biggestWin').value,
+                biggestChallenge: document.getElementById('biggestChallenge').value,
+                weeklyMentalState: document.getElementById('weeklyMentalState').value,
+                redFlags: Array.from(document.querySelectorAll('input[name="redFlags"]:checked')).map(cb => cb.value),
+                focusAreas: document.getElementById('focusAreas').value,
+                marketOutlook: document.getElementById('marketOutlook').value,
+                riskTarget: document.getElementById('riskTarget').value,
+                maxTrades: document.getElementById('maxTrades').value
+            };
+
+            const savedWeeklyReviews = JSON.parse(localStorage.getItem('weeklyReviews') || '[]');
+            const existingIndex = savedWeeklyReviews.findIndex(review => review.weekOf === weeklyReview.weekOf);
+            
+            if (existingIndex >= 0) {
+                savedWeeklyReviews[existingIndex] = weeklyReview;
+            } else {
+                savedWeeklyReviews.push(weeklyReview);
+            }
+            
+            localStorage.setItem('weeklyReviews', JSON.stringify(savedWeeklyReviews));
+            showNotification('Weekly review saved successfully!', 'success');
+        }
+
+        // Clear daily form
+        function clearDaily() {
+            if (confirm('Are you sure you want to clear all daily review data?')) {
+                document.querySelectorAll('#daily input, #daily select, #daily textarea').forEach(element => {
+                    if (element.type === 'range') {
+                        element.value = 3;
+                        updateScore(element.id.replace('Slider', ''), 3);
+                    } else {
+                        element.value = '';
+                    }
+                });
+                updateDailyAverage();
+                showNotification('Daily review cleared', 'info');
+            }
+        }
+
+        // Clear weekly form
+        function clearWeekly() {
+            if (confirm('Are you sure you want to clear all weekly review data?')) {
+                document.querySelectorAll('#weekly input, #weekly select, #weekly textarea').forEach(element => {
+                    if (element.type === 'checkbox') {
+                        element.checked = false;
+                        element.closest('.checkbox-item').classList.remove('checked');
+                    } else {
+                        element.value = '';
+                    }
+                });
+                showNotification('Weekly review cleared', 'info');
+            }
+        }
+
+        // Export functionality (simplified for demo)
+        function exportDaily() {
+            showNotification('Export feature coming soon!', 'info');
+        }
+
+        function exportWeekly() {
+            showNotification('Export feature coming soon!', 'info');
+        }
+
+        function generateReport() {
+            showNotification('Report generation coming soon!', 'info');
+        }
+
+        // Utility functions
+        function getWeekStart(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            return new Date(d.setDate(diff));
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function loadSavedData() {
+            // Load and populate any saved data
+            const today = new Date().toISOString().split('T')[0];
+            const savedReviews = JSON.parse(localStorage.getItem('dailyReviews') || '[]');
+            const todayReview = savedReviews.find(review => review.date === today);
+            
+            if (todayReview) {
+                // Populate daily form with saved data
+                Object.keys(todayReview).forEach(key => {
+                    if (key === 'scores') {
+                        Object.keys(todayReview.scores).forEach(scoreKey => {
+                            const slider = document.getElementById(scoreKey + 'Slider');
+                            if (slider) {
+                                slider.value = todayReview.scores[scoreKey];
+                                updateScore(scoreKey, todayReview.scores[scoreKey]);
+                            }
+                        });
+                    } else {
+                        const element = document.getElementById(key);
+                        if (element) {
+                            element.value = todayReview[key];
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateWeeklyStats() {
+            // This would calculate actual stats from saved daily reviews
+            // For demo purposes, showing static values
+            document.getElementById('weeklyPnL').textContent = '+4.2%';
+            document.getElementById('winRate').textContent = '65%';
+            document.getElementById('totalTrades').textContent = '12';
+            document.getElementById('avgRisk').textContent = '1.8%';
+            document.getElementById('weeklyAverage').textContent = '3.2/5';
+        }
+
+        function setupEventListeners() {
+            // Add event listeners for checkbox interactions
+            document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const item = this.closest('.checkbox-item');
+                    if (this.checked) {
+                        item.classList.add('checked');
+                    } else {
+                        item.classList.remove('checked');
+                    }
+                });
+            });
+
+            // Add event listeners for all sliders
+            document.querySelectorAll('.slider').forEach(slider => {
+                slider.addEventListener('input', function() {
+                    updateDailyAverage();
+                });
+            });
+
+            // Auto-save functionality (every 30 seconds)
+            setInterval(() => {
+                const hasData = document.querySelector('#daily input[value!=""], #daily select[value!=""], #daily textarea[value!=""]');
+                if (hasData) {
+                    saveDaily();
+                }
+            }, 30000);
+        }
+
+        // Print functionality
+        function printReview() {
+            window.print();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 's':
+                        e.preventDefault();
+                        const activeTab = document.querySelector('.tab-content.active');
+                        if (activeTab.id === 'daily') {
+                            saveDaily();
+                        } else {
+                            saveWeekly();
+                        }
+                        break;
+                    case 'p':
+                        e.preventDefault();
+                        printReview();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
             <div class="section timing">
                 <h3>TIMING & TRIGGER</h3>
                 <div class="score-slider">
@@ -825,3 +1278,37 @@
                         <option value="">Select State</option>
                         <option value="calm">😌 Calm & Focused</option>
                         <option value="excited">😃 Excited</option>
+                        <option value="nervous">😰 Nervous/Anxious</option>
+                        <option value="frustrated">😤 Frustrated</option>
+                        <option value="overconfident">😎 Overconfident</option>
+                        <option value="fearful">😨 Fearful</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section exit">
+                <h3>EXIT & RESULTS</h3>
+                <div class="score-slider">
+                    <div class="slider-header">
+                        <div class="slider-label">Exit Quality & Management</div>
+                        <div class="score-display" id="exitScore">3/5</div>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" min="1" max="5" value="3" class="slider" id="exitSlider" oninput="updateScore('exit', this.value)">
+                        <div class="slider-labels">
+                            <span>Poor (1)</span>
+                            <span>Excellent (5)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Exit Trigger</label>
+                        <input type="text" placeholder="Target hit, stop loss, time exit..." id="exitTrigger">
+                    </div>
+                    <div class="form-group">
+                        <label>P&L (%)</label>
+                        <input type="number" step="0.01" placeholder="2.5%" id="pnlPercent">
+                    </div>
+                </div>
+            
