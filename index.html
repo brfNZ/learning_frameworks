@@ -798,11 +798,22 @@
                         <option value="">Select Setup</option>
                         <option value="3Indians">🏹 3 Indians</option>
                         <option value="MA Cross">📊 MA Cross</option>
-                        <option value="Head & Shoulders">💤 Head & Shoulders</option>
-                        <option value="Cup & Handle">☕ Cup & Handle</option>
-                        <option value="Breakout">💥 Breakout</option>
                         <option value="Support/Resistance">🔄 Support/Resistance</option>
+                        <option value="Breakout">💥 Breakout</option>
                         <option value="Other">🎯 Other</option>
+                        <optgroup label="── Chart Patterns ──">
+                            <option value="Head & Shoulders">💤 Head & Shoulders</option>
+                            <option value="Cup & Handle">☕ Cup & Handle</option>
+                            <option value="Triangle Patterns">🔺 Triangle Patterns</option>
+                            <option value="Wedge Patterns">📐 Wedge Patterns</option>
+                            <option value="Flag/Pennant Patterns">🏁 Flag/Pennant Patterns</option>
+                            <option value="Double/Triple Patterns">🔁 Double/Triple Patterns</option>
+                        </optgroup>
+                        <optgroup label="── Candlestick Patterns ──">
+                            <option value="Reversal Candlesticks">🔨 Reversal Candlesticks</option>
+                            <option value="Engulfing Patterns">📦 Engulfing Patterns</option>
+                            <option value="Multi-Candle Patterns">👥 Multi-Candle Patterns</option>
+                        </optgroup>
                     </select>
                 </div>
             </div>
@@ -866,4 +877,740 @@
                         <div class="score-display" id="resultsScore">3/5</div>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="1" max="5" value="3" class="slider" id="resul
+                        <input type="range" min="1" max="5" value="3" class="slider" id="resultsSlider" oninput="updateScore('results', this.value)">
+                        <div class="slider-labels">
+                            <span>Poor (1)</span>
+                            <span>Excellent (5)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>R-Multiple</label>
+                    <input type="number" step="0.1" placeholder="+2.5 or -1.0" id="rMultiple">
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>💡 KEY TAKEAWAY</h3>
+                <div class="form-group">
+                    <textarea rows="4" placeholder="What's the most important lesson from today's trading?" id="keyTakeaway"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Review Tab -->
+        <div id="weekly" class="tab-content">
+            <div class="section performance">
+                <h3>PERFORMANCE METRICS</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Total Trades</label>
+                        <input type="number" id="totalTrades" onchange="updatePerformance()">
+                    </div>
+                    <div class="form-group">
+                        <label>Winning Trades</label>
+                        <input type="number" id="winningTrades" onchange="updatePerformance()">
+                    </div>
+                    <div class="form-group">
+                        <label>Losing Trades</label>
+                        <input type="number" id="losingTrades" onchange="updatePerformance()">
+                    </div>
+                </div>
+                
+                <div class="performance-grid">
+                    <div class="performance-card">
+                        <div class="performance-value" id="winRateDisplay">0.0%</div>
+                        <div class="performance-label">Win Rate</div>
+                    </div>
+                    <div class="performance-card">
+                        <div class="performance-value" id="avgWinnerDisplay">+0.0R</div>
+                        <div class="performance-label">Avg Winner</div>
+                    </div>
+                    <div class="performance-card">
+                        <div class="performance-value" id="avgLoserDisplay">-0.0R</div>
+                        <div class="performance-label">Avg Loser</div>
+                    </div>
+                    <div class="performance-card">
+                        <div class="performance-value" id="accountChangeDisplay">0.0%</div>
+                        <div class="performance-label">Account Change</div>
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-top: 20px;">
+                    <div class="form-group">
+                        <label>Account Start ($)</label>
+                        <input type="number" id="accountStart" onchange="updatePerformance()">
+                    </div>
+                    <div class="form-group">
+                        <label>Account End ($)</label>
+                        <input type="number" id="accountEnd" onchange="updatePerformance()">
+                    </div>
+                    <div class="form-group">
+                        <label>Average Winner R-Multiple</label>
+                        <input type="number" step="0.1" id="avgWinner" onchange="updatePerformance()">
+                    </div>
+                    <div class="form-group">
+                        <label>Average Loser R-Multiple</label>
+                        <input type="number" step="0.1" id="avgLoser" onchange="updatePerformance()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>SETUP PERFORMANCE ANALYSIS</h3>
+                <div class="performance-grid">
+                    <div class="performance-card">
+                        <h4>🏹 3 Indians</h4>
+                        <input type="number" placeholder="Trades" id="threeIndiansCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="threeIndiansWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="threeIndiansR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>📊 MA Strategies</h4>
+                        <input type="number" placeholder="Trades" id="maCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="maWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="maR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>🔄 Support/Resistance</h4>
+                        <input type="number" placeholder="Trades" id="srCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="srWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="srR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>💥 Breakout</h4>
+                        <input type="number" placeholder="Trades" id="breakoutCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="breakoutWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="breakoutR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>💤 Head & Shoulders</h4>
+                        <input type="number" placeholder="Trades" id="hsCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="hsWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="hsR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>☕ Cup & Handle</h4>
+                        <input type="number" placeholder="Trades" id="cupCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="cupWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="cupR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>🔺 Triangle Patterns</h4>
+                        <input type="number" placeholder="Trades" id="triangleCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="triangleWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="triangleR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>📐 Wedge Patterns</h4>
+                        <input type="number" placeholder="Trades" id="wedgeCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="wedgeWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="wedgeR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>🏁 Flag/Pennant</h4>
+                        <input type="number" placeholder="Trades" id="flagCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="flagWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="flagR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>🔁 Double/Triple</h4>
+                        <input type="number" placeholder="Trades" id="doubleCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="doubleWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="doubleR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>🔨 Reversal Candles</h4>
+                        <input type="number" placeholder="Trades" id="reversalCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="reversalWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="reversalR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>📦 Engulfing</h4>
+                        <input type="number" placeholder="Trades" id="engulfingCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="engulfingWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="engulfingR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>👥 Multi-Candle</h4>
+                        <input type="number" placeholder="Trades" id="multiCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="multiWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="multiR" style="margin: 5px 0;">
+                    </div>
+                    <div class="performance-card">
+                        <h4>🎯 Other</h4>
+                        <input type="number" placeholder="Trades" id="otherCount" style="margin: 5px 0;">
+                        <input type="number" placeholder="Win %" id="otherWin" style="margin: 5px 0;">
+                        <input type="number" step="0.1" placeholder="Avg R" id="otherR" style="margin: 5px 0;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section psychology">
+                <h3>PSYCHOLOGICAL ASSESSMENT</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Overtrading Incidents</label>
+                        <input type="number" id="overtradingIncidents">
+                    </div>
+                    <div class="form-group">
+                        <label>Emotional Trades</label>
+                        <input type="number" id="emotionalTrades">
+                    </div>
+                    <div class="form-group">
+                        <label>Risk Rule Violations</label>
+                        <input type="number" id="riskViolations">
+                    </div>
+                    <div class="form-group">
+                        <label>FOMO Trades</label>
+                        <input type="number" id="fomoTrades">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section flags">
+                <h3>RED FLAGS CHECKLIST</h3>
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <label for="flag1">
+                            <input type="checkbox" id="flag1" onchange="toggleFlag(this)">
+                            Increased position sizes after wins
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label for="flag2">
+                            <input type="checkbox" id="flag2" onchange="toggleFlag(this)">
+                            Abandoned stop losses
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label for="flag3">
+                            <input type="checkbox" id="flag3" onchange="toggleFlag(this)">
+                            Chased breakouts without pullbacks
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label for="flag4">
+                            <input type="checkbox" id="flag4" onchange="toggleFlag(this)">
+                            Traded during emotional states
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label for="flag5">
+                            <input type="checkbox" id="flag5" onchange="toggleFlag(this)">
+                            Exceeded daily loss limits
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label for="flag6">
+                            <input type="checkbox" id="flag6" onchange="toggleFlag(this)">
+                            Made "just one more" trades
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label for="flag7">
+                            <input type="checkbox" id="flag7" onchange="toggleFlag(this)">
+                            Ignored higher timeframe analysis
+                        </label>
+                    </div>
+                    <div class="checkbox-item">
+                        <label for="flag8">
+                            <input type="checkbox" id="flag8" onchange="toggleFlag(this)">
+                            Thought "I can always deposit more"
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section planning">
+                <h3>NEXT WEEK'S OBJECTIVES</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Primary Focus</label>
+                        <input type="text" placeholder="What's your main goal?" id="primaryFocus">
+                    </div>
+                    <div class="form-group">
+                        <label>Risk Management Goal</label>
+                        <input type="text" placeholder="Risk-related objective" id="riskGoal">
+                    </div>
+                    <div class="form-group">
+                        <label>Psychology Goal</label>
+                        <input type="text" placeholder="Mental/emotional focus" id="psychologyGoal">
+                    </div>
+                    <div class="form-group">
+                        <label>Max Daily Trades</label>
+                        <input type="number" placeholder="To combat overtrading" id="maxDailyTrades">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Weekly Lesson Learned</label>
+                    <textarea rows="3" placeholder="Key insight from 'Trading in the Zone' or market experience..." id="weeklyLesson"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Commitment for Next Week</label>
+                    <textarea rows="3" placeholder="Specific commitment or rule to follow..." id="nextWeekCommitment"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-success" onclick="saveData()">💾 Save Data</button>
+            <button class="btn btn-primary" onclick="exportData()">📥 Export JSON</button>
+            <button class="btn btn-info" onclick="printReport()">🖨️ Print Report</button>
+            <button class="btn btn-warning" onclick="loadData()">📂 Load Data</button>
+            <button class="btn btn-danger" onclick="clearAll()">🔄 Clear All</button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Initialize scores
+        let scores = {
+            timing: 3,
+            risk: 3,
+            analysis: 3,
+            discipline: 3,
+            exit: 3,
+            results: 3
+        };
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.background = type === 'success' ? 'var(--success)' : 'var(--danger)';
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Tab switching with animation
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Update score display with animation
+        function updateScore(category, value) {
+            scores[category] = parseInt(value);
+            const scoreElement = document.getElementById(category + 'Score');
+            scoreElement.textContent = value + '/5';
+            
+            // Add pulse effect
+            scoreElement.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                scoreElement.style.transform = 'scale(1)';
+            }, 150);
+            
+            updateDailyAverage();
+        }
+
+        // Calculate daily average with color coding
+        function updateDailyAverage() {
+            const scoreValues = Object.values(scores);
+            const average = scoreValues.reduce((sum, score) => sum + score, 0) / scoreValues.length;
+            const avgElement = document.getElementById('dailyAverage');
+            avgElement.textContent = average.toFixed(1) + '/5';
+            
+            // Color code the average
+            if (average >= 4) {
+                avgElement.style.color = '#9BC5C3';
+            } else if (average >= 3) {
+                avgElement.style.color = '#D4B5E8';
+            } else {
+                avgElement.style.color = '#E8B5C3';
+            }
+        }
+
+        // Update performance metrics with enhanced visuals
+        function updatePerformance() {
+            const totalTrades = parseInt(document.getElementById('totalTrades').value) || 0;
+            const winningTrades = parseInt(document.getElementById('winningTrades').value) || 0;
+            const losingTrades = parseInt(document.getElementById('losingTrades').value) || 0;
+            
+            // Win rate with color coding
+            const winRate = totalTrades > 0 ? ((winningTrades / totalTrades) * 100).toFixed(1) : '0.0';
+            const winRateElement = document.getElementById('winRateDisplay');
+            winRateElement.textContent = winRate + '%';
+            winRateElement.style.color = parseFloat(winRate) >= 50 ? '#9BC5C3' : '#E8B5C3';
+
+            // Average winner/loser
+            const avgWinner = document.getElementById('avgWinner').value || '0.0';
+            const avgLoser = document.getElementById('avgLoser').value || '0.0';
+            document.getElementById('avgWinnerDisplay').textContent = '+' + avgWinner + 'R';
+            document.getElementById('avgLoserDisplay').textContent = avgLoser + 'R';
+
+            // Account change with enhanced styling
+            const accountStart = parseFloat(document.getElementById('accountStart').value) || 0;
+            const accountEnd = parseFloat(document.getElementById('accountEnd').value) || 0;
+            const accountChange = accountStart > 0 ? (((accountEnd - accountStart) / accountStart) * 100).toFixed(2) : '0.00';
+            const changeElement = document.getElementById('accountChangeDisplay');
+            changeElement.textContent = accountChange + '%';
+            
+            if (parseFloat(accountChange) >= 0) {
+                changeElement.style.color = '#9BC5C3';
+                changeElement.textContent = '+' + changeElement.textContent;
+            } else {
+                changeElement.style.color = '#E8B5C3';
+            }
+        }
+
+        // Toggle flag styling with animation
+        function toggleFlag(checkbox) {
+            const item = checkbox.closest('.checkbox-item');
+            if (checkbox.checked) {
+                item.classList.add('checked');
+            } else {
+                item.classList.remove('checked');
+            }
+        }
+
+        // Enhanced data management functions
+        function saveData() {
+            try {
+                const data = collectAllData();
+                localStorage.setItem('traderFrameworkData', JSON.stringify(data));
+                localStorage.setItem('traderFrameworkBackup', JSON.stringify(data));
+                showNotification('Data saved successfully! 💾', 'success');
+            } catch (error) {
+                showNotification('Error saving data: ' + error.message, 'error');
+            }
+        }
+
+        function loadData() {
+            try {
+                const savedData = localStorage.getItem('traderFrameworkData');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    populateFields(data);
+                    showNotification('Data loaded successfully! 📂', 'success');
+                } else {
+                    showNotification('No saved data found', 'error');
+                }
+            } catch (error) {
+                showNotification('Error loading data: ' + error.message, 'error');
+            }
+        }
+
+        function exportData() {
+            try {
+                const data = collectAllData();
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `trade_review_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showNotification('Data exported successfully! 📥', 'success');
+            } catch (error) {
+                showNotification('Error exporting data: ' + error.message, 'error');
+            }
+        }
+
+        function printReport() {
+            window.print();
+        }
+
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                // Reset all form fields with animation
+                document.querySelectorAll('input, select, textarea').forEach(field => {
+                    if (field.type === 'checkbox') {
+                        field.checked = false;
+                        toggleFlag(field);
+                    } else if (field.type === 'range') {
+                        field.value = 3;
+                        updateScore(field.id.replace('Slider', ''), 3);
+                    } else {
+                        field.value = '';
+                    }
+                });
+                updatePerformance();
+                showNotification('All data cleared! 🔄', 'success');
+            }
+        }
+
+        // Enhanced data collection
+        function collectAllData() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                version: '3.0',
+                daily: {
+                    scores: { ...scores },
+                    keyStrength: document.getElementById('keyStrength').value,
+                    improvementArea: document.getElementById('improvementArea').value,
+                    entryTrigger: document.getElementById('entryTrigger').value,
+                    marketConditions: document.getElementById('marketConditions').value,
+                    riskPercent: document.getElementById('riskPercent').value,
+                    positionSize: document.getElementById('positionSize').value,
+                    setupUsed: document.getElementById('setupUsed').value,
+                    emotionalState: document.getElementById('emotionalState').value,
+                    exitReason: document.getElementById('exitReason').value,
+                    rMultiple: document.getElementById('rMultiple').value,
+                    keyTakeaway: document.getElementById('keyTakeaway').value
+                },
+                weekly: {
+                    performance: {
+                        totalTrades: document.getElementById('totalTrades').value,
+                        winningTrades: document.getElementById('winningTrades').value,
+                        losingTrades: document.getElementById('losingTrades').value,
+                        accountStart: document.getElementById('accountStart').value,
+                        accountEnd: document.getElementById('accountEnd').value,
+                        avgWinner: document.getElementById('avgWinner').value,
+                        avgLoser: document.getElementById('avgLoser').value
+                    },
+                    setups: {
+                        threeIndians: {
+                            count: document.getElementById('threeIndiansCount').value,
+                            win: document.getElementById('threeIndiansWin').value,
+                            r: document.getElementById('threeIndiansR').value
+                        },
+                        ma: {
+                            count: document.getElementById('maCount').value,
+                            win: document.getElementById('maWin').value,
+                            r: document.getElementById('maR').value
+                        },
+                        sr: {
+                            count: document.getElementById('srCount').value,
+                            win: document.getElementById('srWin').value,
+                            r: document.getElementById('srR').value
+                        },
+                        breakout: {
+                            count: document.getElementById('breakoutCount').value,
+                            win: document.getElementById('breakoutWin').value,
+                            r: document.getElementById('breakoutR').value
+                        },
+                        hs: {
+                            count: document.getElementById('hsCount').value,
+                            win: document.getElementById('hsWin').value,
+                            r: document.getElementById('hsR').value
+                        },
+                        cup: {
+                            count: document.getElementById('cupCount').value,
+                            win: document.getElementById('cupWin').value,
+                            r: document.getElementById('cupR').value
+                        },
+                        triangle: {
+                            count: document.getElementById('triangleCount').value,
+                            win: document.getElementById('triangleWin').value,
+                            r: document.getElementById('triangleR').value
+                        },
+                        wedge: {
+                            count: document.getElementById('wedgeCount').value,
+                            win: document.getElementById('wedgeWin').value,
+                            r: document.getElementById('wedgeR').value
+                        },
+                        flag: {
+                            count: document.getElementById('flagCount').value,
+                            win: document.getElementById('flagWin').value,
+                            r: document.getElementById('flagR').value
+                        },
+                        double: {
+                            count: document.getElementById('doubleCount').value,
+                            win: document.getElementById('doubleWin').value,
+                            r: document.getElementById('doubleR').value
+                        },
+                        reversal: {
+                            count: document.getElementById('reversalCount').value,
+                            win: document.getElementById('reversalWin').value,
+                            r: document.getElementById('reversalR').value
+                        },
+                        engulfing: {
+                            count: document.getElementById('engulfingCount').value,
+                            win: document.getElementById('engulfingWin').value,
+                            r: document.getElementById('engulfingR').value
+                        },
+                        multi: {
+                            count: document.getElementById('multiCount').value,
+                            win: document.getElementById('multiWin').value,
+                            r: document.getElementById('multiR').value
+                        },
+                        other: {
+                            count: document.getElementById('otherCount').value,
+                            win: document.getElementById('otherWin').value,
+                            r: document.getElementById('otherR').value
+                        }
+                    },
+                    psychology: {
+                        overtradingIncidents: document.getElementById('overtradingIncidents').value,
+                        emotionalTrades: document.getElementById('emotionalTrades').value,
+                        riskViolations: document.getElementById('riskViolations').value,
+                        fomoTrades: document.getElementById('fomoTrades').value
+                    },
+                    planning: {
+                        primaryFocus: document.getElementById('primaryFocus').value,
+                        riskGoal: document.getElementById('riskGoal').value,
+                        psychologyGoal: document.getElementById('psychologyGoal').value,
+                        maxDailyTrades: document.getElementById('maxDailyTrades').value,
+                        weeklyLesson: document.getElementById('weeklyLesson').value,
+                        nextWeekCommitment: document.getElementById('nextWeekCommitment').value
+                    },
+                    redFlags: {
+                        flag1: document.getElementById('flag1').checked,
+                        flag2: document.getElementById('flag2').checked,
+                        flag3: document.getElementById('flag3').checked,
+                        flag4: document.getElementById('flag4').checked,
+                        flag5: document.getElementById('flag5').checked,
+                        flag6: document.getElementById('flag6').checked,
+                        flag7: document.getElementById('flag7').checked,
+                        flag8: document.getElementById('flag8').checked
+                    }
+                }
+            };
+            return data;
+        }
+
+        // Enhanced field population
+        function populateFields(data) {
+            if (data.daily) {
+                // Update scores
+                Object.keys(data.daily.scores).forEach(key => {
+                    if (data.daily.scores[key]) {
+                        scores[key] = data.daily.scores[key];
+                        document.getElementById(key + 'Slider').value = data.daily.scores[key];
+                        updateScore(key, data.daily.scores[key]);
+                    }
+                });
+
+                // Update daily fields
+                Object.keys(data.daily).forEach(key => {
+                    if (key !== 'scores' && document.getElementById(key)) {
+                        document.getElementById(key).value = data.daily[key] || '';
+                    }
+                });
+            }
+
+            if (data.weekly) {
+                // Update performance fields
+                if (data.weekly.performance) {
+                    Object.keys(data.weekly.performance).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) element.value = data.weekly.performance[key] || '';
+                    });
+                }
+
+                // Update setup fields
+                if (data.weekly.setups) {
+                    Object.keys(data.weekly.setups).forEach(setupKey => {
+                        const setup = data.weekly.setups[setupKey];
+                        Object.keys(setup).forEach(field => {
+                            let elementId;
+                            const setupMappings = {
+                                'threeIndians': ['threeIndiansCount', 'threeIndiansWin', 'threeIndiansR'],
+                                'ma': ['maCount', 'maWin', 'maR'],
+                                'sr': ['srCount', 'srWin', 'srR'],
+                                'breakout': ['breakoutCount', 'breakoutWin', 'breakoutR'],
+                                'hs': ['hsCount', 'hsWin', 'hsR'],
+                                'cup': ['cupCount', 'cupWin', 'cupR'],
+                                'triangle': ['triangleCount', 'triangleWin', 'triangleR'],
+                                'wedge': ['wedgeCount', 'wedgeWin', 'wedgeR'],
+                                'flag': ['flagCount', 'flagWin', 'flagR'],
+                                'double': ['doubleCount', 'doubleWin', 'doubleR'],
+                                'reversal': ['reversalCount', 'reversalWin', 'reversalR'],
+                                'engulfing': ['engulfingCount', 'engulfingWin', 'engulfingR'],
+                                'multi': ['multiCount', 'multiWin', 'multiR'],
+                                'other': ['otherCount', 'otherWin', 'otherR']
+                            };
+                            
+                            if (setupMappings[setupKey]) {
+                                if (field === 'count') elementId = setupMappings[setupKey][0];
+                                else if (field === 'win') elementId = setupMappings[setupKey][1];
+                                else if (field === 'r') elementId = setupMappings[setupKey][2];
+                            }
+                            
+                            const element = document.getElementById(elementId);
+                            if (element) element.value = setup[field] || '';
+                        });
+                    });
+                }
+
+                // Update psychology fields
+                if (data.weekly.psychology) {
+                    Object.keys(data.weekly.psychology).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) element.value = data.weekly.psychology[key] || '';
+                    });
+                }
+
+                // Update planning fields
+                if (data.weekly.planning) {
+                    Object.keys(data.weekly.planning).forEach(key => {
+                        const element = document.getElementById(key);
+                        if (element) element.value = data.weekly.planning[key] || '';
+                    });
+                }
+
+                // Update red flags
+                if (data.weekly.redFlags) {
+                    Object.keys(data.weekly.redFlags).forEach(flagKey => {
+                        const checkbox = document.getElementById(flagKey);
+                        if (checkbox) {
+                            checkbox.checked = data.weekly.redFlags[flagKey];
+                            toggleFlag(checkbox);
+                        }
+                    });
+                }
+            }
+
+            updatePerformance();
+        }
+
+        // Initialize app
+        window.addEventListener('load', () => {
+            // Auto-load data
+            loadData();
+            
+            // Initialize tooltips and animations
+            updateDailyAverage();
+            updatePerformance();
+            
+            // Show welcome message
+            setTimeout(() => {
+                showNotification('Welcome to T.R.A.D.E.R Framework! 📈', 'success');
+            }, 1000);
+        });
+
+        // Auto-save every 30 seconds
+        setInterval(() => {
+            saveData();
+        }, 30000);
+
+        // Save before page unload
+        window.addEventListener('beforeunload', () => {
+            saveData();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === 's') {
+                    e.preventDefault();
+                    saveData();
+                } else if (e.key === 'e') {
+                    e.preventDefault();
+                    exportData();
+                } else if (e.key === 'p') {
+                    e.preventDefault();
+                    printReport();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
