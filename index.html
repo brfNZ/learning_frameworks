@@ -8,14 +8,17 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
     <style>
         :root {
-            --primary: #007bff;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-            --info: #17a2b8;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary: #8B9FE8;
+            --primary-dark: #7289DA;
+            --secondary: #A8C0F0;
+            --success: #9BC5C3;
+            --warning: #D4B5E8;
+            --danger: #E8B5C3;
+            --info: #B8D4F1;
+            --light: #F4F6FB;
+            --dark: #5A6B8C;
+            --gradient: linear-gradient(135deg, #E8EAF6 0%, #C5CAE9 100%);
+            --slider-gradient: linear-gradient(to right, #E8B5C3 0%, #D4B5E8 50%, #9BC5C3 100%);
         }
 
         * {
@@ -37,7 +40,7 @@
             margin: 0 auto;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            box-shadow: 0 25px 50px rgba(139, 159, 232, 0.15);
             overflow: hidden;
             animation: slideIn 0.6s ease-out;
         }
@@ -48,7 +51,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #8B9FE8 0%, #7289DA 100%);
             color: white;
             padding: 25px;
             text-align: center;
@@ -107,7 +110,7 @@
         .tabs {
             display: flex;
             background: var(--light);
-            border-bottom: 3px solid #e9ecef;
+            border-bottom: 3px solid #E1E7F0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -134,7 +137,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background: linear-gradient(90deg, transparent, rgba(139, 159, 232, 0.2), transparent);
             transition: left 0.5s;
         }
 
@@ -143,7 +146,7 @@
         }
 
         .tab-button:hover {
-            background: #e9ecef;
+            background: #E8EAF6;
             transform: translateY(-2px);
         }
 
@@ -151,7 +154,7 @@
             background: white;
             border-bottom-color: var(--primary);
             color: var(--primary);
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 10px rgba(139, 159, 232, 0.1);
         }
 
         .tab-content {
@@ -170,22 +173,22 @@
         }
 
         .section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, #F8F9FE 0%, #F0F2F8 100%);
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 25px;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #E1E7F0;
+            box-shadow: 0 5px 15px rgba(139, 159, 232, 0.08);
             transition: transform 0.3s ease;
         }
 
         .section:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 25px rgba(139, 159, 232, 0.12);
         }
 
         .section h3 {
-            color: #495057;
+            color: var(--dark);
             margin-bottom: 20px;
             font-size: 1.4em;
             display: flex;
@@ -196,7 +199,7 @@
         .section h3::before {
             margin-right: 12px;
             font-size: 1.3em;
-            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+            filter: drop-shadow(2px 2px 4px rgba(139, 159, 232, 0.1));
         }
 
         .section.timing h3::before { content: "⏰"; }
@@ -211,7 +214,7 @@
         .section.planning h3::before { content: "📅"; }
 
         .summary-card {
-            background: linear-gradient(135deg, var(--primary) 0%, #0056b3 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             border-radius: 15px;
             padding: 30px;
@@ -258,13 +261,13 @@
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 15px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 3px 15px rgba(139, 159, 232, 0.08);
+            border: 1px solid rgba(139, 159, 232, 0.1);
             transition: all 0.3s ease;
         }
 
         .score-slider:hover {
-            box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+            box-shadow: 0 6px 25px rgba(139, 159, 232, 0.12);
             transform: translateY(-2px);
         }
 
@@ -277,7 +280,7 @@
 
         .slider-label {
             font-weight: 600;
-            color: #495057;
+            color: var(--dark);
             font-size: 1.1em;
         }
 
@@ -285,10 +288,10 @@
             font-size: 1.8em;
             font-weight: bold;
             color: var(--primary);
-            background: linear-gradient(135deg, #e7f3ff, #cce7ff);
+            background: linear-gradient(135deg, #F0F2FF, #E8EAF6);
             padding: 8px 16px;
             border-radius: 25px;
-            border: 2px solid rgba(0,123,255,0.2);
+            border: 2px solid rgba(139, 159, 232, 0.2);
             transition: all 0.3s ease;
         }
 
@@ -301,7 +304,7 @@
             width: 100%;
             height: 10px;
             border-radius: 5px;
-            background: linear-gradient(to right, #dc3545 0%, #ffc107 50%, #28a745 100%);
+            background: var(--slider-gradient);
             outline: none;
             -webkit-appearance: none;
             cursor: pointer;
@@ -312,25 +315,25 @@
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #0056b3);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 0 3px rgba(0,123,255,0.3);
+            box-shadow: 0 4px 12px rgba(139, 159, 232, 0.3), 0 0 0 3px rgba(139, 159, 232, 0.2);
             transition: all 0.2s ease;
         }
 
         .slider::-webkit-slider-thumb:hover {
             transform: scale(1.2);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 0 5px rgba(0,123,255,0.4);
+            box-shadow: 0 6px 20px rgba(139, 159, 232, 0.4), 0 0 0 5px rgba(139, 159, 232, 0.3);
         }
 
         .slider::-moz-range-thumb {
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #0056b3);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             cursor: pointer;
             border: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(139, 159, 232, 0.3);
         }
 
         .slider-labels {
@@ -338,7 +341,7 @@
             justify-content: space-between;
             margin-top: 12px;
             font-size: 0.9em;
-            color: #6c757d;
+            color: #8394B0;
             font-weight: 500;
         }
 
@@ -355,7 +358,7 @@
         label {
             display: block;
             font-weight: 600;
-            color: #495057;
+            color: var(--dark);
             margin-bottom: 8px;
             font-size: 0.95em;
         }
@@ -363,7 +366,7 @@
         input, select, textarea {
             width: 100%;
             padding: 14px 16px;
-            border: 2px solid #e9ecef;
+            border: 2px solid #E1E7F0;
             border-radius: 10px;
             font-size: 1em;
             transition: all 0.3s ease;
@@ -374,7 +377,7 @@
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0,123,255,0.1);
+            box-shadow: 0 0 0 4px rgba(139, 159, 232, 0.1);
             transform: translateY(-1px);
         }
 
@@ -389,7 +392,7 @@
             background: white;
             border-radius: 10px;
             padding: 16px;
-            border: 2px solid #e9ecef;
+            border: 2px solid #E1E7F0;
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
@@ -403,7 +406,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(220,53,69,0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(232, 181, 195, 0.1), transparent);
             transition: left 0.5s ease;
         }
 
@@ -414,11 +417,11 @@
         .checkbox-item:hover {
             border-color: var(--danger);
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 20px rgba(232, 181, 195, 0.1);
         }
 
         .checkbox-item.checked {
-            background: linear-gradient(135deg, #ffe6e6, #ffcccc);
+            background: linear-gradient(135deg, #FFEEF2, #FFDBDF);
             border-color: var(--danger);
             animation: pulse 0.5s ease;
         }
@@ -453,9 +456,9 @@
             background: white;
             border-radius: 12px;
             padding: 22px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 20px rgba(139, 159, 232, 0.08);
             text-align: center;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(139, 159, 232, 0.1);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -473,7 +476,7 @@
 
         .performance-card:hover {
             transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(139, 159, 232, 0.15);
         }
 
         .performance-value {
@@ -481,11 +484,11 @@
             font-weight: bold;
             color: var(--success);
             margin-bottom: 8px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(139, 159, 232, 0.1);
         }
 
         .performance-label {
-            color: #6c757d;
+            color: #8394B0;
             font-size: 0.95em;
             font-weight: 500;
         }
@@ -532,7 +535,7 @@
 
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 25px rgba(139, 159, 232, 0.2);
         }
 
         .btn:active {
@@ -540,27 +543,27 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary), #0056b3);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
         }
 
         .btn-success {
-            background: linear-gradient(135deg, var(--success), #1e7e34);
+            background: linear-gradient(135deg, var(--success), #7FB3B1);
             color: white;
         }
 
         .btn-info {
-            background: linear-gradient(135deg, var(--info), #117a8b);
+            background: linear-gradient(135deg, var(--info), #9BC5E8);
             color: white;
         }
 
         .btn-warning {
-            background: linear-gradient(135deg, var(--warning), #d39e00);
+            background: linear-gradient(135deg, var(--warning), #C09FE0);
             color: #212529;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #bd2130);
+            background: linear-gradient(135deg, var(--danger), #E09FB5);
             color: white;
         }
 
@@ -572,7 +575,7 @@
             color: white;
             padding: 15px 20px;
             border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 20px rgba(139, 159, 232, 0.3);
             transform: translateX(400px);
             transition: transform 0.3s ease;
             z-index: 1000;
@@ -687,7 +690,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="version">v2.0</div>
+            <div class="version">v3.0</div>
             <h1>📈 T.R.A.D.E.R Framework</h1>
             <p>Systematic Trade Review & Analysis System</p>
         </div>
@@ -795,7 +798,7 @@
                         <option value="">Select Setup</option>
                         <option value="3Indians">🏹 3 Indians</option>
                         <option value="MA Cross">📊 MA Cross</option>
-                        <option value="Head & Shoulders">👤 Head & Shoulders</option>
+                        <option value="Head & Shoulders">💤 Head & Shoulders</option>
                         <option value="Cup & Handle">☕ Cup & Handle</option>
                         <option value="Breakout">💥 Breakout</option>
                         <option value="Support/Resistance">🔄 Support/Resistance</option>
@@ -863,625 +866,4 @@
                         <div class="score-display" id="resultsScore">3/5</div>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="1" max="5" value="3" class="slider" id="resultsSlider" oninput="updateScore('results', this.value)">
-                        <div class="slider-labels">
-                            <span>Poor (1)</span>
-                            <span>Excellent (5)</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>R-Multiple</label>
-                    <input type="number" step="0.1" placeholder="+2.5 or -1.0" id="rMultiple">
-                </div>
-            </div>
-
-            <div class="section">
-                <h3>💡 KEY TAKEAWAY</h3>
-                <div class="form-group">
-                    <textarea rows="4" placeholder="What's the most important lesson from today's trading?" id="keyTakeaway"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- Weekly Review Tab -->
-        <div id="weekly" class="tab-content">
-            <div class="section performance">
-                <h3>PERFORMANCE METRICS</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Total Trades</label>
-                        <input type="number" id="totalTrades" onchange="updatePerformance()">
-                    </div>
-                    <div class="form-group">
-                        <label>Winning Trades</label>
-                        <input type="number" id="winningTrades" onchange="updatePerformance()">
-                    </div>
-                    <div class="form-group">
-                        <label>Losing Trades</label>
-                        <input type="number" id="losingTrades" onchange="updatePerformance()">
-                    </div>
-                </div>
-                
-                <div class="performance-grid">
-                    <div class="performance-card">
-                        <div class="performance-value" id="winRateDisplay">0.0%</div>
-                        <div class="performance-label">Win Rate</div>
-                    </div>
-                    <div class="performance-card">
-                        <div class="performance-value" id="avgWinnerDisplay">+0.0R</div>
-                        <div class="performance-label">Avg Winner</div>
-                    </div>
-                    <div class="performance-card">
-                        <div class="performance-value" id="avgLoserDisplay">-0.0R</div>
-                        <div class="performance-label">Avg Loser</div>
-                    </div>
-                    <div class="performance-card">
-                        <div class="performance-value" id="accountChangeDisplay">0.0%</div>
-                        <div class="performance-label">Account Change</div>
-                    </div>
-                </div>
-
-                <div class="form-row" style="margin-top: 20px;">
-                    <div class="form-group">
-                        <label>Account Start ($)</label>
-                        <input type="number" id="accountStart" onchange="updatePerformance()">
-                    </div>
-                    <div class="form-group">
-                        <label>Account End ($)</label>
-                        <input type="number" id="accountEnd" onchange="updatePerformance()">
-                    </div>
-                    <div class="form-group">
-                        <label>Average Winner R-Multiple</label>
-                        <input type="number" step="0.1" id="avgWinner" onchange="updatePerformance()">
-                    </div>
-                    <div class="form-group">
-                        <label>Average Loser R-Multiple</label>
-                        <input type="number" step="0.1" id="avgLoser" onchange="updatePerformance()">
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <h3>SETUP PERFORMANCE ANALYSIS</h3>
-                <div class="performance-grid">
-                    <div class="performance-card">
-                        <h4>🏹 3 Indians</h4>
-                        <input type="number" placeholder="Trades" id="threeIndiansCount" style="margin: 5px 0;">
-                        <input type="number" placeholder="Win %" id="threeIndiansWin" style="margin: 5px 0;">
-                        <input type="number" step="0.1" placeholder="Avg R" id="threeIndiansR" style="margin: 5px 0;">
-                    </div>
-                    <div class="performance-card">
-                        <h4>📊 MA Strategies</h4>
-                        <input type="number" placeholder="Trades" id="maCount" style="margin: 5px 0;">
-                        <input type="number" placeholder="Win %" id="maWin" style="margin: 5px 0;">
-                        <input type="number" step="0.1" placeholder="Avg R" id="maR" style="margin: 5px 0;">
-                    </div>
-                    <div class="performance-card">
-                        <h4>👤 Head & Shoulders</h4>
-                        <input type="number" placeholder="Trades" id="hsCount" style="margin: 5px 0;">
-                        <input type="number" placeholder="Win %" id="hsWin" style="margin: 5px 0;">
-                        <input type="number" step="0.1" placeholder="Avg R" id="hsR" style="margin: 5px 0;">
-                    </div>
-                    <div class="performance-card">
-                        <h4>☕ Cup & Handle</h4>
-                        <input type="number" placeholder="Trades" id="cupCount" style="margin: 5px 0;">
-                        <input type="number" placeholder="Win %" id="cupWin" style="margin: 5px 0;">
-                        <input type="number" step="0.1" placeholder="Avg R" id="cupR" style="margin: 5px 0;">
-                    </div>
-                </div>
-            </div>
-
-            <div class="section psychology">
-                <h3>PSYCHOLOGICAL ASSESSMENT</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Overtrading Incidents</label>
-                        <input type="number" id="overtradingIncidents">
-                    </div>
-                    <div class="form-group">
-                        <label>Emotional Trades</label>
-                        <input type="number" id="emotionalTrades">
-                    </div>
-                    <div class="form-group">
-                        <label>Risk Rule Violations</label>
-                        <input type="number" id="riskViolations">
-                    </div>
-                    <div class="form-group">
-                        <label>FOMO Trades</label>
-                        <input type="number" id="fomoTrades">
-                    </div>
-                </div>
-            </div>
-
-            <div class="section flags">
-                <h3>RED FLAGS CHECKLIST</h3>
-                <div class="checkbox-grid">
-                    <div class="checkbox-item">
-                        <label for="flag1">
-                            <input type="checkbox" id="flag1" onchange="toggleFlag(this)">
-                            Increased position sizes after wins
-                        </label>
-                    </div>
-                    <div class="checkbox-item">
-                        <label for="flag2">
-                            <input type="checkbox" id="flag2" onchange="toggleFlag(this)">
-                            Abandoned stop losses
-                        </label>
-                    </div>
-                    <div class="checkbox-item">
-                        <label for="flag3">
-                            <input type="checkbox" id="flag3" onchange="toggleFlag(this)">
-                            Chased breakouts without pullbacks
-                        </label>
-                    </div>
-                    <div class="checkbox-item">
-                        <label for="flag4">
-                            <input type="checkbox" id="flag4" onchange="toggleFlag(this)">
-                            Traded during emotional states
-                        </label>
-                    </div>
-                    <div class="checkbox-item">
-                        <label for="flag5">
-                            <input type="checkbox" id="flag5" onchange="toggleFlag(this)">
-                            Exceeded daily loss limits
-                        </label>
-                    </div>
-                    <div class="checkbox-item">
-                        <label for="flag6">
-                            <input type="checkbox" id="flag6" onchange="toggleFlag(this)">
-                            Made "just one more" trades
-                        </label>
-                    </div>
-                    <div class="checkbox-item">
-                        <label for="flag7">
-                            <input type="checkbox" id="flag7" onchange="toggleFlag(this)">
-                            Ignored higher timeframe analysis
-                        </label>
-                    </div>
-                    <div class="checkbox-item">
-                        <label for="flag8">
-                            <input type="checkbox" id="flag8" onchange="toggleFlag(this)">
-                            Thought "I can always deposit more"
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section planning">
-                <h3>NEXT WEEK'S OBJECTIVES</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Primary Focus</label>
-                        <input type="text" placeholder="What's your main goal?" id="primaryFocus">
-                    </div>
-                    <div class="form-group">
-                        <label>Risk Management Goal</label>
-                        <input type="text" placeholder="Risk-related objective" id="riskGoal">
-                    </div>
-                    <div class="form-group">
-                        <label>Psychology Goal</label>
-                        <input type="text" placeholder="Mental/emotional focus" id="psychologyGoal">
-                    </div>
-                    <div class="form-group">
-                        <label>Max Daily Trades</label>
-                        <input type="number" placeholder="To combat overtrading" id="maxDailyTrades">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Weekly Lesson Learned</label>
-                    <textarea rows="3" placeholder="Key insight from 'Trading in the Zone' or market experience..." id="weeklyLesson"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Commitment for Next Week</label>
-                    <textarea rows="3" placeholder="Specific commitment or rule to follow..." id="nextWeekCommitment"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="action-buttons">
-            <button class="btn btn-success" onclick="saveData()">💾 Save Data</button>
-            <button class="btn btn-primary" onclick="exportData()">📥 Export JSON</button>
-            <button class="btn btn-info" onclick="printReport()">🖨️ Print Report</button>
-            <button class="btn btn-warning" onclick="loadData()">📂 Load Data</button>
-            <button class="btn btn-danger" onclick="clearAll()">🔄 Clear All</button>
-        </div>
-    </div>
-
-    <!-- Notification -->
-    <div id="notification" class="notification"></div>
-
-    <script>
-        // Initialize scores
-        let scores = {
-            timing: 3,
-            risk: 3,
-            analysis: 3,
-            discipline: 3,
-            exit: 3,
-            results: 3
-        };
-
-        // Show notification
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.background = type === 'success' ? 'var(--success)' : 'var(--danger)';
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        // Tab switching with animation
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // Update score display with animation
-        function updateScore(category, value) {
-            scores[category] = parseInt(value);
-            const scoreElement = document.getElementById(category + 'Score');
-            scoreElement.textContent = value + '/5';
-            
-            // Add pulse effect
-            scoreElement.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                scoreElement.style.transform = 'scale(1)';
-            }, 150);
-            
-            updateDailyAverage();
-        }
-
-        // Calculate daily average with color coding
-        function updateDailyAverage() {
-            const scoreValues = Object.values(scores);
-            const average = scoreValues.reduce((sum, score) => sum + score, 0) / scoreValues.length;
-            const avgElement = document.getElementById('dailyAverage');
-            avgElement.textContent = average.toFixed(1) + '/5';
-            
-            // Color code the average
-            if (average >= 4) {
-                avgElement.style.color = '#28a745';
-            } else if (average >= 3) {
-                avgElement.style.color = '#ffc107';
-            } else {
-                avgElement.style.color = '#dc3545';
-            }
-        }
-
-        // Update performance metrics with enhanced visuals
-        function updatePerformance() {
-            const totalTrades = parseInt(document.getElementById('totalTrades').value) || 0;
-            const winningTrades = parseInt(document.getElementById('winningTrades').value) || 0;
-            const losingTrades = parseInt(document.getElementById('losingTrades').value) || 0;
-            
-            // Win rate with color coding
-            const winRate = totalTrades > 0 ? ((winningTrades / totalTrades) * 100).toFixed(1) : '0.0';
-            const winRateElement = document.getElementById('winRateDisplay');
-            winRateElement.textContent = winRate + '%';
-            winRateElement.style.color = parseFloat(winRate) >= 50 ? '#28a745' : '#dc3545';
-
-            // Average winner/loser
-            const avgWinner = document.getElementById('avgWinner').value || '0.0';
-            const avgLoser = document.getElementById('avgLoser').value || '0.0';
-            document.getElementById('avgWinnerDisplay').textContent = '+' + avgWinner + 'R';
-            document.getElementById('avgLoserDisplay').textContent = avgLoser + 'R';
-
-            // Account change with enhanced styling
-            const accountStart = parseFloat(document.getElementById('accountStart').value) || 0;
-            const accountEnd = parseFloat(document.getElementById('accountEnd').value) || 0;
-            const accountChange = accountStart > 0 ? (((accountEnd - accountStart) / accountStart) * 100).toFixed(2) : '0.00';
-            const changeElement = document.getElementById('accountChangeDisplay');
-            changeElement.textContent = accountChange + '%';
-            
-            if (parseFloat(accountChange) >= 0) {
-                changeElement.style.color = '#28a745';
-                changeElement.textContent = '+' + changeElement.textContent;
-            } else {
-                changeElement.style.color = '#dc3545';
-            }
-        }
-
-        // Toggle flag styling with animation
-        function toggleFlag(checkbox) {
-            const item = checkbox.closest('.checkbox-item');
-            if (checkbox.checked) {
-                item.classList.add('checked');
-            } else {
-                item.classList.remove('checked');
-            }
-        }
-
-        // Enhanced data management functions
-        function saveData() {
-            try {
-                const data = collectAllData();
-                localStorage.setItem('traderFrameworkData', JSON.stringify(data));
-                localStorage.setItem('traderFrameworkBackup', JSON.stringify(data));
-                showNotification('Data saved successfully! 💾', 'success');
-            } catch (error) {
-                showNotification('Error saving data: ' + error.message, 'error');
-            }
-        }
-
-        function loadData() {
-            try {
-                const savedData = localStorage.getItem('traderFrameworkData');
-                if (savedData) {
-                    const data = JSON.parse(savedData);
-                    populateFields(data);
-                    showNotification('Data loaded successfully! 📂', 'success');
-                } else {
-                    showNotification('No saved data found', 'error');
-                }
-            } catch (error) {
-                showNotification('Error loading data: ' + error.message, 'error');
-            }
-        }
-
-        function exportData() {
-            try {
-                const data = collectAllData();
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `trade_review_${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                showNotification('Data exported successfully! 📥', 'success');
-            } catch (error) {
-                showNotification('Error exporting data: ' + error.message, 'error');
-            }
-        }
-
-        function printReport() {
-            window.print();
-        }
-
-        function clearAll() {
-            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
-                // Reset all form fields with animation
-                document.querySelectorAll('input, select, textarea').forEach(field => {
-                    if (field.type === 'checkbox') {
-                        field.checked = false;
-                        toggleFlag(field);
-                    } else if (field.type === 'range') {
-                        field.value = 3;
-                        updateScore(field.id.replace('Slider', ''), 3);
-                    } else {
-                        field.value = '';
-                    }
-                });
-                updatePerformance();
-                showNotification('All data cleared! 🔄', 'success');
-            }
-        }
-
-        // Enhanced data collection
-        function collectAllData() {
-            const data = {
-                timestamp: new Date().toISOString(),
-                version: '2.0',
-                daily: {
-                    scores: { ...scores },
-                    keyStrength: document.getElementById('keyStrength').value,
-                    improvementArea: document.getElementById('improvementArea').value,
-                    entryTrigger: document.getElementById('entryTrigger').value,
-                    marketConditions: document.getElementById('marketConditions').value,
-                    riskPercent: document.getElementById('riskPercent').value,
-                    positionSize: document.getElementById('positionSize').value,
-                    setupUsed: document.getElementById('setupUsed').value,
-                    emotionalState: document.getElementById('emotionalState').value,
-                    exitReason: document.getElementById('exitReason').value,
-                    rMultiple: document.getElementById('rMultiple').value,
-                    keyTakeaway: document.getElementById('keyTakeaway').value
-                },
-                weekly: {
-                    performance: {
-                        totalTrades: document.getElementById('totalTrades').value,
-                        winningTrades: document.getElementById('winningTrades').value,
-                        losingTrades: document.getElementById('losingTrades').value,
-                        accountStart: document.getElementById('accountStart').value,
-                        accountEnd: document.getElementById('accountEnd').value,
-                        avgWinner: document.getElementById('avgWinner').value,
-                        avgLoser: document.getElementById('avgLoser').value
-                    },
-                    setups: {
-                        threeIndians: {
-                            count: document.getElementById('threeIndiansCount').value,
-                            win: document.getElementById('threeIndiansWin').value,
-                            r: document.getElementById('threeIndiansR').value
-                        },
-                        ma: {
-                            count: document.getElementById('maCount').value,
-                            win: document.getElementById('maWin').value,
-                            r: document.getElementById('maR').value
-                        },
-                        hs: {
-                            count: document.getElementById('hsCount').value,
-                            win: document.getElementById('hsWin').value,
-                            r: document.getElementById('hsR').value
-                        },
-                        cup: {
-                            count: document.getElementById('cupCount').value,
-                            win: document.getElementById('cupWin').value,
-                            r: document.getElementById('cupR').value
-                        }
-                    },
-                    psychology: {
-                        overtradingIncidents: document.getElementById('overtradingIncidents').value,
-                        emotionalTrades: document.getElementById('emotionalTrades').value,
-                        riskViolations: document.getElementById('riskViolations').value,
-                        fomoTrades: document.getElementById('fomoTrades').value
-                    },
-                    planning: {
-                        primaryFocus: document.getElementById('primaryFocus').value,
-                        riskGoal: document.getElementById('riskGoal').value,
-                        psychologyGoal: document.getElementById('psychologyGoal').value,
-                        maxDailyTrades: document.getElementById('maxDailyTrades').value,
-                        weeklyLesson: document.getElementById('weeklyLesson').value,
-                        nextWeekCommitment: document.getElementById('nextWeekCommitment').value
-                    },
-                    redFlags: {
-                        flag1: document.getElementById('flag1').checked,
-                        flag2: document.getElementById('flag2').checked,
-                        flag3: document.getElementById('flag3').checked,
-                        flag4: document.getElementById('flag4').checked,
-                        flag5: document.getElementById('flag5').checked,
-                        flag6: document.getElementById('flag6').checked,
-                        flag7: document.getElementById('flag7').checked,
-                        flag8: document.getElementById('flag8').checked
-                    }
-                }
-            };
-            return data;
-        }
-
-        // Enhanced field population
-        function populateFields(data) {
-            if (data.daily) {
-                // Update scores
-                Object.keys(data.daily.scores).forEach(key => {
-                    if (data.daily.scores[key]) {
-                        scores[key] = data.daily.scores[key];
-                        document.getElementById(key + 'Slider').value = data.daily.scores[key];
-                        updateScore(key, data.daily.scores[key]);
-                    }
-                });
-
-                // Update daily fields
-                Object.keys(data.daily).forEach(key => {
-                    if (key !== 'scores' && document.getElementById(key)) {
-                        document.getElementById(key).value = data.daily[key] || '';
-                    }
-                });
-            }
-
-            if (data.weekly) {
-                // Update performance fields
-                if (data.weekly.performance) {
-                    Object.keys(data.weekly.performance).forEach(key => {
-                        const element = document.getElementById(key);
-                        if (element) element.value = data.weekly.performance[key] || '';
-                    });
-                }
-
-                // Update setup fields
-                if (data.weekly.setups) {
-                    Object.keys(data.weekly.setups).forEach(setupKey => {
-                        const setup = data.weekly.setups[setupKey];
-                        Object.keys(setup).forEach(field => {
-                            let elementId;
-                            if (setupKey === 'threeIndians') {
-                                if (field === 'count') elementId = 'threeIndiansCount';
-                                else if (field === 'win') elementId = 'threeIndiansWin';
-                                else if (field === 'r') elementId = 'threeIndiansR';
-                            } else if (setupKey === 'ma') {
-                                if (field === 'count') elementId = 'maCount';
-                                else if (field === 'win') elementId = 'maWin';
-                                else if (field === 'r') elementId = 'maR';
-                            } else if (setupKey === 'hs') {
-                                if (field === 'count') elementId = 'hsCount';
-                                else if (field === 'win') elementId = 'hsWin';
-                                else if (field === 'r') elementId = 'hsR';
-                            } else if (setupKey === 'cup') {
-                                if (field === 'count') elementId = 'cupCount';
-                                else if (field === 'win') elementId = 'cupWin';
-                                else if (field === 'r') elementId = 'cupR';
-                            }
-                            
-                            const element = document.getElementById(elementId);
-                            if (element) element.value = setup[field] || '';
-                        });
-                    });
-                }
-
-                // Update psychology fields
-                if (data.weekly.psychology) {
-                    Object.keys(data.weekly.psychology).forEach(key => {
-                        const element = document.getElementById(key);
-                        if (element) element.value = data.weekly.psychology[key] || '';
-                    });
-                }
-
-                // Update planning fields
-                if (data.weekly.planning) {
-                    Object.keys(data.weekly.planning).forEach(key => {
-                        const element = document.getElementById(key);
-                        if (element) element.value = data.weekly.planning[key] || '';
-                    });
-                }
-
-                // Update red flags
-                if (data.weekly.redFlags) {
-                    Object.keys(data.weekly.redFlags).forEach(flagKey => {
-                        const checkbox = document.getElementById(flagKey);
-                        if (checkbox) {
-                            checkbox.checked = data.weekly.redFlags[flagKey];
-                            toggleFlag(checkbox);
-                        }
-                    });
-                }
-            }
-
-            updatePerformance();
-        }
-
-        // Initialize app
-        window.addEventListener('load', () => {
-            // Auto-load data
-            loadData();
-            
-            // Initialize tooltips and animations
-            updateDailyAverage();
-            updatePerformance();
-            
-            // Show welcome message
-            setTimeout(() => {
-                showNotification('Welcome to T.R.A.D.E.R Framework! 📈', 'success');
-            }, 1000);
-        });
-
-        // Auto-save every 30 seconds
-        setInterval(() => {
-            saveData();
-        }, 30000);
-
-        // Save before page unload
-        window.addEventListener('beforeunload', () => {
-            saveData();
-        });
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                if (e.key === 's') {
-                    e.preventDefault();
-                    saveData();
-                } else if (e.key === 'e') {
-                    e.preventDefault();
-                    exportData();
-                } else if (e.key === 'p') {
-                    e.preventDefault();
-                    printReport();
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+                        <input type="range" min="1" max="5" value="3" class="slider" id="resul
