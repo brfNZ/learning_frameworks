@@ -108,6 +108,7 @@
         }
 
         function generateQuestions() {
+            console.log('generateQuestions called');
             const questions = [];
             
             // Add 4 core questions
@@ -151,6 +152,7 @@
                 });
             }
 
+            console.log('Generated questions:', questions.length);
             return questions;
         }
 
@@ -469,13 +471,22 @@
 
             // Begin analysis button
             const beginBtn = document.getElementById('beginAnalysis');
-            beginBtn.addEventListener('click', () => {
-                if (state.decision.trim() && state.options.every(opt => opt.trim())) {
-                    state.selectedQuestions = generateQuestions();
-                    state.currentStep = 1;
-                    render();
-                }
-            });
+            if (beginBtn) {
+                beginBtn.addEventListener('click', () => {
+                    console.log('Begin button clicked'); // Debug log
+                    console.log('Decision:', state.decision); // Debug log
+                    console.log('Options:', state.options); // Debug log
+                    
+                    if (state.decision.trim() && state.options.every(opt => opt.trim())) {
+                        console.log('Generating questions...'); // Debug log
+                        state.selectedQuestions = generateQuestions();
+                        state.currentStep = 1;
+                        render();
+                    } else {
+                        console.log('Validation failed'); // Debug log
+                    }
+                });
+            }
 
             // Update button state
             const updateButtonState = () => {
