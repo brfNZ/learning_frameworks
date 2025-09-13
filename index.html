@@ -696,8 +696,8 @@
         </div>
 
         <div class="tabs">
-            <button class="tab-button active" onclick="showTab('daily')">📊 Daily Review</button>
-            <button class="tab-button" onclick="showTab('weekly')">📈 Weekly Review</button>
+            <button class="tab-button active" onclick="showTab('daily', event)">📊 Daily Review</button>
+            <button class="tab-button" onclick="showTab('weekly', event)">📈 Weekly Review</button>
         </div>
 
         <!-- Daily Review Tab -->
@@ -805,7 +805,7 @@
                             <option value="Head & Shoulders">💤 Head & Shoulders</option>
                             <option value="Cup & Handle">☕ Cup & Handle</option>
                             <option value="Triangle Patterns">🔺 Triangle Patterns</option>
-                            <option value="Wedge Patterns">📐 Wedge Patterns</option>
+                            <!-- REMOVED: Wedge Patterns -->
                             <option value="Flag/Pennant Patterns">🏁 Flag/Pennant Patterns</option>
                             <option value="Double/Triple Patterns">🔁 Double/Triple Patterns</option>
                         </optgroup>
@@ -1001,12 +1001,7 @@
                         <input type="number" placeholder="Win %" id="triangleWin" style="margin: 5px 0;">
                         <input type="number" step="0.1" placeholder="Avg R" id="triangleR" style="margin: 5px 0;">
                     </div>
-                    <div class="performance-card">
-                        <h4>📐 Wedge Patterns</h4>
-                        <input type="number" placeholder="Trades" id="wedgeCount" style="margin: 5px 0;">
-                        <input type="number" placeholder="Win %" id="wedgeWin" style="margin: 5px 0;">
-                        <input type="number" step="0.1" placeholder="Avg R" id="wedgeR" style="margin: 5px 0;">
-                    </div>
+                    <!-- REMOVED: Wedge Patterns card -->
                     <div class="performance-card">
                         <h4>🏁 Flag/Pennant</h4>
                         <input type="number" placeholder="Trades" id="flagCount" style="margin: 5px 0;">
@@ -1190,8 +1185,8 @@
             }, 3000);
         }
 
-        // Tab switching with animation
-        function showTab(tabName) {
+        // Tab switching with animation (fixed for event)
+        function showTab(tabName, event) {
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -1200,7 +1195,7 @@
             });
 
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            if (event) event.target.classList.add('active');
         }
 
         // Update score display with animation
@@ -1346,7 +1341,7 @@
             }
         }
 
-        // Enhanced data collection
+        // Enhanced data collection (REMOVED: wedge from setups)
         function collectAllData() {
             const data = {
                 timestamp: new Date().toISOString(),
@@ -1411,11 +1406,7 @@
                             win: document.getElementById('triangleWin').value,
                             r: document.getElementById('triangleR').value
                         },
-                        wedge: {
-                            count: document.getElementById('wedgeCount').value,
-                            win: document.getElementById('wedgeWin').value,
-                            r: document.getElementById('wedgeR').value
-                        },
+                        // REMOVED: wedge object
                         flag: {
                             count: document.getElementById('flagCount').value,
                             win: document.getElementById('flagWin').value,
@@ -1476,7 +1467,7 @@
             return data;
         }
 
-        // Enhanced field population
+        // Enhanced field population (REMOVED: wedge from mappings)
         function populateFields(data) {
             if (data.daily) {
                 // Update scores
@@ -1519,7 +1510,7 @@
                                 'hs': ['hsCount', 'hsWin', 'hsR'],
                                 'cup': ['cupCount', 'cupWin', 'cupR'],
                                 'triangle': ['triangleCount', 'triangleWin', 'triangleR'],
-                                'wedge': ['wedgeCount', 'wedgeWin', 'wedgeR'],
+                                // REMOVED: wedge
                                 'flag': ['flagCount', 'flagWin', 'flagR'],
                                 'double': ['doubleCount', 'doubleWin', 'doubleR'],
                                 'reversal': ['reversalCount', 'reversalWin', 'reversalR'],
