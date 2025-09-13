@@ -1,1 +1,1 @@
-# trader_framework
+Personal development learning tools
