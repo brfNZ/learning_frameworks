@@ -370,32 +370,36 @@
                 `);
             }
 
-            // Results slide
+            // Comprehensive Summary slide (replacing previous results and text summary slides)
             const scores = calculateScores();
+            const maxScore = Math.max(...scores.map(s => s.total));
             await addPage(`
-                <h1 style="text-align: center; margin-bottom: 30px;">Final Results</h1>
-                <table style="width: 100%; border-collapse: collapse;">
+                <h1 style="text-align: center; margin-bottom: 30px;">Comprehensive Decision Analysis</h1>
+                <h2 style="margin-top: 20px; margin-bottom: 10px;">Final Results</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                     <tr style="background: #f9fafb;">
-                        <th style="border: 1px solid #ddd; padding: 12px;">Option</th>
-                        <th style="border: 1px solid #ddd; padding: 12px;">Score</th>
+                        <th style="border: 1px solid #ddd; padding: 8px;">Option</th>
+                        <th style="border: 1px solid #ddd; padding: 8px;">Score</th>
                     </tr>
                     ${state.options.map((opt, i) => `
                         <tr>
-                            <td style="border: 1px solid #ddd; padding: 12px;">${opt}</td>
-                            <td style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">${scores[i].total}/45</td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${opt}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-weight: bold;">${scores[i].total}/45 ${scores[i].total === maxScore ? '🏆' : ''}</td>
                         </tr>
                     `).join('')}
                 </table>
-            `);
-
-            // Text Summary slide
-            await addPage(`
-                <h1 style="text-align: center; margin-bottom: 30px;">Summary & Interpretation</h1>
-                <ul style="list-style-type: disc; padding-left: 20px; font-size: 14px; line-height: 1.6;">
-                    <li><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</li>
-                    <li><strong>Score gaps:</strong> Wide differences highlight where options diverge in fit; revisit low-scoring areas for potential blind spots in alignment.</li>
-                    <li><strong>Low scores overall:</strong> If totals are under 23, some options may not align well—consider refining them or exploring alternatives before committing.</li>
-                    <li><strong>Remember:</strong> These suitability scores synthesize diverse perspectives, but trust your gut for the final call—wisdom isn't just numbers.</li>
+                <h2 style="margin-top: 20px; margin-bottom: 10px;">Questions You Analyzed</h2>
+                <ul style="list-style-type: disc; padding-left: 20px; font-size: 12px; line-height: 1.5; margin-bottom: 20px;">
+                    ${state.selectedQuestions.map((q, i) => `
+                        <li><strong>Q${i + 1} (${q.hero}):</strong> ${q.question}</li>
+                    `).join('')}
+                </ul>
+                <h2 style="margin-top: 20px; margin-bottom: 10px;">Interpretation</h2>
+                <ul style="list-style-type: disc; padding-left: 20px; font-size: 12px; line-height: 1.5;">
+                    <li><strong>Highest scoring option:</strong> The option with the highest score (up to 45) reflects the strongest alignment with the wisdom traditions across spiritual, philosophical, logical, and rational lenses.</li>
+                    <li><strong>Score gaps:</strong> Significant differences between option scores indicate varying levels of fit; review lower-scoring options for potential misalignment or blind spots.</li>
+                    <li><strong>Low scores overall:</strong> If all totals are below 23, consider refining options or exploring alternatives to better align with the wisdom criteria.</li>
+                    <li><strong>Remember:</strong> These scores synthesize diverse perspectives, but your intuition should guide the final decision—wisdom transcends mere numbers.</li>
                 </ul>
             `);
 
