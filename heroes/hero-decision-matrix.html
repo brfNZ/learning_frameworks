@@ -475,6 +475,23 @@
                             `;
                         }).join('')}
                     </div>
+                    
+                    <div class="mt-8 p-6 bg-white rounded-lg border-2 border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-800 mb-3">Questions You Analyzed</h3>
+                        <div class="space-y-2 text-sm text-gray-600">
+                            ${state.selectedQuestions.map((q, i) => `
+                                <p><strong>Q${i+1} (${q.hero}):</strong> ${q.question}</p>
+                            `).join('')}
+                        </div>
+                        
+                        <h4 class="text-lg font-bold text-gray-800 mt-6 mb-3">Interpretation</h4>
+                        <div class="space-y-2 text-sm text-gray-600">
+                            <p><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</p>
+                            <p><strong>Score gaps:</strong> Wide differences highlight where options diverge in fit; revisit low-scoring areas for potential blind spots in alignment.</p>
+                            <p><strong>Low scores overall:</strong> If totals are under 23, some options may not align well—consider refining them or exploring alternatives before committing.</p>
+                            <p><strong>Remember:</strong> These suitability scores synthesize diverse perspectives, but trust your gut for the final call—wisdom isn't just numbers.</p>
+                        </div>
+                    </div>
                 </div>
             `;
         }
