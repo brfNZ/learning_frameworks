@@ -42,12 +42,12 @@
             selectedQuestions: []
         };
 
-        // Heroes configuration with all questions
+        // Heroes configuration with all questions (removed [DECISION] placeholders)
         const heroesQuestions = {
             spiritual: {
                 name: "Spiritual Wisdom",
                 color: "bg-purple-100 border-purple-300 text-purple-800",
-                core: "What does my inner wisdom say about each [DECISION] option?",
+                core: "What does my inner wisdom say about each option?",
                 questions: [
                     "Which option comes from love rather than fear?",
                     "How does this serve the greater good beyond just myself?",
@@ -58,18 +58,18 @@
             socrates: {
                 name: "Socrates",
                 color: "bg-blue-100 border-blue-300 text-blue-800",
-                core: "What assumptions am I making about [DECISION] that I haven't examined?",
+                core: "What assumptions am I making that I haven't examined?",
                 questions: [
                     "What would happen if I'm completely wrong about this?",
-                    "What do I truly know vs. what do I think I know about [DECISION]?",
-                    "What questions should I be asking about [DECISION] that I'm not?"
+                    "What do I truly know vs. what do I think I know?",
+                    "What questions should I be asking that I'm not?"
                 ],
                 focus: "Questioning assumptions and seeking truth"
             },
             aristotle: {
                 name: "Aristotle",
                 color: "bg-orange-100 border-orange-300 text-orange-800",
-                core: "What are the logical consequences of each [DECISION] option?",
+                core: "What are the logical consequences of each option?",
                 questions: [
                     "Which choice leads to the most flourishing (eudaimonia)?",
                     "What would the virtuous person do in this situation?",
@@ -80,7 +80,7 @@
             aynRand: {
                 name: "Ayn Rand",
                 color: "bg-green-100 border-green-300 text-green-800",
-                core: "Which [DECISION] option best serves my rational self-interest?",
+                core: "Which option best serves my rational self-interest?",
                 questions: [
                     "Am I making this choice based on my own judgment or others' expectations?",
                     "Which option creates the most genuine value?",
@@ -110,7 +110,6 @@
         }
 
         function generateQuestions() {
-            console.log('generateQuestions called');
             const questions = [];
             const heroOrder = ['spiritual', 'socrates', 'aristotle', 'aynRand'];
             
@@ -119,7 +118,7 @@
                 const hero = heroesQuestions[heroKey];
                 questions.push({
                     hero: hero.name,
-                    question: hero.core.replace(/\[DECISION\]/g, state.decision),
+                    question: hero.core,
                     color: hero.color,
                     focus: hero.focus,
                     isCore: true
@@ -132,7 +131,7 @@
                 const randomIndex = Math.floor(Math.random() * hero.questions.length);
                 questions.push({
                     hero: hero.name,
-                    question: hero.questions[randomIndex].replace(/\[DECISION\]/g, state.decision),
+                    question: hero.questions[randomIndex],
                     color: hero.color,
                     focus: hero.focus,
                     isCore: false
@@ -143,28 +142,26 @@
             const allHeroes = Object.values(heroesQuestions);
             const randomHero = allHeroes[Math.floor(Math.random() * allHeroes.length)];
             const availableQuestions = randomHero.questions.filter(q => 
-                !questions.some(existing => existing.question === q.replace(/\[DECISION\]/g, state.decision))
+                !questions.some(existing => existing.question === q)
             );
             
             if (availableQuestions.length > 0) {
                 const randomQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
                 questions.push({
                     hero: randomHero.name,
-                    question: randomQuestion.replace(/\[DECISION\]/g, state.decision),
+                    question: randomQuestion,
                     color: randomHero.color,
                     focus: randomHero.focus,
                     isCore: false
                 });
             }
 
-            console.log('Generated questions:', questions.length);
             return questions;
         }
 
         function handleResponse(questionIndex, optionIndex, rating) {
             const key = `${questionIndex}-${optionIndex}`;
             state.responses[key] = rating;
-            console.log('Response recorded:', key, rating);
         }
 
         function calculateScores() {
@@ -198,6 +195,12 @@
             render();
         }
 
+        function getRatingLabel(rating) {
+            if (rating === 1) return 'Not suitable';
+            if (rating === 5) return 'Very suitable';
+            return '';
+        }
+
         // Export functions
         function exportToCSV() {
             const scores = calculateScores();
@@ -215,18 +218,6 @@
                 });
                 csv += '\n';
             });
-            csv += '\nSummary\n';
-            csv += 'Option,Total Score,Is Highest\n';
-            state.options.forEach((opt, i) => {
-                const isTop = scores[i].total === maxScore ? 'Yes' : 'No';
-                csv += `"${opt}",${scores[i].total},${isTop}\n`;
-            });
-            csv += '\nInterpretation\n';
-            csv += 'Highest scoring option: This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.\n';
-            csv += 'Score gaps: Wide differences highlight where options diverge in fit; revisit low-scoring areas for potential blind spots in alignment.\n';
-            csv += 'Low scores overall: If totals are under 23, some options may not align well—consider refining them or exploring alternatives before committing.\n';
-            csv += 'Remember: These suitability scores synthesize diverse perspectives, but trust your gut for the final call—wisdom isn\'t just numbers.\n';
-            csv += `\nDecision: ${state.decision}\nExported: ${new Date().toISOString()}\n`;
 
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
@@ -243,159 +234,142 @@
             const scores = calculateScores();
             const maxScore = Math.max(...scores.map(s => s.total));
             const exportDiv = document.createElement('div');
-            exportDiv.id = 'export-content';
             exportDiv.style.cssText = 'font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;';
             exportDiv.innerHTML = `
                 <h1 style="text-align: center; margin-bottom: 20px;">Hero Decision Matrix Results</h1>
                 <p><strong>Decision:</strong> ${state.decision}</p>
-                <p><strong>Exported:</strong> ${new Date().toISOString()}</p>
-                <h2 style="margin-top: 30px;">Detailed Ratings</h2>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-                    <thead>
-                        <tr style="background-color: #f0f0f0;">
-                            <th style="border: 1px solid #ddd; padding: 8px;">Q#</th>
-                            <th style="border: 1px solid #ddd; padding: 8px;">Hero</th>
-                            <th style="border: 1px solid #ddd; padding: 8px;">Question</th>
-                            ${state.options.map((opt, i) => `<th style="border: 1px solid #ddd; padding: 8px;">Opt ${i+1}: ${opt}</th>`).join('')}
+                <p><strong>Exported:</strong> ${new Date().toLocaleDateString()}</p>
+                <h2 style="margin-top: 30px;">Summary</h2>
+                <table style="width: 100%; border-collapse: collapse;">
+                    ${state.options.map((opt, i) => `
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${opt}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; font-weight: bold;">${scores[i].total}/45</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        ${state.selectedQuestions.map((q, i) => `
-                            <tr>
-                                <td style="border: 1px solid #ddd; padding: 8px;">${i+1}</td>
-                                <td style="border: 1px solid #ddd; padding: 8px;">${q.hero}</td>
-                                <td style="border: 1px solid #ddd; padding: 8px;">${q.question}</td>
-                                ${state.options.map((opt, optIndex) => {
-                                    const rating = state.responses[`${i}-${optIndex}`] || '';
-                                    const label = getRatingLabel(rating);
-                                    return `<td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${rating} (${label})</td>`;
-                                }).join('')}
-                            </tr>
-                        `).join('')}
-                    </tbody>
+                    `).join('')}
                 </table>
-                <h2>Summary Scores</h2>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-                    <thead>
-                        <tr style="background-color: #f0f0f0;">
-                            <th style="border: 1px solid #ddd; padding: 8px;">Option</th>
-                            <th style="border: 1px solid #ddd; padding: 8px;">Total Score / 45</th>
-                            <th style="border: 1px solid #ddd; padding: 8px;">Is Highest</th>
-                            ${Object.keys(scores[0].breakdown).map(hero => `<th style="border: 1px solid #ddd; padding: 8px;">${hero}</th>`).join('')}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${state.options.map((opt, i) => {
-                            const score = scores[i];
-                            const isTop = score.total === maxScore ? 'Yes ⭐' : 'No';
-                            return `
-                                <tr>
-                                    <td style="border: 1px solid #ddd; padding: 8px;">${opt}</td>
-                                    <td style="border: 1px solid #ddd; padding: 8px; font-weight: bold;">${score.total}</td>
-                                    <td style="border: 1px solid #ddd; padding: 8px;">${isTop}</td>
-                                    ${Object.keys(score.breakdown).map(hero => `<td style="border: 1px solid #ddd; padding: 8px;">${score.breakdown[hero] || 0}</td>`).join('')}
-                                </tr>
-                            `;
-                        }).join('')}
-                    </tbody>
-                </table>
-                <h2>Interpretation</h2>
-                <ul style="margin-bottom: 20px;">
-                    <li><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</li>
-                    <li><strong>Score gaps:</strong> Wide differences highlight where options diverge in fit; revisit low-scoring areas for potential blind spots in alignment.</li>
-                    <li><strong>Low scores overall:</strong> If totals are under 23, some options may not align well—consider refining them or exploring alternatives before committing.</li>
-                    <li><strong>Remember:</strong> These suitability scores synthesize diverse perspectives, but trust your gut for the final call—wisdom isn't just numbers.</li>
-                </ul>
             `;
             document.body.appendChild(exportDiv);
 
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
-            const element = document.getElementById('export-content');
-            const canvas = await html2canvas(element, { scale: 2 });
+            const canvas = await html2canvas(exportDiv);
             const imgData = canvas.toDataURL('image/png');
-            const imgWidth = 210;
-            const pageHeight = 295;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 0;
-
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-
+            pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
             pdf.save(`hero-decision-matrix-${Date.now()}.pdf`);
+            
             document.body.removeChild(exportDiv);
         }
 
-        function getRatingLabel(rating) {
-            const labels = ['', 'Not Suitable', 'Slightly Unsuitable', 'Neutral', 'Suitable', 'Highly Suitable'];
-            return labels[rating] || '';
+        async function exportSlideshowPDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            let isFirst = true;
+
+            async function addPage(content) {
+                const div = document.createElement('div');
+                div.style.cssText = 'font-family: Arial, sans-serif; padding: 40px; max-width: 700px; background: white;';
+                div.innerHTML = content;
+                document.body.appendChild(div);
+
+                const canvas = await html2canvas(div, { backgroundColor: '#ffffff' });
+                const imgData = canvas.toDataURL('image/png');
+                
+                if (!isFirst) pdf.addPage();
+                isFirst = false;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+                document.body.removeChild(div);
+            }
+
+            // Title slide
+            await addPage(`
+                <div style="text-align: center; padding-top: 100px;">
+                    <h1 style="font-size: 36px; margin-bottom: 30px;">Hero Decision Matrix</h1>
+                    <h2 style="font-size: 24px; margin-bottom: 20px;">Decision Analysis</h2>
+                    <p style="font-size: 18px;">${state.decision}</p>
+                    <p style="font-size: 14px; margin-top: 40px;">${new Date().toLocaleDateString()}</p>
+                </div>
+            `);
+
+            // Options page
+            await addPage(`
+                <h1 style="text-align: center; margin-bottom: 40px;">Your Options</h1>
+                ${state.options.map((opt, i) => `
+                    <p style="margin: 20px 0; padding: 15px; background: #f3f4f6; border-radius: 8px;">
+                        <strong>Option ${i + 1}:</strong> ${opt}
+                    </p>
+                `).join('')}
+            `);
+
+            // Question slides
+            for (let i = 0; i < state.selectedQuestions.length; i++) {
+                const q = state.selectedQuestions[i];
+                await addPage(`
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h2>${q.hero}</h2>
+                        <p style="font-size: 14px;">${q.focus}</p>
+                    </div>
+                    <h3 style="text-align: center; margin-bottom: 25px;">${q.question}</h3>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background: #f9fafb;">
+                            <th style="border: 1px solid #ddd; padding: 8px;">Option</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Rating</th>
+                        </tr>
+                        ${state.options.map((opt, oi) => `
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 8px;">${opt}</td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${state.responses[`${i}-${oi}`] || ''}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                `);
+            }
+
+            // Results slide
+            const scores = calculateScores();
+            await addPage(`
+                <h1 style="text-align: center; margin-bottom: 30px;">Final Results</h1>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="background: #f9fafb;">
+                        <th style="border: 1px solid #ddd; padding: 12px;">Option</th>
+                        <th style="border: 1px solid #ddd; padding: 12px;">Score</th>
+                    </tr>
+                    ${state.options.map((opt, i) => `
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 12px;">${opt}</td>
+                            <td style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">${scores[i].total}/45</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `);
+
+            pdf.save(`hero-decision-slideshow-${Date.now()}.pdf`);
         }
 
         // Render functions
         function renderSetup() {
             return `
-                <div class="max-w-2xl mx-auto p-6 bg-gray-50 min-h-screen">
+                <div class="max-w-2xl mx-auto p-6">
                     <div class="text-center mb-8">
-                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Simplified Hero Decision Matrix</h1>
-                        <p class="text-gray-600">9 focused questions to examine your decision thoroughly</p>
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Hero Decision Matrix</h1>
+                        <p class="text-gray-600">9 focused questions to examine your decision</p>
                     </div>
-
                     <div class="bg-white p-6 rounded-lg border-2 border-gray-200">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">What decision are you facing?</h2>
-                        <textarea
-                            id="decisionInput"
-                            placeholder="Describe the decision you need to make..."
-                            class="w-full p-3 border border-gray-300 rounded-lg resize-none h-24"
-                        >${state.decision}</textarea>
-
+                        <textarea id="decisionInput" placeholder="Describe your decision..." class="w-full p-3 border border-gray-300 rounded-lg h-24">${state.decision}</textarea>
                         <h3 class="text-lg font-bold text-gray-800 mt-6 mb-4">What are your options?</h3>
-                        <div class="space-y-3" id="optionsContainer">
+                        <div class="space-y-3">
                             ${state.options.map((option, index) => `
                                 <div class="flex items-center space-x-3">
                                     <span class="text-sm font-semibold text-gray-600">Option ${index + 1}:</span>
-                                    <input
-                                        type="text"
-                                        value="${option}"
-                                        placeholder="Enter option ${index + 1}..."
-                                        class="flex-1 p-2 border border-gray-300 rounded-lg option-input"
-                                        data-index="${index}"
-                                    />
-                                    ${state.options.length > 2 ? `
-                                        <button onclick="removeOption(${index})" class="text-red-600 hover:text-red-800">
-                                            <svg class="small-icon" viewBox="0 0 24 24">
-                                                <line x1="18" y1="6" x2="6" y2="18"/>
-                                                <line x1="6" y1="6" x2="18" y2="18"/>
-                                            </svg>
-                                        </button>
-                                    ` : ''}
+                                    <input type="text" value="${option}" placeholder="Enter option..." class="flex-1 p-2 border border-gray-300 rounded-lg option-input" data-index="${index}"/>
+                                    ${state.options.length > 2 ? `<button onclick="removeOption(${index})" class="text-red-600">×</button>` : ''}
                                 </div>
                             `).join('')}
                         </div>
-
-                        ${state.options.length < 5 ? `
-                            <button onclick="addOption()" class="mt-3 flex items-center text-blue-600 hover:text-blue-800">
-                                <svg class="small-icon mr-1" viewBox="0 0 24 24">
-                                    <line x1="12" y1="5" x2="12" y2="19"/>
-                                    <line x1="5" y1="12" x2="19" y2="12"/>
-                                </svg>
-                                Add another option
-                            </button>
-                        ` : ''}
-
-                        <button
-                            id="beginAnalysis"
-                            class="w-full mt-6 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white py-3 rounded-lg font-semibold"
-                        >
-                            Begin Analysis (9 Questions)
-                        </button>
+                        ${state.options.length < 5 ? `<button onclick="addOption()" class="mt-3 text-blue-600">+ Add option</button>` : ''}
+                        <button id="beginAnalysis" class="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold">Begin Analysis</button>
                     </div>
                 </div>
             `;
@@ -404,88 +378,44 @@
         function renderQuestions() {
             const currentQuestion = state.selectedQuestions[state.currentStep - 1];
             const totalSteps = 9;
-            const numOptions = state.options.length;
-            const offset = (state.currentStep - 1) % numOptions;
-
-            let optionsHtml = '';
-            for (let i = 0; i < numOptions; i++) {
-                const displayIndex = (i + offset) % numOptions;
-                const originalIndex = displayIndex;
-                const option = state.options[originalIndex];
-                optionsHtml += `
-                    <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
-                        <h4 class="font-semibold text-gray-800 mb-3">Option ${originalIndex + 1}: ${option}</h4>
-                        <div class="flex items-center justify-center space-x-4 flex-wrap">
-                            ${[1, 2, 3, 4, 5].map(rating => {
-                                const responseKey = `${state.currentStep - 1}-${originalIndex}`;
-                                const isSelected = state.responses[responseKey] === rating;
-                                const ratingLabel = getRatingLabel(rating);
-                                return `
-                                    <div class="text-center">
-                                        <button
-                                            class="rating-btn w-12 h-12 rounded-full border-2 transition-all text-sm font-bold mb-2 ${isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'border-gray-300 hover:border-blue-400'}"
-                                            onclick="handleRatingClick(${state.currentStep - 1}, ${originalIndex}, ${rating})"
-                                        >
-                                            ${rating}
-                                        </button>
-                                        <div class="text-xs text-gray-600 w-20">${ratingLabel}</div>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    </div>
-                `;
-            }
 
             return `
-                <div class="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
+                <div class="max-w-4xl mx-auto p-6">
                     <div class="text-center mb-8">
-                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Simplified Hero Decision Matrix</h1>
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Hero Decision Matrix</h1>
                         <p class="text-gray-600 mb-4">Decision: <span class="font-semibold">${state.decision}</span></p>
                         <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                                class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                                style="width: ${(state.currentStep / totalSteps) * 100}%"
-                            ></div>
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: ${(state.currentStep / totalSteps) * 100}%"></div>
                         </div>
                         <p class="text-sm text-gray-600 mt-2">Question ${state.currentStep} of ${totalSteps}</p>
                     </div>
-
                     <div class="${currentQuestion.color} p-6 rounded-lg border-2 mb-6">
-                        <div class="flex items-center mb-4">
-                            <div class="mr-4">
-                                <svg class="hero-icon" viewBox="0 0 24 24">
-                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h2 class="text-2xl font-bold">${currentQuestion.hero}</h2>
-                                <p class="text-sm opacity-80">${currentQuestion.focus}</p>
-                            </div>
-                        </div>
-                        <h3 class="text-lg font-semibold mb-4">${currentQuestion.question}</h3>
+                        <h2 class="text-2xl font-bold">${currentQuestion.hero}</h2>
+                        <p class="text-sm opacity-80">${currentQuestion.focus}</p>
+                        <h3 class="text-lg font-semibold mt-4">${currentQuestion.question}</h3>
                     </div>
-
                     <div class="space-y-4">
-                        ${optionsHtml}
+                        ${state.options.map((option, optionIndex) => `
+                            <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
+                                <h4 class="font-semibold text-gray-800 mb-3">Option ${optionIndex + 1}: ${option}</h4>
+                                <div class="flex items-center justify-center space-x-4">
+                                    ${[1, 2, 3, 4, 5].map(rating => {
+                                        const isSelected = state.responses[`${state.currentStep - 1}-${optionIndex}`] === rating;
+                                        const label = getRatingLabel(rating);
+                                        return `
+                                            <div class="text-center">
+                                                <button class="w-12 h-12 rounded-full border-2 text-sm font-bold mb-2 ${isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'border-gray-300 hover:border-blue-400'}" onclick="handleRatingClick(${state.currentStep - 1}, ${optionIndex}, ${rating})">${rating}</button>
+                                                ${label ? `<div class="text-xs text-gray-600 w-20">${label}</div>` : '<div class="w-20">&nbsp;</div>'}
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
-
                     <div class="flex justify-between mt-8">
-                        <button
-                            id="prevBtn"
-                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg"
-                            onclick="goToPrevious()"
-                        >
-                            Previous
-                        </button>
-                        <button
-                            id="nextBtn"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
-                            onclick="goToNext()"
-                        >
-                            ${state.currentStep < totalSteps ? 'Next' : 'See Results'}
-                        </button>
+                        <button onclick="goToPrevious()" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Previous</button>
+                        <button onclick="goToNext()" class="bg-blue-600 text-white px-6 py-2 rounded-lg">${state.currentStep < totalSteps ? 'Next' : 'See Results'}</button>
                     </div>
                 </div>
             `;
@@ -496,47 +426,27 @@
             const maxScore = Math.max(...scores.map(s => s.total));
 
             return `
-                <div class="max-w-4xl mx-auto p-6 bg-gray-50 min-h-screen">
+                <div class="max-w-4xl mx-auto p-6">
                     <div class="text-center mb-8">
                         <h1 class="text-3xl font-bold text-gray-800 mb-2">Decision Analysis Results</h1>
                         <p class="text-gray-600 mb-4">Decision: <span class="font-semibold">${state.decision}</span></p>
-                        <div class="flex justify-center space-x-4">
-                            <button
-                                onclick="exportToCSV()"
-                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm"
-                            >
-                                Export CSV
-                            </button>
-                            <button
-                                onclick="exportToPDF()"
-                                class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm"
-                            >
-                                Export PDF
-                            </button>
-                            <button
-                                onclick="resetMatrix()"
-                                class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm"
-                            >
-                                New Decision
-                            </button>
+                        <div class="flex justify-center space-x-4 flex-wrap">
+                            <button onclick="exportToCSV()" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm">Export CSV</button>
+                            <button onclick="exportToPDF()" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm">Export PDF</button>
+                            <button onclick="exportSlideshowPDF()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">Slideshow PDF</button>
+                            <button onclick="resetMatrix()" class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">New Decision</button>
                         </div>
                     </div>
-
                     <div class="space-y-6">
                         ${state.options.map((option, index) => {
                             const score = scores[index];
                             const isTop = score.total === maxScore;
-                            
                             return `
                                 <div class="${isTop ? 'bg-yellow-50 border-yellow-300' : 'bg-white border-gray-200'} p-6 rounded-lg border-2">
                                     <div class="flex items-center justify-between mb-4">
                                         <h3 class="text-xl font-bold text-gray-800">Option ${index + 1}: ${option}</h3>
-                                        <div class="flex items-center">
-                                            ${isTop ? '<svg class="w-6 h-6 text-yellow-600 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>' : ''}
-                                            <span class="text-2xl font-bold text-gray-800">${score.total}/45</span>
-                                        </div>
+                                        <span class="text-2xl font-bold text-gray-800">${score.total}/45 ${isTop ? '🏆' : ''}</span>
                                     </div>
-                                    
                                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         ${Object.keys(score.breakdown).map(hero => `
                                             <div class="text-center p-3 bg-gray-100 rounded-lg">
@@ -549,28 +459,11 @@
                             `;
                         }).join('')}
                     </div>
-
-                    <div class="mt-8 p-6 bg-white rounded-lg border-2 border-gray-200">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Questions You Analyzed</h3>
-                        <div class="space-y-2 text-sm text-gray-600">
-                            ${state.selectedQuestions.map((q, i) => `
-                                <p><strong>Q${i+1} (${q.hero}):</strong> ${q.question}</p>
-                            `).join('')}
-                        </div>
-                        
-                        <h4 class="text-lg font-bold text-gray-800 mt-6 mb-3">Interpretation</h4>
-                        <div class="space-y-2 text-sm text-gray-600">
-                            <p><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</p>
-                            <p><strong>Score gaps:</strong> Wide differences highlight where options diverge in fit; revisit low-scoring areas for potential blind spots in alignment.</p>
-                            <p><strong>Low scores overall:</strong> If totals are under 23, some options may not align well—consider refining them or exploring alternatives before committing.</p>
-                            <p><strong>Remember:</strong> These suitability scores synthesize diverse perspectives, but trust your gut for the final call—wisdom isn't just numbers.</p>
-                        </div>
-                    </div>
                 </div>
             `;
         }
 
-        // Event handlers as global functions
+        // Event handlers
         function handleRatingClick(questionIndex, optionIndex, rating) {
             handleResponse(questionIndex, optionIndex, rating);
             render();
@@ -582,8 +475,7 @@
         }
 
         function goToNext() {
-            const totalSteps = 9;
-            if (state.currentStep < totalSteps) {
+            if (state.currentStep < 9) {
                 state.currentStep += 1;
                 render();
             } else {
@@ -594,7 +486,6 @@
 
         function render() {
             const app = document.getElementById('app');
-            
             if (state.showResults) {
                 app.innerHTML = renderResults();
             } else if (state.currentStep === 0) {
@@ -606,7 +497,6 @@
         }
 
         function setupEventListeners() {
-            // Decision input
             const decisionInput = document.getElementById('decisionInput');
             if (decisionInput) {
                 decisionInput.addEventListener('input', (e) => {
@@ -614,7 +504,6 @@
                 });
             }
 
-            // Option inputs
             document.querySelectorAll('.option-input').forEach(input => {
                 input.addEventListener('input', (e) => {
                     const index = parseInt(e.target.dataset.index);
@@ -622,38 +511,16 @@
                 });
             });
 
-            // Begin analysis button
             const beginBtn = document.getElementById('beginAnalysis');
             if (beginBtn) {
                 beginBtn.addEventListener('click', () => {
-                    console.log('Begin button clicked');
-                    console.log('Decision:', state.decision);
-                    console.log('Options:', state.options);
-                    
                     if (state.decision.trim() && state.options.every(opt => opt.trim())) {
-                        console.log('Generating questions...');
                         state.selectedQuestions = generateQuestions();
                         state.currentStep = 1;
                         render();
-                    } else {
-                        console.log('Validation failed');
                     }
                 });
             }
-
-            // Update button state
-            const updateButtonState = () => {
-                if (beginBtn) {
-                    beginBtn.disabled = !state.decision.trim() || !state.options.every(opt => opt.trim());
-                }
-            };
-            updateButtonState();
-            if (decisionInput) {
-                decisionInput.addEventListener('input', updateButtonState);
-            }
-            document.querySelectorAll('.option-input').forEach(input => {
-                input.addEventListener('input', updateButtonState);
-            });
         }
 
         // Make functions globally available
@@ -665,11 +532,10 @@
         window.goToNext = goToNext;
         window.exportToCSV = exportToCSV;
         window.exportToPDF = exportToPDF;
+        window.exportSlideshowPDF = exportSlideshowPDF;
 
         // Initial render
-        document.addEventListener('DOMContentLoaded', () => {
-            render();
-        });
+        document.addEventListener('DOMContentLoaded', render);
     </script>
 </body>
 </html>
