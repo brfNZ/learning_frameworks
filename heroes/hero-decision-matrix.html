@@ -268,17 +268,27 @@
 
             async function addPage(content) {
                 const div = document.createElement('div');
-                div.style.cssText = 'font-family: Arial, sans-serif; padding: 40px; max-width: 700px; background: white;';
+                div.style.cssText = 'font-family: Arial, sans-serif; padding: 20px; width: 595px; min-height: 842px; background: white; box-sizing: border-box;';
                 div.innerHTML = content;
                 document.body.appendChild(div);
 
-                const canvas = await html2canvas(div, { backgroundColor: '#ffffff' });
+                const canvas = await html2canvas(div, { 
+                    backgroundColor: '#ffffff',
+                    scale: 1,
+                    width: 595,
+                    height: 842,
+                    useCORS: true
+                });
                 const imgData = canvas.toDataURL('image/png');
                 
                 if (!isFirst) pdf.addPage();
                 isFirst = false;
                 
-                pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+                // Fit image to A4 size (210 x 297mm) with proper aspect ratio
+                const imgWidth = 210;
+                const imgHeight = 297;
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                
                 document.body.removeChild(div);
             }
 
