@@ -42,28 +42,6 @@
 
         // Heroes configuration with all questions
         const heroesQuestions = {
-            socrates: {
-                name: "Socrates",
-                color: "bg-blue-100 border-blue-300 text-blue-800",
-                core: "What assumptions am I making about [DECISION] that I haven't examined?",
-                questions: [
-                    "What would happen if I'm completely wrong about this?",
-                    "What do I truly know vs. what do I think I know about [DECISION]?",
-                    "What questions should I be asking about [DECISION] that I'm not?"
-                ],
-                focus: "Questioning assumptions and seeking truth"
-            },
-            aynRand: {
-                name: "Ayn Rand",
-                color: "bg-green-100 border-green-300 text-green-800",
-                core: "Which [DECISION] option best serves my rational self-interest?",
-                questions: [
-                    "Am I making this choice based on my own judgment or others' expectations?",
-                    "Which option creates the most genuine value?",
-                    "Does this align with my core principles and values?"
-                ],
-                focus: "Independent rational judgment"
-            },
             spiritual: {
                 name: "Spiritual Wisdom",
                 color: "bg-purple-100 border-purple-300 text-purple-800",
@@ -75,6 +53,17 @@
                 ],
                 focus: "Divine guidance and intuition"
             },
+            socrates: {
+                name: "Socrates",
+                color: "bg-blue-100 border-blue-300 text-blue-800",
+                core: "What assumptions am I making about [DECISION] that I haven't examined?",
+                questions: [
+                    "What would happen if I'm completely wrong about this?",
+                    "What do I truly know vs. what do I think I know about [DECISION]?",
+                    "What questions should I be asking about [DECISION] that I'm not?"
+                ],
+                focus: "Questioning assumptions and seeking truth"
+            },
             aristotle: {
                 name: "Aristotle",
                 color: "bg-orange-100 border-orange-300 text-orange-800",
@@ -85,6 +74,17 @@
                     "Which option represents the golden mean between extremes?"
                 ],
                 focus: "Logical analysis and virtue"
+            },
+            aynRand: {
+                name: "Ayn Rand",
+                color: "bg-green-100 border-green-300 text-green-800",
+                core: "Which [DECISION] option best serves my rational self-interest?",
+                questions: [
+                    "Am I making this choice based on my own judgment or others' expectations?",
+                    "Which option creates the most genuine value?",
+                    "Does this align with my core principles and values?"
+                ],
+                focus: "Independent rational judgment"
             }
         };
 
@@ -110,9 +110,11 @@
         function generateQuestions() {
             console.log('generateQuestions called');
             const questions = [];
+            const heroOrder = ['spiritual', 'socrates', 'aristotle', 'aynRand'];
             
-            // Add 4 core questions
-            Object.values(heroesQuestions).forEach(hero => {
+            // Add 4 core questions in fixed order
+            heroOrder.forEach(heroKey => {
+                const hero = heroesQuestions[heroKey];
                 questions.push({
                     hero: hero.name,
                     question: hero.core.replace(/\[DECISION\]/g, state.decision),
@@ -122,8 +124,9 @@
                 });
             });
 
-            // Add 1 random question from each hero (4 total)
-            Object.values(heroesQuestions).forEach(hero => {
+            // Add 4 random specific questions, one from each hero in order
+            heroOrder.forEach(heroKey => {
+                const hero = heroesQuestions[heroKey];
                 const randomIndex = Math.floor(Math.random() * hero.questions.length);
                 questions.push({
                     hero: hero.name,
@@ -258,19 +261,22 @@
         function renderQuestions() {
             const currentQuestion = state.selectedQuestions[state.currentStep - 1];
             const totalSteps = 9;
+            const numOptions = state.options.length;
+            const offset = (state.currentStep - 1) % numOptions;
 
             let optionsHtml = '';
-            for (let i = 0; i < state.options.length; i++) {
-                let optionIndex = i; // FIXED: Declare here to scope correctly before template use
-                const option = state.options[i];
+            for (let i = 0; i < numOptions; i++) {
+                const displayIndex = (i + offset) % numOptions;
+                const option = state.options[displayIndex];
+                const originalIndex = displayIndex;
                 optionsHtml += `
                     <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
-                        <h4 class="font-semibold text-gray-800 mb-3">Option ${i + 1}: ${option}</h4>
+                        <h4 class="font-semibold text-gray-800 mb-3">Option ${displayIndex + 1}: ${option}</h4>
                         <div class="flex items-center justify-center space-x-6">
                 `;
                 
                 for (let rating = 1; rating <= 3; rating++) {
-                    const responseKey = `${state.currentStep - 1}-${optionIndex}`;
+                    const responseKey = `${state.currentStep - 1}-${originalIndex}`;
                     const isSelected = state.responses[responseKey] === rating;
                     
                     let ratingLabel = '';
@@ -286,7 +292,7 @@
                                         ? 'bg-blue-600 border-blue-600 text-white'
                                         : 'border-gray-300 hover:border-blue-400'
                                 }"
-                                onclick="handleRatingClick(${state.currentStep - 1}, ${optionIndex}, ${rating})"
+                                onclick="handleRatingClick(${state.currentStep - 1}, ${originalIndex}, ${rating})"
                             >
                                 ${rating}
                             </button>
