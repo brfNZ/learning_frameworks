@@ -110,9 +110,12 @@
         function generateQuestions() {
             console.log('generateQuestions called');
             const questions = [];
+            const heroOrder = ['spiritual', 'socrates', 'aristotle', 'aynRand'];  // Your cycle
+            const heroesQuestions = { /* your existing heroesQuestions object here - paste it in */ };
             
-            // Add 4 core questions
-            Object.values(heroesQuestions).forEach(hero => {
+            // Q1-Q4: Cores in fixed order
+            heroOrder.forEach(heroKey => {
+                const hero = heroesQuestions[heroKey];
                 questions.push({
                     hero: hero.name,
                     question: hero.core.replace(/\[DECISION\]/g, state.decision),
@@ -121,9 +124,10 @@
                     isCore: true
                 });
             });
-
-            // Add 1 random question from each hero (4 total)
-            Object.values(heroesQuestions).forEach(hero => {
+            
+            // Q5-Q8: One random specific per hero in same fixed order
+            heroOrder.forEach(heroKey => {
+                const hero = heroesQuestions[heroKey];
                 const randomIndex = Math.floor(Math.random() * hero.questions.length);
                 questions.push({
                     hero: hero.name,
@@ -133,29 +137,23 @@
                     isCore: false
                 });
             });
-
-            // Add 1 additional random question from any hero
+            
+            // Q9: Bonus random specific from any hero
             const allHeroes = Object.values(heroesQuestions);
             const randomHero = allHeroes[Math.floor(Math.random() * allHeroes.length)];
-            const availableQuestions = randomHero.questions.filter(q => 
-                !questions.some(existing => existing.question === q.replace(/\[DECISION\]/g, state.decision))
-            );
+            const randomIndex = Math.floor(Math.random() * randomHero.questions.length);
+            questions.push({
+                hero: randomHero.name,
+                question: randomHero.questions[randomIndex].replace(/\[DECISION\]/g, state.decision),
+                color: randomHero.color,
+                focus: randomHero.focus,
+                isCore: false
+            });
             
-            if (availableQuestions.length > 0) {
-                const randomQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
-                questions.push({
-                    hero: randomHero.name,
-                    question: randomQuestion.replace(/\[DECISION\]/g, state.decision),
-                    color: randomHero.color,
-                    focus: randomHero.focus,
-                    isCore: false
-                });
-            }
-
             console.log('Generated questions:', questions.length);
             return questions;
         }
-
+        
         function handleResponse(questionIndex, optionIndex, rating) {
             const key = `${questionIndex}-${optionIndex}`;
             state.responses[key] = rating;
