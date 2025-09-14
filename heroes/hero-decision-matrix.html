@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simplified Hero Decision Matrix</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         .hero-icon {
             width: 32px;
@@ -196,6 +198,147 @@
             render();
         }
 
+        // Export functions
+        function exportToCSV() {
+            const scores = calculateScores();
+            const maxScore = Math.max(...scores.map(s => s.total));
+            let csv = 'Question #,Hero,Question Text';
+            state.options.forEach((opt, i) => {
+                csv += `,Option ${i+1} Rating (${opt}),Option ${i+1} Total (${scores[i].total}/${state.selectedQuestions.length * 5})`;
+            });
+            csv += '\n';
+            state.selectedQuestions.forEach((q, i) => {
+                csv += `${i+1},"${q.hero}","${q.question.replace(/"/g, '""')}"`;
+                state.options.forEach((opt, optIndex) => {
+                    const rating = state.responses[`${i}-${optIndex}`] || '';
+                    csv += `,${rating}`;
+                });
+                csv += '\n';
+            });
+            csv += '\nSummary\n';
+            csv += 'Option,Total Score,Is Highest\n';
+            state.options.forEach((opt, i) => {
+                const isTop = scores[i].total === maxScore ? 'Yes' : 'No';
+                csv += `"${opt}",${scores[i].total},${isTop}\n`;
+            });
+            csv += '\nInterpretation\n';
+            csv += 'Highest scoring option: This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.\n';
+            csv += 'Score gaps: Wide differences highlight where options diverge in fit; revisit low-scoring areas for potential blind spots in alignment.\n';
+            csv += 'Low scores overall: If totals are under 23, some options may not align well—consider refining them or exploring alternatives before committing.\n';
+            csv += 'Remember: These suitability scores synthesize diverse perspectives, but trust your gut for the final call—wisdom isn\'t just numbers.\n';
+            csv += `\nDecision: ${state.decision}\nExported: ${new Date().toISOString()}\n`;
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `hero-decision-matrix-${Date.now()}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function exportToPDF() {
+            const scores = calculateScores();
+            const maxScore = Math.max(...scores.map(s => s.total));
+            const exportDiv = document.createElement('div');
+            exportDiv.id = 'export-content';
+            exportDiv.style.cssText = 'font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;';
+            exportDiv.innerHTML = `
+                <h1 style="text-align: center; margin-bottom: 20px;">Hero Decision Matrix Results</h1>
+                <p><strong>Decision:</strong> ${state.decision}</p>
+                <p><strong>Exported:</strong> ${new Date().toISOString()}</p>
+                <h2 style="margin-top: 30px;">Detailed Ratings</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <thead>
+                        <tr style="background-color: #f0f0f0;">
+                            <th style="border: 1px solid #ddd; padding: 8px;">Q#</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Hero</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Question</th>
+                            ${state.options.map((opt, i) => `<th style="border: 1px solid #ddd; padding: 8px;">Opt ${i+1}: ${opt}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${state.selectedQuestions.map((q, i) => `
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 8px;">${i+1}</td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">${q.hero}</td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">${q.question}</td>
+                                ${state.options.map((opt, optIndex) => {
+                                    const rating = state.responses[`${i}-${optIndex}`] || '';
+                                    const label = getRatingLabel(rating);
+                                    return `<td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${rating} (${label})</td>`;
+                                }).join('')}
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <h2>Summary Scores</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <thead>
+                        <tr style="background-color: #f0f0f0;">
+                            <th style="border: 1px solid #ddd; padding: 8px;">Option</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Total Score / 45</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Is Highest</th>
+                            ${Object.keys(scores[0].breakdown).map(hero => `<th style="border: 1px solid #ddd; padding: 8px;">${hero}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${state.options.map((opt, i) => {
+                            const score = scores[i];
+                            const isTop = score.total === maxScore ? 'Yes ⭐' : 'No';
+                            return `
+                                <tr>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">${opt}</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px; font-weight: bold;">${score.total}</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">${isTop}</td>
+                                    ${Object.keys(score.breakdown).map(hero => `<td style="border: 1px solid #ddd; padding: 8px;">${score.breakdown[hero] || 0}</td>`).join('')}
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+                <h2>Interpretation</h2>
+                <ul style="margin-bottom: 20px;">
+                    <li><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</li>
+                    <li><strong>Score gaps:</strong> Wide differences highlight where options diverge in fit; revisit low-scoring areas for potential blind spots in alignment.</li>
+                    <li><strong>Low scores overall:</strong> If totals are under 23, some options may not align well—consider refining them or exploring alternatives before committing.</li>
+                    <li><strong>Remember:</strong> These suitability scores synthesize diverse perspectives, but trust your gut for the final call—wisdom isn't just numbers.</li>
+                </ul>
+            `;
+            document.body.appendChild(exportDiv);
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const element = document.getElementById('export-content');
+            const canvas = await html2canvas(element, { scale: 2 });
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = 210;
+            const pageHeight = 295;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            pdf.save(`hero-decision-matrix-${Date.now()}.pdf`);
+            document.body.removeChild(exportDiv);
+        }
+
+        function getRatingLabel(rating) {
+            const labels = ['', 'Not Suitable', 'Slightly Unsuitable', 'Neutral', 'Suitable', 'Highly Suitable'];
+            return labels[rating] || '';
+        }
+
         // Render functions
         function renderSetup() {
             return `
@@ -272,15 +415,15 @@
                 optionsHtml += `
                     <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
                         <h4 class="font-semibold text-gray-800 mb-3">Option ${originalIndex + 1}: ${option}</h4>
-                        <div class="flex items-center justify-center space-x-6">
-                            ${[1, 2, 3].map(rating => {
+                        <div class="flex items-center justify-center space-x-4 flex-wrap">
+                            ${[1, 2, 3, 4, 5].map(rating => {
                                 const responseKey = `${state.currentStep - 1}-${originalIndex}`;
                                 const isSelected = state.responses[responseKey] === rating;
-                                const ratingLabel = rating === 1 ? 'Not suitable' : rating === 2 ? 'Unsure' : 'Suitable';
+                                const ratingLabel = getRatingLabel(rating);
                                 return `
                                     <div class="text-center">
                                         <button
-                                            class="rating-btn w-16 h-16 rounded-full border-2 transition-all text-lg font-bold mb-2 ${isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'border-gray-300 hover:border-blue-400'}"
+                                            class="rating-btn w-12 h-12 rounded-full border-2 transition-all text-sm font-bold mb-2 ${isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'border-gray-300 hover:border-blue-400'}"
                                             onclick="handleRatingClick(${state.currentStep - 1}, ${originalIndex}, ${rating})"
                                         >
                                             ${rating}
@@ -357,12 +500,26 @@
                     <div class="text-center mb-8">
                         <h1 class="text-3xl font-bold text-gray-800 mb-2">Decision Analysis Results</h1>
                         <p class="text-gray-600 mb-4">Decision: <span class="font-semibold">${state.decision}</span></p>
-                        <button
-                            onclick="resetMatrix()"
-                            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm"
-                        >
-                            New Decision
-                        </button>
+                        <div class="flex justify-center space-x-4">
+                            <button
+                                onclick="exportToCSV()"
+                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm"
+                            >
+                                Export CSV
+                            </button>
+                            <button
+                                onclick="exportToPDF()"
+                                class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm"
+                            >
+                                Export PDF
+                            </button>
+                            <button
+                                onclick="resetMatrix()"
+                                class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm"
+                            >
+                                New Decision
+                            </button>
+                        </div>
                     </div>
 
                     <div class="space-y-6">
@@ -376,7 +533,7 @@
                                         <h3 class="text-xl font-bold text-gray-800">Option ${index + 1}: ${option}</h3>
                                         <div class="flex items-center">
                                             ${isTop ? '<svg class="w-6 h-6 text-yellow-600 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>' : ''}
-                                            <span class="text-2xl font-bold text-gray-800">${score.total}/27</span>
+                                            <span class="text-2xl font-bold text-gray-800">${score.total}/45</span>
                                         </div>
                                     </div>
                                     
@@ -405,7 +562,7 @@
                         <div class="space-y-2 text-sm text-gray-600">
                             <p><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</p>
                             <p><strong>Score gaps:</strong> Wide differences highlight where options diverge in fit; revisit low-scoring areas for potential blind spots in alignment.</p>
-                            <p><strong>Low scores overall:</strong> If totals are under 15, some options may not align well—consider refining them or exploring alternatives before committing.</p>
+                            <p><strong>Low scores overall:</strong> If totals are under 23, some options may not align well—consider refining them or exploring alternatives before committing.</p>
                             <p><strong>Remember:</strong> These suitability scores synthesize diverse perspectives, but trust your gut for the final call—wisdom isn't just numbers.</p>
                         </div>
                     </div>
@@ -506,6 +663,8 @@
         window.handleRatingClick = handleRatingClick;
         window.goToPrevious = goToPrevious;
         window.goToNext = goToNext;
+        window.exportToCSV = exportToCSV;
+        window.exportToPDF = exportToPDF;
 
         // Initial render
         document.addEventListener('DOMContentLoaded', () => {
