@@ -26,26 +26,35 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
+        .rating-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px; /* Consistent spacing between rating groups */
+            align-items: flex-start; /* Align items at the top for uniformity */
+        }
         .rating-group {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 80px; /* Ensure uniform height */
+            min-height: 80px; /* Uniform height for each rating group */
         }
         .rating-btn {
-            width: 12px;
-            height: 12px;
-            padding: 10px; /* Adjusted padding for better size */
+            width: 40px; /* Fixed width for consistency */
+            height: 40px; /* Fixed height for consistency */
+            padding: 0;
             border-radius: 50%;
             transition: all 0.3s;
-            font-size: 12px; /* Smaller font for compact layout */
+            font-size: 14px; /* Readable size */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .rating-label {
             text-align: center;
-            min-width: 80px; /* Wider label area for alignment */
-            font-size: 10px; /* Smaller font for labels */
+            min-width: 80px; /* Wider for alignment */
+            font-size: 12px; /* Adjusted for readability */
             margin-top: 4px;
+            white-space: nowrap; /* Prevent wrapping */
         }
     </style>
 </head>
@@ -219,9 +228,9 @@
         function getRatingLabel(rating) {
             const labels = {
                 1: 'Not suitable',
-                2: '', // No label for 2-4 to keep alignment
-                3: '',
-                4: '',
+                2: '', // Intentionally blank for alignment
+                3: '', // Intentionally blank for alignment
+                4: '', // Intentionally blank for alignment
                 5: 'Highly suitable'
             };
             return labels[rating] || '';
@@ -449,7 +458,7 @@
                         ${state.options.map((option, optionIndex) => `
                             <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
                                 <h4 class="font-semibold text-gray-800 mb-3">Option ${optionIndex + 1}: ${option}</h4>
-                                <div class="flex items-center justify-center space-x-4">
+                                <div class="rating-container">
                                     ${[1, 2, 3, 4, 5].map(rating => {
                                         const isSelected = state.responses[`${state.currentStep - 1}-${optionIndex}`] === rating;
                                         const label = getRatingLabel(rating);
