@@ -276,7 +276,7 @@
                             ${[1, 2, 3].map(rating => {
                                 const responseKey = `${state.currentStep - 1}-${originalIndex}`;
                                 const isSelected = state.responses[responseKey] === rating;
-                                const ratingLabel = rating === 1 ? 'Not examined' : rating === 2 ? 'Some thought' : 'Deep thought';
+                                const ratingLabel = rating === 1 ? 'Not suitable' : rating === 2 ? 'Unsure' : 'Suitable';
                                 return `
                                     <div class="text-center">
                                         <button
@@ -403,10 +403,10 @@
                         
                         <h4 class="text-lg font-bold text-gray-800 mt-6 mb-3">Interpretation</h4>
                         <div class="space-y-2 text-sm text-gray-600">
-                            <p><strong>Highest scoring option:</strong> This is where you've done the most thorough analysis across all wisdom traditions.</p>
-                            <p><strong>Score gaps:</strong> Large differences suggest you've examined some options more deeply than others.</p>
-                            <p><strong>Low scores overall:</strong> Consider doing more research/reflection before deciding.</p>
-                            <p><strong>Remember:</strong> The numbers guide you, but your final choice should integrate both analysis and intuition.</p>
+                            <p><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</p>
+                            <p><strong>Score gaps:</strong> Wide differences highlight where options diverge in fit; revisit low-scoring areas for potential blind spots in alignment.</p>
+                            <p><strong>Low scores overall:</strong> If totals are under 15, some options may not align well—consider refining them or exploring alternatives before committing.</p>
+                            <p><strong>Remember:</strong> These suitability scores synthesize diverse perspectives, but trust your gut for the final call—wisdom isn't just numbers.</p>
                         </div>
                     </div>
                 </div>
