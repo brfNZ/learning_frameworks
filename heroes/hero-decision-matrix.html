@@ -72,49 +72,49 @@
             selectedQuestions: []
         };
 
-        // Heroes configuration with all questions
+        // Heroes configuration with updated questions
         const heroesQuestions = {
             spiritual: {
                 name: "Spiritual Wisdom",
                 color: "bg-purple-100 border-purple-300 text-purple-800",
-                core: "What does my inner wisdom say about each option?",
+                core: "What does my soul guide me to choose for inner peace?",
                 questions: [
-                    "Which option comes from love rather than fear?",
-                    "Which option brings the greatest light and wisdom?",
-                    "What would I choose if I were completely unattached to the outcome?"
+                    "Which option aligns with my deepest values?",
+                    "How does this choice reflect compassion for others?",
+                    "What would bring me spiritual fulfillment in the long term?"
                 ],
                 focus: "Divine guidance and intuition"
             },
             socrates: {
                 name: "Socrates",
                 color: "bg-blue-100 border-blue-300 text-blue-800",
-                core: "What assumptions am I making that I haven't examined?",
+                core: "What unexamined beliefs influence my decision?",
                 questions: [
-                    "What would happen if I'm completely wrong about this?",
-                    "What do I truly know vs. what do I think I know?",
-                    "What questions should I be asking that I'm not?"
+                    "What evidence challenges my current assumptions?",
+                    "How can I test the truth of this choice?",
+                    "What would a skeptic argue against this option?"
                 ],
                 focus: "Questioning assumptions and seeking truth"
             },
             aristotle: {
                 name: "Aristotle",
                 color: "bg-orange-100 border-orange-300 text-orange-800",
-                core: "What are the logical consequences of each option?",
+                core: "What are the ethical outcomes of each choice?",
                 questions: [
-                    "Which choice leads to the most flourishing (eudaimonia)?",
-                    "What would the virtuous person do in this situation?",
-                    "Which option represents the golden mean between extremes?"
+                    "Which option promotes the greatest good for all?",
+                    "How does this choice balance courage and caution?",
+                    "What habits will this decision reinforce in my life?"
                 ],
                 focus: "Logical analysis and virtue"
             },
             aynRand: {
                 name: "Ayn Rand",
                 color: "bg-green-100 border-green-300 text-green-800",
-                core: "Which option best serves my rational self-interest?",
+                core: "Which option maximizes my personal achievement?",
                 questions: [
-                    "Am I making this choice based on my own judgment or others' expectations?",
-                    "Which option creates the most genuine value?",
-                    "Does this align with my core principles and values?"
+                    "Does this choice reflect my independent reasoning?",
+                    "How will this benefit my long-term goals?",
+                    "What value does this add to my self-worth?"
                 ],
                 focus: "Independent rational judgment"
             }
@@ -370,7 +370,7 @@
                 `);
             }
 
-            // Comprehensive Summary slide (replacing previous results and text summary slides)
+            // Comprehensive Summary slide with per-hero breakdown
             const scores = calculateScores();
             const maxScore = Math.max(...scores.map(s => s.total));
             await addPage(`
@@ -379,7 +379,7 @@
                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                     <tr style="background: #f9fafb;">
                         <th style="border: 1px solid #ddd; padding: 8px;">Option</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Score</th>
+                        <th style="border: 1px solid #ddd; padding: 8px;">Total Score</th>
                     </tr>
                     ${state.options.map((opt, i) => `
                         <tr>
@@ -388,6 +388,22 @@
                         </tr>
                     `).join('')}
                 </table>
+                <h2 style="margin-top: 20px; margin-bottom: 10px;">Per-Hero Breakdown</h2>
+                ${state.options.map((opt, i) => `
+                    <h3 style="margin-top: 15px; margin-bottom: 5px;">Option ${i + 1}: ${opt} (Total: ${scores[i].total}/45)</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                        <tr style="background: #f9fafb;">
+                            <th style="border: 1px solid #ddd; padding: 6px;">Hero</th>
+                            <th style="border: 1px solid #ddd; padding: 6px;">Score</th>
+                        </tr>
+                        ${Object.entries(scores[i].breakdown).map(([hero, score]) => `
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 6px;">${hero}</td>
+                                <td style="border: 1px solid #ddd; padding: 6px; text-align: center;">${score}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                `).join('')}
                 <h2 style="margin-top: 20px; margin-bottom: 10px;">Questions You Analyzed</h2>
                 <ul style="list-style-type: disc; padding-left: 20px; font-size: 12px; line-height: 1.5; margin-bottom: 20px;">
                     ${state.selectedQuestions.map((q, i) => `
@@ -397,7 +413,7 @@
                 <h2 style="margin-top: 20px; margin-bottom: 10px;">Interpretation</h2>
                 <ul style="list-style-type: disc; padding-left: 20px; font-size: 12px; line-height: 1.5;">
                     <li><strong>Highest scoring option:</strong> The option with the highest score (up to 45) reflects the strongest alignment with the wisdom traditions across spiritual, philosophical, logical, and rational lenses.</li>
-                    <li><strong>Score gaps:</strong> Significant differences between option scores indicate varying levels of fit; review lower-scoring options for potential misalignment or blind spots.</li>
+                    <li><strong>Score gaps:</strong> Significant differences between option scores indicate varying levels of fit; review lower-scoring options or hero contributions for potential misalignment.</li>
                     <li><strong>Low scores overall:</strong> If all totals are below 23, consider refining options or exploring alternatives to better align with the wisdom criteria.</li>
                     <li><strong>Remember:</strong> These scores synthesize diverse perspectives, but your intuition should guide the final decision—wisdom transcends mere numbers.</li>
                 </ul>
