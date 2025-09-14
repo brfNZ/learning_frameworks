@@ -26,6 +26,27 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
+        .rating-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px; /* Ensure uniform height */
+        }
+        .rating-btn {
+            width: 12px;
+            height: 12px;
+            padding: 10px; /* Adjusted padding for better size */
+            border-radius: 50%;
+            transition: all 0.3s;
+            font-size: 12px; /* Smaller font for compact layout */
+        }
+        .rating-label {
+            text-align: center;
+            min-width: 80px; /* Wider label area for alignment */
+            font-size: 10px; /* Smaller font for labels */
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -196,9 +217,14 @@
         }
 
         function getRatingLabel(rating) {
-            if (rating === 1) return 'Not suitable';
-            if (rating === 5) return 'Very suitable';
-            return '';
+            const labels = {
+                1: 'Not suitable',
+                2: '', // No label for 2-4 to keep alignment
+                3: '',
+                4: '',
+                5: 'Highly suitable'
+            };
+            return labels[rating] || '';
         }
 
         // Export functions
@@ -284,7 +310,6 @@
                 if (!isFirst) pdf.addPage();
                 isFirst = false;
                 
-                // Fit image to A4 size (210 x 297mm) with proper aspect ratio
                 const imgWidth = 210;
                 const imgHeight = 297;
                 pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
@@ -429,9 +454,9 @@
                                         const isSelected = state.responses[`${state.currentStep - 1}-${optionIndex}`] === rating;
                                         const label = getRatingLabel(rating);
                                         return `
-                                            <div class="text-center">
-                                                <button class="w-12 h-12 rounded-full border-2 text-sm font-bold mb-2 ${isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'border-gray-300 hover:border-blue-400'}" onclick="handleRatingClick(${state.currentStep - 1}, ${optionIndex}, ${rating})">${rating}</button>
-                                                ${label ? `<div class="text-xs text-gray-600 w-20">${label}</div>` : '<div class="w-20">&nbsp;</div>'}
+                                            <div class="rating-group">
+                                                <button class="rating-btn ${isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'border-gray-300 hover:border-blue-400'}" onclick="handleRatingClick(${state.currentStep - 1}, ${optionIndex}, ${rating})">${rating}</button>
+                                                <div class="rating-label">${label}</div>
                                             </div>
                                         `;
                                     }).join('')}
