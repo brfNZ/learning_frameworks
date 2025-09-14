@@ -29,32 +29,32 @@
         .rating-container {
             display: flex;
             justify-content: center;
-            gap: 8px; /* Consistent spacing between rating groups */
-            align-items: flex-start; /* Align items at the top for uniformity */
+            gap: 8px;
+            align-items: flex-start;
         }
         .rating-group {
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 80px; /* Uniform height for each rating group */
+            min-height: 80px;
         }
         .rating-btn {
-            width: 40px; /* Fixed width for consistency */
-            height: 40px; /* Fixed height for consistency */
+            width: 40px;
+            height: 40px;
             padding: 0;
             border-radius: 50%;
             transition: all 0.3s;
-            font-size: 14px; /* Readable size */
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .rating-label {
             text-align: center;
-            min-width: 80px; /* Wider for alignment */
-            font-size: 12px; /* Adjusted for readability */
+            min-width: 80px;
+            font-size: 12px;
             margin-top: 4px;
-            white-space: nowrap; /* Prevent wrapping */
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -72,7 +72,7 @@
             selectedQuestions: []
         };
 
-        // Heroes configuration with all questions (removed [DECISION] placeholders)
+        // Heroes configuration with all questions
         const heroesQuestions = {
             spiritual: {
                 name: "Spiritual Wisdom",
@@ -386,6 +386,17 @@
                         </tr>
                     `).join('')}
                 </table>
+            `);
+
+            // Text Summary slide
+            await addPage(`
+                <h1 style="text-align: center; margin-bottom: 30px;">Summary & Interpretation</h1>
+                <ul style="list-style-type: disc; padding-left: 20px; font-size: 14px; line-height: 1.6;">
+                    <li><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</li>
+                    <li><strong>Score gaps:</strong> Wide differences highlight where options diverge in fit; revisit low-scoring areas for potential blind spots in alignment.</li>
+                    <li><strong>Low scores overall:</strong> If totals are under 23, some options may not align well—consider refining them or exploring alternatives before committing.</li>
+                    <li><strong>Remember:</strong> These suitability scores synthesize diverse perspectives, but trust your gut for the final call—wisdom isn't just numbers.</li>
+                </ul>
             `);
 
             pdf.save(`hero-decision-slideshow-${Date.now()}.pdf`);
