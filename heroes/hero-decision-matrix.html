@@ -63,6 +63,13 @@
         .sticky {
             position: sticky;
         }
+        
+        /* visual feedback for chosen rating */
+        .rating-btn.selected {
+        background-color: #2563eb;   /* Tailwind blue-600 */
+        border-color: #2563eb;
+        color: #ffffff;
+}
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -480,8 +487,8 @@
                                 <div class="text-sm font-medium mb-2">${opt}</div>
                                 <div class="rating-container">
                                     ${[1,2,3,4,5].map(r=>`
-                                        <button class="rating-btn ${state.responses[`${qIdx}-${oIdx}`]===r?'bg-blue-600 text-white':'border-gray-300'}"
-                                                onclick="handleResponse(${qIdx},${oIdx},${r})">${r}</button>`).join('')}
+                                        <button class="rating-btn ${state.responses[`${qIdx}-${oIdx}`]==r?'selected':''}"
+                                                onclick="handleResponse(${qIdx},${oIdx},${r})">${r}</button>
                                 </div>
                             </div>`).join('')}
                         </div>
