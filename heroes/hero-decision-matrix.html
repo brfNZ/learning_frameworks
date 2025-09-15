@@ -463,44 +463,44 @@
             `;
         }
 
-function renderQuestions(){
-  return `
-  <div class="max-w-5xl mx-auto p-6">
-    <div class="sticky top-0 z-10 bg-white/90 backdrop-blur border-b pb-3 mb-4">
-      <h1 class="text-2xl font-bold text-gray-800">Rate all options</h1>
-      <p class="text-sm text-gray-600">Decision: <b>${state.decision}</b></p>
-      <div class="mt-2 text-xs text-gray-500">Scroll down → rate each block → hit “Finish” when ready</div>
-    </div>
+        function renderQuestions(){
+        return `
+        <div class="max-w-5xl mx-auto p-6">
+            <div class="sticky top-0 z-10 bg-white/90 backdrop-blur border-b pb-3 mb-4">
+            <h1 class="text-2xl font-bold text-gray-800">Rate all options</h1>
+            <p class="text-sm text-gray-600">Decision: <b>${state.decision}</b></p>
+            <div class="mt-2 text-xs text-gray-500">Scroll down → rate each block → hit “Finish” when ready</div>
+            </div>
 
-    <div class="space-y-8">
-    ${state.selectedQuestions.map((q,qIdx)=>`
-      <section class="${q.color} p-5 rounded-lg border-2">
-        <h2 class="text-xl font-bold">${q.hero}</h2>
-        <p class="text-xs opacity-80 mb-3">${q.focus}</p>
-        <h3 class="font-semibold mb-4">${qIdx+1}. ${q.question}</h3>
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        ${state.options.map((opt,oIdx)=>`
-          <div class="bg-white p-3 rounded border">
-            <div class="text-sm font-medium mb-2">${opt}</div>
-            <div class="rating-container">
-            ${[1,2,3,4,5].map(r=>`
-              <button class="rating-btn border hover:border-blue-400 ${state.responses[`${qIdx}-${oIdx}`]==r?'selected':''}"
-                      onclick="handleResponse(${qIdx},${oIdx},${r})">${r}</button>
+            <div class="space-y-8">
+            ${state.selectedQuestions.map((q,qIdx)=>`
+            <section class="${q.color} p-5 rounded-lg border-2">
+                <h2 class="text-xl font-bold">${q.hero}</h2>
+                <p class="text-xs opacity-80 mb-3">${q.focus}</p>
+                <h3 class="font-semibold mb-4">${qIdx+1}. ${q.question}</h3>
+                <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                ${state.options.map((opt,oIdx)=>`
+                <div class="bg-white p-3 rounded border">
+                    <div class="text-sm font-medium mb-2">${opt}</div>
+                    <div class="rating-container">
+                    ${[1,2,3,4,5].map(r=>`
+                    <button class="rating-btn border hover:border-blue-400 ${state.responses[`${qIdx}-${oIdx}`]==r?'selected':''}"
+                            onclick="handleResponse(${qIdx},${oIdx},${r})">${r}</button>
+                    `).join('')}
+                    </div>
+                </div>
+                `).join('')}
+                </div>
+            </section>
             `).join('')}
             </div>
-          </div>
-        `).join('')}
-        </div>
-      </section>
-    `).join('')}
-    </div>
 
-    <div class="sticky bottom-0 bg-white/90 backdrop-blur border-t mt-6 pt-3 flex justify-between items-center">
-      <button onclick="state.showResults=false;render()" class="bg-gray-300 px-4 py-2 rounded">← Back</button>
-      <span class="text-xs text-gray-500">${Object.keys(state.responses).length}/${state.selectedQuestions.length*state.options.length} ratings</span>
-      <button onclick="state.showResults=true;render()" class="bg-blue-600 text-white px-6 py-2 rounded">Finish & See Results</button>
-    </div>
-  </div>`;
+            <div class="sticky bottom-0 bg-white/90 backdrop-blur border-t mt-6 pt-3 flex justify-between items-center">
+            <button onclick="state.showResults=false;render()" class="bg-gray-300 px-4 py-2 rounded">← Back</button>
+            <span class="text-xs text-gray-500">${Object.keys(state.responses).length}/${state.selectedQuestions.length*state.options.length} ratings</span>
+            <button onclick="state.showResults=true;render()" class="bg-blue-600 text-white px-6 py-2 rounded">Finish & See Results</button>
+            </div>
+        </div>`;
 }
        
         function renderResults() {
