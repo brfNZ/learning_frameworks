@@ -465,7 +465,7 @@
         }
 
         function renderQuestions(){
-        return `
+        const html = `
         <div class="max-w-5xl mx-auto p-6">
             <div class="sticky top-0 z-10 bg-white/90 backdrop-blur border-b pb-3 mb-4">
             <h1 class="text-2xl font-bold text-gray-800">Rate all options</h1>
@@ -498,11 +498,25 @@
 
             <div class="sticky bottom-0 bg-white/90 backdrop-blur border-t mt-6 pt-3 flex justify-between items-center">
             <button onclick="state.showResults=false;render()" class="bg-gray-300 px-4 py-2 rounded">← Back</button>
-            <span class="text-xs text-gray-500">${Object.keys(state.responses).length}/${state.selectedQuestions.length*state.options.length} ratings</span>
+            <span id="progress" class="text-xs text-gray-500"><!-- filled below --></span>
             <button onclick="state.showResults=true;render()" class="bg-blue-600 text-white px-6 py-2 rounded">Finish & See Results</button>
             </div>
         </div>`;
-}
+
+        /*-----  update counter & button highlights  -----*/
+        const total  = state.selectedQuestions.length * state.options.length;
+        const done   = Object.keys(state.responses).length;
+        document.getElementById('progress').textContent = `${done}/${total} ratings`;
+
+        document.querySelectorAll('.rating-btn').forEach(btn => {
+            const [,q,o] = btn.getAttribute('onclick').match(/(\d+),(\d+),(\d+)/);
+            btn.classList.toggle('selected', state.responses[`${q}-${o}`] == btn.textContent);
+        });
+
+        return html;
+        }
+
+
        
         function renderResults() {
             const scores = calculateScores();
