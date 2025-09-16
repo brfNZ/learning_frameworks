@@ -142,6 +142,18 @@
         function removeOption(index) {
             if (state.options.length > 2) {
                 state.options.splice(index, 1);
+                // Clean up responses for the removed option
+                Object.keys(state.responses).forEach(key => {
+                    const [, oIdx] = key.split('-').map(Number);
+                    if (oIdx === index) {
+                        delete state.responses[key];
+                    } else if (oIdx > index) {
+                        // Adjust indices for options after the removed one
+                        const [qIdx] = key.split('-').map(Number);
+                        delete state.responses[key];
+                        state.responses[`${qIdx}-${oIdx - 1}`] = state.responses[key];
+                    }
+                });
                 render();
             }
         }
@@ -201,8 +213,10 @@
             const key = `${qIdx}-${oIdx}`;
             if (state.responses[key] === r) {
                 delete state.responses[key]; // Remove the key if toggling off
+                console.log(`Toggled off rating for ${key}, responses:`, state.responses);
             } else {
                 state.responses[key] = r; // Set the new rating
+                console.log(`Set rating for ${key} to ${r}, responses:`, state.responses);
             }
             render();
         }
@@ -496,22 +510,22 @@
         }
 
         function updateDynamicElements() {
-            setTimeout(() => {
-                const progressElement = document.getElementById('progress');
-                if (progressElement) {
-                    const total = state.selectedQuestions.length * state.options.length;
-                    const done = Object.keys(state.responses).length; // Only count valid ratings
-                    progressElement.textContent = `${done}/${total} ratings`;
-                }
+            const progressElement = document.getElementById('progress');
+            if (progressElement) {
+                const total = state.selectedQuestions.length * state.options.length;
+                const done = Object.keys(state.responses).length;
+                progressElement.textContent = `${done}/${total} ratings`;
+                console.log(`Progress updated: ${done}/${total}, responses:`, state.responses);
+            }
 
-                document.querySelectorAll('.rating-btn').forEach(btn => {
-                    const match = btn.getAttribute('onclick')?.match(/toggleRating\((\d+),(\d+),(\d+)\)/);
-                    if (match) {
-                        const [, q, o, r] = match;
-                        btn.classList.toggle('selected', state.responses[`${q}-${o}`] == r);
-                    }
-                });
-            }, 0);
+            document.querySelectorAll('.rating-btn').forEach(btn => {
+                const match = btn.getAttribute('onclick')?.match(/toggleRating\((\d+),(\d+),(\d+)\)/);
+                if (match) {
+                    const [, q, o, r] = match;
+                    const isSelected = state.responses[`${q}-${o}`] == r;
+                    btn.classList.toggle('selected', isSelected);
+                }
+            });
         }
 
         function renderResults() {
