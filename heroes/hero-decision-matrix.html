@@ -213,10 +213,8 @@
             const key = `${qIdx}-${oIdx}`;
             if (state.responses[key] === r) {
                 delete state.responses[key]; // Remove the key if toggling off
-                console.log(`Toggled off rating for ${key}, responses:`, state.responses);
             } else {
                 state.responses[key] = r; // Set the new rating
-                console.log(`Set rating for ${key} to ${r}, responses:`, state.responses);
             }
             render();
         }
@@ -515,7 +513,6 @@
                 const total = state.selectedQuestions.length * state.options.length;
                 const done = Object.keys(state.responses).length;
                 progressElement.textContent = `${done}/${total} ratings`;
-                console.log(`Progress updated: ${done}/${total}, responses:`, state.responses);
             }
 
             document.querySelectorAll('.rating-btn').forEach(btn => {
