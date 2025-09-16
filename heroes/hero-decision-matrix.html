@@ -580,11 +580,6 @@
         }
 
         // Event handlers
-        function handleRatingClick(questionIndex, optionIndex, rating) {
-            handleResponse(questionIndex, optionIndex, rating);
-            render();
-        }
-
         function render() {
             const app = document.getElementById('app');
             if (state.showResults) {
