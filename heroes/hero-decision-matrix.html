@@ -199,7 +199,11 @@
 
         function toggleRating(qIdx, oIdx, r) {
             const key = `${qIdx}-${oIdx}`;
-            state.responses[key] = (state.responses[key] === r) ? 0 : r;
+            if (state.responses[key] === r) {
+                delete state.responses[key]; // Remove the key if toggling off
+            } else {
+                state.responses[key] = r; // Set the new rating
+            }
             render();
         }
 
@@ -496,8 +500,7 @@
                 const progressElement = document.getElementById('progress');
                 if (progressElement) {
                     const total = state.selectedQuestions.length * state.options.length;
-                    // Count only responses with values 1-5
-                    const done = Object.values(state.responses).filter(r => r >= 1 && r <= 5).length;
+                    const done = Object.keys(state.responses).length; // Only count valid ratings
                     progressElement.textContent = `${done}/${total} ratings`;
                 }
 
