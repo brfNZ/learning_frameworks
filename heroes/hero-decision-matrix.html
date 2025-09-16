@@ -202,11 +202,13 @@
             return questions;
         }
 
-        function handleResponse(questionIndex, optionIndex, rating) {
-            const key = `${questionIndex}-${optionIndex}`;
-            state.responses[key] = rating;
-            render();          // <-- make the screen repaint
-        }
+         function toggleRating(qIdx, oIdx, r) {
+            const key = `${qIdx}-${oIdx}`;
+            state.responses[key] = (state.responses[key] === r) ? 0 : r;
+            render();
+         }
+        // keep old name for any export code that still calls it
+        const handleResponse = toggleRating;
 
         function calculateScores() {
             const scores = state.options.map(() => ({ total: 0, breakdown: {} }));
@@ -486,7 +488,7 @@
                     <div class="rating-container">
                     ${[1,2,3,4,5].map(r=>`
                     <button class="rating-btn border hover:border-blue-400 ${state.responses[`${qIdx}-${oIdx}`]==r?'selected':''}"
-                            onclick="handleResponse(${qIdx},${oIdx},${r})">${r}</button>
+                            onclick="toggleRating(${qIdx},${oIdx},${r})">${r}</button>
                     `).join('')}
                     </div>
                 </div>
