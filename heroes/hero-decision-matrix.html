@@ -62,13 +62,11 @@
         .sticky {
             position: sticky;
         }
-        
-        /* visual feedback for chosen rating */
         .rating-btn.selected {
-        background-color: #2563eb;   /* Tailwind blue-600 */
-        border-color: #2563eb;
-        color: #ffffff;
-}
+            background-color: #2563eb;
+            border-color: #2563eb;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -156,7 +154,6 @@
             const questions = [];
             const heroOrder = ['spiritual', 'socrates', 'aristotle', 'aynRand'];
             
-            // Add 4 core questions in fixed order
             heroOrder.forEach(heroKey => {
                 const hero = heroesQuestions[heroKey];
                 questions.push({
@@ -168,7 +165,6 @@
                 });
             });
 
-            // Add 4 random specific questions, one from each hero in order
             heroOrder.forEach(heroKey => {
                 const hero = heroesQuestions[heroKey];
                 const randomIndex = Math.floor(Math.random() * hero.questions.length);
@@ -181,7 +177,6 @@
                 });
             });
 
-            // Add 1 additional random question from any hero
             const allHeroes = Object.values(heroesQuestions);
             const randomHero = allHeroes[Math.floor(Math.random() * allHeroes.length)];
             const availableQuestions = randomHero.questions.filter(q => 
@@ -202,13 +197,11 @@
             return questions;
         }
 
-         function toggleRating(qIdx, oIdx, r) {
+        function toggleRating(qIdx, oIdx, r) {
             const key = `${qIdx}-${oIdx}`;
             state.responses[key] = (state.responses[key] === r) ? 0 : r;
             render();
-         }
-        // keep old name for any export code that still calls it
-        const handleResponse = toggleRating;
+        }
 
         function calculateScores() {
             const scores = state.options.map(() => ({ total: 0, breakdown: {} }));
@@ -252,7 +245,6 @@
             return labels[rating] || '';
         }
 
-        // Export functions
         function exportToCSV() {
             const scores = calculateScores();
             const maxScore = Math.max(...scores.map(s => s.total));
@@ -342,7 +334,6 @@
                 document.body.removeChild(div);
             }
 
-            // Title slide
             await addPage(`
                 <div style="text-align:center;padding-top:100px">
                     <h1 style="font-size:36px;margin-bottom:30px">Hero Decision Matrix</h1>
@@ -352,7 +343,6 @@
                 </div>
             `);
 
-            // Options page
             await addPage(`
                 <h1 style="text-align:center;margin-bottom:40px">Your Options</h1>
                 ${state.options.map((opt, i) => `
@@ -362,7 +352,6 @@
                 `).join('')}
             `);
 
-            // Question slides
             for (let i = 0; i < state.selectedQuestions.length; i++) {
                 const q = state.selectedQuestions[i];
                 await addPage(`
@@ -378,7 +367,7 @@
                         </tr>
                         ${state.options.map((opt, oi) => `
                             <tr>
-                                <td style="border:1px solid #ddd;padding:8px">${opt}</td>
+                                <td style="border:1px solid #ddd;padding:8px">${opt}</ remittances
                                 <td style="border:1px solid #ddd;padding:8px;text-align:center">${state.responses[`${i}-${oi}`] || ''}</td>
                             </tr>
                         `).join('')}
@@ -386,7 +375,6 @@
                 `);
             }
 
-            // Comprehensive Summary slide
             const scores = calculateScores();
             const maxScore = Math.max(...scores.map(s => s.total));
             await addPage(`
@@ -422,7 +410,6 @@
             pdf.save(`hero-decision-slideshow-${Date.now()}.pdf`);
         }
 
-        // Render functions
         function renderSetup() {
             return `
                 <div class="max-w-2xl mx-auto p-6">
@@ -445,16 +432,6 @@
                         </div>
                         ${state.options.length < 5 ? `<button onclick="addOption()" class="mt-3 text-blue-600">+ Add option</button>` : ''}
                         <button id="beginBtn" class="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold">Begin Analysis</button>
-                        <script>
-                          document.getElementById('beginBtn').onclick = () => {
-                            if (state.decision.trim() && state.options.every(o => o.trim())) {
-                            state.selectedQuestions = generateQuestions();
-                            state.currentStep = 1;
-                              render();
-                            }
-                          };
-                    </script>
-    
                     </div>
                     <div class="mt-8 p-6 bg-white rounded-lg border-2 border-gray-200">
                         <h3 class="text-lg font-bold text-gray-800 mb-3">Questions You Analyzed</h3>
@@ -463,7 +440,6 @@
                                 <p><strong>Q${i+1} (${q.hero}):</strong> ${q.question}</p>
                             `).join('')}
                         </div>
-                        
                         <h4 class="text-lg font-bold text-gray-800 mt-6 mb-3">Interpretation</h4>
                         <div class="space-y-2 text-sm text-gray-600">
                             <p><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</p>
@@ -476,60 +452,64 @@
             `;
         }
 
-        function renderQuestions(){
-        const html = `
-        <div class="max-w-5xl mx-auto p-6">
-            <div class="sticky top-0 z-10 bg-white/90 backdrop-blur border-b pb-3 mb-4">
-            <h1 class="text-2xl font-bold text-gray-800">Rate all options</h1>
-            <p class="text-sm text-gray-600">Decision: <b>${state.decision}</b></p>
-            <div class="mt-2 text-xs text-gray-500">Scroll down → rate each block → hit “Finish” when ready</div>
-            </div>
-
-            <div class="space-y-8">
-            ${state.selectedQuestions.map((q,qIdx)=>`
-            <section class="${q.color} p-5 rounded-lg border-2">
-                <h2 class="text-xl font-bold">${q.hero}</h2>
-                <p class="text-xs opacity-80 mb-3">${q.focus}</p>
-                <h3 class="font-semibold mb-4">${qIdx+1}. ${q.question}</h3>
-                <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                ${state.options.map((opt,oIdx)=>`
-                <div class="bg-white p-3 rounded border">
-                    <div class="text-sm font-medium mb-2">${opt}</div>
-                    <div class="rating-container">
-                    ${[1,2,3,4,5].map(r=>`
-                    <button class="rating-btn border hover:border-blue-400 ${state.responses[`${qIdx}-${oIdx}`]==r?'selected':''}"
-                            onclick="toggleRating(${qIdx},${oIdx},${r})">${r}</button>
-                    `).join('')}
+        function renderQuestions() {
+            return `
+                <div class="max-w-5xl mx-auto p-6">
+                    <div class="sticky top-0 z-10 bg-white/90 backdrop-blur border-b pb-3 mb-4">
+                        <h1 class="text-2xl font-bold text-gray-800">Rate all options</h1>
+                        <p class="text-sm text-gray-600">Decision: <b>${state.decision}</b></p>
+                        <div class="mt-2 text-xs text-gray-500">Scroll down → rate each block → hit “Finish” when ready</div>
+                    </div>
+                    <div class="space-y-8">
+                        ${state.selectedQuestions.map((q, qIdx) => `
+                            <section class="${q.color} p-5 rounded-lg border-2">
+                                <h2 class="text-xl font-bold">${q.hero}</h2>
+                                <p class="text-xs opacity-80 mb-3">${q.focus}</p>
+                                <h3 class="font-semibold mb-4">${qIdx + 1}. ${q.question}</h3>
+                                <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                    ${state.options.map((opt, oIdx) => `
+                                        <div class="bg-white p-3 rounded border">
+                                            <div class="text-sm font-medium mb-2">${opt}</div>
+                                            <div class="rating-container">
+                                                ${[1, 2, 3, 4, 5].map(r => `
+                                                    <button class="rating-btn border hover:border-blue-400 ${state.responses[`${qIdx}-${oIdx}`] === r ? 'selected' : ''}"
+                                                            onclick="toggleRating(${qIdx}, ${oIdx}, ${r})">${r}</button>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </section>
+                        `).join('')}
+                    </div>
+                    <div class="sticky bottom-0 bg-white/90 backdrop-blur border-t mt-6 pt-3 flex justify-between items-center">
+                        <button onclick="state.showResults=false;render()" class="bg-gray-300 px-4 py-2 rounded">← Back</button>
+                        <span id="progress" class="text-xs text-gray-500"></span>
+                        <button onclick="state.showResults=true;render()" class="bg-blue-600 text-white px-6 py-2 rounded">Finish & See Results</button>
                     </div>
                 </div>
-                `).join('')}
-                </div>
-            </section>
-            `).join('')}
-            </div>
-
-            <div class="sticky bottom-0 bg-white/90 backdrop-blur border-t mt-6 pt-3 flex justify-between items-center">
-            <button onclick="state.showResults=false;render()" class="bg-gray-300 px-4 py-2 rounded">← Back</button>
-            <span id="progress" class="text-xs text-gray-500"><!-- filled below --></span>
-            <button onclick="state.showResults=true;render()" class="bg-blue-600 text-white px-6 py-2 rounded">Finish & See Results</button>
-            </div>
-        </div>`;
-
-        /*-----  update counter & button highlights  -----*/
-        const total  = state.selectedQuestions.length * state.options.length;
-        const done   = Object.keys(state.responses).length;
-        document.getElementById('progress').textContent = `${done}/${total} ratings`;
-
-        document.querySelectorAll('.rating-btn').forEach(btn => {
-            const [,q,o] = btn.getAttribute('onclick').match(/(\d+),(\d+),(\d+)/);
-            btn.classList.toggle('selected', state.responses[`${q}-${o}`] == btn.textContent);
-        });
-
-        return html;
+            `;
         }
 
+        function updateDynamicElements() {
+            setTimeout(() => {
+                const progressElement = document.getElementById('progress');
+                if (progressElement) {
+                    const total = state.selectedQuestions.length * state.options.length;
+                    const done = Object.keys(state.responses).length;
+                    progressElement.textContent = `${done}/${total} ratings`;
+                }
 
-       
+                document.querySelectorAll('.rating-btn').forEach(btn => {
+                    const match = btn.getAttribute('onclick')?.match(/toggleRating\((\d+),(\d+),(\d+)\)/);
+                    if (match) {
+                        const [, q, o, r] = match;
+                        btn.classList.toggle('selected', state.responses[`${q}-${o}`] == r);
+                    }
+                });
+            }, 0);
+        }
+
         function renderResults() {
             const scores = calculateScores();
             const maxScore = Math.max(...scores.map(s => s.total));
@@ -568,7 +548,6 @@
                             `;
                         }).join('')}
                     </div>
-                    
                     <div class="mt-8 p-6 bg-white rounded-lg border-2 border-gray-200">
                         <h3 class="text-lg font-bold text-gray-800 mb-3">Questions You Analyzed</h3>
                         <div class="space-y-2 text-sm text-gray-600">
@@ -576,7 +555,6 @@
                                 <p><strong>Q${i+1} (${q.hero}):</strong> ${q.question}</p>
                             `).join('')}
                         </div>
-                        
                         <h4 class="text-lg font-bold text-gray-800 mt-6 mb-3">Interpretation</h4>
                         <div class="space-y-2 text-sm text-gray-600">
                             <p><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</p>
@@ -589,7 +567,6 @@
             `;
         }
 
-        // Event handlers
         function render() {
             const app = document.getElementById('app');
             if (state.showResults) {
@@ -599,6 +576,7 @@
                 setupEventListeners();
             } else {
                 app.innerHTML = renderQuestions();
+                updateDynamicElements();
             }
         }
 
@@ -617,7 +595,7 @@
                 });
             });
 
-            const beginBtn = document.getElementById('beginAnalysis');
+            const beginBtn = document.getElementById('beginBtn');
             if (beginBtn) {
                 beginBtn.addEventListener('click', () => {
                     if (state.decision.trim() && state.options.every(opt => opt.trim())) {
@@ -632,14 +610,16 @@
         // Make functions globally available
         window.addOption = addOption;
         window.removeOption = removeOption;
+        window.toggleRating = toggleRating; // Fixed: Replaced handleRatingClick
         window.resetMatrix = resetMatrix;
-        window.handleRatingClick = handleRatingClick;
         window.exportToCSV = exportToCSV;
         window.exportToPDF = exportToPDF;
         window.exportSlideshowPDF = exportSlideshowPDF;
 
         // Initial render
-        document.addEventListener('DOMContentLoaded', render);
+        document.addEventListener('DOMContentLoaded', () => {
+            render();
+        });
     </script>
 </body>
 </html>
