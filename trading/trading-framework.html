@@ -1,32 +1,4 @@
-    <style>
-        :root {
-            --primary: #8B9FE8;
-            --primary-dark: #7289DA;
-            --success: #9BC5C3;
-            --warning: #D4B5E8;
-            --danger: #E8B5C3;
-            --info: #B8D4F1;
-            --light: #F4F6FB;
-            --dark: #5A6B8C;
-            --gradient: linear-gradient(135deg, #E8EAF6 0%, #C5CAE9 100%);
-        }
-        
-        body {
-            background: var(--gradient);
-            color: var(--dark);
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            margin: 0;
-            min-height: 100vh;
-        }
-        
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--dark);
-        }
-        
-        /* Navigation<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -44,7 +16,7 @@
             --dark: #5A6B8C;
             --gradient: linear-gradient(135deg, #E8EAF6 0%, #C5CAE9 100%);
         }
-        
+
         body {
             background: var(--gradient);
             color: var(--dark);
@@ -53,21 +25,20 @@
             margin: 0;
             min-height: 100vh;
         }
-        
+
         h1 {
             text-align: center;
             margin-bottom: 30px;
             color: var(--dark);
         }
-        
-        /* Navigation buttons at the top */
+
         .nav-buttons {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-bottom: 30px;
         }
-        
+
         .nav-button {
             background-color: white;
             color: var(--primary);
@@ -78,30 +49,29 @@
             font-size: 16px;
             transition: all 0.3s ease;
         }
-        
+
         .nav-button.active {
             background-color: var(--primary);
             color: white;
         }
-        
+
         .nav-button:hover {
             background-color: var(--primary-dark);
             color: white;
         }
-        
-        /* Hide sections by default */
+
         .section {
             display: none;
         }
-        
+
         .section.active {
             display: block;
         }
-        
+
         .question {
             margin: 20px 0;
         }
-        
+
         .section-header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
@@ -112,8 +82,7 @@
             font-weight: bold;
             font-size: 18px;
         }
-        
-        /* Rating buttons similar to Hero Decision Matrix */
+
         .rating-container {
             display: flex;
             justify-content: center;
@@ -121,7 +90,7 @@
             align-items: center;
             margin: 15px 0;
         }
-        
+
         .rating-btn {
             width: 40px;
             height: 40px;
@@ -137,18 +106,18 @@
             color: var(--primary);
             cursor: pointer;
         }
-        
+
         .rating-btn:hover {
             border-color: var(--primary-dark);
             background-color: var(--light);
         }
-        
+
         .rating-btn.selected {
             background-color: var(--primary);
             border-color: var(--primary);
             color: white;
         }
-        
+
         .rating-labels {
             display: flex;
             justify-content: space-between;
@@ -156,7 +125,7 @@
             font-size: 12px;
             color: var(--dark);
         }
-        
+
         .rating-question {
             background: white;
             border-radius: 10px;
@@ -166,7 +135,7 @@
             color: var(--dark);
             box-shadow: 0 2px 10px rgba(139, 159, 232, 0.1);
         }
-        
+
         .rating-question label {
             display: block;
             font-weight: 600;
@@ -174,14 +143,14 @@
             text-align: center;
             color: var(--dark);
         }
-        
+
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: var(--dark);
         }
-        
+
         input[type="text"], input[type="date"], textarea, select {
             width: 100%;
             padding: 10px;
@@ -193,18 +162,18 @@
             box-sizing: border-box;
             transition: all 0.3s ease;
         }
-        
+
         input[type="text"]:focus, input[type="date"]:focus, textarea:focus, select:focus {
             border-color: var(--primary);
             outline: none;
             box-shadow: 0 0 0 3px rgba(139, 159, 232, 0.1);
         }
-        
+
         textarea {
             height: 80px;
             resize: vertical;
         }
-        
+
         button {
             background: linear-gradient(135deg, var(--success) 0%, #7FB3B1 100%);
             color: white;
@@ -217,54 +186,11 @@
             margin-top: 20px;
             transition: all 0.3s ease;
         }
-        
+
         button:hover {
             background: linear-gradient(135deg, #7FB3B1 0%, var(--success) 100%);
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(155, 197, 195, 0.3);
-        }
-        
-        /* Weekly table styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(139, 159, 232, 0.1);
-        }
-        
-        th, td {
-            border: 1px solid var(--light);
-            padding: 12px;
-            text-align: left;
-        }
-        
-        th {
-            background: linear-gradient(135deg, var(--warning) 0%, #C09FE0 100%);
-            color: white;
-            font-weight: bold;
-        }
-        
-        td {
-            background-color: white;
-            color: var(--dark);
-        }
-        
-        tr:nth-child(even) td {
-            background-color: var(--light);
-        }
-        
-        .no-data {
-            text-align: center;
-            font-style: italic;
-            color: var(--dark);
-            margin-top: 20px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            border: 2px dashed var(--info);
         }
     </style>
 </head>
@@ -322,12 +248,6 @@
             <button type="button" onclick="saveEntry()">Save Entry</button>
         </form>
     </div>
-    
-    <!-- Weekly Review Section -->
-    <div id="weekly" class="section">
-        <h2>Weekly Trading Review</h2>
-        <div id="weeklyTable"></div>
-    </div>
 
     <script>
         // Initialize scores with default values
@@ -339,157 +259,79 @@
         window.onload = function() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
-            displayWeeklyData();
-            
-            // Initialize rating display
             updateRatingDisplay('timing', 3);
         };
         
         // Function to set rating and update display
         function setRating(category, rating) {
-            scores[category] = rating;
-            updateRatingDisplay(category, rating);
+        scores[category] = rating;
+        updateRatingDisplay(category, rating);
         }
-        
-        // Function to update rating button display
-        function updateRatingDisplay(category, rating) {
-            // Find all rating buttons for this category and update their appearance
-            const buttons = document.querySelectorAll(`[onclick*="setRating('${category}'"]`);
-            buttons.forEach((btn, index) => {
-                const btnRating = index + 1;
-                if (btnRating === rating) {
-                    btn.classList.add('selected');
-                } else {
-                    btn.classList.remove('selected');
-                }
-            });
-        }
-        
-        // Function to switch between Daily and Weekly sections
-        function showSection(sectionName) {
-            // Hide all sections
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => section.classList.remove('active'));
-            
-            // Hide all nav button active states
-            const navButtons = document.querySelectorAll('.nav-button');
-            navButtons.forEach(button => button.classList.remove('active'));
-            
-            // Show selected section
-            document.getElementById(sectionName).classList.add('active');
-            
-            // Highlight active nav button
-            event.target.classList.add('active');
-            
-            // If showing weekly, refresh the data
-            if (sectionName === 'weekly') {
-                displayWeeklyData();
-            }
-        }
-        
-        // Function to save a daily entry
-        function saveEntry() {
-            // Get all form data
-            const date = document.getElementById('date').value;
-            const timingScore = scores.timing || 3;
-            const entryTrigger = document.getElementById('entry_trigger').value;
-            const marketConditions = document.getElementById('market_conditions').value;
-            
-            // Check if date is filled
-            if (!date) {
-                alert('Please select a date');
-                return;
-            }
-            
-            // Create entry object
-            const entry = {
-                date: date,
-                timingScore: timingScore,
-                entryTrigger: entryTrigger,
-                marketConditions: marketConditions
-            };
-            
-            // Get existing entries from browser storage (or create empty array)
-            let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
-            
-            // Check if entry for this date already exists
-            const existingIndex = entries.findIndex(entry => entry.date === date);
-            
-            if (existingIndex >= 0) {
-                // Update existing entry
-                entries[existingIndex] = entry;
-                alert('Entry updated for ' + date);
+
+            // Function to update rating button display
+    function updateRatingDisplay(category, rating) {
+        // Find all rating buttons for this category and update their appearance
+        const buttons = document.querySelectorAll(`[onclick*="setRating('${category}'"]`);
+        buttons.forEach((btn, index) => {
+            const btnRating = index + 1;
+            if (btnRating === rating) {
+                btn.classList.add('selected');
             } else {
-                // Add new entry
-                entries.push(entry);
-                alert('New entry saved for ' + date);
+                btn.classList.remove('selected');
             }
-            
-            // Save back to browser storage
-            localStorage.setItem('tradingEntries', JSON.stringify(entries));
-            
-            // Clear the form
-            document.getElementById('dailyForm').reset();
-            // Reset date to today and rating to default
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('date').value = today;
-            scores.timing = 3;
-            updateRatingDisplay('timing', 3);
+        });
+    }
+    
+    // Function to save a daily entry
+    function saveEntry() {
+        // Get all form data
+        const date = document.getElementById('date').value;
+        const timingScore = scores.timing || 3;
+        const entryTrigger = document.getElementById('entry_trigger').value;
+        const marketConditions = document.getElementById('market_conditions').value;
+        
+        // Check if date is filled
+        if (!date) {
+            alert('Please select a date');
+            return;
         }
         
-        // Function to display weekly data in a table
-        function displayWeeklyData() {
-            // Get all saved entries
-            const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
-            
-            const tableContainer = document.getElementById('weeklyTable');
-            
-            if (entries.length === 0) {
-                tableContainer.innerHTML = '<div class="no-data">No entries saved yet. Add some daily entries first!</div>';
-                return;
-            }
-            
-            // Sort entries by date (newest first)
-            entries.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            // Create table HTML
-            let tableHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Timing Score</th>
-                            <th>Entry Trigger</th>
-                            <th>Market Conditions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-            
-            // Add each entry as a table row
-            entries.forEach(entry => {
-                // Convert market condition value to display text
-                const conditionText = {
-                    'strong_uptrend': '📈 Strong Uptrend',
-                    'strong_downtrend': '📉 Strong Downtrend',
-                    'ranging_sideways': '↔️ Ranging/Sideways',
-                    'high_volatility': '⚡ High Volatility',
-                    'low_volatility': '😴 Low Volatility'
-                };
-                
-                tableHTML += `
-                    <tr>
-                        <td>${entry.date}</td>
-                        <td>${entry.timingScore}/5</td>
-                        <td>${entry.entryTrigger}</td>
-                        <td>${conditionText[entry.marketConditions] || entry.marketConditions}</td>
-                    </tr>
-                `;
-            });
-            
-            tableHTML += '</tbody></table>';
-            tableContainer.innerHTML = tableHTML;
+        // Create entry object
+        const entry = {
+            date: date,
+            timingScore: timingScore,
+            entryTrigger: entryTrigger,
+            marketConditions: marketConditions
+        };
+        
+        // Get existing entries from browser storage (or create empty array)
+        let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+        
+        // Check if entry for this date already exists
+        const existingIndex = entries.findIndex(entry => entry.date === date);
+        
+        if (existingIndex >= 0) {
+            // Update existing entry
+            entries[existingIndex] = entry;
+            alert('Entry updated for ' + date);
+        } else {
+            // Add new entry
+            entries.push(entry);
+            alert('New entry saved for ' + date);
         }
-    </script>
+        
+        // Save back to browser storage
+        localStorage.setItem('tradingEntries', JSON.stringify(entries));
+        
+        // Clear the form
+        document.getElementById('dailyForm').reset();
+        // Reset date to today and rating to default
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('date').value = today;
+        scores.timing = 3;
+        updateRatingDisplay('timing', 3);
+    }
+</script>
+
 </body>
 </html>
