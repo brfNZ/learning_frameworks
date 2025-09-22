@@ -20,6 +20,34 @@
             --green-flag: #A8D5A8;
             --green-flag-dark: #95C895;
         }
+
+        // Function to toggle main sections (green flags and red flags)
+        function toggleMainSection(sectionName) {
+            const header = document.querySelector(`[onclick="toggleMainSection('${sectionName}')"]`);
+            const content = document.getElementById(`${sectionName}-content`);
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                header.classList.remove('expanded');
+            } else {
+                content.classList.add('expanded');
+                header.classList.add('expanded');
+            }
+        }
+
+        // Function to toggle green flag categories (expand/collapse)
+        function toggleGreenCategory(categoryName) {
+            const header = document.querySelector(`[onclick="toggleGreenCategory('${categoryName}')"]`);
+            const options = document.getElementById(`${categoryName}-options`);
+            
+            if (options.classList.contains('expanded')) {
+                options.classList.remove('expanded');
+                header.classList.remove('expanded');
+            } else {
+                options.classList.add('expanded');
+                header.classList.add('expanded');
+            }
+        }
         
         body {
             background: var(--gradient);
@@ -94,11 +122,37 @@
             font-size: 14px;
         }
         
-        .section-header.red-flag {
-            background: linear-gradient(135deg, var(--red-flag) 0%, var(--red-flag-dark) 100%);
+        .section-header.collapsible {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .section-header.collapsible:hover {
+            opacity: 0.9;
+        }
+
+        .section-header.collapsible .arrow {
+            transition: transform 0.3s ease;
+            font-size: 16px;
+        }
+
+        .section-header.collapsible.expanded .arrow {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .collapsible-content.expanded {
+            max-height: 2000px;
         }
         
-        /* Rating buttons similar to Hero Decision Matrix */
         .rating-container {
             display: flex;
             justify-content: center;
@@ -164,7 +218,133 @@
             font-size: 14px;
         }
         
-        /* Red Flag Buttons */
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 13px;
+        }
+        
+        input[type="text"], input[type="date"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 8px 10px;
+            background-color: white;
+            color: var(--dark);
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(123, 179, 224, 0.1);
+        }
+        
+        textarea {
+            height: 60px;
+            resize: vertical;
+        }
+        
+        button {
+            background: white;
+            color: var(--success);
+            border: 2px solid var(--success);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: rgba(168, 213, 168, 0.1);
+            border-color: var(--green-flag-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(168, 213, 168, 0.2);
+        }
+        
+        /* Green Flags */
+        .green-flag-container {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .green-flag-checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--green-flag);
+        }
+
+        .green-flag-category {
+            margin-bottom: 10px;
+            border: 2px solid var(--green-flag);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .green-flag-header {
+            background: white;
+            color: var(--green-flag);
+            border-bottom: 2px solid var(--green-flag);
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .green-flag-header:hover {
+            background-color: rgba(168, 213, 168, 0.1);
+            color: var(--green-flag-dark);
+        }
+
+        .green-flag-header .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .green-flag-header.expanded .arrow {
+            transform: rotate(180deg);
+        }
+
+        .green-flag-options {
+            background: #f8faf8;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .green-flag-options.expanded {
+            max-height: 200px;
+            padding: 10px;
+        }
+
+        .green-flag-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .green-flag-option:hover {
+            background-color: #edf2ed;
+        }
+        
+        /* Red Flags */
         .red-flag-container {
             background: white;
             border-radius: 12px;
@@ -210,56 +390,6 @@
         
         .red-flag-btn .icon {
             font-size: 14px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 4px;
-            font-weight: 500;
-            color: var(--dark);
-            font-size: 13px;
-        }
-        
-        input[type="text"], input[type="date"], input[type="number"], textarea, select {
-            width: 100%;
-            padding: 8px 10px;
-            background-color: white;
-            color: var(--dark);
-            border: 2px solid #E5E7EB;
-            border-radius: 8px;
-            font-size: 14px;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-        
-        input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(123, 179, 224, 0.1);
-        }
-        
-        textarea {
-            height: 60px;
-            resize: vertical;
-        }
-        
-        button {
-            background: linear-gradient(135deg, var(--success) 0%, var(--green-flag-dark) 100%);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        button:hover {
-            background: linear-gradient(135deg, var(--green-flag-dark) 0%, var(--success) 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(168, 213, 168, 0.3);
         }
         
         /* Weekly table styling */
@@ -322,101 +452,7 @@
             border-radius: 4px;
             font-size: 10px;
         }
-
-        /* Green Flags Styling */
-        .green-flag-container {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin: 10px 0;
-            border: 1px solid #E5E7EB;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .green-flag-category {
-            margin-bottom: 10px;
-            border: 2px solid var(--green-flag);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .green-flag-header {
-            background: linear-gradient(135deg, var(--green-flag) 0%, var(--green-flag-dark) 100%);
-            color: white;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 13px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .green-flag-header:hover {
-            background: linear-gradient(135deg, var(--green-flag-dark) 0%, var(--green-flag) 100%);
-        }
-
-        .green-flag-header .arrow {
-            transition: transform 0.3s ease;
-        }
-
-        .green-flag-header.expanded .arrow {
-            transform: rotate(180deg);
-        }
-
-        .green-flag-options {
-            background: #f8faf8;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .green-flag-options.expanded {
-            max-height: 250px;
-            padding: 10px;
-        }
-
-        .green-flag-option {
-            display: flex;
-            align-items: center;
-            padding: 6px 0;
-            border-bottom: 1px solid #edf2ed;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .green-flag-option:last-child {
-            border-bottom: none;
-        }
-
-        .green-flag-option:hover {
-            background-color: #edf2ed;
-        }
-
-        .green-flag-checkbox {
-            margin-right: 10px;
-            width: 16px;
-            height: 16px;
-            accent-color: var(--green-flag);
-        }
-
-        .green-flag-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--dark);
-            flex-grow: 1;
-        }
-
-        .green-flag-description {
-            color: #666;
-            font-size: 11px;
-            margin-left: 26px;
-            margin-top: 1px;
-        }
-
+        
         .green-flag-tag {
             display: inline-block;
             background-color: var(--green-flag);
@@ -450,11 +486,11 @@
             <div class="rating-question">
                 <label>Entry Quality & Timing Score</label>
                 <div class="rating-container">
-                    <button class="rating-btn" onclick="setRating('timing', 1)">1</button>
-                    <button class="rating-btn" onclick="setRating('timing', 2)">2</button>
-                    <button class="rating-btn" onclick="setRating('timing', 3)">3</button>
-                    <button class="rating-btn" onclick="setRating('timing', 4)">4</button>
-                    <button class="rating-btn" onclick="setRating('timing', 5)">5</button>
+                    <button type="button" class="rating-btn" onclick="setRating('timing', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('timing', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('timing', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('timing', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('timing', 5)">5</button>
                 </div>
                 <div class="rating-labels">
                     <span>Poor</span>
@@ -484,11 +520,11 @@
             <div class="rating-question">
                 <label>Risk Control & Discipline</label>
                 <div class="rating-container">
-                    <button class="rating-btn" onclick="setRating('risk', 1)">1</button>
-                    <button class="rating-btn" onclick="setRating('risk', 2)">2</button>
-                    <button class="rating-btn" onclick="setRating('risk', 3)">3</button>
-                    <button class="rating-btn" onclick="setRating('risk', 4)">4</button>
-                    <button class="rating-btn" onclick="setRating('risk', 5)">5</button>
+                    <button type="button" class="rating-btn" onclick="setRating('risk', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('risk', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('risk', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('risk', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('risk', 5)">5</button>
                 </div>
                 <div class="rating-labels">
                     <span>Poor</span>
@@ -511,11 +547,11 @@
             <div class="rating-question">
                 <label>Setup Quality & Analysis</label>
                 <div class="rating-container">
-                    <button class="rating-btn" onclick="setRating('analysis', 1)">1</button>
-                    <button class="rating-btn" onclick="setRating('analysis', 2)">2</button>
-                    <button class="rating-btn" onclick="setRating('analysis', 3)">3</button>
-                    <button class="rating-btn" onclick="setRating('analysis', 4)">4</button>
-                    <button class="rating-btn" onclick="setRating('analysis', 5)">5</button>
+                    <button type="button" class="rating-btn" onclick="setRating('analysis', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('analysis', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('analysis', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('analysis', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('analysis', 5)">5</button>
                 </div>
                 <div class="rating-labels">
                     <span>Poor</span>
@@ -540,11 +576,11 @@
             <div class="rating-question">
                 <label>Mental State & Discipline</label>
                 <div class="rating-container">
-                    <button class="rating-btn" onclick="setRating('discipline', 1)">1</button>
-                    <button class="rating-btn" onclick="setRating('discipline', 2)">2</button>
-                    <button class="rating-btn" onclick="setRating('discipline', 3)">3</button>
-                    <button class="rating-btn" onclick="setRating('discipline', 4)">4</button>
-                    <button class="rating-btn" onclick="setRating('discipline', 5)">5</button>
+                    <button type="button" class="rating-btn" onclick="setRating('discipline', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('discipline', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('discipline', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('discipline', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('discipline', 5)">5</button>
                 </div>
                 <div class="rating-labels">
                     <span>Poor</span>
@@ -571,11 +607,11 @@
             <div class="rating-question">
                 <label>Exit Timing & Execution</label>
                 <div class="rating-container">
-                    <button class="rating-btn" onclick="setRating('exit', 1)">1</button>
-                    <button class="rating-btn" onclick="setRating('exit', 2)">2</button>
-                    <button class="rating-btn" onclick="setRating('exit', 3)">3</button>
-                    <button class="rating-btn" onclick="setRating('exit', 4)">4</button>
-                    <button class="rating-btn" onclick="setRating('exit', 5)">5</button>
+                    <button type="button" class="rating-btn" onclick="setRating('exit', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('exit', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('exit', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('exit', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('exit', 5)">5</button>
                 </div>
                 <div class="rating-labels">
                     <span>Poor</span>
@@ -593,11 +629,11 @@
             <div class="rating-question">
                 <label>Risk/Reward Outcome</label>
                 <div class="rating-container">
-                    <button class="rating-btn" onclick="setRating('results', 1)">1</button>
-                    <button class="rating-btn" onclick="setRating('results', 2)">2</button>
-                    <button class="rating-btn" onclick="setRating('results', 3)">3</button>
-                    <button class="rating-btn" onclick="setRating('results', 4)">4</button>
-                    <button class="rating-btn" onclick="setRating('results', 5)">5</button>
+                    <button type="button" class="rating-btn" onclick="setRating('results', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('results', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('results', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('results', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('results', 5)">5</button>
                 </div>
                 <div class="rating-labels">
                     <span>Poor</span>
@@ -610,289 +646,185 @@
                 <input type="number" step="0.1" placeholder="+2.5 or -1.0" id="r_multiple">
             </div>
 
-            <div class="section-header" style="background: linear-gradient(135deg, var(--green-flag) 0%, var(--green-flag-dark) 100%);">🟢 GREEN FLAGS - What I Did Well</div>
-            
-            <div class="green-flag-container">
-                <label style="text-align: center; color: var(--green-flag-dark); font-size: 14px; font-weight: 500;">Track your successful trading behaviors:</label>
-                <div id="greenFlagCounter" style="text-align: center; margin: 8px 0; font-weight: 500; color: var(--green-flag-dark); font-size: 13px;">
-                    Green flags selected: <span id="greenFlagCount">0</span>
-                </div>
-                
-                <!-- Plan & Preparation -->
-                <div class="green-flag-category">
-                    <div class="green-flag-header" onclick="toggleGreenCategory('plan')">
-                        <span>📋 Plan & Preparation</span>
-                        <span class="arrow">▼</span>
+            <div class="section-header collapsible" style="background: white; color: var(--green-flag); border: 2px solid var(--green-flag);" onclick="toggleMainSection('green-flags')">
+                <span>🟢 GREEN FLAGS - What I Did Well</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-content" id="green-flags-content">
+                <div class="green-flag-container">
+                    <label style="text-align: center; color: var(--green-flag-dark); font-size: 14px; font-weight: 500;">Track your successful trading behaviors:</label>
+                    <div id="greenFlagCounter" style="text-align: center; margin: 8px 0; font-weight: 500; color: var(--green-flag-dark); font-size: 13px;">
+                        Green flags selected: <span id="greenFlagCount">0</span>
                     </div>
-                    <div class="green-flag-options" id="plan-options">
-                        <div class="green-flag-option" onclick="toggleGreenFlag('followed_plan')">
-                            <input type="checkbox" class="green-flag-checkbox" id="followed_plan">
-                            <div>
-                                <div class="green-flag-label">📝 Followed Trading Plan</div>
-                                <div class="green-flag-description">Stuck to predetermined strategy completely</div>
-                            </div>
+                    
+                    <!-- Plan & Preparation -->
+                    <div class="green-flag-category">
+                        <div class="green-flag-header" onclick="toggleGreenCategory('plan')">
+                            <span>📋 Plan & Preparation</span>
+                            <span class="arrow">▼</span>
                         </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('premarket_analysis')">
-                            <input type="checkbox" class="green-flag-checkbox" id="premarket_analysis">
-                            <div>
-                                <div class="green-flag-label">🔍 Proper Pre-Market Analysis</div>
-                                <div class="green-flag-description">Did thorough homework before trading</div>
+                        <div class="green-flag-options" id="plan-options">
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="followed_plan" onchange="toggleGreenFlag('followed_plan')">
+                                <label for="followed_plan" style="margin: 0; cursor: pointer;">📝 Followed Trading Plan</label>
                             </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('waited_setup')">
-                            <input type="checkbox" class="green-flag-checkbox" id="waited_setup">
-                            <div>
-                                <div class="green-flag-label">⏳ Waited for Setup</div>
-                                <div class="green-flag-description">Patiently waited for criteria to be met</div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="premarket_analysis" onchange="toggleGreenFlag('premarket_analysis')">
+                                <label for="premarket_analysis" style="margin: 0; cursor: pointer;">🔍 Proper Pre-Market Analysis</label>
                             </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('correct_timeframes')">
-                            <input type="checkbox" class="green-flag-checkbox" id="correct_timeframes">
-                            <div>
-                                <div class="green-flag-label">📊 Used Correct Timeframes</div>
-                                <div class="green-flag-description">Stuck to planned chart timeframes</div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="waited_setup" onchange="toggleGreenFlag('waited_setup')">
+                                <label for="waited_setup" style="margin: 0; cursor: pointer;">⏳ Waited for Setup</label>
                             </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('clear_targets')">
-                            <input type="checkbox" class="green-flag-checkbox" id="clear_targets">
-                            <div>
-                                <div class="green-flag-label">🎯 Set Clear Targets</div>
-                                <div class="green-flag-description">Defined entry, stop, and profit targets</div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="correct_timeframes" onchange="toggleGreenFlag('correct_timeframes')">
+                                <label for="correct_timeframes" style="margin: 0; cursor: pointer;">📊 Used Correct Timeframes</label>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Risk Management -->
-                <div class="green-flag-category">
-                    <div class="green-flag-header" onclick="toggleGreenCategory('risk')">
-                        <span>💰 Risk Management</span>
-                        <span class="arrow">▼</span>
-                    </div>
-                    <div class="green-flag-options" id="risk-options">
-                        <div class="green-flag-option" onclick="toggleGreenFlag('perfect_position_size')">
-                            <input type="checkbox" class="green-flag-checkbox" id="perfect_position_size">
-                            <div>
-                                <div class="green-flag-label">🎯 Perfect Position Size</div>
-                                <div class="green-flag-description">Used correct position size calculation</div>
-                            </div>
+                    <!-- Risk Management -->
+                    <div class="green-flag-category">
+                        <div class="green-flag-header" onclick="toggleGreenCategory('risk')">
+                            <span>💰 Risk Management</span>
+                            <span class="arrow">▼</span>
                         </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('respected_risk')">
-                            <input type="checkbox" class="green-flag-checkbox" id="respected_risk">
-                            <div>
-                                <div class="green-flag-label">⚠️ Respected Risk Limits</div>
-                                <div class="green-flag-description">Stayed within daily/trade risk parameters</div>
+                        <div class="green-flag-options" id="risk-options">
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="perfect_position_size" onchange="toggleGreenFlag('perfect_position_size')">
+                                <label for="perfect_position_size" style="margin: 0; cursor: pointer;">🎯 Perfect Position Size</label>
                             </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('quick_loss_cut')">
-                            <input type="checkbox" class="green-flag-checkbox" id="quick_loss_cut">
-                            <div>
-                                <div class="green-flag-label">🛑 Quick Loss Cut</div>
-                                <div class="green-flag-description">Exited losers without hesitation</div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="respected_risk" onchange="toggleGreenFlag('respected_risk')">
+                                <label for="respected_risk" style="margin: 0; cursor: pointer;">⚠️ Respected Risk Limits</label>
                             </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('logical_stops')">
-                            <input type="checkbox" class="green-flag-checkbox" id="logical_stops">
-                            <div>
-                                <div class="green-flag-label">📍 Logical Stop Placement</div>
-                                <div class="green-flag-description">Set stops at technical levels</div>
-                            </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('daily_risk_control')">
-                            <input type="checkbox" class="green-flag-checkbox" id="daily_risk_control">
-                            <div>
-                                <div class="green-flag-label">💵 Daily Risk Control</div>
-                                <div class="green-flag-description">Stopped when daily limit reached</div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="quick_loss_cut" onchange="toggleGreenFlag('quick_loss_cut')">
+                                <label for="quick_loss_cut" style="margin: 0; cursor: pointer;">🛑 Quick Loss Cut</label>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Execution & Timing -->
-                <div class="green-flag-category">
-                    <div class="green-flag-header" onclick="toggleGreenCategory('execution')">
-                        <span>🎯 Execution & Timing</span>
-                        <span class="arrow">▼</span>
-                    </div>
-                    <div class="green-flag-options" id="execution-options">
-                        <div class="green-flag-option" onclick="toggleGreenFlag('good_entry_timing')">
-                            <input type="checkbox" class="green-flag-checkbox" id="good_entry_timing">
-                            <div>
-                                <div class="green-flag-label">⏰ Good Entry Timing</div>
-                                <div class="green-flag-description">Entered at optimal price levels</div>
-                            </div>
+                    <!-- Execution & Timing -->
+                    <div class="green-flag-category">
+                        <div class="green-flag-header" onclick="toggleGreenCategory('execution')">
+                            <span>🎯 Execution & Timing</span>
+                            <span class="arrow">▼</span>
                         </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('hit_profit_target')">
-                            <input type="checkbox" class="green-flag-checkbox" id="hit_profit_target">
-                            <div>
-                                <div class="green-flag-label">🎯 Hit Profit Target</div>
-                                <div class="green-flag-description">Took profits at predetermined levels</div>
+                        <div class="green-flag-options" id="execution-options">
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="good_entry_timing" onchange="toggleGreenFlag('good_entry_timing')">
+                                <label for="good_entry_timing" style="margin: 0; cursor: pointer;">⏰ Good Entry Timing</label>
                             </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('clean_exit')">
-                            <input type="checkbox" class="green-flag-checkbox" id="clean_exit">
-                            <div>
-                                <div class="green-flag-label">🚪 Clean Exit</div>
-                                <div class="green-flag-description">Exited based on plan, not emotion</div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="hit_profit_target" onchange="toggleGreenFlag('hit_profit_target')">
+                                <label for="hit_profit_target" style="margin: 0; cursor: pointer;">🎯 Hit Profit Target</label>
                             </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('good_trade_management')">
-                            <input type="checkbox" class="green-flag-checkbox" id="good_trade_management">
-                            <div>
-                                <div class="green-flag-label">🔄 Good Trade Management</div>
-                                <div class="green-flag-description">Managed position properly during trade</div>
-                            </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('avoided_chasing')">
-                            <input type="checkbox" class="green-flag-checkbox" id="avoided_chasing">
-                            <div>
-                                <div class="green-flag-label">🏃‍♂️ Avoided Chasing</div>
-                                <div class="green-flag-description">Didn't chase price after missing entry</div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="avoided_chasing" onchange="toggleGreenFlag('avoided_chasing')">
+                                <label for="avoided_chasing" style="margin: 0; cursor: pointer;">🏃‍♂️ Avoided Chasing</label>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Psychology & Discipline -->
-                <div class="green-flag-category">
-                    <div class="green-flag-header" onclick="toggleGreenCategory('psychology')">
-                        <span>🧠 Psychology & Discipline</span>
-                        <span class="arrow">▼</span>
-                    </div>
-                    <div class="green-flag-options" id="psychology-options">
-                        <div class="green-flag-option" onclick="toggleGreenFlag('emotional_control')">
-                            <input type="checkbox" class="green-flag-checkbox" id="emotional_control">
-                            <div>
-                                <div class="green-flag-label">😌 Emotional Control</div>
-                                <div class="green-flag-description">Stayed calm and rational throughout</div>
-                            </div>
+                    <!-- Psychology & Discipline -->
+                    <div class="green-flag-category">
+                        <div class="green-flag-header" onclick="toggleGreenCategory('psychology')">
+                            <span>🧠 Psychology & Discipline</span>
+                            <span class="arrow">▼</span>
                         </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('avoided_overtrading')">
-                            <input type="checkbox" class="green-flag-checkbox" id="avoided_overtrading">
-                            <div>
-                                <div class="green-flag-label">🚫 Avoided Overtrading</div>
-                                <div class="green-flag-description">Stopped when criteria weren't met</div>
+                        <div class="green-flag-options" id="psychology-options">
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="emotional_control" onchange="toggleGreenFlag('emotional_control')">
+                                <label for="emotional_control" style="margin: 0; cursor: pointer;">😌 Emotional Control</label>
                             </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('took_breaks')">
-                            <input type="checkbox" class="green-flag-checkbox" id="took_breaks">
-                            <div>
-                                <div class="green-flag-label">⏸️ Took Breaks</div>
-                                <div class="green-flag-description">Stepped away when needed</div>
-                            </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('stayed_focused')">
-                            <input type="checkbox" class="green-flag-checkbox" id="stayed_focused">
-                            <div>
-                                <div class="green-flag-label">🎯 Stayed Focused</div>
-                                <div class="green-flag-description">Concentrated on quality setups only</div>
-                            </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('maintained_patience')">
-                            <input type="checkbox" class="green-flag-checkbox" id="maintained_patience">
-                            <div>
-                                <div class="green-flag-label">🧘 Maintained Patience</div>
-                                <div class="green-flag-description">Waited for right opportunities</div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="took_breaks" onchange="toggleGreenFlag('took_breaks')">
+                                <label for="took_breaks" style="margin: 0; cursor: pointer;">⏸️ Took Breaks</label>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Learning & Growth -->
-                <div class="green-flag-category">
-                    <div class="green-flag-header" onclick="toggleGreenCategory('learning')">
-                        <span>📈 Learning & Growth</span>
-                        <span class="arrow">▼</span>
-                    </div>
-                    <div class="green-flag-options" id="learning-options">
-                        <div class="green-flag-option" onclick="toggleGreenFlag('documented_trades')">
-                            <input type="checkbox" class="green-flag-checkbox" id="documented_trades">
-                            <div>
-                                <div class="green-flag-label">📝 Documented Trades</div>
-                                <div class="green-flag-description">Kept detailed notes and screenshots</div>
-                            </div>
+                    <!-- Learning & Growth -->
+                    <div class="green-flag-category">
+                        <div class="green-flag-header" onclick="toggleGreenCategory('learning')">
+                            <span>📈 Learning & Growth</span>
+                            <span class="arrow">▼</span>
                         </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('post_trade_analysis')">
-                            <input type="checkbox" class="green-flag-checkbox" id="post_trade_analysis">
-                            <div>
-                                <div class="green-flag-label">🤔 Post-Trade Analysis</div>
-                                <div class="green-flag-description">Analyzed trades objectively</div>
+                        <div class="green-flag-options" id="learning-options">
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="documented_trades" onchange="toggleGreenFlag('documented_trades')">
+                                <label for="documented_trades" style="margin: 0; cursor: pointer;">📝 Documented Trades</label>
                             </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('applied_lessons')">
-                            <input type="checkbox" class="green-flag-checkbox" id="applied_lessons">
-                            <div>
-                                <div class="green-flag-label">💡 Applied Previous Lessons</div>
-                                <div class="green-flag-description">Used insights from previous trades</div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="post_trade_analysis" onchange="toggleGreenFlag('post_trade_analysis')">
+                                <label for="post_trade_analysis" style="margin: 0; cursor: pointer;">🤔 Post-Trade Analysis</label>
                             </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('recognized_patterns')">
-                            <input type="checkbox" class="green-flag-checkbox" id="recognized_patterns">
-                            <div>
-                                <div class="green-flag-label">🔍 Recognized Patterns</div>
-                                <div class="green-flag-description">Identified market or personal patterns</div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="applied_lessons" onchange="toggleGreenFlag('applied_lessons')">
+                                <label for="applied_lessons" style="margin: 0; cursor: pointer;">💡 Applied Previous Lessons</label>
                             </div>
-                        </div>
-                        <div class="green-flag-option" onclick="toggleGreenFlag('continuous_learning')">
-                            <input type="checkbox" class="green-flag-checkbox" id="continuous_learning">
-                            <div>
-                                <div class="green-flag-label">📚 Continuous Learning</div>
-                                <div class="green-flag-description">Read, studied, or practiced</div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="continuous_learning" onchange="toggleGreenFlag('continuous_learning')">
+                                <label for="continuous_learning" style="margin: 0; cursor: pointer;">📚 Continuous Learning</label>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="section-header red-flag">🚩 RED FLAGS & WARNING SIGNS</div>
-            
-            <div class="red-flag-container">
-                <label style="text-align: center; color: var(--red-flag-dark); font-size: 14px; font-weight: 500;">Click any red flags that occurred today:</label>
-                <div id="redFlagCounter" style="text-align: center; margin: 8px 0; font-weight: 500; color: var(--red-flag-dark); font-size: 13px;">
-                    Red flags selected: <span id="redFlagCount">0</span>
-                </div>
-                <div class="red-flag-grid">
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('revenge')">
-                        <span class="icon">😡</span> Revenge Trading
-                    </button>
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('overtrading')">
-                        <span class="icon">🔄</span> Overtrading
-                    </button>
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('fomo')">
-                        <span class="icon">😰</span> FOMO Entry
-                    </button>
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('moved_stop')">
-                        <span class="icon">📍</span> Moved Stop Loss
-                    </button>
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('added_loser')">
-                        <span class="icon">➕</span> Added to Loser
-                    </button>
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('no_plan')">
-                        <span class="icon">❓</span> No Trading Plan
-                    </button>
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('ignored_risk')">
-                        <span class="icon">⚠️</span> Ignored Risk Rules
-                    </button>
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('emotional')">
-                        <span class="icon">💢</span> Emotional Trading
-                    </button>
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('news_trade')">
-                        <span class="icon">📰</span> News Reaction Trade
-                    </button>
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('hope_hold')">
-                        <span class="icon">🤞</span> Hope & Hold
-                    </button>
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('early_exit')">
-                        <span class="icon">🏃</span> Early Exit (Fear)
-                    </button>
-                    <button type="button" class="red-flag-btn" onclick="toggleRedFlag('chased_price')">
-                        <span class="icon">🏃‍♂️</span> Chased Price
-                    </button>
+            <div class="section-header red-flag collapsible" onclick="toggleMainSection('red-flags')">
+                <span>🚩 RED FLAGS & WARNING SIGNS</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-content" id="red-flags-content">
+                <div class="red-flag-container">
+                    <label style="text-align: center; color: var(--red-flag-dark); font-size: 14px; font-weight: 500;">Click any red flags that occurred today:</label>
+                    <div id="redFlagCounter" style="text-align: center; margin: 8px 0; font-weight: 500; color: var(--red-flag-dark); font-size: 13px;">
+                        Red flags selected: <span id="redFlagCount">0</span>
+                    </div>
+                    <div class="red-flag-grid">
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('revenge')">
+                            <span class="icon">😡</span> Revenge Trading
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('overtrading')">
+                            <span class="icon">🔄</span> Overtrading
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('fomo')">
+                            <span class="icon">😰</span> FOMO Entry
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('moved_stop')">
+                            <span class="icon">📍</span> Moved Stop Loss
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('added_loser')">
+                            <span class="icon">➕</span> Added to Loser
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('no_plan')">
+                            <span class="icon">❓</span> No Trading Plan
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('ignored_risk')">
+                            <span class="icon">⚠️</span> Ignored Risk Rules
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('emotional')">
+                            <span class="icon">💢</span> Emotional Trading
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('news_trade')">
+                            <span class="icon">📰</span> News Reaction Trade
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('hope_hold')">
+                            <span class="icon">🤞</span> Hope & Hold
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('early_exit')">
+                            <span class="icon">🏃</span> Early Exit (Fear)
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('chased_price')">
+                            <span class="icon">🏃‍♂️</span> Chased Price
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <div class="section-header">💡 KEY TAKEAWAY</div>
-            
             <div class="question">
                 <label for="key_takeaway">Key lesson learned:</label>
                 <textarea id="key_takeaway" placeholder="What's the most important lesson from today's trading?"></textarea>
@@ -930,20 +862,15 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
             displayWeeklyData();
+            updateGreenFlagCounter();
+            updateRedFlagCounter();
             
             // Initialize all rating displays
             Object.keys(scores).forEach(category => {
                 updateRatingDisplay(category, scores[category]);
             });
-
-            // Initialize counters
-            updateRedFlagCounter();
-            updateGreenFlagCounter();
-
-            // Add event listener for date changes to load existing entries
-            document.getElementById('date').addEventListener('change', loadExistingEntry);
         };
-        
+
         // Function to set rating and update display
         function setRating(category, rating) {
             scores[category] = rating;
@@ -964,141 +891,17 @@
             });
         }
 
-        // Function to toggle green flag categories (expand/collapse)
-        function toggleGreenCategory(categoryName) {
-            const header = document.querySelector(`[onclick="toggleGreenCategory('${categoryName}')"]`);
-            const options = document.getElementById(`${categoryName}-options`);
-            
-            if (options.classList.contains('expanded')) {
-                options.classList.remove('expanded');
-                header.classList.remove('expanded');
-            } else {
-                options.classList.add('expanded');
-                header.classList.add('expanded');
-            }
-        }
-
         // Function to toggle green flag checkboxes
         function toggleGreenFlag(flagName) {
             const checkbox = document.getElementById(flagName);
             
-            if (greenFlags.has(flagName)) {
-                greenFlags.delete(flagName);
-                checkbox.checked = false;
-            } else {
+            if (checkbox.checked) {
                 greenFlags.add(flagName);
-                checkbox.checked = true;
-            }
-            
-            // Update the counter
-            updateGreenFlagCounter();
-            
-            // Debug: Show current green flags
-            console.log('Current green flags:', Array.from(greenFlags));
-        }
-
-        // Function to update green flag counter display
-        function updateGreenFlagCounter() {
-            const counterElement = document.getElementById('greenFlagCount');
-            if (counterElement) {
-                counterElement.textContent = greenFlags.size;
-            }
-        }
-
-        // Function to load existing entry when date changes
-        function loadExistingEntry() {
-            const selectedDate = document.getElementById('date').value;
-            if (!selectedDate) return;
-
-            // Get existing entries
-            const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
-            const existingEntry = entries.find(entry => entry.date === selectedDate);
-
-            if (existingEntry) {
-                // Load all the form fields
-                document.getElementById('entry_trigger').value = existingEntry.entryTrigger || '';
-                document.getElementById('market_conditions').value = existingEntry.marketConditions || '';
-                document.getElementById('risk_percent').value = existingEntry.riskPercent || '';
-                document.getElementById('position_size').value = existingEntry.positionSize || '';
-                document.getElementById('setup_used').value = existingEntry.setupUsed || '';
-                document.getElementById('emotional_state').value = existingEntry.emotionalState || '';
-                document.getElementById('exit_reason').value = existingEntry.exitReason || '';
-                document.getElementById('r_multiple').value = existingEntry.rMultiple || '';
-                document.getElementById('key_takeaway').value = existingEntry.keyTakeaway || '';
-
-                // Load scores
-                if (existingEntry.scores) {
-                    Object.keys(existingEntry.scores).forEach(category => {
-                        scores[category] = existingEntry.scores[category];
-                        updateRatingDisplay(category, existingEntry.scores[category]);
-                    });
-                }
-
-                // Load red flags
-                redFlags.clear();
-                // Clear all red flag buttons first
-                document.querySelectorAll('.red-flag-btn').forEach(btn => btn.classList.remove('active'));
-                
-                if (existingEntry.redFlags && existingEntry.redFlags.length > 0) {
-                    existingEntry.redFlags.forEach(flagName => {
-                        redFlags.add(flagName);
-                        const button = document.querySelector(`[onclick="toggleRedFlag('${flagName}')"]`);
-                        if (button) {
-                            button.classList.add('active');
-                        }
-                    });
-                }
-
-                // Load green flags
-                greenFlags.clear();
-                // Clear all green flag checkboxes first
-                document.querySelectorAll('.green-flag-checkbox').forEach(checkbox => checkbox.checked = false);
-                
-                if (existingEntry.greenFlags && existingEntry.greenFlags.length > 0) {
-                    existingEntry.greenFlags.forEach(flagName => {
-                        greenFlags.add(flagName);
-                        const checkbox = document.getElementById(flagName);
-                        if (checkbox) {
-                            checkbox.checked = true;
-                        }
-                    });
-                }
-
-                // Update counters
-                updateRedFlagCounter();
-                updateGreenFlagCounter();
-
-                // Show indication that this is an existing entry
-                console.log(`Loaded existing entry for ${selectedDate} with ${redFlags.size} red flags and ${greenFlags.size} green flags`);
             } else {
-                // Clear form for new entry
-                clearForm();
+                greenFlags.delete(flagName);
             }
-        }
-
-        // Function to clear the form for new entries
-        function clearForm() {
-            document.getElementById('dailyForm').reset();
-            const today = document.getElementById('date').value; // Keep the selected date
             
-            // Reset scores to default
-            Object.keys(scores).forEach(category => {
-                scores[category] = 3;
-                updateRatingDisplay(category, 3);
-            });
-
-            // Clear red flags
-            redFlags.clear();
-            document.querySelectorAll('.red-flag-btn').forEach(btn => btn.classList.remove('active'));
-            updateRedFlagCounter();
-
-            // Clear green flags
-            greenFlags.clear();
-            document.querySelectorAll('.green-flag-checkbox').forEach(checkbox => checkbox.checked = false);
             updateGreenFlagCounter();
-            
-            // Reset the date back
-            document.getElementById('date').value = today;
         }
 
         // Function to toggle red flag buttons
@@ -1113,11 +916,15 @@
                 button.classList.add('active');
             }
             
-            // Update the counter
             updateRedFlagCounter();
-            
-            // Debug: Show current red flags
-            console.log('Current red flags:', Array.from(redFlags));
+        }
+
+        // Function to update green flag counter display
+        function updateGreenFlagCounter() {
+            const counterElement = document.getElementById('greenFlagCount');
+            if (counterElement) {
+                counterElement.textContent = greenFlags.size;
+            }
         }
 
         // Function to update red flag counter display
@@ -1125,6 +932,34 @@
             const counterElement = document.getElementById('redFlagCount');
             if (counterElement) {
                 counterElement.textContent = redFlags.size;
+            }
+        }
+
+        // Function to toggle main sections (green flags and red flags)
+        function toggleMainSection(sectionName) {
+            const header = document.querySelector(`[onclick="toggleMainSection('${sectionName}')"]`);
+            const content = document.getElementById(`${sectionName}-content`);
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                header.classList.remove('expanded');
+            } else {
+                content.classList.add('expanded');
+                header.classList.add('expanded');
+            }
+        }
+        
+        // Function to toggle green flag categories (expand/collapse)
+        function toggleGreenCategory(categoryName) {
+            const header = document.querySelector(`[onclick="toggleGreenCategory('${categoryName}')"]`);
+            const options = document.getElementById(`${categoryName}-options`);
+            
+            if (options.classList.contains('expanded')) {
+                options.classList.remove('expanded');
+                header.classList.remove('expanded');
+            } else {
+                options.classList.add('expanded');
+                header.classList.add('expanded');
             }
         }
         
@@ -1192,8 +1027,6 @@
                 let message = `Entry updated for ${date}\n`;
                 message += `🟢 Green flags: ${greenFlagCount}\n`;
                 message += `🚩 Red flags: ${redFlagCount}\n`;
-                if (greenFlagCount > 0) message += '✅ ' + entry.greenFlags.join(', ') + '\n';
-                if (redFlagCount > 0) message += '⚠️ ' + entry.redFlags.join(', ');
                 alert(message);
             } else {
                 // Add new entry
@@ -1203,18 +1036,30 @@
                 let message = `New entry saved for ${date}\n`;
                 message += `🟢 Green flags: ${greenFlagCount}\n`;
                 message += `🚩 Red flags: ${redFlagCount}\n`;
-                if (greenFlagCount > 0) message += '✅ ' + entry.greenFlags.join(', ') + '\n';
-                if (redFlagCount > 0) message += '⚠️ ' + entry.redFlags.join(', ');
                 alert(message);
             }
             
             // Save back to browser storage
             localStorage.setItem('tradingEntries', JSON.stringify(entries));
             
-            // Clear the form and set to today's date
-            clearForm();
+            // Clear the form and reset flags
+            document.getElementById('dailyForm').reset();
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
+            
+            // Reset scores to default
+            Object.keys(scores).forEach(category => {
+                scores[category] = 3;
+                updateRatingDisplay(category, 3);
+            });
+            
+            // Clear flags
+            greenFlags.clear();
+            redFlags.clear();
+            document.querySelectorAll('.green-flag-checkbox').forEach(checkbox => checkbox.checked = false);
+            document.querySelectorAll('.red-flag-btn').forEach(btn => btn.classList.remove('active'));
+            updateGreenFlagCounter();
+            updateRedFlagCounter();
         }
         
         // Function to display weekly data in a table
@@ -1255,13 +1100,9 @@
                 // Handle both old and new data formats
                 let scoresText = '';
                 if (entry.scores) {
-                    // New format with all scores
                     const scoreValues = Object.values(entry.scores);
                     const average = scoreValues.reduce((sum, score) => sum + score, 0) / scoreValues.length;
                     scoresText = `T:${entry.scores.timing} R:${entry.scores.risk} A:${entry.scores.analysis} D:${entry.scores.discipline} E:${entry.scores.exit} R:${entry.scores.results} (Avg: ${average.toFixed(1)})`;
-                } else if (entry.timingScore) {
-                    // Old format with just timing
-                    scoresText = `T:${entry.timingScore}/5`;
                 }
                 
                 // Convert market condition value to display text
@@ -1284,29 +1125,19 @@
                     const greenFlagLabels = {
                         'followed_plan': 'Plan',
                         'premarket_analysis': 'Analysis',
-                        'waited_setup': 'Waited',
+                        'waited_setup': 'Setup',
                         'correct_timeframes': 'Timeframes',
-                        'clear_targets': 'Targets',
                         'perfect_position_size': 'Position',
-                        'respected_risk': 'Risk Control',
-                        'quick_loss_cut': 'Quick Cut',
-                        'logical_stops': 'Stops',
-                        'daily_risk_control': 'Daily Risk',
+                        'respected_risk': 'Risk',
+                        'quick_loss_cut': 'Cut Loss',
                         'good_entry_timing': 'Entry',
                         'hit_profit_target': 'Target',
-                        'clean_exit': 'Exit',
-                        'good_trade_management': 'Management',
                         'avoided_chasing': 'No Chase',
                         'emotional_control': 'Control',
-                        'avoided_overtrading': 'No Overtrade',
                         'took_breaks': 'Breaks',
-                        'stayed_focused': 'Focus',
-                        'maintained_patience': 'Patience',
                         'documented_trades': 'Docs',
                         'post_trade_analysis': 'Analysis',
-                        'applied_lessons': 'Lessons',
-                        'recognized_patterns': 'Patterns',
-                        'continuous_learning': 'Learning'
+                        'applied_lessons': 'Lessons'
                     };
                     greenFlagsDisplay = entry.greenFlags.map(flag => 
                         `<span class="green-flag-tag">${greenFlagLabels[flag] || flag}</span>`
