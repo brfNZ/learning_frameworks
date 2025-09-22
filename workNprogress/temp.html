@@ -480,7 +480,12 @@
                 <label for="date">Date:</label>
                 <input type="date" id="date" name="date">
             </div>
-            
+
+            <div class="question">
+                <label for="market_timeframe">Market & Timeframe:</label>
+                <input type="text" id="market_timeframe" name="market_timeframe" placeholder="eg. HK, USD/JPY - 1H, 4H, Daily...">
+            </div>
+
             <div class="section-header">⏰ TIMING & TRIGGER</div>
             
             <div class="rating-question">
@@ -536,12 +541,7 @@
                 <label for="risk_percent">Risk Percentage:</label>
                 <input type="number" step="0.1" placeholder="1.5%" id="risk_percent">
             </div>
-            
-            <div class="question">
-                <label for="position_size">Position Size:</label>
-                <input type="text" placeholder="ATR-based size" id="position_size">
-            </div>
-
+    
             <div class="section-header">🎯 ANALYSIS & SETUP</div>
             
             <div class="rating-question">
@@ -999,20 +999,21 @@
             // Create entry object with all the fields including red and green flags
             const entry = {
                 date: date,
+                marketTimeframe: document.getElementById('market_timeframe').value,
                 scores: { ...scores },
                 entryTrigger: document.getElementById('entry_trigger').value,
                 marketConditions: document.getElementById('market_conditions').value,
                 riskPercent: document.getElementById('risk_percent').value,
-                positionSize: document.getElementById('position_size').value,
                 setupUsed: document.getElementById('setup_used').value,
                 emotionalState: document.getElementById('emotional_state').value,
                 exitReason: document.getElementById('exit_reason').value,
                 rMultiple: document.getElementById('r_multiple').value,
                 keyTakeaway: document.getElementById('key_takeaway').value,
-                redFlags: Array.from(redFlags), // Convert Set to Array for storage
-                greenFlags: Array.from(greenFlags) // Convert Set to Array for storage
-            };
+                redFlags: Array.from(redFlags),
+                greenFlags: Array.from(greenFlags)
+            };     
             
+        
             // Get existing entries from browser storage (or create empty array)
             let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
             
