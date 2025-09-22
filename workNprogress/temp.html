@@ -1084,6 +1084,7 @@
                     <thead>
                         <tr>
                             <th>Date</th>
+                            <th>Instrument</th>
                             <th>T.R.A.D.E.R Scores</th>
                             <th>Setup</th>
                             <th>Market</th>
@@ -1170,6 +1171,7 @@
                 tableHTML += `
                     <tr>
                         <td>${entry.date}</td>
+                        <td>${entry.marketTimeframe || ''}</td>
                         <td style="font-size: 12px;">${scoresText}</td>
                         <td>${setupDisplay}</td>
                         <td>${marketDisplay}</td>
