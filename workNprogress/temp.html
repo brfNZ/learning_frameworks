@@ -427,6 +427,12 @@
             border-radius: 4px;
             font-size: 10px;
         }
+
+        /* NEW: Styling for T.R.A.D.E.R Details column */
+        th:nth-last-child(5), td:nth-last-child(5) {
+            max-width: 150px;
+            font-size: 10px;
+        }
     </style>
 </head>
 <body>
@@ -462,17 +468,8 @@
                 </div>
             </div>
             
-            <div class="question">
-                <label for="timing_dropdown">Timing Assessment:</label>
-                <select id="timing_dropdown">
-                    <option value="">Select...</option>
-                    <option value="Too early">Too early</option>
-                     <option value="Missed setup">Missed setup</option>
-                    <option value="Perfect timing">Perfect timing</option>
-                    <option value="Late">Late</option>
-                </select>
-            </div>
-
+            <!-- REMOVED: Static timing_dropdown - now dynamic below -->
+            
             <div class="question">
                 <label for="entry_trigger">Entry Trigger:</label>
                 <input type="text" id="entry_trigger" name="entry_trigger" placeholder="3 Indians, MA cross, H&S completion...">
@@ -489,6 +486,9 @@
                     <option value="low_volatility">😴 Low Volatility</option>
                 </select>
             </div>
+
+            <!-- NEW: Dynamic T.R.A.D.E.R Text Dropdowns -->
+            <div id="trader-dropdowns-container"></div>
 
             <div class="section-header">⚠️ RISK MANAGEMENT</div>
             
@@ -790,6 +790,47 @@
             return `${year}-${month}-${day}`;
         }
 
+        // NEW: Config for T.R.A.D.E.R text dropdowns (scalable to 6)
+        const traderDropdowns = [
+            { id: 'timing_dropdown', label: 'Timing Assessment', category: 'timing', options: [
+                { value: '', text: 'Select...' },
+                { value: 'Too early', text: 'Too early' },
+                { value: 'Missed setup', text: 'Missed setup' },
+                { value: 'Perfect timing', text: 'Perfect timing' },
+                { value: 'Late', text: 'Late' }
+            ] },
+            { id: 'risk_dropdown', label: 'Risk Assessment', category: 'risk', options: [
+                { value: '', text: 'Select...' },
+                { value: 'Over-risked', text: 'Over-risked' },
+                { value: 'Perfect sizing', text: 'Perfect sizing' },
+                { value: 'Under-risked', text: 'Under-risked' }
+            ] },
+            { id: 'analysis_dropdown', label: 'Analysis Assessment', category: 'analysis', options: [
+                { value: '', text: 'Select...' },
+                { value: 'Weak analysis', text: 'Weak analysis' },
+                { value: 'Solid setup', text: 'Solid setup' },
+                { value: 'Missed key factors', text: 'Missed key factors' }
+            ] },
+            { id: 'discipline_dropdown', label: 'Discipline Assessment', category: 'discipline', options: [
+                { value: '', text: 'Select...' },
+                { value: 'Impulsive', text: 'Impulsive' },
+                { value: 'Stuck to rules', text: 'Stuck to rules' },
+                { value: 'Hesitant', text: 'Hesitant' }
+            ] },
+            { id: 'exit_dropdown', label: 'Exit Assessment', category: 'exit', options: [
+                { value: '', text: 'Select...' },
+                { value: 'Premature exit', text: 'Premature exit' },
+                { value: 'Optimal exit', text: 'Optimal exit' },
+                { value: 'Held too long', text: 'Held too long' }
+            ] },
+            { id: 'results_dropdown', label: 'Results Assessment', category: 'results', options: [
+                { value: '', text: 'Select...' },
+                { value: 'Poor outcome', text: 'Poor outcome' },
+                { value: 'As expected', text: 'As expected' },
+                { value: 'Exceeded expectations', text: 'Exceeded expectations' }
+            ] }
+        ];
+
         // Initialize scores with default values (0 = middle of -1, 0, 1 scale)
         let scores = {
             timing: 0,
@@ -813,6 +854,25 @@
             return date.toLocaleDateString('en-US', options);
         }
 
+        // NEW: Generate HTML for all T.R.A.D.E.R dropdowns
+        function generateTraderDropdowns() {
+            const container = document.getElementById('trader-dropdowns-container');
+            if (!container) return;
+
+            let html = '';
+            traderDropdowns.forEach(config => {
+                html += `
+                    <div class="question">
+                        <label for="${config.id}">${config.label}:</label>
+                        <select id="${config.id}">
+                            ${config.options.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
         // Function to load existing entry for today's date
         function loadTodayEntry() {
             // FIXED: Use local date instead of UTC
@@ -832,7 +892,6 @@
                 // Load form fields
                 if (todayEntry.marketTimeframe) document.getElementById('market_timeframe').value = todayEntry.marketTimeframe;
                 if (todayEntry.entryTrigger) document.getElementById('entry_trigger').value = todayEntry.entryTrigger;
-                if (todayEntry.timingDropdown) document.getElementById('timing_dropdown').value = todayEntry.timingDropdown;
                 if (todayEntry.marketConditions) document.getElementById('market_conditions').value = todayEntry.marketConditions;
                 if (todayEntry.riskPercent) document.getElementById('risk_percent').value = todayEntry.riskPercent;
                 if (todayEntry.setupUsed) document.getElementById('setup_used').value = todayEntry.setupUsed;
@@ -840,6 +899,16 @@
                 if (todayEntry.exitReason) document.getElementById('exit_reason').value = todayEntry.exitReason;
                 if (todayEntry.rMultiple) document.getElementById('r_multiple').value = todayEntry.rMultiple;
                 if (todayEntry.keyTakeaway) document.getElementById('key_takeaway').value = todayEntry.keyTakeaway;
+                
+                // NEW: Load T.R.A.D.E.R text dropdowns
+                if (todayEntry.traderTexts) {
+                    Object.keys(todayEntry.traderTexts).forEach(category => {
+                        const dropdownId = traderDropdowns.find(config => config.category === category)?.id;
+                        if (dropdownId) {
+                            document.getElementById(dropdownId).value = todayEntry.traderTexts[category];
+                        }
+                    });
+                }
                 
                 // Load green flags
                 if (todayEntry.greenFlags) {
@@ -869,6 +938,9 @@
         window.onload = function() {
             // FIXED: Use helper for consistency (same as original logic, just cleaner)
             document.getElementById('date').value = getLocalDateString();
+            
+            // NEW: Generate dropdowns
+            generateTraderDropdowns();
             
             // Load existing entry for today if it exists
             loadTodayEntry();
@@ -1013,6 +1085,7 @@
                 loadTodayEntry();
             }
         }        
+        
         // Function to save a daily entry
         function saveEntry() {
             // Get all form data
@@ -1027,6 +1100,12 @@
             // Calculate daily total score
             const dailyTotal = Object.values(scores).reduce((sum, score) => sum + score, 0);
             
+            // NEW: Capture all T.R.A.D.E.R text dropdowns
+            const traderTexts = {};
+            traderDropdowns.forEach(config => {
+                traderTexts[config.category] = document.getElementById(config.id)?.value || '';
+            });
+            
             // Create entry object with all the fields including red and green flags
             const entry = {
                 date: date,
@@ -1034,7 +1113,6 @@
                 scores: { ...scores },
                 dailyTotal: dailyTotal,
                 entryTrigger: document.getElementById('entry_trigger').value,
-                timingDropdown: document.getElementById('timing_dropdown').value,
                 marketConditions: document.getElementById('market_conditions').value,
                 riskPercent: document.getElementById('risk_percent').value,
                 setupUsed: document.getElementById('setup_used').value,
@@ -1043,9 +1121,11 @@
                 rMultiple: document.getElementById('r_multiple').value,
                 keyTakeaway: document.getElementById('key_takeaway').value,
                 redFlags: Array.from(redFlags),
-                greenFlags: Array.from(greenFlags)
+                greenFlags: Array.from(greenFlags),
+                traderTexts: traderTexts  // NEW
             };     
             
+        
             // Get existing entries from browser storage (or create empty array)
             let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
             
@@ -1090,6 +1170,12 @@
             greenFlags.clear();
             redFlags.clear();
 
+            // NEW: Reset dropdowns after save
+            traderDropdowns.forEach(config => {
+                const dropdown = document.getElementById(config.id);
+                if (dropdown) dropdown.value = '';
+            });
+
             // Reload today's data after brief delay (shows what we just saved)
             setTimeout(loadTodayEntry, 100);
         }
@@ -1118,6 +1204,7 @@
                             <th>Instrument</th>
                             <th>Daily Score</th>
                             <th>T.R.A.D.E.R Scores</th>
+                            <th>T.R.A.D.E.R Details</th>  <!-- NEW COLUMN -->
                             <th>Setup</th>
                             <th>Market</th>
                             <th>R-Multiple</th>
@@ -1150,6 +1237,17 @@
                     
                     scoresText = nonZeroScores.join(' ') || 'All neutral';
                 }                
+
+                // NEW: Extract and format T.R.A.D.E.R texts (comma-separated for efficiency)
+                let traderDetails = '';
+                if (entry.traderTexts) {
+                    const details = traderDropdowns.map(config => {
+                        const text = entry.traderTexts[config.category];
+                        return text ? `${config.category.charAt(0).toUpperCase()}: ${text}` : null;
+                    }).filter(Boolean);
+                    traderDetails = details.join(', ');
+                }
+                
                 // Convert market condition value to display text
                 const conditionText = {
                     'strong_uptrend': '📈 Strong Uptrend',
@@ -1222,6 +1320,7 @@
                         <td>${entry.marketTimeframe || ''}</td>
                         <td style="font-weight: bold; color: ${scoreColor};">${dailyScore}</td>
                         <td style="font-size: 12px;">${scoresText}</td>
+                        <td style="font-size: 10px; max-width: 150px;">${traderDetails || 'N/A'}</td>  <!-- NEW CELL -->
                         <td>${setupDisplay}</td>
                         <td>${marketDisplay}</td>
                         <td>${rMultipleDisplay}</td>
