@@ -857,7 +857,6 @@
 
         // Set today's date automatically when page loads
         window.onload = function() {
-            const today = new Date().toISOString().split('T')[0];
             const today = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0];
             document.getElementById('date').value = today;
             
@@ -1138,7 +1137,6 @@
                     });
                     
                     scoresText = nonZeroScores.join(' ') || 'All neutral';
-                   // const timingDisplay = entry.timingDropdown || '';
                 }                
                 // Convert market condition value to display text
                 const conditionText = {
@@ -1151,7 +1149,6 @@
                 
                 const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
                 const setupDisplay = entry.setupUsed || entry.entryTrigger || '';
-                const timingNote = entry.timingDropdown ? ` (${entry.timingDropdown})` : '';
                 const rMultipleDisplay = entry.rMultiple || '';
                 const takeawayDisplay = entry.keyTakeaway || '';
                 
@@ -1212,7 +1209,7 @@
                         <td>${formatDateShort(entry.date)}</td>
                         <td>${entry.marketTimeframe || ''}</td>
                         <td style="font-weight: bold; color: ${scoreColor};">${dailyScore}</td>
-                        <td style="font-size: 12px;">${scoresText}${timingNote}</td>
+                        <td style="font-size: 12px;">${scoresText}</td>
                         <td>${setupDisplay}</td>
                         <td>${marketDisplay}</td>
                         <td>${rMultipleDisplay}</td>
