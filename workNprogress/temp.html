@@ -467,6 +467,7 @@
                     <button type="button" class="emoji-btn" onclick="setRating('timing', 1)">😊<br><small>Good</small></button>
                 </div>
             </div>
+            <div id="timing-dropdown-container"></div>
             
             <!-- REMOVED: Static timing_dropdown - now dynamic below -->
             
@@ -487,9 +488,6 @@
                 </select>
             </div>
 
-            <!-- NEW: Dynamic T.R.A.D.E.R Text Dropdowns -->
-            <div id="trader-dropdowns-container"></div>
-
             <div class="section-header">⚠️ RISK MANAGEMENT</div>
             
             <div class="rating-question">
@@ -500,6 +498,7 @@
                     <button type="button" class="emoji-btn" onclick="setRating('risk', 1)">😊<br><small>Good</small></button>
                 </div>
             </div>
+            <div id="risk-dropdown-container"></div>
             
             <div class="question">
                 <label for="risk_percent">Risk Percentage:</label>
@@ -516,6 +515,7 @@
                     <button type="button" class="emoji-btn" onclick="setRating('analysis', 1)">😊<br><small>Good</small></button>
                 </div>
             </div>
+            <div id="analysis-dropdown-container"></div>
             
             <div class="question">
                 <label for="setup_used">Setup Used:</label>
@@ -539,6 +539,7 @@
                     <button type="button" class="emoji-btn" onclick="setRating('discipline', 1)">😊<br><small>Good</small></button>
                 </div>
             </div>
+            <div id="discipline-dropdown-container"></div>
             
             <div class="question">
                 <label for="emotional_state">Emotional State:</label>
@@ -564,6 +565,7 @@
                     <button type="button" class="emoji-btn" onclick="setRating('exit', 1)">😊<br><small>Good</small></button>
                 </div>
             </div>
+            <div id="exit-dropdown-container"></div>
             
             <div class="question">
                 <label for="exit_reason">Exit Reason:</label>
@@ -580,6 +582,7 @@
                     <button type="button" class="emoji-btn" onclick="setRating('results', 1)">😊<br><small>Good</small></button>
                 </div>
             </div>
+            <div id="results-dropdown-container"></div>
             
             <div class="question">
                 <label for="r_multiple">R-Multiple:</label>
@@ -854,14 +857,14 @@
             return date.toLocaleDateString('en-US', options);
         }
 
-        // NEW: Generate HTML for all T.R.A.D.E.R dropdowns
+        // Generate HTML for all T.R.A.D.E.R dropdowns (now per-section)
         function generateTraderDropdowns() {
-            const container = document.getElementById('trader-dropdowns-container');
-            if (!container) return;
-
-            let html = '';
             traderDropdowns.forEach(config => {
-                html += `
+                const containerId = `${config.category}-dropdown-container`;
+                const container = document.getElementById(containerId);
+                if (!container) return;  // Skip if placeholder missing
+
+                let html = `
                     <div class="question">
                         <label for="${config.id}">${config.label}:</label>
                         <select id="${config.id}">
@@ -869,9 +872,9 @@
                         </select>
                     </div>
                 `;
+                container.innerHTML = html;
             });
-            container.innerHTML = html;
-        }
+}
 
         // Function to load existing entry for today's date
         function loadTodayEntry() {
