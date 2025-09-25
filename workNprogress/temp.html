@@ -786,6 +786,13 @@
         // Initialize green flags tracking
         let greenFlags = new Set();
 
+        // Function to format date as "Sep 25" instead of "2025-09-25"
+        function formatDateShort(dateString) {
+            const date = new Date(dateString);
+            const options = { month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
         // Set today's date automatically when page loads
         window.onload = function() {
             const today = new Date().toISOString().split('T')[0];
@@ -964,7 +971,7 @@
                 entries[existingIndex] = entry;
                 const redFlagCount = entry.redFlags.length;
                 const greenFlagCount = entry.greenFlags.length;
-                let message = `Entry updated for ${date}\n`;
+                let message = `Entry updated for ${formatDateShort(date)}\n`;
                 message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
                 message += `🟢 Green flags: ${greenFlagCount}\n`;
                 message += `🚩 Red flags: ${redFlagCount}\n`;
@@ -974,7 +981,7 @@
                 entries.push(entry);
                 const redFlagCount = entry.redFlags.length;
                 const greenFlagCount = entry.greenFlags.length;
-                let message = `New entry saved for ${date}\n`;
+                let message = `New entry saved for ${formatDateShort(date)}\n`;
                 message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
                 message += `🟢 Green flags: ${greenFlagCount}\n`;
                 message += `🚩 Red flags: ${redFlagCount}\n`;
@@ -1117,7 +1124,7 @@
                 
                 tableHTML += `
                     <tr>
-                        <td>${entry.date}</td>
+                        <td>${formatDateShort(entry.date)}</td>
                         <td>${entry.marketTimeframe || ''}</td>
                         <td style="font-weight: bold; color: ${scoreColor};">${dailyScore}</td>
                         <td style="font-size: 12px;">${scoresText}</td>
