@@ -858,6 +858,7 @@
         // Set today's date automatically when page loads
         window.onload = function() {
             const today = new Date().toISOString().split('T')[0];
+            const today = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0];
             document.getElementById('date').value = today;
             
             // Load existing entry for today if it exists
