@@ -983,8 +983,12 @@
             if (sectionName === 'weekly') {
                 displayWeeklyData();
             }
-        }
-        
+    
+    // If switching to daily, reload today's data
+    if (sectionName === 'daily') {
+        loadTodayEntry();
+    }
+}        
         // Function to save a daily entry
         function saveEntry() {
             // Get all form data
