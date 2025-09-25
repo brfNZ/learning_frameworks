@@ -793,18 +793,76 @@
             return date.toLocaleDateString('en-US', options);
         }
 
+        // Function to load existing entry for today's date
+        function loadTodayEntry() {
+            const today = new Date().toISOString().split('T')[0];
+            const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+            const todayEntry = entries.find(entry => entry.date === today);
+            
+            if (todayEntry) {
+                // Load scores and update emoji buttons
+                if (todayEntry.scores) {
+                    Object.keys(todayEntry.scores).forEach(category => {
+                        scores[category] = todayEntry.scores[category];
+                        updateRatingDisplay(category, todayEntry.scores[category]);
+                    });
+                }
+                
+                // Load form fields
+                if (todayEntry.marketTimeframe) document.getElementById('market_timeframe').value = todayEntry.marketTimeframe;
+                if (todayEntry.entryTrigger) document.getElementById('entry_trigger').value = todayEntry.entryTrigger;
+                if (todayEntry.marketConditions) document.getElementById('market_conditions').value = todayEntry.marketConditions;
+                if (todayEntry.riskPercent) document.getElementById('risk_percent').value = todayEntry.riskPercent;
+                if (todayEntry.setupUsed) document.getElementById('setup_used').value = todayEntry.setupUsed;
+                if (todayEntry.emotionalState) document.getElementById('emotional_state').value = todayEntry.emotionalState;
+                if (todayEntry.exitReason) document.getElementById('exit_reason').value = todayEntry.exitReason;
+                if (todayEntry.rMultiple) document.getElementById('r_multiple').value = todayEntry.rMultiple;
+                if (todayEntry.keyTakeaway) document.getElementById('key_takeaway').value = todayEntry.keyTakeaway;
+                
+                // Load green flags
+                if (todayEntry.greenFlags) {
+                    greenFlags.clear();
+                    todayEntry.greenFlags.forEach(flag => {
+                        greenFlags.add(flag);
+                        const checkbox = document.getElementById(flag);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                    updateGreenFlagCounter();
+                }
+                
+                // Load red flags
+                if (todayEntry.redFlags) {
+                    redFlags.clear();
+                    todayEntry.redFlags.forEach(flag => {
+                        redFlags.add(flag);
+                        const button = document.querySelector(`[onclick="toggleRedFlag('${flag}')"]`);
+                        if (button) button.classList.add('active');
+                    });
+                    updateRedFlagCounter();
+                }
+            }
+        }
+
         // Set today's date automatically when page loads
         window.onload = function() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
+            
+            // Load existing entry for today if it exists
+            loadTodayEntry();
+            
             displayWeeklyData();
             updateGreenFlagCounter();
             updateRedFlagCounter();
             
-            // Initialize all rating displays
-            Object.keys(scores).forEach(category => {
-                updateRatingDisplay(category, scores[category]);
-            });
+            // Initialize all rating displays (only if no existing data was loaded)
+            const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+            const todayEntry = entries.find(entry => entry.date === today);
+            if (!todayEntry) {
+                Object.keys(scores).forEach(category => {
+                    updateRatingDisplay(category, scores[category]);
+                });
+            }
         };
 
         // Function to set rating and update display
