@@ -1053,24 +1053,20 @@
             // Save back to browser storage
             localStorage.setItem('tradingEntries', JSON.stringify(entries));
             
-            // Clear the form and reset flags
+            // After saving, reload the current entry to show updated data
             document.getElementById('dailyForm').reset();
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
-            
-            // Reset scores to default (0)
+
+            // Reset internal state
             Object.keys(scores).forEach(category => {
                 scores[category] = 0;
-                updateRatingDisplay(category, 0);
             });
-            
-            // Clear flags
             greenFlags.clear();
             redFlags.clear();
-            document.querySelectorAll('.green-flag-checkbox').forEach(checkbox => checkbox.checked = false);
-            document.querySelectorAll('.red-flag-btn').forEach(btn => btn.classList.remove('active'));
-            updateGreenFlagCounter();
-            updateRedFlagCounter();
+
+            // Reload today's data (shows what we just saved)
+            loadTodayEntry();
         }
         
         // Function to display weekly data in a table
