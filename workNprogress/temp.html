@@ -1151,6 +1151,7 @@
                 
                 const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
                 const setupDisplay = entry.setupUsed || entry.entryTrigger || '';
+                const timingNote = entry.timingDropdown ? ` (${entry.timingDropdown})` : '';
                 const rMultipleDisplay = entry.rMultiple || '';
                 const takeawayDisplay = entry.keyTakeaway || '';
                 
@@ -1211,7 +1212,7 @@
                         <td>${formatDateShort(entry.date)}</td>
                         <td>${entry.marketTimeframe || ''}</td>
                         <td style="font-weight: bold; color: ${scoreColor};">${dailyScore}</td>
-                        <td style="font-size: 12px;">${scoresText}</td>
+                        <td style="font-size: 12px;">${scoresText}${timingNote}</td>
                         <td>${setupDisplay}</td>
                         <td>${marketDisplay}</td>
                         <td>${rMultipleDisplay}</td>
