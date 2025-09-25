@@ -781,6 +781,15 @@
     </div>
 
     <script>
+        // NEW: Helper to get local YYYY-MM-DD string consistently (fixes timezone bug)
+        function getLocalDateString() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         // Initialize scores with default values (0 = middle of -1, 0, 1 scale)
         let scores = {
             timing: 0,
@@ -806,7 +815,8 @@
 
         // Function to load existing entry for today's date
         function loadTodayEntry() {
-            const today = new Date().toISOString().split('T')[0];
+            // FIXED: Use local date instead of UTC
+            const today = getLocalDateString();
             const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
             const todayEntry = entries.find(entry => entry.date === today);
             
@@ -857,8 +867,8 @@
 
         // Set today's date automatically when page loads
         window.onload = function() {
-            const today = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0];
-            document.getElementById('date').value = today;
+            // FIXED: Use helper for consistency (same as original logic, just cleaner)
+            document.getElementById('date').value = getLocalDateString();
             
             // Load existing entry for today if it exists
             loadTodayEntry();
@@ -869,6 +879,8 @@
             
             // Initialize all rating displays (only if no existing data was loaded)
             const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+            // FIXED: Use local date here too
+            const today = getLocalDateString();
             const todayEntry = entries.find(entry => entry.date === today);
             if (!todayEntry) {
                 Object.keys(scores).forEach(category => {
@@ -995,12 +1007,12 @@
             if (sectionName === 'weekly') {
                 displayWeeklyData();
             }
-    
-    // If switching to daily, reload today's data
-    if (sectionName === 'daily') {
-        loadTodayEntry();
-    }
-}        
+
+            // If switching to daily, reload today's data
+            if (sectionName === 'daily') {
+                loadTodayEntry();
+            }
+        }        
         // Function to save a daily entry
         function saveEntry() {
             // Get all form data
@@ -1034,7 +1046,6 @@
                 greenFlags: Array.from(greenFlags)
             };     
             
-        
             // Get existing entries from browser storage (or create empty array)
             let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
             
@@ -1068,7 +1079,8 @@
             
             // After saving, reload the current entry to show updated data
             document.getElementById('dailyForm').reset();
-            const today = new Date().toISOString().split('T')[0];
+            // FIXED: Use local date for reset
+            const today = getLocalDateString();
             document.getElementById('date').value = today;
 
             // Reset internal state
