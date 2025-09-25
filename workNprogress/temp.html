@@ -1065,8 +1065,8 @@
             greenFlags.clear();
             redFlags.clear();
 
-            // Reload today's data (shows what we just saved)
-            loadTodayEntry();
+            // Reload today's data after brief delay (shows what we just saved)
+            setTimeout(loadTodayEntry, 100);
         }
         
         // Function to display weekly data in a table
