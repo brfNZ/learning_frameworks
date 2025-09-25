@@ -582,8 +582,7 @@
                     <button type="button" class="emoji-btn" onclick="setRating('results', 1)">😊<br><small>Good</small></button>
                 </div>
             </div>
-            <div id="results-dropdown-container"></div>
-            
+                        
             <div class="question">
                 <label for="r_multiple">R-Multiple:</label>
                 <input type="number" step="0.1" placeholder="+5.0 or -1.0" id="r_multiple" value="1.0">
@@ -826,12 +825,6 @@
                 { value: 'Optimal exit', text: 'Optimal exit' },
                 { value: 'Held too long', text: 'Held too long' }
             ] },
-            { id: 'results_dropdown', label: 'Results Assessment', category: 'results', options: [
-                { value: '', text: 'Select...' },
-                { value: 'Poor outcome', text: 'Poor outcome' },
-                { value: 'As expected', text: 'As expected' },
-                { value: 'Exceeded expectations', text: 'Exceeded expectations' }
-            ] }
         ];
 
         // Initialize scores with default values (0 = middle of -1, 0, 1 scale)
