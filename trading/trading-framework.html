@@ -1,32 +1,4 @@
-    <style>
-        :root {
-            --primary: #8B9FE8;
-            --primary-dark: #7289DA;
-            --success: #9BC5C3;
-            --warning: #D4B5E8;
-            --danger: #E8B5C3;
-            --info: #B8D4F1;
-            --light: #F4F6FB;
-            --dark: #5A6B8C;
-            --gradient: linear-gradient(135deg, #E8EAF6 0%, #C5CAE9 100%);
-        }
-        
-        body {
-            background: var(--gradient);
-            color: var(--dark);
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            margin: 0;
-            min-height: 100vh;
-        }
-        
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--dark);
-        }
-        
-        /* Navigation<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -34,48 +6,85 @@
     <title>My Trading Journal</title>
     <style>
         :root {
-            --primary: #8B9FE8;
-            --primary-dark: #7289DA;
-            --success: #9BC5C3;
-            --warning: #D4B5E8;
-            --danger: #E8B5C3;
-            --info: #B8D4F1;
-            --light: #F4F6FB;
-            --dark: #5A6B8C;
-            --gradient: linear-gradient(135deg, #E8EAF6 0%, #C5CAE9 100%);
+            --primary: #7BB3E0;
+            --primary-dark: #5A9BD4;
+            --success: #A8D5A8;
+            --table-header-gradient: #5A9BD4;
+            --danger: #E8A5A5;
+            --info: #B8D0E8;
+            --light: #F8F9FB;
+            --dark: #5A6B7A;
+            --gradient: linear-gradient(135deg, #FAFBFC 0%, #F0F2F5 100%);
+            --red-flag: #E8A5A5;
+            --red-flag-dark: #D99494;
+            --green-flag: #A8D5A8;
+            --green-flag-dark: #95C895;
+        }
+
+        // Function to toggle main sections (green flags and red flags)
+        function toggleMainSection(sectionName) {
+            const header = document.querySelector(`[onclick="toggleMainSection('${sectionName}')"]`);
+            const content = document.getElementById(`${sectionName}-content`);
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                header.classList.remove('expanded');
+            } else {
+                content.classList.add('expanded');
+                header.classList.add('expanded');
+            }
+        }
+
+        // Function to toggle green flag categories (expand/collapse)
+        function toggleGreenCategory(categoryName) {
+            const header = document.querySelector(`[onclick="toggleGreenCategory('${categoryName}')"]`);
+            const options = document.getElementById(`${categoryName}-options`);
+            
+            if (options.classList.contains('expanded')) {
+                options.classList.remove('expanded');
+                header.classList.remove('expanded');
+            } else {
+                options.classList.add('expanded');
+                header.classList.add('expanded');
+            }
         }
         
         body {
             background: var(--gradient);
             color: var(--dark);
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            padding: 15px;
             margin: 0;
             min-height: 100vh;
+            max-width: 900px;
+            margin: 0 auto;
         }
         
         h1 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             color: var(--dark);
+            font-size: 24px;
+            font-weight: 600;
         }
         
         /* Navigation buttons at the top */
         .nav-buttons {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 8px;
+            margin-bottom: 20px;
         }
         
         .nav-button {
             background-color: white;
             color: var(--primary);
-            padding: 10px 20px;
+            padding: 8px 16px;
             border: 2px solid var(--primary);
-            border-radius: 5px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
+            font-weight: 500;
             transition: all 0.3s ease;
         }
         
@@ -99,36 +108,67 @@
         }
         
         .question {
-            margin: 20px 0;
+            margin: 12px 0;
         }
         
         .section-header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 25px 0 20px 0;
+            padding: 10px 15px;
+            border-radius: 12px;
+            margin: 15px 0 12px 0;
             text-align: center;
-            font-weight: bold;
-            font-size: 18px;
+            font-weight: 600;
+            font-size: 14px;
         }
         
-        /* Rating buttons similar to Hero Decision Matrix */
+        .section-header.collapsible {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .section-header.collapsible:hover {
+            opacity: 0.9;
+        }
+
+        .section-header.collapsible .arrow {
+            transition: transform 0.3s ease;
+            font-size: 16px;
+        }
+
+        .section-header.collapsible.expanded .arrow {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .collapsible-content.expanded {
+            max-height: 2000px;
+        }
+        
         .rating-container {
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
-            margin: 15px 0;
+            margin: 10px 0;
         }
         
         .rating-btn {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             padding: 0;
             border-radius: 50%;
             transition: all 0.3s;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 500;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -140,111 +180,241 @@
         
         .rating-btn:hover {
             border-color: var(--primary-dark);
-            background-color: var(--light);
+            background-color: rgba(123, 179, 224, 0.1);
         }
         
         .rating-btn.selected {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            color: white;
+            background-color: white;
+            border-color: var(--primary-dark);
+            color: var(--primary-dark);
+            border-width: 3px;
+            box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.2);
         }
         
         .rating-labels {
             display: flex;
             justify-content: space-between;
-            margin-top: 10px;
-            font-size: 12px;
+            margin-top: 8px;
+            font-size: 11px;
             color: var(--dark);
         }
         
         .rating-question {
             background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 15px 0;
-            border: 1px solid var(--light);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #E5E7EB;
             color: var(--dark);
-            box-shadow: 0 2px 10px rgba(139, 159, 232, 0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
         
         .rating-question label {
             display: block;
-            font-weight: 600;
-            margin-bottom: 15px;
+            font-weight: 500;
+            margin-bottom: 10px;
             text-align: center;
             color: var(--dark);
+            font-size: 14px;
         }
         
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 4px;
+            font-weight: 500;
             color: var(--dark);
+            font-size: 13px;
         }
         
-        input[type="text"], input[type="date"], textarea, select {
+        input[type="text"], input[type="date"], input[type="number"], textarea, select {
             width: 100%;
-            padding: 10px;
+            padding: 8px 10px;
             background-color: white;
             color: var(--dark);
-            border: 2px solid var(--info);
-            border-radius: 5px;
-            font-size: 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 14px;
             box-sizing: border-box;
             transition: all 0.3s ease;
         }
         
-        input[type="text"]:focus, input[type="date"]:focus, textarea:focus, select:focus {
+        input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
             border-color: var(--primary);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(139, 159, 232, 0.1);
+            box-shadow: 0 0 0 3px rgba(123, 179, 224, 0.1);
         }
         
         textarea {
-            height: 80px;
+            height: 60px;
             resize: vertical;
         }
         
         button {
-            background: linear-gradient(135deg, var(--success) 0%, #7FB3B1 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
+            background: white;
+            color: var(--success);
+            border: 2px solid var(--success);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 15px;
             transition: all 0.3s ease;
         }
         
         button:hover {
-            background: linear-gradient(135deg, #7FB3B1 0%, var(--success) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(155, 197, 195, 0.3);
+            background-color: rgba(168, 213, 168, 0.1);
+            border-color: var(--green-flag-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(168, 213, 168, 0.2);
+        }
+        
+        /* Green Flags */
+        .green-flag-container {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .green-flag-checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--green-flag);
+        }
+
+        .green-flag-category {
+            margin-bottom: 10px;
+            border: 2px solid var(--green-flag);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .green-flag-header {
+            background: white;
+            color: var(--green-flag);
+            border-bottom: 2px solid var(--green-flag);
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .green-flag-header:hover {
+            background-color: rgba(168, 213, 168, 0.1);
+            color: var(--green-flag-dark);
+        }
+
+        .green-flag-header .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .green-flag-header.expanded .arrow {
+            transform: rotate(180deg);
+        }
+
+        .green-flag-options {
+            background: #f8faf8;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .green-flag-options.expanded {
+            max-height: 200px;
+            padding: 10px;
+        }
+
+        .green-flag-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .green-flag-option:hover {
+            background-color: #edf2ed;
+        }
+        
+        /* Red Flags */
+        .red-flag-container {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .red-flag-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .red-flag-btn {
+            background-color: white;
+            border: 2px solid var(--red-flag);
+            color: var(--red-flag);
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
+        }
+        
+        .red-flag-btn:hover {
+            background-color: rgba(232, 165, 165, 0.1);
+            border-color: var(--red-flag-dark);
+        }
+        
+        .red-flag-btn.active {
+            background-color: var(--red-flag);
+            color: white;
+            box-shadow: 0 2px 8px rgba(232, 165, 165, 0.3);
+        }
+        
+        .red-flag-btn .icon {
+            font-size: 14px;
         }
         
         /* Weekly table styling */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 15px;
             background: white;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(139, 159, 232, 0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            font-size: 13px;
         }
         
         th, td {
-            border: 1px solid var(--light);
-            padding: 12px;
+            border: 1px solid #E5E7EB;
+            padding: 8px 10px;
             text-align: left;
         }
         
         th {
-            background: linear-gradient(135deg, var(--warning) 0%, #C09FE0 100%);
+            background: linear-gradient(180deg, var(--table-header-gradient) 0%, var(--primary) 100%);
             color: white;
-            font-weight: bold;
+            font-weight: 500;
+            font-size: 12px;
         }
         
         td {
@@ -253,18 +423,44 @@
         }
         
         tr:nth-child(even) td {
-            background-color: var(--light);
+            background-color: #FAFBFC;
         }
         
         .no-data {
             text-align: center;
             font-style: italic;
             color: var(--dark);
-            margin-top: 20px;
-            padding: 20px;
+            margin-top: 15px;
+            padding: 15px;
             background: white;
-            border-radius: 10px;
-            border: 2px dashed var(--info);
+            border-radius: 12px;
+            border: 2px dashed #E5E7EB;
+            font-size: 14px;
+        }
+        
+        .red-flags-column {
+            max-width: 120px;
+            font-size: 11px;
+        }
+        
+        .red-flag-tag {
+            display: inline-block;
+            background-color: var(--red-flag);
+            color: white;
+            padding: 2px 6px;
+            margin: 1px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+        
+        .green-flag-tag {
+            display: inline-block;
+            background-color: var(--green-flag);
+            color: white;
+            padding: 2px 6px;
+            margin: 1px;
+            border-radius: 4px;
+            font-size: 10px;
         }
     </style>
 </head>
@@ -284,17 +480,22 @@
                 <label for="date">Date:</label>
                 <input type="date" id="date" name="date">
             </div>
-            
+
+            <div class="question">
+                <label for="market_timeframe">Market & Timeframe:</label>
+                <input type="text" id="market_timeframe" name="market_timeframe" placeholder="eg. HK, USD/JPY - 1H, 4H, Daily...">
+            </div>
+
             <div class="section-header">⏰ TIMING & TRIGGER</div>
             
             <div class="rating-question">
                 <label>Entry Quality & Timing Score</label>
                 <div class="rating-container">
-                    <button class="rating-btn" onclick="setRating('timing', 1)">1</button>
-                    <button class="rating-btn" onclick="setRating('timing', 2)">2</button>
-                    <button class="rating-btn" onclick="setRating('timing', 3)">3</button>
-                    <button class="rating-btn" onclick="setRating('timing', 4)">4</button>
-                    <button class="rating-btn" onclick="setRating('timing', 5)">5</button>
+                    <button type="button" class="rating-btn" onclick="setRating('timing', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('timing', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('timing', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('timing', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('timing', 5)">5</button>
                 </div>
                 <div class="rating-labels">
                     <span>Poor</span>
@@ -304,7 +505,7 @@
             
             <div class="question">
                 <label for="entry_trigger">Entry Trigger:</label>
-                <input type="text" id="entry_trigger" name="entry_trigger" placeholder="Describe your entry signal...">
+                <input type="text" id="entry_trigger" name="entry_trigger" placeholder="3 Indians, MA cross, H&S completion...">
             </div>
             
             <div class="question">
@@ -318,6 +519,316 @@
                     <option value="low_volatility">😴 Low Volatility</option>
                 </select>
             </div>
+
+            <div class="section-header">⚠️ RISK MANAGEMENT</div>
+            
+            <div class="rating-question">
+                <label>Risk Control & Discipline</label>
+                <div class="rating-container">
+                    <button type="button" class="rating-btn" onclick="setRating('risk', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('risk', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('risk', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('risk', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('risk', 5)">5</button>
+                </div>
+                <div class="rating-labels">
+                    <span>Poor</span>
+                    <span>Excellent</span>
+                </div>
+            </div>
+            
+            <div class="question">
+                <label for="risk_percent">Risk Percentage:</label>
+                <input type="number" step="0.1" placeholder="1.5%" id="risk_percent">
+            </div>
+    
+            <div class="section-header">🎯 ANALYSIS & SETUP</div>
+            
+            <div class="rating-question">
+                <label>Setup Quality & Analysis</label>
+                <div class="rating-container">
+                    <button type="button" class="rating-btn" onclick="setRating('analysis', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('analysis', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('analysis', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('analysis', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('analysis', 5)">5</button>
+                </div>
+                <div class="rating-labels">
+                    <span>Poor</span>
+                    <span>Excellent</span>
+                </div>
+            </div>
+            
+            <div class="question">
+                <label for="setup_used">Setup Used:</label>
+                <select id="setup_used">
+                    <option value="">Select Setup</option>
+                    <option value="3Indians">🏹 3 Indians</option>
+                    <option value="MA Cross">📊 MA Cross</option>
+                    <option value="Support/Resistance">🔄 Support/Resistance</option>
+                    <option value="Breakout">💥 Breakout</option>
+                    <option value="Other">🎯 Other</option>
+                </select>
+            </div>
+
+            <div class="section-header">🧠 DISCIPLINE & PSYCHOLOGY</div>
+            
+            <div class="rating-question">
+                <label>Mental State & Discipline</label>
+                <div class="rating-container">
+                    <button type="button" class="rating-btn" onclick="setRating('discipline', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('discipline', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('discipline', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('discipline', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('discipline', 5)">5</button>
+                </div>
+                <div class="rating-labels">
+                    <span>Poor</span>
+                    <span>Excellent</span>
+                </div>
+            </div>
+            
+            <div class="question">
+                <label for="emotional_state">Emotional State:</label>
+                <select id="emotional_state">
+                    <option value="">Select State</option>
+                    <option value="calm">😌 Calm & Focused</option>
+                    <option value="excited">😃 Excited</option>
+                    <option value="frustrated">😤 Frustrated</option>
+                    <option value="overconfident">😎 Overconfident</option>
+                    <option value="revenge">😡 Revenge Trading</option>
+                    <option value="fomo">😰 FOMO</option>
+                    <option value="bored">😑 Bored/Overtrading</option>
+                </select>
+            </div>
+
+            <div class="section-header">🚪 EXIT STRATEGY</div>
+            
+            <div class="rating-question">
+                <label>Exit Timing & Execution</label>
+                <div class="rating-container">
+                    <button type="button" class="rating-btn" onclick="setRating('exit', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('exit', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('exit', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('exit', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('exit', 5)">5</button>
+                </div>
+                <div class="rating-labels">
+                    <span>Poor</span>
+                    <span>Excellent</span>
+                </div>
+            </div>
+            
+            <div class="question">
+                <label for="exit_reason">Exit Reason:</label>
+                <input type="text" placeholder="Stop hit, target reached, time-based..." id="exit_reason">
+            </div>
+
+            <div class="section-header">💰 RESULTS & REWARD</div>
+            
+            <div class="rating-question">
+                <label>Risk/Reward Outcome</label>
+                <div class="rating-container">
+                    <button type="button" class="rating-btn" onclick="setRating('results', 1)">1</button>
+                    <button type="button" class="rating-btn" onclick="setRating('results', 2)">2</button>
+                    <button type="button" class="rating-btn" onclick="setRating('results', 3)">3</button>
+                    <button type="button" class="rating-btn" onclick="setRating('results', 4)">4</button>
+                    <button type="button" class="rating-btn" onclick="setRating('results', 5)">5</button>
+                </div>
+                <div class="rating-labels">
+                    <span>Poor</span>
+                    <span>Excellent</span>
+                </div>
+            </div>
+            
+            <div class="question">
+                <label for="r_multiple">R-Multiple:</label>
+                <input type="number" step="0.1" placeholder="+2.5 or -1.0" id="r_multiple">
+            </div>
+
+            <div class="section-header collapsible" style="background: white; color: var(--green-flag); border: 2px solid var(--green-flag);" onclick="toggleMainSection('green-flags')">
+                <span>🟢 GREEN FLAGS - What I Did Well</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-content" id="green-flags-content">
+                <div class="green-flag-container">
+                    <label style="text-align: center; color: var(--green-flag-dark); font-size: 14px; font-weight: 500;">Track your successful trading behaviors:</label>
+                    <div id="greenFlagCounter" style="text-align: center; margin: 8px 0; font-weight: 500; color: var(--green-flag-dark); font-size: 13px;">
+                        Green flags selected: <span id="greenFlagCount">0</span>
+                    </div>
+                    
+                    <!-- Plan & Preparation -->
+                    <div class="green-flag-category">
+                        <div class="green-flag-header" onclick="toggleGreenCategory('plan')">
+                            <span>📋 Plan & Preparation</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="green-flag-options" id="plan-options">
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="followed_plan" onchange="toggleGreenFlag('followed_plan')">
+                                <label for="followed_plan" style="margin: 0; cursor: pointer;">📝 Followed Trading Plan</label>
+                            </div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="premarket_analysis" onchange="toggleGreenFlag('premarket_analysis')">
+                                <label for="premarket_analysis" style="margin: 0; cursor: pointer;">🔍 Proper Pre-Market Analysis</label>
+                            </div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="waited_setup" onchange="toggleGreenFlag('waited_setup')">
+                                <label for="waited_setup" style="margin: 0; cursor: pointer;">⏳ Waited for Setup</label>
+                            </div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="correct_timeframes" onchange="toggleGreenFlag('correct_timeframes')">
+                                <label for="correct_timeframes" style="margin: 0; cursor: pointer;">📊 Used Correct Timeframes</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Management -->
+                    <div class="green-flag-category">
+                        <div class="green-flag-header" onclick="toggleGreenCategory('risk')">
+                            <span>💰 Risk Management</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="green-flag-options" id="risk-options">
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="perfect_position_size" onchange="toggleGreenFlag('perfect_position_size')">
+                                <label for="perfect_position_size" style="margin: 0; cursor: pointer;">🎯 Perfect Position Size</label>
+                            </div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="respected_risk" onchange="toggleGreenFlag('respected_risk')">
+                                <label for="respected_risk" style="margin: 0; cursor: pointer;">⚠️ Respected Risk Limits</label>
+                            </div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="quick_loss_cut" onchange="toggleGreenFlag('quick_loss_cut')">
+                                <label for="quick_loss_cut" style="margin: 0; cursor: pointer;">🛑 Quick Loss Cut</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Execution & Timing -->
+                    <div class="green-flag-category">
+                        <div class="green-flag-header" onclick="toggleGreenCategory('execution')">
+                            <span>🎯 Execution & Timing</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="green-flag-options" id="execution-options">
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="good_entry_timing" onchange="toggleGreenFlag('good_entry_timing')">
+                                <label for="good_entry_timing" style="margin: 0; cursor: pointer;">⏰ Good Entry Timing</label>
+                            </div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="hit_profit_target" onchange="toggleGreenFlag('hit_profit_target')">
+                                <label for="hit_profit_target" style="margin: 0; cursor: pointer;">🎯 Hit Profit Target</label>
+                            </div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="avoided_chasing" onchange="toggleGreenFlag('avoided_chasing')">
+                                <label for="avoided_chasing" style="margin: 0; cursor: pointer;">🏃‍♂️ Avoided Chasing</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Psychology & Discipline -->
+                    <div class="green-flag-category">
+                        <div class="green-flag-header" onclick="toggleGreenCategory('psychology')">
+                            <span>🧠 Psychology & Discipline</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="green-flag-options" id="psychology-options">
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="emotional_control" onchange="toggleGreenFlag('emotional_control')">
+                                <label for="emotional_control" style="margin: 0; cursor: pointer;">😌 Emotional Control</label>
+                            </div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="took_breaks" onchange="toggleGreenFlag('took_breaks')">
+                                <label for="took_breaks" style="margin: 0; cursor: pointer;">⏸️ Took Breaks</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Learning & Growth -->
+                    <div class="green-flag-category">
+                        <div class="green-flag-header" onclick="toggleGreenCategory('learning')">
+                            <span>📈 Learning & Growth</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="green-flag-options" id="learning-options">
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="documented_trades" onchange="toggleGreenFlag('documented_trades')">
+                                <label for="documented_trades" style="margin: 0; cursor: pointer;">📝 Documented Trades</label>
+                            </div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="post_trade_analysis" onchange="toggleGreenFlag('post_trade_analysis')">
+                                <label for="post_trade_analysis" style="margin: 0; cursor: pointer;">🤔 Post-Trade Analysis</label>
+                            </div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="applied_lessons" onchange="toggleGreenFlag('applied_lessons')">
+                                <label for="applied_lessons" style="margin: 0; cursor: pointer;">💡 Applied Previous Lessons</label>
+                            </div>
+                            <div class="green-flag-option">
+                                <input type="checkbox" class="green-flag-checkbox" id="continuous_learning" onchange="toggleGreenFlag('continuous_learning')">
+                                <label for="continuous_learning" style="margin: 0; cursor: pointer;">📚 Continuous Learning</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header red-flag collapsible" onclick="toggleMainSection('red-flags')">
+                <span>🚩 RED FLAGS & WARNING SIGNS</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="collapsible-content" id="red-flags-content">
+                <div class="red-flag-container">
+                    <label style="text-align: center; color: var(--red-flag-dark); font-size: 14px; font-weight: 500;">Click any red flags that occurred today:</label>
+                    <div id="redFlagCounter" style="text-align: center; margin: 8px 0; font-weight: 500; color: var(--red-flag-dark); font-size: 13px;">
+                        Red flags selected: <span id="redFlagCount">0</span>
+                    </div>
+                    <div class="red-flag-grid">
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('revenge')">
+                            <span class="icon">😡</span> Revenge Trading
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('overtrading')">
+                            <span class="icon">🔄</span> Overtrading
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('fomo')">
+                            <span class="icon">😰</span> FOMO Entry
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('moved_stop')">
+                            <span class="icon">📍</span> Moved Stop Loss
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('added_loser')">
+                            <span class="icon">➕</span> Added to Loser
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('no_plan')">
+                            <span class="icon">❓</span> No Trading Plan
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('ignored_risk')">
+                            <span class="icon">⚠️</span> Ignored Risk Rules
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('emotional')">
+                            <span class="icon">💢</span> Emotional Trading
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('news_trade')">
+                            <span class="icon">📰</span> News Reaction Trade
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('hope_hold')">
+                            <span class="icon">🤞</span> Hope & Hold
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('early_exit')">
+                            <span class="icon">🏃</span> Early Exit (Fear)
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('chased_price')">
+                            <span class="icon">🏃‍♂️</span> Chased Price
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header">💡 KEY TAKEAWAY</div>
+            <div class="question">
+                <label for="key_takeaway">Key lesson learned:</label>
+                <textarea id="key_takeaway" placeholder="What's the most important lesson from today's trading?"></textarea>
+            </div>
             
             <button type="button" onclick="saveEntry()">Save Entry</button>
         </form>
@@ -325,26 +836,41 @@
     
     <!-- Weekly Review Section -->
     <div id="weekly" class="section">
-        <h2>Weekly Trading Review</h2>
+        <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 15px;">Weekly Trading Review</h2>
         <div id="weeklyTable"></div>
     </div>
 
     <script>
         // Initialize scores with default values
         let scores = {
-            timing: 3
+            timing: 3,
+            risk: 3,
+            analysis: 3,
+            discipline: 3,
+            exit: 3,
+            results: 3
         };
+
+        // Initialize red flags tracking
+        let redFlags = new Set();
+        
+        // Initialize green flags tracking
+        let greenFlags = new Set();
 
         // Set today's date automatically when page loads
         window.onload = function() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
             displayWeeklyData();
+            updateGreenFlagCounter();
+            updateRedFlagCounter();
             
-            // Initialize rating display
-            updateRatingDisplay('timing', 3);
+            // Initialize all rating displays
+            Object.keys(scores).forEach(category => {
+                updateRatingDisplay(category, scores[category]);
+            });
         };
-        
+
         // Function to set rating and update display
         function setRating(category, rating) {
             scores[category] = rating;
@@ -363,6 +889,78 @@
                     btn.classList.remove('selected');
                 }
             });
+        }
+
+        // Function to toggle green flag checkboxes
+        function toggleGreenFlag(flagName) {
+            const checkbox = document.getElementById(flagName);
+            
+            if (checkbox.checked) {
+                greenFlags.add(flagName);
+            } else {
+                greenFlags.delete(flagName);
+            }
+            
+            updateGreenFlagCounter();
+        }
+
+        // Function to toggle red flag buttons
+        function toggleRedFlag(flagName) {
+            const button = document.querySelector(`[onclick="toggleRedFlag('${flagName}')"]`);
+            
+            if (redFlags.has(flagName)) {
+                redFlags.delete(flagName);
+                button.classList.remove('active');
+            } else {
+                redFlags.add(flagName);
+                button.classList.add('active');
+            }
+            
+            updateRedFlagCounter();
+        }
+
+        // Function to update green flag counter display
+        function updateGreenFlagCounter() {
+            const counterElement = document.getElementById('greenFlagCount');
+            if (counterElement) {
+                counterElement.textContent = greenFlags.size;
+            }
+        }
+
+        // Function to update red flag counter display
+        function updateRedFlagCounter() {
+            const counterElement = document.getElementById('redFlagCount');
+            if (counterElement) {
+                counterElement.textContent = redFlags.size;
+            }
+        }
+
+        // Function to toggle main sections (green flags and red flags)
+        function toggleMainSection(sectionName) {
+            const header = document.querySelector(`[onclick="toggleMainSection('${sectionName}')"]`);
+            const content = document.getElementById(`${sectionName}-content`);
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                header.classList.remove('expanded');
+            } else {
+                content.classList.add('expanded');
+                header.classList.add('expanded');
+            }
+        }
+        
+        // Function to toggle green flag categories (expand/collapse)
+        function toggleGreenCategory(categoryName) {
+            const header = document.querySelector(`[onclick="toggleGreenCategory('${categoryName}')"]`);
+            const options = document.getElementById(`${categoryName}-options`);
+            
+            if (options.classList.contains('expanded')) {
+                options.classList.remove('expanded');
+                header.classList.remove('expanded');
+            } else {
+                options.classList.add('expanded');
+                header.classList.add('expanded');
+            }
         }
         
         // Function to switch between Daily and Weekly sections
@@ -391,9 +989,6 @@
         function saveEntry() {
             // Get all form data
             const date = document.getElementById('date').value;
-            const timingScore = scores.timing || 3;
-            const entryTrigger = document.getElementById('entry_trigger').value;
-            const marketConditions = document.getElementById('market_conditions').value;
             
             // Check if date is filled
             if (!date) {
@@ -401,14 +996,24 @@
                 return;
             }
             
-            // Create entry object
+            // Create entry object with all the fields including red and green flags
             const entry = {
                 date: date,
-                timingScore: timingScore,
-                entryTrigger: entryTrigger,
-                marketConditions: marketConditions
-            };
+                marketTimeframe: document.getElementById('market_timeframe').value,
+                scores: { ...scores },
+                entryTrigger: document.getElementById('entry_trigger').value,
+                marketConditions: document.getElementById('market_conditions').value,
+                riskPercent: document.getElementById('risk_percent').value,
+                setupUsed: document.getElementById('setup_used').value,
+                emotionalState: document.getElementById('emotional_state').value,
+                exitReason: document.getElementById('exit_reason').value,
+                rMultiple: document.getElementById('r_multiple').value,
+                keyTakeaway: document.getElementById('key_takeaway').value,
+                redFlags: Array.from(redFlags),
+                greenFlags: Array.from(greenFlags)
+            };     
             
+        
             // Get existing entries from browser storage (or create empty array)
             let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
             
@@ -418,23 +1023,44 @@
             if (existingIndex >= 0) {
                 // Update existing entry
                 entries[existingIndex] = entry;
-                alert('Entry updated for ' + date);
+                const redFlagCount = entry.redFlags.length;
+                const greenFlagCount = entry.greenFlags.length;
+                let message = `Entry updated for ${date}\n`;
+                message += `🟢 Green flags: ${greenFlagCount}\n`;
+                message += `🚩 Red flags: ${redFlagCount}\n`;
+                alert(message);
             } else {
                 // Add new entry
                 entries.push(entry);
-                alert('New entry saved for ' + date);
+                const redFlagCount = entry.redFlags.length;
+                const greenFlagCount = entry.greenFlags.length;
+                let message = `New entry saved for ${date}\n`;
+                message += `🟢 Green flags: ${greenFlagCount}\n`;
+                message += `🚩 Red flags: ${redFlagCount}\n`;
+                alert(message);
             }
             
             // Save back to browser storage
             localStorage.setItem('tradingEntries', JSON.stringify(entries));
             
-            // Clear the form
+            // Clear the form and reset flags
             document.getElementById('dailyForm').reset();
-            // Reset date to today and rating to default
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
-            scores.timing = 3;
-            updateRatingDisplay('timing', 3);
+            
+            // Reset scores to default
+            Object.keys(scores).forEach(category => {
+                scores[category] = 3;
+                updateRatingDisplay(category, 3);
+            });
+            
+            // Clear flags
+            greenFlags.clear();
+            redFlags.clear();
+            document.querySelectorAll('.green-flag-checkbox').forEach(checkbox => checkbox.checked = false);
+            document.querySelectorAll('.red-flag-btn').forEach(btn => btn.classList.remove('active'));
+            updateGreenFlagCounter();
+            updateRedFlagCounter();
         }
         
         // Function to display weekly data in a table
@@ -458,9 +1084,14 @@
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Timing Score</th>
-                            <th>Entry Trigger</th>
-                            <th>Market Conditions</th>
+                            <th>Instrument</th>
+                            <th>T.R.A.D.E.R Scores</th>
+                            <th>Setup</th>
+                            <th>Market</th>
+                            <th>R-Multiple</th>
+                            <th class="red-flags-column">Green Flags</th>
+                            <th class="red-flags-column">Red Flags</th>
+                            <th>Key Takeaway</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -468,6 +1099,14 @@
             
             // Add each entry as a table row
             entries.forEach(entry => {
+                // Handle both old and new data formats
+                let scoresText = '';
+                if (entry.scores) {
+                    const scoreValues = Object.values(entry.scores);
+                    const average = scoreValues.reduce((sum, score) => sum + score, 0) / scoreValues.length;
+                    scoresText = `T:${entry.scores.timing} R:${entry.scores.risk} A:${entry.scores.analysis} D:${entry.scores.discipline} E:${entry.scores.exit} R:${entry.scores.results} (Avg: ${average.toFixed(1)})`;
+                }
+                
                 // Convert market condition value to display text
                 const conditionText = {
                     'strong_uptrend': '📈 Strong Uptrend',
@@ -477,12 +1116,69 @@
                     'low_volatility': '😴 Low Volatility'
                 };
                 
+                const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
+                const setupDisplay = entry.setupUsed || entry.entryTrigger || '';
+                const rMultipleDisplay = entry.rMultiple || '';
+                const takeawayDisplay = entry.keyTakeaway || '';
+                
+                // Format green flags for display
+                let greenFlagsDisplay = '';
+                if (entry.greenFlags && entry.greenFlags.length > 0) {
+                    const greenFlagLabels = {
+                        'followed_plan': 'Plan',
+                        'premarket_analysis': 'Analysis',
+                        'waited_setup': 'Setup',
+                        'correct_timeframes': 'Timeframes',
+                        'perfect_position_size': 'Position',
+                        'respected_risk': 'Risk',
+                        'quick_loss_cut': 'Cut Loss',
+                        'good_entry_timing': 'Entry',
+                        'hit_profit_target': 'Target',
+                        'avoided_chasing': 'No Chase',
+                        'emotional_control': 'Control',
+                        'took_breaks': 'Breaks',
+                        'documented_trades': 'Docs',
+                        'post_trade_analysis': 'Analysis',
+                        'applied_lessons': 'Lessons'
+                    };
+                    greenFlagsDisplay = entry.greenFlags.map(flag => 
+                        `<span class="green-flag-tag">${greenFlagLabels[flag] || flag}</span>`
+                    ).join(' ');
+                }
+
+                // Format red flags for display
+                let redFlagsDisplay = '';
+                if (entry.redFlags && entry.redFlags.length > 0) {
+                    const flagLabels = {
+                        'revenge': 'Revenge',
+                        'overtrading': 'Overtrade',
+                        'fomo': 'FOMO',
+                        'moved_stop': 'Moved SL',
+                        'added_loser': 'Added Loss',
+                        'no_plan': 'No Plan',
+                        'ignored_risk': 'Risk',
+                        'emotional': 'Emotional',
+                        'news_trade': 'News',
+                        'hope_hold': 'Hope',
+                        'early_exit': 'Early Exit',
+                        'chased_price': 'Chased'
+                    };
+                    redFlagsDisplay = entry.redFlags.map(flag => 
+                        `<span class="red-flag-tag">${flagLabels[flag] || flag}</span>`
+                    ).join(' ');
+                }
+                
                 tableHTML += `
                     <tr>
                         <td>${entry.date}</td>
-                        <td>${entry.timingScore}/5</td>
-                        <td>${entry.entryTrigger}</td>
-                        <td>${conditionText[entry.marketConditions] || entry.marketConditions}</td>
+                        <td>${entry.marketTimeframe || ''}</td>
+                        <td style="font-size: 12px;">${scoresText}</td>
+                        <td>${setupDisplay}</td>
+                        <td>${marketDisplay}</td>
+                        <td>${rMultipleDisplay}</td>
+                        <td class="red-flags-column">${greenFlagsDisplay}</td>
+                        <td class="red-flags-column">${redFlagsDisplay}</td>
+                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${takeawayDisplay}</td>
                     </tr>
                 `;
             });
