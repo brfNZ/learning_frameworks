@@ -492,7 +492,7 @@
             
             <div class="question">
                 <label for="risk_percent">Risk Percentage:</label>
-                <input type="number" step="0.1" placeholder="1.5%" id="risk_percent">
+                <input type="number" step="0.1" placeholder="1.0%" id="risk_percent" value="1.0">
             </div>
     
             <div class="section-header">🎯 ANALYSIS & SETUP</div>
@@ -572,7 +572,7 @@
             
             <div class="question">
                 <label for="r_multiple">R-Multiple:</label>
-                <input type="number" step="0.1" placeholder="+2.5 or -1.0" id="r_multiple">
+                <input type="number" step="0.1" placeholder="+5.0 or -1.0" id="r_multiple" value="1.0">
             </div>
 
             <div class="section-header collapsible" style="background: white; color: var(--green-flag); border: 2px solid var(--green-flag);" onclick="toggleMainSection('green-flags')">
@@ -1111,9 +1111,20 @@
                 let dailyScore = 0;
                 if (entry.scores) {
                     dailyScore = entry.dailyTotal || Object.values(entry.scores).reduce((sum, score) => sum + score, 0);
-                    scoresText = `T:${entry.scores.timing} R:${entry.scores.risk} A:${entry.scores.analysis} D:${entry.scores.discipline} E:${entry.scores.exit} R:${entry.scores.results}`;
-                }
-                
+                    
+                    // Only show non-zero scores
+                    const scoreLabels = ['T', 'R', 'A', 'D', 'E', 'R'];
+                    const scoreValues = [entry.scores.timing, entry.scores.risk, entry.scores.analysis, entry.scores.discipline, entry.scores.exit, entry.scores.results];
+                    const nonZeroScores = [];
+                    
+                    scoreValues.forEach((score, index) => {
+                        if (score !== 0) {
+                            nonZeroScores.push(`${scoreLabels[index]}:${score}`);
+                        }
+                    });
+                    
+                    scoresText = nonZeroScores.join(' ') || 'All neutral';
+                }                
                 // Convert market condition value to display text
                 const conditionText = {
                     'strong_uptrend': '📈 Strong Uptrend',
