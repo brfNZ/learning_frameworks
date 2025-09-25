@@ -20,34 +20,6 @@
             --green-flag: #A8D5A8;
             --green-flag-dark: #95C895;
         }
-
-        // Function to toggle main sections (green flags and red flags)
-        function toggleMainSection(sectionName) {
-            const header = document.querySelector(`[onclick="toggleMainSection('${sectionName}')"]`);
-            const content = document.getElementById(`${sectionName}-content`);
-            
-            if (content.classList.contains('expanded')) {
-                content.classList.remove('expanded');
-                header.classList.remove('expanded');
-            } else {
-                content.classList.add('expanded');
-                header.classList.add('expanded');
-            }
-        }
-
-        // Function to toggle green flag categories (expand/collapse)
-        function toggleGreenCategory(categoryName) {
-            const header = document.querySelector(`[onclick="toggleGreenCategory('${categoryName}')"]`);
-            const options = document.getElementById(`${categoryName}-options`);
-            
-            if (options.classList.contains('expanded')) {
-                options.classList.remove('expanded');
-                header.classList.remove('expanded');
-            } else {
-                options.classList.add('expanded');
-                header.classList.add('expanded');
-            }
-        }
         
         body {
             background: var(--gradient);
@@ -161,15 +133,16 @@
             margin: 10px 0;
         }
         
-        .rating-btn {
-            width: 35px;
-            height: 35px;
-            padding: 0;
-            border-radius: 50%;
+        .emoji-btn {
+            width: 60px;
+            height: 60px;
+            padding: 5px;
+            border-radius: 12px;
             transition: all 0.3s;
-            font-size: 13px;
+            font-size: 16px;
             font-weight: 500;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             border: 2px solid var(--primary);
@@ -178,25 +151,17 @@
             cursor: pointer;
         }
         
-        .rating-btn:hover {
+        .emoji-btn:hover {
             border-color: var(--primary-dark);
             background-color: rgba(123, 179, 224, 0.1);
         }
         
-        .rating-btn.selected {
-            background-color: white;
+        .emoji-btn.selected {
+            background-color: var(--primary);
             border-color: var(--primary-dark);
-            color: var(--primary-dark);
+            color: white;
             border-width: 3px;
             box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.2);
-        }
-        
-        .rating-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 8px;
-            font-size: 11px;
-            color: var(--dark);
         }
         
         .rating-question {
@@ -519,9 +484,9 @@
             <div class="rating-question">
                 <label>Risk Control & Discipline</label>
                 <div class="rating-container">
-                    <button type="button" class="emoji-btn" onclick="setRating('timing', -1)">😡<br><small>Bad</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('timing', 0)">😐<br><small>OK</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('timing', 1)">😊<br><small>Good</small></button>
+                    <button type="button" class="emoji-btn" onclick="setRating('risk', -1)">😡<br><small>Bad</small></button>
+                    <button type="button" class="emoji-btn" onclick="setRating('risk', 0)">😐<br><small>OK</small></button>
+                    <button type="button" class="emoji-btn" onclick="setRating('risk', 1)">😊<br><small>Good</small></button>
                 </div>
             </div>
             
@@ -704,7 +669,7 @@
                             </div>
                             <div class="green-flag-option">
                                 <input type="checkbox" class="green-flag-checkbox" id="took_breaks" onchange="toggleGreenFlag('took_breaks')">
-                                <label for="took_breaks" style="margin: 0; cursor: pointer;">⏸️ Took Breaks</label>
+                                <label for="took_breaks" style="margin: 0; cursor: pointer;">⸻ Took Breaks</label>
                             </div>
                         </div>
                     </div>
@@ -805,14 +770,14 @@
     </div>
 
     <script>
-        // Initialize scores with default values
+        // Initialize scores with default values (0 = middle of -1, 0, 1 scale)
         let scores = {
-            timing: 3,
-            risk: 3,
-            analysis: 3,
-            discipline: 3,
-            exit: 3,
-            results: 3
+            timing: 0,
+            risk: 0,
+            analysis: 0,
+            discipline: 0,
+            exit: 0,
+            results: 0
         };
 
         // Initialize red flags tracking
@@ -841,16 +806,22 @@
             updateRatingDisplay(category, rating);
         }
         
-        // Function to update rating button display
+        // Function to update rating button display (fixed for -1, 0, 1 values)
         function updateRatingDisplay(category, rating) {
             // Find all rating buttons for this category and update their appearance
             const buttons = document.querySelectorAll(`[onclick*="setRating('${category}'"]`);
-            buttons.forEach((btn, index) => {
-                const btnRating = index + 1;
-                if (btnRating === rating) {
-                    btn.classList.add('selected');
-                } else {
-                    btn.classList.remove('selected');
+            buttons.forEach((btn) => {
+                // Extract the rating value from the onclick attribute
+                const onclickAttr = btn.getAttribute('onclick');
+                const ratingMatch = onclickAttr.match(/setRating\('.*?',\s*(-?\d+)\)/);
+                
+                if (ratingMatch) {
+                    const btnRating = parseInt(ratingMatch[1]);
+                    if (btnRating === rating) {
+                        btn.classList.add('selected');
+                    } else {
+                        btn.classList.remove('selected');
+                    }
                 }
             });
         }
@@ -960,11 +931,15 @@
                 return;
             }
             
+            // Calculate daily total score
+            const dailyTotal = Object.values(scores).reduce((sum, score) => sum + score, 0);
+            
             // Create entry object with all the fields including red and green flags
             const entry = {
                 date: date,
                 marketTimeframe: document.getElementById('market_timeframe').value,
                 scores: { ...scores },
+                dailyTotal: dailyTotal,
                 entryTrigger: document.getElementById('entry_trigger').value,
                 marketConditions: document.getElementById('market_conditions').value,
                 riskPercent: document.getElementById('risk_percent').value,
@@ -990,6 +965,7 @@
                 const redFlagCount = entry.redFlags.length;
                 const greenFlagCount = entry.greenFlags.length;
                 let message = `Entry updated for ${date}\n`;
+                message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
                 message += `🟢 Green flags: ${greenFlagCount}\n`;
                 message += `🚩 Red flags: ${redFlagCount}\n`;
                 alert(message);
@@ -999,6 +975,7 @@
                 const redFlagCount = entry.redFlags.length;
                 const greenFlagCount = entry.greenFlags.length;
                 let message = `New entry saved for ${date}\n`;
+                message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
                 message += `🟢 Green flags: ${greenFlagCount}\n`;
                 message += `🚩 Red flags: ${redFlagCount}\n`;
                 alert(message);
@@ -1012,10 +989,10 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').value = today;
             
-            // Reset scores to default
+            // Reset scores to default (0)
             Object.keys(scores).forEach(category => {
-                scores[category] = 3;
-                updateRatingDisplay(category, 3);
+                scores[category] = 0;
+                updateRatingDisplay(category, 0);
             });
             
             // Clear flags
@@ -1049,6 +1026,7 @@
                         <tr>
                             <th>Date</th>
                             <th>Instrument</th>
+                            <th>Daily Score</th>
                             <th>T.R.A.D.E.R Scores</th>
                             <th>Setup</th>
                             <th>Market</th>
@@ -1065,10 +1043,10 @@
             entries.forEach(entry => {
                 // Handle both old and new data formats
                 let scoresText = '';
+                let dailyScore = 0;
                 if (entry.scores) {
-                    const scoreValues = Object.values(entry.scores);
-                    const average = scoreValues.reduce((sum, score) => sum + score, 0) / scoreValues.length;
-                    scoresText = `T:${entry.scores.timing} R:${entry.scores.risk} A:${entry.scores.analysis} D:${entry.scores.discipline} E:${entry.scores.exit} R:${entry.scores.results} (Avg: ${average.toFixed(1)})`;
+                    dailyScore = entry.dailyTotal || Object.values(entry.scores).reduce((sum, score) => sum + score, 0);
+                    scoresText = `T:${entry.scores.timing} R:${entry.scores.risk} A:${entry.scores.analysis} D:${entry.scores.discipline} E:${entry.scores.exit} R:${entry.scores.results}`;
                 }
                 
                 // Convert market condition value to display text
@@ -1132,10 +1110,16 @@
                     ).join(' ');
                 }
                 
+                // Color code the daily score
+                let scoreColor = '#333';
+                if (dailyScore > 0) scoreColor = 'var(--success)';
+                if (dailyScore < 0) scoreColor = 'var(--danger)';
+                
                 tableHTML += `
                     <tr>
                         <td>${entry.date}</td>
                         <td>${entry.marketTimeframe || ''}</td>
+                        <td style="font-weight: bold; color: ${scoreColor};">${dailyScore}</td>
                         <td style="font-size: 12px;">${scoresText}</td>
                         <td>${setupDisplay}</td>
                         <td>${marketDisplay}</td>
