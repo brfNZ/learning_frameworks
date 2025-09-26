@@ -268,65 +268,6 @@
             height: 16px;
             accent-color: var(--green-flag);
         }
-
-        .green-flag-category {
-            margin-bottom: 10px;
-            border: 2px solid var(--green-flag);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .green-flag-header {
-            background: white;
-            color: var(--green-flag);
-            border-bottom: 2px solid var(--green-flag);
-            padding: 8px 12px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 13px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .green-flag-header:hover {
-            background-color: rgba(168, 213, 168, 0.1);
-            color: var(--green-flag-dark);
-        }
-
-        .green-flag-header .arrow {
-            transition: transform 0.3s ease;
-        }
-
-        .green-flag-header.expanded .arrow {
-            transform: rotate(180deg);
-        }
-
-        .green-flag-options {
-            background: #f8faf8;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .green-flag-options.expanded {
-            max-height: 200px;
-            padding: 10px;
-        }
-
-        .green-flag-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 0;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .green-flag-option:hover {
-            background-color: #edf2ed;
-        }
         
         /* Red Flags */
         .red-flag-container {
@@ -375,6 +316,45 @@
         .red-flag-btn .icon {
             font-size: 14px;
         }
+
+        /* Green Flags Grid (Flat like Red Flags) */
+.green-flag-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.green-flag-btn {
+    background-color: white;
+    border: 2px solid var(--green-flag);
+    color: var(--green-flag);
+    padding: 8px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+}
+
+.green-flag-btn:hover {
+    background-color: rgba(168, 213, 168, 0.1);
+    border-color: var(--green-flag-dark);
+}
+
+.green-flag-btn.active {
+    background-color: var(--green-flag);
+    color: white;
+    box-shadow: 0 2px 8px rgba(168, 213, 168, 0.3);
+}
+
+.green-flag-btn .icon {
+    font-size: 14px;
+}
         
         /* Weekly table styling */
         table {
@@ -504,7 +484,7 @@
             <div id="risk-dropdown-container"></div>
             
             <div class="question">
-                <label for="risk_percent">Risk Percentage:</label>
+                <label for="risk_percent">Risk %:</label>
                 <input type="number" step="0.1" placeholder="1.0%" id="risk_percent" value="1.0">
             </div>
     
@@ -573,131 +553,68 @@
             </div>
 
             <div class="section-header collapsible" style="background: white; color: var(--green-flag); border: 2px solid var(--green-flag);" onclick="toggleMainSection('green-flags')">
-                <span>🟢 GREEN FLAGS - What I Did Well</span>
+                <span>🟢 GREEN TICKS ✅ - What I Did Well</span>
                 <span class="arrow">▼</span>
             </div>
             <div class="collapsible-content" id="green-flags-content">
                 <div class="green-flag-container">
                     <label style="text-align: center; color: var(--green-flag-dark); font-size: 14px; font-weight: 500;">Track your successful trading behaviors:</label>
                     <div id="greenFlagCounter" style="text-align: center; margin: 8px 0; font-weight: 500; color: var(--green-flag-dark); font-size: 13px;">
-                        Green flags selected: <span id="greenFlagCount">0</span>
+                        Green ticks selected: <span id="greenFlagCount">0</span>
                     </div>
-                    
-                    <!-- Plan & Preparation -->
-                    <div class="green-flag-category">
-                        <div class="green-flag-header" onclick="toggleGreenCategory('plan')">
-                            <span>📋 Plan & Preparation</span>
-                            <span class="arrow">▼</span>
-                        </div>
-                        <div class="green-flag-options" id="plan-options">
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="followed_plan" onchange="toggleGreenFlag('followed_plan')">
-                                <label for="followed_plan" style="margin: 0; cursor: pointer;">📝 Followed Trading Plan</label>
-                            </div>
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="premarket_analysis" onchange="toggleGreenFlag('premarket_analysis')">
-                                <label for="premarket_analysis" style="margin: 0; cursor: pointer;">🔍 Proper Pre-Market Analysis</label>
-                            </div>
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="waited_setup" onchange="toggleGreenFlag('waited_setup')">
-                                <label for="waited_setup" style="margin: 0; cursor: pointer;">⏳ Waited for Setup</label>
-                            </div>
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="correct_timeframes" onchange="toggleGreenFlag('correct_timeframes')">
-                                <label for="correct_timeframes" style="margin: 0; cursor: pointer;">📊 Used Correct Timeframes</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Risk Management -->
-                    <div class="green-flag-category">
-                        <div class="green-flag-header" onclick="toggleGreenCategory('risk')">
-                            <span>💰 Risk Management</span>
-                            <span class="arrow">▼</span>
-                        </div>
-                        <div class="green-flag-options" id="risk-options">
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="perfect_position_size" onchange="toggleGreenFlag('perfect_position_size')">
-                                <label for="perfect_position_size" style="margin: 0; cursor: pointer;">🎯 Perfect Position Size</label>
-                            </div>
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="respected_risk" onchange="toggleGreenFlag('respected_risk')">
-                                <label for="respected_risk" style="margin: 0; cursor: pointer;">⚠️ Respected Risk Limits</label>
-                            </div>
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="quick_loss_cut" onchange="toggleGreenFlag('quick_loss_cut')">
-                                <label for="quick_loss_cut" style="margin: 0; cursor: pointer;">🛑 Quick Loss Cut</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Execution & Timing -->
-                    <div class="green-flag-category">
-                        <div class="green-flag-header" onclick="toggleGreenCategory('execution')">
-                            <span>🎯 Execution & Timing</span>
-                            <span class="arrow">▼</span>
-                        </div>
-                        <div class="green-flag-options" id="execution-options">
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="good_entry_timing" onchange="toggleGreenFlag('good_entry_timing')">
-                                <label for="good_entry_timing" style="margin: 0; cursor: pointer;">⏰ Good Entry Timing</label>
-                            </div>
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="hit_profit_target" onchange="toggleGreenFlag('hit_profit_target')">
-                                <label for="hit_profit_target" style="margin: 0; cursor: pointer;">🎯 Hit Profit Target</label>
-                            </div>
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="avoided_chasing" onchange="toggleGreenFlag('avoided_chasing')">
-                                <label for="avoided_chasing" style="margin: 0; cursor: pointer;">🏃‍♂️ Avoided Chasing</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Psychology & Discipline -->
-                    <div class="green-flag-category">
-                        <div class="green-flag-header" onclick="toggleGreenCategory('psychology')">
-                            <span>🧠 Psychology & Discipline</span>
-                            <span class="arrow">▼</span>
-                        </div>
-                        <div class="green-flag-options" id="psychology-options">
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="emotional_control" onchange="toggleGreenFlag('emotional_control')">
-                                <label for="emotional_control" style="margin: 0; cursor: pointer;">😌 Emotional Control</label>
-                            </div>
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="took_breaks" onchange="toggleGreenFlag('took_breaks')">
-                                <label for="took_breaks" style="margin: 0; cursor: pointer;">⸻ Took Breaks</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Learning & Growth -->
-                    <div class="green-flag-category">
-                        <div class="green-flag-header" onclick="toggleGreenCategory('learning')">
-                            <span>📈 Learning & Growth</span>
-                            <span class="arrow">▼</span>
-                        </div>
-                        <div class="green-flag-options" id="learning-options">
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="documented_trades" onchange="toggleGreenFlag('documented_trades')">
-                                <label for="documented_trades" style="margin: 0; cursor: pointer;">📝 Documented Trades</label>
-                            </div>
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="post_trade_analysis" onchange="toggleGreenFlag('post_trade_analysis')">
-                                <label for="post_trade_analysis" style="margin: 0; cursor: pointer;">🤔 Post-Trade Analysis</label>
-                            </div>
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="applied_lessons" onchange="toggleGreenFlag('applied_lessons')">
-                                <label for="applied_lessons" style="margin: 0; cursor: pointer;">💡 Applied Previous Lessons</label>
-                            </div>
-                            <div class="green-flag-option">
-                                <input type="checkbox" class="green-flag-checkbox" id="continuous_learning" onchange="toggleGreenFlag('continuous_learning')">
-                                <label for="continuous_learning" style="margin: 0; cursor: pointer;">📚 Continuous Learning</label>
-                            </div>
-                        </div>
+                    <div class="green-flag-grid">
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('followed_plan')">
+                            <span class="icon">📝</span> Followed Plan
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('premarket_analysis')">
+                            <span class="icon">🔍</span> Pre-Market Analysis
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('waited_setup')">
+                            <span class="icon">⏳</span> Waited for Setup
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('correct_timeframes')">
+                            <span class="icon">📊</span> Correct Timeframes
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('perfect_position_size')">
+                            <span class="icon">🎯</span> Perfect Position
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('respected_risk')">
+                            <span class="icon">⚠️</span> Respected Risk
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('quick_loss_cut')">
+                            <span class="icon">🛑</span> Quick Loss Cut
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('good_entry_timing')">
+                            <span class="icon">⏰</span> Good Entry Timing
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('hit_profit_target')">
+                            <span class="icon">🎯</span> Hit Profit Target
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('avoided_chasing')">
+                            <span class="icon">🏃‍♂️</span> Avoided Chasing
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('emotional_control')">
+                            <span class="icon">😌</span> Emotional Control
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('took_breaks')">
+                            <span class="icon">⸻</span> Took Breaks
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('documented_trades')">
+                            <span class="icon">📝</span> Documented Trades
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('post_trade_analysis')">
+                            <span class="icon">🤔</span> Post-Trade Analysis
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('applied_lessons')">
+                            <span class="icon">💡</span> Applied Lessons
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('continuous_learning')">
+                            <span class="icon">📚</span> Continuous Learning
+                        </button>
                     </div>
                 </div>
             </div>
+
 
             <div class="section-header red-flag collapsible" onclick="toggleMainSection('red-flags')">
                 <span>🚩 RED FLAGS & WARNING SIGNS</span>
@@ -996,19 +913,21 @@ const traderDropdowns = [
             });
         }
 
-        // Function to toggle green flag checkboxes
+        // Function to toggle green flag buttons
         function toggleGreenFlag(flagName) {
-            const checkbox = document.getElementById(flagName);
+            const button = document.querySelector(`[onclick="toggleGreenFlag('${flagName}')"]`);
             
-            if (checkbox.checked) {
-                greenFlags.add(flagName);
-            } else {
+            if (greenFlags.has(flagName)) {
                 greenFlags.delete(flagName);
+                button.classList.remove('active');
+            } else {
+                greenFlags.add(flagName);
+                button.classList.add('active');
             }
             
             updateGreenFlagCounter();
         }
-
+        
         // Function to toggle red flag buttons
         function toggleRedFlag(flagName) {
             const button = document.querySelector(`[onclick="toggleRedFlag('${flagName}')"]`);
@@ -1050,20 +969,6 @@ const traderDropdowns = [
                 header.classList.remove('expanded');
             } else {
                 content.classList.add('expanded');
-                header.classList.add('expanded');
-            }
-        }
-        
-        // Function to toggle green flag categories (expand/collapse)
-        function toggleGreenCategory(categoryName) {
-            const header = document.querySelector(`[onclick="toggleGreenCategory('${categoryName}')"]`);
-            const options = document.getElementById(`${categoryName}-options`);
-            
-            if (options.classList.contains('expanded')) {
-                options.classList.remove('expanded');
-                header.classList.remove('expanded');
-            } else {
-                options.classList.add('expanded');
                 header.classList.add('expanded');
             }
         }
