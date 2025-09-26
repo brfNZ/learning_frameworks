@@ -490,12 +490,7 @@
             <div id="timing-dropdown-container"></div>
             
             <!-- REMOVED: Static timing_dropdown - now dynamic below -->
-            
-            <div class="question">
-                <label for="entry_trigger">Entry Trigger:</label>
-                <input type="text" id="entry_trigger" name="entry_trigger" placeholder="3 Indians, MA cross, H&S completion...">
-            </div>
-            
+                        
             <div class="section-header">⚠️ RISK MANAGEMENT</div>
             
             <div class="rating-question">
@@ -575,11 +570,6 @@
             </div>
             <div id="exit-dropdown-container"></div>
             
-            <div class="question">
-                <label for="exit_reason">Exit Reason:</label>
-                <input type="text" placeholder="Stop hit, target reached, time-based..." id="exit_reason">
-            </div>
-
             <div class="section-header">💰 RESULTS & REWARD</div>
             
             <div class="rating-question">
@@ -927,12 +917,10 @@ const traderDropdowns = [
                 
                 // Load form fields
                 if (todayEntry.marketTimeframe) document.getElementById('market_timeframe').value = todayEntry.marketTimeframe;
-                if (todayEntry.entryTrigger) document.getElementById('entry_trigger').value = todayEntry.entryTrigger;
                 if (todayEntry.marketConditions) document.getElementById('market_conditions').value = todayEntry.marketConditions;
                 if (todayEntry.riskPercent) document.getElementById('risk_percent').value = todayEntry.riskPercent;
                 if (todayEntry.setupUsed) document.getElementById('setup_used').value = todayEntry.setupUsed;
                 if (todayEntry.emotionalState) document.getElementById('emotional_state').value = todayEntry.emotionalState;
-                if (todayEntry.exitReason) document.getElementById('exit_reason').value = todayEntry.exitReason;
                 if (todayEntry.rMultiple) document.getElementById('r_multiple').value = todayEntry.rMultiple;
                 if (todayEntry.keyTakeaway) document.getElementById('key_takeaway').value = todayEntry.keyTakeaway;
                 
@@ -1148,12 +1136,10 @@ const traderDropdowns = [
                 marketTimeframe: document.getElementById('market_timeframe').value,
                 scores: { ...scores },
                 dailyTotal: dailyTotal,
-                entryTrigger: document.getElementById('entry_trigger').value,
                 marketConditions: document.getElementById('market_conditions').value,
                 riskPercent: document.getElementById('risk_percent').value,
                 setupUsed: document.getElementById('setup_used').value,
                 emotionalState: document.getElementById('emotional_state').value,
-                exitReason: document.getElementById('exit_reason').value,
                 rMultiple: document.getElementById('r_multiple').value,
                 keyTakeaway: document.getElementById('key_takeaway').value,
                 redFlags: Array.from(redFlags),
