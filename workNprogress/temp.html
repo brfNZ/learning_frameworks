@@ -1170,6 +1170,17 @@ const traderDropdowns = [
                 };
                 
                 const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
+                // NEW: Emoji map for Setup Used (inserted here)
+                const setupEmojiMap = {
+                    'MA Cross': '📊 MA Cross',
+                    'Support/Resistance': '🔄 Support/Resistance',
+                    'Breakout - 2nd leg': '💥 Breakout - 2nd leg',
+                    'Pattern Breakout': '💥 Pattern Breakout',
+                    'H & S': '📈 H & S',
+                    'Cup & Handle': '☕ Cup & Handle',
+                    'RSI Overbought/Oversold': '📈📉 RSI Overbought/Oversold',
+                    '3 Indians': '🏹 3 Indians'
+                };
                 const setupDisplay = entry.setupUsed || entry.entryTrigger || '';
                 const rMultipleDisplay = entry.rMultiple || '';
                 const takeawayDisplay = entry.keyTakeaway || '';
