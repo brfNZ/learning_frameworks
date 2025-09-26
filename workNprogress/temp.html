@@ -544,20 +544,6 @@
             </div>
             <div id="discipline-dropdown-container"></div>
             
-            <div class="question">
-                <label for="emotional_state">Emotional State:</label>
-                <select id="emotional_state">
-                    <option value="">Select State</option>
-                    <option value="calm">😌 Calm & Focused</option>
-                    <option value="excited">😃 Excited</option>
-                    <option value="frustrated">😤 Frustrated</option>
-                    <option value="overconfident">😎 Overconfident</option>
-                    <option value="revenge">😡 Revenge Trading</option>
-                    <option value="fomo">😰 FOMO</option>
-                    <option value="bored">😑 Bored/Overtrading</option>
-                </select>
-            </div>
-
             <div class="section-header">🚪 EXIT STRATEGY</div>
             
             <div class="rating-question">
@@ -833,17 +819,17 @@ const traderDropdowns = [
         { value: 'RSI Overbought/Oversold', text: 'RSI Overbought/Oversold' },
         { value: '3 Indians', text: '3 Indians' }
     ] },
-    { id: 'discipline_dropdown', label: 'Psychology Assessment', category: 'discipline', options: [
+    { id: 'discipline_dropdown', label: 'Emotional State', category: 'discipline', options: [
         { value: '', text: 'Select...' },
-        { value: 'Calm', text: 'Calm' },
-        { value: 'Excited', text: 'Excited' },
-        { value: 'Frustrated', text: 'Frustrated' },
-        { value: 'Overconfident', text: 'Overconfident' },
-        { value: 'Revenge Trading', text: 'Revenge Trading' },
-        { value: 'FOMO', text: 'FOMO' },
-        { value: 'Bored/Overtrading', text: 'Bored/Overtrading' },
-        { value: 'Too impatient', text: 'Too impatient' },
-        { value: 'Worked on my psychology', text: 'Worked on my psychology' }
+        { value: 'calm', text: '😌 Calm & Focused' },
+        { value: 'excited', text: '😃 Excited' },
+        { value: 'frustrated', text: '😤 Frustrated' },
+        { value: 'overconfident', text: '😎 Overconfident' },
+        { value: 'revenge', text: '😡 Revenge Trading' },
+        { value: 'fomo', text: '😰 FOMO' },
+        { value: 'bored', text: '😑 Bored/Overtrading' },
+        { value: 'too_impatient', text: 'Too impatient' },
+        { value: 'worked_psychology', text: 'Worked on my psychology' }
     ] },
     { id: 'exit_dropdown', label: 'Exit Assessment', category: 'exit', options: [
         { value: '', text: 'Select...' },
@@ -920,7 +906,7 @@ const traderDropdowns = [
                 if (todayEntry.marketConditions) document.getElementById('market_conditions').value = todayEntry.marketConditions;
                 if (todayEntry.riskPercent) document.getElementById('risk_percent').value = todayEntry.riskPercent;
                 if (todayEntry.setupUsed) document.getElementById('setup_used').value = todayEntry.setupUsed;
-                if (todayEntry.emotionalState) document.getElementById('emotional_state').value = todayEntry.emotionalState;
+                if (todayEntry.emotionalState) document.getElementById('discipline_dropdown').value = todayEntry.emotionalState;
                 if (todayEntry.rMultiple) document.getElementById('r_multiple').value = todayEntry.rMultiple;
                 if (todayEntry.keyTakeaway) document.getElementById('key_takeaway').value = todayEntry.keyTakeaway;
                 
@@ -1139,7 +1125,7 @@ const traderDropdowns = [
                 marketConditions: document.getElementById('market_conditions').value,
                 riskPercent: document.getElementById('risk_percent').value,
                 setupUsed: document.getElementById('setup_used').value,
-                emotionalState: document.getElementById('emotional_state').value,
+                emotionalState: document.getElementById('discipline_dropdown').value,
                 rMultiple: document.getElementById('r_multiple').value,
                 keyTakeaway: document.getElementById('key_takeaway').value,
                 redFlags: Array.from(redFlags),
