@@ -873,7 +873,7 @@ const traderDropdowns = [
         // Generate HTML for all T.R.A.D.E.R dropdowns (now per-section)
         function generateTraderDropdowns() {
             traderDropdowns.forEach(config => {
-                const containerId = `${config.category}-dropdown-container`;
+                let containerId = `${config.category}-dropdown-container`;
                 if (config.category === 'market') containerId = 'market-conditions-container';
                 const container = document.getElementById(containerId);
                 if (!container) return;  // Skip if placeholder missing
