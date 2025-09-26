@@ -499,18 +499,7 @@
                 </div>
             </div>
             <div id="analysis-dropdown-container"></div>
-            
-            <div class="question">
-                <label for="setup_used">Setup Used:</label>
-                <select id="setup_used">
-                    <option value="">Select Setup</option>
-                    <option value="3Indians">🏹 3 Indians</option>
-                    <option value="MA Cross">📊 MA Cross</option>
-                    <option value="Support/Resistance">🔄 Support/Resistance</option>
-                    <option value="Breakout">💥 Breakout</option>
-                    <option value="Other">🎯 Other</option>
-                </select>
-            </div>
+            <div id="setup-dropdown-container"></div>
 
             <div class="section-header">🧠 DISCIPLINE & PSYCHOLOGY</div>
             
@@ -736,6 +725,17 @@ const traderDropdowns = [
         { value: 'RSI Overbought/Oversold', text: 'RSI Overbought/Oversold' },
         { value: '3 Indians', text: '3 Indians' }
     ] },
+    { id: 'setup_used_dropdown', label: 'Setup Used', category: 'setup', options: [
+        { value: '', text: 'Select...' },
+        { value: 'MA Cross', text: '📊 MA Cross' },
+        { value: 'Support/Resistance', text: '🔄 Support/Resistance' },
+        { value: 'Breakout - 2nd leg', text: '💥 Breakout - 2nd leg' },
+        { value: 'Pattern Breakout', text: '💥 Pattern Breakout' },
+        { value: 'H & S', text: '📈 H & S' },
+        { value: 'Cup & Handle', text: '☕ Cup & Handle' },
+        { value: 'RSI Overbought/Oversold', text: '📈📉 RSI Overbought/Oversold' },
+        { value: '3 Indians', text: '🏹 3 Indians' }
+    ] },
     { id: 'discipline_dropdown', label: 'Emotional State', category: 'discipline', options: [
         { value: '', text: 'Select...' },
         { value: 'calm', text: '😌 Calm' },
@@ -821,7 +821,7 @@ const traderDropdowns = [
                 if (todayEntry.marketTimeframe) document.getElementById('market_timeframe').value = todayEntry.marketTimeframe;
                 if (todayEntry.marketConditions) document.getElementById('market_conditions').value = todayEntry.marketConditions;
                 if (todayEntry.riskPercent) document.getElementById('risk_percent').value = todayEntry.riskPercent;
-                if (todayEntry.setupUsed) document.getElementById('setup_used').value = todayEntry.setupUsed;
+                if (todayEntry.setupUsed) document.getElementById('setup_used_dropdown').value = todayEntry.setupUsed;
                 if (todayEntry.emotionalState) document.getElementById('discipline_dropdown').value = todayEntry.emotionalState;
                 if (todayEntry.rMultiple) document.getElementById('r_multiple').value = todayEntry.rMultiple;
                 if (todayEntry.keyTakeaway) document.getElementById('key_takeaway').value = todayEntry.keyTakeaway;
@@ -1028,7 +1028,7 @@ const traderDropdowns = [
                 dailyTotal: dailyTotal,
                 marketConditions: document.getElementById('market_conditions').value,
                 riskPercent: document.getElementById('risk_percent').value,
-                setupUsed: document.getElementById('setup_used').value,
+                setupUsed: document.getElementById('setup_used_dropdown').value,
                 emotionalState: document.getElementById('discipline_dropdown').value,
                 rMultiple: document.getElementById('r_multiple').value,
                 keyTakeaway: document.getElementById('key_takeaway').value,
