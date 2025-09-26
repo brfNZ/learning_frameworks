@@ -433,14 +433,13 @@
             font-size: 10px;
         }
 
-        /* Fix for emojis in Setup column (6th column) */
-        th:nth-child(6), td:nth-child(6) {
-            font-size: 14px !important;  /* Larger base for emojis to render */
-            line-height: 1.4 !important;  /* Space for emoji height */
-            white-space: nowrap;  /* No wrapping/clipping */
-            font-family: 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif !important;  /* Mac emoji fallback */
-        }    
-    </style>
+        th:nth-child(6), td:nth-child(6) {  /* Setup column */
+            max-width: 100px;  /* Narrower than 150px */
+            font-size: 11px;   /* Smaller text */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+</style>
 </head>
 <body>
     <h1>Trading Journal</h1>
@@ -1178,17 +1177,6 @@ const traderDropdowns = [
                 };
                 
                 const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
-                // NEW: Emoji map for Setup Used (inserted here)
-                const setupEmojiMap = {
-                    'MA Cross': '📊 MA Cross',
-                    'Support/Resistance': '🔄 Support/Resistance',
-                    'Breakout - 2nd leg': '💥 Breakout - 2nd leg',
-                    'Pattern Breakout': '💥 Pattern Breakout',
-                    'H & S': '📈 H & S',
-                    'Cup & Handle': '☕ Cup & Handle',
-                    'RSI Overbought/Oversold': '📈📉 RSI Overbought/Oversold',
-                    '3 Indians': '🏹 3 Indians'
-                };
                 const setupDisplay = entry.setupUsed || entry.entryTrigger || '';
                 const rMultipleDisplay = entry.rMultiple || '';
                 const takeawayDisplay = entry.keyTakeaway || '';
