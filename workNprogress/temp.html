@@ -456,6 +456,7 @@
                 <label for="market_timeframe">Market & Timeframe:</label>
                 <input type="text" id="market_timeframe" name="market_timeframe" placeholder="eg. HK, USD/JPY - 1H, 4H, Daily...">
             </div>
+            <div id="market-conditions-container"></div>
 
             <div class="section-header">⏰ TIMING & TRIGGER</div>
             
@@ -476,18 +477,6 @@
                 <input type="text" id="entry_trigger" name="entry_trigger" placeholder="3 Indians, MA cross, H&S completion...">
             </div>
             
-            <div class="question">
-                <label for="market_conditions">Market Conditions:</label>
-                <select id="market_conditions" name="market_conditions">
-                    <option value="">Select Condition</option>
-                    <option value="strong_uptrend">📈 Strong Uptrend</option>
-                    <option value="strong_downtrend">📉 Strong Downtrend</option>
-                    <option value="ranging_sideways">↔️ Ranging/Sideways</option>
-                    <option value="high_volatility">⚡ High Volatility</option>
-                    <option value="low_volatility">😴 Low Volatility</option>
-                </select>
-            </div>
-
             <div class="section-header">⚠️ RISK MANAGEMENT</div>
             
             <div class="rating-question">
@@ -794,6 +783,16 @@
 
         // NEW: Config for T.R.A.D.E.R text dropdowns
 const traderDropdowns = [
+
+    { id: 'market_conditions', label: 'Market Conditions', category: 'market', options: [
+        { value: '', text: 'Select Condition' },
+        { value: 'strong_uptrend', text: '📈 Strong Uptrend' },
+        { value: 'strong_downtrend', text: '📉 Strong Downtrend' },
+        { value: 'ranging_sideways', text: '↔️ Ranging/Sideways' },
+        { value: 'high_volatility', text: '⚡ High Volatility' },
+        { value: 'low_volatility', text: '😴 Low Volatility' }
+    ] },
+
     { id: 'timing_dropdown', label: 'Timing Assessment', category: 'timing', options: [
         { value: '', text: 'Select...' },
         { value: 'Too early', text: 'Too early' },
