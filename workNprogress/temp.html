@@ -456,7 +456,7 @@
                 <label for="market_timeframe">Market & Timeframe:</label>
                 <input type="text" id="market_timeframe" name="market_timeframe" placeholder="eg. HK, USD/JPY - 1H, 4H, Daily...">
             </div>
-            <div id="market-conditions-container"></div>
+            <div id="market-conditions-container"></div> <!-- Dynamic market conditions dropdown -->
 
             <div class="section-header">⏰ TIMING & TRIGGER</div>
             
@@ -874,6 +874,7 @@ const traderDropdowns = [
         function generateTraderDropdowns() {
             traderDropdowns.forEach(config => {
                 const containerId = `${config.category}-dropdown-container`;
+                if (config.category === 'market') containerId = 'market-conditions-container';
                 const container = document.getElementById(containerId);
                 if (!container) return;  // Skip if placeholder missing
 
