@@ -432,6 +432,13 @@
             max-width: 150px;
             font-size: 10px;
         }
+
+        /* Fix for emojis in Setup column */
+        th:nth-child(6), td:nth-child(6) {
+            font-size: 12px !important;  /* Larger for emoji visibility */
+            line-height: 1.3;  /* Better emoji alignment */
+            white-space: nowrap;  /* Prevents wrapping/clipping */
+        }
     </style>
 </head>
 <body>
