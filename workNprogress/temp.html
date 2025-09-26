@@ -792,40 +792,61 @@
             return `${year}-${month}-${day}`;
         }
 
-        // NEW: Config for T.R.A.D.E.R text dropdowns (scalable to 6)
-        const traderDropdowns = [
-            { id: 'timing_dropdown', label: 'Timing Assessment', category: 'timing', options: [
-                { value: '', text: 'Select...' },
-                { value: 'Too early', text: 'Too early' },
-                { value: 'Missed setup', text: 'Missed setup' },
-                { value: 'Perfect timing', text: 'Perfect timing' },
-                { value: 'Late', text: 'Late' }
-            ] },
-            { id: 'risk_dropdown', label: 'Risk Assessment', category: 'risk', options: [
-                { value: '', text: 'Select...' },
-                { value: 'Over-risked', text: 'Over-risked' },
-                { value: 'Perfect sizing', text: 'Perfect sizing' },
-                { value: 'Under-risked', text: 'Under-risked' }
-            ] },
-            { id: 'analysis_dropdown', label: 'Analysis Assessment', category: 'analysis', options: [
-                { value: '', text: 'Select...' },
-                { value: 'Weak analysis', text: 'Weak analysis' },
-                { value: 'Solid setup', text: 'Solid setup' },
-                { value: 'Missed key factors', text: 'Missed key factors' }
-            ] },
-            { id: 'discipline_dropdown', label: 'Discipline Assessment', category: 'discipline', options: [
-                { value: '', text: 'Select...' },
-                { value: 'Impulsive', text: 'Impulsive' },
-                { value: 'Stuck to rules', text: 'Stuck to rules' },
-                { value: 'Hesitant', text: 'Hesitant' }
-            ] },
-            { id: 'exit_dropdown', label: 'Exit Assessment', category: 'exit', options: [
-                { value: '', text: 'Select...' },
-                { value: 'Premature exit', text: 'Premature exit' },
-                { value: 'Optimal exit', text: 'Optimal exit' },
-                { value: 'Held too long', text: 'Held too long' }
-            ] },
-        ];
+        // NEW: Config for T.R.A.D.E.R text dropdowns
+const traderDropdowns = [
+    { id: 'timing_dropdown', label: 'Timing Assessment', category: 'timing', options: [
+        { value: '', text: 'Select...' },
+        { value: 'Too early', text: 'Too early' },
+        { value: 'Perfect timing', text: 'Perfect timing' },
+        { value: 'Missed setup', text: 'Missed setup' },
+        { value: 'Late', text: 'Late' }
+    ] },
+    { id: 'risk_dropdown', label: 'Risk Assessment', category: 'risk', options: [
+        { value: '', text: 'Select...' },
+        { value: 'Small risk', text: 'Small risk' },
+        { value: 'Position too big', text: 'Position too big' },
+        { value: 'Just right', text: 'Just right' },
+        { value: 'Moved stops', text: 'Moved stops' }
+    ] },
+    { id: 'analysis_quality_dropdown', label: 'Setup Quality', category: 'analysis_quality', options: [
+        { value: '', text: 'Select...' },
+        { value: 'Perfect recognition', text: 'Perfect recognition' },
+        { value: 'Forced trade', text: 'Forced trade' },
+        { value: 'Missed it', text: 'Missed it' }
+    ] },
+    { id: 'analysis_type_dropdown', label: 'Setup Type', category: 'analysis_type', options: [
+        { value: '', text: 'Select...' },
+        { value: 'MA Cross', text: 'MA Cross' },
+        { value: 'Support/Resistance', text: 'Support/Resistance' },
+        { value: 'Breakout - 2nd leg', text: 'Breakout - 2nd leg' },
+        { value: 'Pattern Breakout', text: 'Pattern Breakout' },
+        { value: 'H & S', text: 'H & S' },
+        { value: 'Cup & Handle', text: 'Cup & Handle' },
+        { value: 'RSI Overbought/Oversold', text: 'RSI Overbought/Oversold' },
+        { value: '3 Indians', text: '3 Indians' }
+    ] },
+    { id: 'discipline_dropdown', label: 'Psychology Assessment', category: 'discipline', options: [
+        { value: '', text: 'Select...' },
+        { value: 'Calm', text: 'Calm' },
+        { value: 'Excited', text: 'Excited' },
+        { value: 'Frustrated', text: 'Frustrated' },
+        { value: 'Overconfident', text: 'Overconfident' },
+        { value: 'Revenge Trading', text: 'Revenge Trading' },
+        { value: 'FOMO', text: 'FOMO' },
+        { value: 'Bored/Overtrading', text: 'Bored/Overtrading' },
+        { value: 'Too impatient', text: 'Too impatient' },
+        { value: 'Worked on my psychology', text: 'Worked on my psychology' }
+    ] },
+    { id: 'exit_dropdown', label: 'Exit Assessment', category: 'exit', options: [
+        { value: '', text: 'Select...' },
+        { value: 'Stop Hit', text: 'Stop Hit' },
+        { value: 'Trailing Stop Hit', text: 'Trailing Stop Hit' },
+        { value: 'Profit Target Reached', text: 'Profit Target Reached' },
+        { value: 'Fearful Early Exit', text: 'Fearful Early Exit' },
+        { value: 'Let Winners Run', text: 'Let Winners Run' },
+        { value: 'Held Too Long', text: 'Held Too Long' }
+    ] }
+];
 
         // Initialize scores with default values (0 = middle of -1, 0, 1 scale)
         let scores = {
