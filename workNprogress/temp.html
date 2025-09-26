@@ -433,12 +433,13 @@
             font-size: 10px;
         }
 
-        /* Fix for emojis in Setup column */
+        /* Fix for emojis in Setup column (6th column) */
         th:nth-child(6), td:nth-child(6) {
-            font-size: 12px !important;  /* Larger for emoji visibility */
-            line-height: 1.3;  /* Better emoji alignment */
-            white-space: nowrap;  /* Prevents wrapping/clipping */
-        }
+            font-size: 14px !important;  /* Larger base for emojis to render */
+            line-height: 1.4 !important;  /* Space for emoji height */
+            white-space: nowrap;  /* No wrapping/clipping */
+            font-family: 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif !important;  /* Mac emoji fallback */
+        }    
     </style>
 </head>
 <body>
