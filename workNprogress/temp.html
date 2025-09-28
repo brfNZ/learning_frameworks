@@ -429,14 +429,15 @@
 
         /* Date column - ensure full date fits on one line */
         th:nth-child(1), td:nth-child(1) {
-            min-width: 50px;
+            max-width: 50px;
             white-space: nowrap;
         }
 
         /* NEW: Styling for R value column */
         th:nth-last-child(4), td:nth-last-child(4) {
-            max-width: 50px;
-            width: 50px;
+        max-width: 50px;
+        text-align: center;
+        width: 50px;
         }
 
         th:nth-child(6), td:nth-child(6) {  /* Setup column */
@@ -1140,7 +1141,7 @@ const traderDropdowns = [
                             <th>T.R.A.D.E.R Details</th>  <!-- NEW COLUMN -->
                             <th>Setup</th>
                             <th>Market</th>
-                            <th>R-value</th>
+                            <th>R value</th>
                             <th class="red-flags-column">Green Flags</th>
                             <th class="red-flags-column">Red Flags</th>
                             <th>Key Takeaway</th>
