@@ -1194,7 +1194,8 @@ const traderDropdowns = [
                 };
                 
                 const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
-                const setupDisplay = entry.setupUsed || entry.entryTrigger || '';
+                const setupDisplay = [entry.setupUsed, entry.setupDetails].filter(Boolean).join('<br>') || '';
+
                 const rMultipleDisplay = entry.rMultiple || '';
                 const takeawayDisplay = entry.keyTakeaway || '';
                 
