@@ -429,12 +429,13 @@
 
         /* NEW: Styling for T.R.A.D.E.R Details column */
         th:nth-last-child(5), td:nth-last-child(5) {
-            max-width: 150px;
+            max-width: 250px;
             font-size: 10px;
+            white-space: nowrap;
         }
 
         th:nth-child(6), td:nth-child(6) {  /* Setup column */
-            max-width: 100px;  /* Narrower than 150px */
+            max-width: 180px;  /* Narrower than 150px */
             font-size: 11px;   /* Smaller text */
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1163,7 +1164,7 @@ const traderDropdowns = [
                 if (entry.traderTexts) {
                     const details = traderDropdowns.map(config => {
                         // Skip setup category to avoid duplication with Setup column
-                        if (config.category === 'setup') return null;
+                        if (config.category === 'setup' || config.category === 'market') return null;
                         const text = entry.traderTexts[config.category];
                         return text ? `${config.category.charAt(0).toUpperCase()}: ${text}` : null;
                     }).filter(Boolean);
