@@ -1140,7 +1140,7 @@ const traderDropdowns = [
                             <th>T.R.A.D.E.R Details</th>  <!-- NEW COLUMN -->
                             <th>Setup</th>
                             <th>Market</th>
-                            <th>R-Multiple</th>
+                            <th>R value</th>
                             <th class="red-flags-column">Green Flags</th>
                             <th class="red-flags-column">Red Flags</th>
                             <th>Key Takeaway</th>
@@ -1254,7 +1254,7 @@ const traderDropdowns = [
                     <tr>
                         <td>${formatDateShort(entry.date)}</td>
                         <td>${entry.marketTimeframe || ''}</td>
-                        <td style="font-weight: bold; color: ${scoreColor};">${dailyScore}</td>
+                        <td style="color: ${scoreColor};">${dailyScore}</td>
                         <td style="font-size: 12px;">${scoresText}</td>
                         <td style="font-size: 10px; max-width: 150px;">${traderDetails || 'N/A'}</td>  <!-- NEW CELL -->
                         <td>${setupDisplay}</td>
