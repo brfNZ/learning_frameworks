@@ -514,6 +514,11 @@
             </div>
             <div id="analysis-dropdown-container"></div>
             <div id="setup-dropdown-container"></div>
+             <!-- Setup details optional text entry-->
+            <div class="question"> 
+                <label for="setup_details">Setup Details (optional):</label>
+                <input type="text" id="setup_details" placeholder="e.g., hanging man, doji, at 1.2500 resistance..."></input>
+            </div>
 
             <div class="section-header">🧠 DISCIPLINE & PSYCHOLOGY</div>
             
@@ -837,6 +842,7 @@ const traderDropdowns = [
                 if (todayEntry.marketConditions) document.getElementById('market_conditions').value = todayEntry.marketConditions;
                 if (todayEntry.riskPercent) document.getElementById('risk_percent').value = todayEntry.riskPercent;
                 if (todayEntry.setupUsed) document.getElementById('setup_used_dropdown').value = todayEntry.setupUsed;
+                if (todayEntry.setupDetails) document.getElementById('setup_details').value = todayEntry.setupDetails;
                 if (todayEntry.emotionalState) document.getElementById('discipline_dropdown').value = todayEntry.emotionalState;
                 if (todayEntry.rMultiple) document.getElementById('r_multiple').value = todayEntry.rMultiple;
                 if (todayEntry.keyTakeaway) document.getElementById('key_takeaway').value = todayEntry.keyTakeaway;
@@ -1044,6 +1050,7 @@ const traderDropdowns = [
                 marketConditions: document.getElementById('market_conditions').value,
                 riskPercent: document.getElementById('risk_percent').value,
                 setupUsed: document.getElementById('setup_used_dropdown').value,
+                setupDetails: document.getElementById('setup_details').value,
                 emotionalState: document.getElementById('discipline_dropdown').value,
                 rMultiple: document.getElementById('r_multiple').value,
                 keyTakeaway: document.getElementById('key_takeaway').value,
