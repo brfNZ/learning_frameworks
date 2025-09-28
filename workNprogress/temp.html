@@ -427,6 +427,12 @@
             font-size: 10px;
         }
 
+        /* Date column - ensure full date fits on one line */
+        th:nth-child(1), td:nth-child(1) {
+            min-width: 80px;
+            white-space: nowrap;
+        }
+
         /* NEW: Styling for T.R.A.D.E.R Details column */
         th:nth-last-child(5), td:nth-last-child(5) {
             max-width: 250px;
@@ -1156,7 +1162,7 @@ const traderDropdowns = [
                         }
                     });
                     
-                    scoresText = nonZeroScores.join(' ') || 'All neutral';
+                    scoresText = nonZeroScores.join(' ') || '------';
                 }                
 
                 // Extract and format T.R.A.D.E.R texts (one per line, excluding setup)
