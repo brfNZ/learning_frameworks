@@ -1158,14 +1158,16 @@ const traderDropdowns = [
                     scoresText = nonZeroScores.join(' ') || 'All neutral';
                 }                
 
-                // NEW: Extract and format T.R.A.D.E.R texts (comma-separated for efficiency)
+                // Extract and format T.R.A.D.E.R texts (one per line, excluding setup)
                 let traderDetails = '';
                 if (entry.traderTexts) {
                     const details = traderDropdowns.map(config => {
+                        // Skip setup category to avoid duplication with Setup column
+                        if (config.category === 'setup') return null;
                         const text = entry.traderTexts[config.category];
                         return text ? `${config.category.charAt(0).toUpperCase()}: ${text}` : null;
                     }).filter(Boolean);
-                    traderDetails = details.join(', ');
+                    traderDetails = details.join('<br>');
                 }
                 
                 // Convert market condition value to display text
