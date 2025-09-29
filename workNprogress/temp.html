@@ -40,7 +40,6 @@
             font-weight: 600;
         }
         
-        /* Navigation buttons at the top */
         .nav-buttons {
             display: flex;
             justify-content: center;
@@ -70,7 +69,6 @@
             color: white;
         }
         
-        /* Hide sections by default */
         .section {
             display: none;
         }
@@ -82,24 +80,21 @@
         .question {
             margin: 12px 0;
         }
-
-        /* UPDATED: Tighter spacing after dropdowns */
+        
         .question + .question {
-            margin-top: 6px;  /* Reduces gap between questions (e.g., emoji → dropdown → next field) */
+            margin-top: 6px;
         }
-
-        /* Tighter dropdowns specifically */
+        
         select {
-            padding: 6px 8px;  /* Smaller padding than default 8px 10px */
-            height: 36px;  /* Fixed height for compactness (adjust to 32px for even tighter) */
-            font-size: 13px;  /* Slightly smaller font */
-            line-height: 1.4;  /* Tighter line height */
+            padding: 6px 8px;
+            height: 36px;
+            font-size: 13px;
+            line-height: 1.4;
         }
-
-        /* Optional: Hover/focus keeps it subtle */
+        
         select:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.1);  /* Thinner focus ring */
+            box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.1);
         }
         
         .section-header {
@@ -120,26 +115,26 @@
             align-items: center;
             transition: all 0.3s ease;
         }
-
+        
         .section-header.collapsible:hover {
             opacity: 0.9;
         }
-
+        
         .section-header.collapsible .arrow {
             transition: transform 0.3s ease;
             font-size: 16px;
         }
-
+        
         .section-header.collapsible.expanded .arrow {
             transform: rotate(180deg);
         }
-
+        
         .collapsible-content {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease;
         }
-
+        
         .collapsible-content.expanded {
             max-height: 2000px;
         }
@@ -253,7 +248,6 @@
             box-shadow: 0 2px 8px rgba(168, 213, 168, 0.2);
         }
         
-        /* Green Flags */
         .green-flag-container {
             background: white;
             border-radius: 12px;
@@ -262,14 +256,7 @@
             border: 1px solid #E5E7EB;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
-
-        .green-flag-checkbox {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--green-flag);
-        }
         
-        /* Red Flags */
         .red-flag-container {
             background: white;
             border-radius: 12px;
@@ -279,17 +266,15 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
         
-        .red-flag-grid {
+        .red-flag-grid, .green-flag-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 8px;
             margin-top: 10px;
         }
         
-        .red-flag-btn {
+        .red-flag-btn, .green-flag-btn {
             background-color: white;
-            border: 2px solid var(--red-flag);
-            color: var(--red-flag);
             padding: 8px 12px;
             border-radius: 12px;
             cursor: pointer;
@@ -300,6 +285,11 @@
             align-items: center;
             gap: 6px;
             justify-content: center;
+        }
+        
+        .red-flag-btn {
+            border: 2px solid var(--red-flag);
+            color: var(--red-flag);
         }
         
         .red-flag-btn:hover {
@@ -313,50 +303,26 @@
             box-shadow: 0 2px 8px rgba(232, 165, 165, 0.3);
         }
         
-        .red-flag-btn .icon {
+        .green-flag-btn {
+            border: 2px solid var(--green-flag);
+            color: var(--green-flag);
+        }
+        
+        .green-flag-btn:hover {
+            background-color: rgba(168, 213, 168, 0.1);
+            border-color: var(--green-flag-dark);
+        }
+        
+        .green-flag-btn.active {
+            background-color: var(--green-flag);
+            color: white;
+            box-shadow: 0 2px 8px rgba(168, 213, 168, 0.3);
+        }
+        
+        .red-flag-btn .icon, .green-flag-btn .icon {
             font-size: 14px;
         }
-
-        /* Green Flags Grid (Flat like Red Flags) */
-.green-flag-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.green-flag-btn {
-    background-color: white;
-    border: 2px solid var(--green-flag);
-    color: var(--green-flag);
-    padding: 8px 12px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    justify-content: center;
-}
-
-.green-flag-btn:hover {
-    background-color: rgba(168, 213, 168, 0.1);
-    border-color: var(--green-flag-dark);
-}
-
-.green-flag-btn.active {
-    background-color: var(--green-flag);
-    color: white;
-    box-shadow: 0 2px 8px rgba(168, 213, 168, 0.3);
-}
-
-.green-flag-btn .icon {
-    font-size: 14px;
-}
         
-        /* Weekly table styling */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -407,55 +373,78 @@
             font-size: 11px;
         }
         
-        .red-flag-tag {
+        .red-flag-tag, .green-flag-tag {
             display: inline-block;
-            background-color: var(--red-flag);
-            color: white;
             padding: 2px 6px;
             margin: 1px;
             border-radius: 4px;
             font-size: 10px;
         }
         
+        .red-flag-tag {
+            background-color: var(--red-flag);
+            color: white;
+        }
+        
         .green-flag-tag {
-            display: inline-block;
             background-color: var(--green-flag);
             color: white;
-            padding: 2px 6px;
-            margin: 1px;
-            border-radius: 4px;
-            font-size: 10px;
         }
-
-        /* Date column - ensure full date fits on one line */
+        
         th:nth-child(1), td:nth-child(1) {
             max-width: 50px;
             white-space: nowrap;
         }
-
-        /* NEW: Styling for R value column */
+        
         th:nth-last-child(4), td:nth-last-child(4) {
-        min-width: 45px;
+            width: 55px;
         }
-
-        th:nth-child(6), td:nth-child(6) {  /* Setup column */
-            max-width: 180px;  /* Narrower than 150px */
-            font-size: 11px;   /* Smaller text */
+        
+        th:nth-child(6), td:nth-child(6) {
+            max-width: 180px;
+            font-size: 11px;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-</style>
+        
+        th:nth-child(7), td:nth-child(7) {
+            max-width: 120px;
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .save-btn {
+            display: block;
+            width: 66%;
+            margin: 8px auto 0;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            background: rgba(123, 179, 224, 0.1);
+            color: var(--primary-dark);
+            border: 2px solid var(--primary-dark);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(90, 155, 212, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .save-btn:hover {
+            background: rgba(123, 179, 224, 0.2);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(90, 155, 212, 0.3);
+        }
+    </style>
 </head>
 <body>
     <h1>Trading Journal</h1>
     
-    <!-- Navigation buttons -->
     <div class="nav-buttons">
         <button class="nav-button active" onclick="showSection('daily')">Daily Entry</button>
         <button class="nav-button" onclick="showSection('weekly')">Weekly Review</button>
     </div>
-    
-    <!-- Daily Entry Section -->
+
     <div id="daily" class="section active">
         <form id="dailyForm">
             <div class="question">
@@ -467,7 +456,7 @@
                 <label for="market_timeframe">Market & Timeframe:</label>
                 <input type="text" id="market_timeframe" name="market_timeframe" placeholder="eg. HK, USD/JPY - 1H, 4H, Daily...">
             </div>
-            <div id="market-conditions-container"></div> <!-- Dynamic market conditions dropdown -->
+            <div id="market-conditions-container"></div>
 
             <div class="section-header">⏰ TIMING & TRIGGER</div>
             
@@ -481,8 +470,6 @@
             </div>
             <div id="timing-dropdown-container"></div>
             
-            <!-- REMOVED: Static timing_dropdown - now dynamic below -->
-                        
             <div class="section-header">⚠️ RISK MANAGEMENT</div>
             
             <div class="rating-question">
@@ -512,10 +499,10 @@
             </div>
             <div id="analysis-dropdown-container"></div>
             <div id="setup-dropdown-container"></div>
-             <!-- Setup details optional text entry-->
+            
             <div class="question"> 
                 <label for="setup_details">Setup Details (optional):</label>
-                <input type="text" id="setup_details" placeholder="e.g., hanging man, at 1.2500 resistance..."></input>
+                <input type="text" id="setup_details" placeholder="e.g., hanging man, at 1.2500 resistance...">
             </div>
 
             <div class="section-header">🧠 DISCIPLINE & PSYCHOLOGY</div>
@@ -552,7 +539,7 @@
                     <button type="button" class="emoji-btn" onclick="setRating('results', 1)">😊<br><small>Good</small></button>
                 </div>
             </div>
-                        
+            
             <div class="question">
                 <label for="r_multiple">R value</label>
                 <input type="number" step="0.1" placeholder="+5.0 or -1.0" id="r_multiple" value="1.0">
@@ -564,10 +551,7 @@
             </div>
             <div class="collapsible-content" id="green-flags-content">
                 <div class="green-flag-container">
-                    <label style="text-align: center; color: var(--green-flag-dark); font-size: 14px; font-weight: 500;">Track your successful trading behaviors:</label>
-                    <div id="greenFlagCounter" style="text-align: center; margin: 8px 0; font-weight: 500; color: var(--green-flag-dark); font-size: 13px;">
-                        Green ticks selected: <span id="greenFlagCount">0</span>
-                    </div>
+                    <label style="text-align: center; color: var(--green-flag-dark); font-size: 14px; font-weight: 500;">Celebrate wins to build discipline & edge</label>
                     <div class="green-flag-grid">
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('followed_plan')">
                             <span class="icon">📝</span> Followed Plan
@@ -584,14 +568,8 @@
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('perfect_position_size')">
                             <span class="icon">🎯</span> Perfect Position
                         </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('respected_risk')">
-                            <span class="icon">⚠️</span> Respected Risk
-                        </button>
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('quick_loss_cut')">
                             <span class="icon">🛑</span> Quick Loss Cut
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('good_entry_timing')">
-                            <span class="icon">⏰</span> Good Entry Timing
                         </button>
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('hit_profit_target')">
                             <span class="icon">🎯</span> Hit Profit Target
@@ -602,9 +580,6 @@
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('emotional_control')">
                             <span class="icon">😌</span> Emotional Control
                         </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('took_breaks')">
-                            <span class="icon">⸻</span> Took Breaks
-                        </button>
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('documented_trades')">
                             <span class="icon">📝</span> Documented Trades
                         </button>
@@ -614,9 +589,30 @@
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('applied_lessons')">
                             <span class="icon">💡</span> Applied Lessons
                         </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('continuous_learning')">
-                            <span class="icon">📚</span> Continuous Learning
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('stuck_risk_limits')">
+                            <span class="icon">⚖️</span> Stuck to Risk Limits
                         </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('waited_confluence')">
+                            <span class="icon">🔄</span> Multi-Timeframe Confluence
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('reviewed_last_trade')">
+                            <span class="icon">🔍</span> Reviewed Last Trade
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('neutral_mindset')">
+                            <span class="icon">🧠</span> Neutral Mindset (No Tilt)
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('documented_rationale')">
+                            <span class="icon">📝</span> Documented Rationale
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('exited_on_plan')">
+                            <span class="icon">🎯</span> Exited on Plan
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('adapted_conditions')">
+                            <span class="icon">🔄</span> Adapted to Conditions
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('celebrated_small_win')">
+                            <span class="icon">🎉</span> Celebrated Small Win
+                        </button>                         
                     </div>
                 </div>
             </div>
@@ -628,10 +624,7 @@
             </div>
             <div class="collapsible-content" id="red-flags-content">
                 <div class="red-flag-container">
-                    <label style="text-align: center; color: var(--red-flag-dark); font-size: 14px; font-weight: 500;">Click any red flags that occurred today:</label>
-                    <div id="redFlagCounter" style="text-align: center; margin: 8px 0; font-weight: 500; color: var(--red-flag-dark); font-size: 13px;">
-                        Red flags selected: <span id="redFlagCount">0</span>
-                    </div>
+                    <label style="text-align: center; color: var(--red-flag-dark); font-size: 14px; font-weight: 500;">Flag risks to break bad habits & protect capital</label>
                     <div class="red-flag-grid">
                         <button type="button" class="red-flag-btn" onclick="toggleRedFlag('revenge')">
                             <span class="icon">😡</span> Revenge Trading
@@ -654,8 +647,8 @@
                         <button type="button" class="red-flag-btn" onclick="toggleRedFlag('ignored_risk')">
                             <span class="icon">⚠️</span> Ignored Risk Rules
                         </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('emotional')">
-                            <span class="icon">💢</span> Emotional Trading
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('trader_error')">
+                            <span class="icon">💢</span> Trader error
                         </button>
                         <button type="button" class="red-flag-btn" onclick="toggleRedFlag('news_trade')">
                             <span class="icon">📰</span> News Reaction Trade
@@ -666,9 +659,24 @@
                         <button type="button" class="red-flag-btn" onclick="toggleRedFlag('early_exit')">
                             <span class="icon">🏃</span> Early Exit (Fear)
                         </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('chased_price')">
-                            <span class="icon">🏃‍♂️</span> Chased Price
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('herd_behavior')">
+                            <span class="icon">👥</span> Herd Behavior
                         </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('loss_aversion')">
+                            <span class="icon">📉</span> Held Loser
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('overconfidence')">
+                            <span class="icon">😎</span> Overconfident
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('confirmation_bias')">
+                            <span class="icon">🔍</span> Confirmation Bias
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('illusion_control')">
+                            <span class="icon">🎮</span> Illusion of Control
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('social_influence')">
+                            <span class="icon">📱</span> Social Impulse
+                        </button>                     
                     </div>
                 </div>
             </div>
@@ -679,7 +687,10 @@
                 <textarea id="key_takeaway" placeholder="What's the most important lesson from today's trading?"></textarea>
             </div>
             
-            <button type="button" onclick="saveEntry()">Save Entry</button>
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="button" class="save-btn" onclick="saveEntry()">SAVE Day Entry</button>
+            </div>
+
         </form>
     </div>
     
@@ -690,7 +701,7 @@
     </div>
 
     <script>
-        // NEW: Helper to get local YYYY-MM-DD string consistently (fixes timezone bug)
+        // Helper to get local YYYY-MM-DD string consistently (fixes timezone bug)
         function getLocalDateString() {
             const now = new Date();
             const year = now.getFullYear();
@@ -699,82 +710,81 @@
             return `${year}-${month}-${day}`;
         }
 
-        // NEW: Config for T.R.A.D.E.R text dropdowns
-const traderDropdowns = [
-
-    { id: 'market_conditions', label: 'Market Conditions', category: 'market', options: [
-        { value: '', text: 'Select Condition' },
-        { value: 'strong_uptrend', text: '📈 Strong Uptrend' },
-        { value: 'strong_downtrend', text: '📉 Strong Downtrend' },
-        { value: 'ranging_sideways', text: '↔️ Ranging/Sideways' },
-        { value: 'high_volatility', text: '⚡ High Volatility' },
-        { value: 'low_volatility', text: '😴 Low Volatility' }
-    ] },
-
-    { id: 'timing_dropdown', label: 'Timing Assessment', category: 'timing', options: [
-        { value: '', text: 'Select...' },
-        { value: 'Too early', text: 'Too early' },
-        { value: 'Perfect timing', text: 'Perfect timing' },
-        { value: 'Missed setup', text: 'Missed setup' },
-        { value: 'Late', text: 'Late' }
-    ] },
-    { id: 'risk_dropdown', label: 'Risk Assessment', category: 'risk', options: [
-        { value: '', text: 'Select...' },
-        { value: 'Small risk', text: 'Small risk' },
-        { value: 'Position too big', text: 'Position too big' },
-        { value: 'Just right', text: 'Just right' },
-    ] },
-    { id: 'analysis_quality_dropdown', label: 'Setup Quality', category: 'analysis_quality', options: [
-        { value: '', text: 'Select...' },
-        { value: 'Perfect recognition', text: 'Perfect recognition' },
-        { value: 'Forced trade', text: 'Forced trade' },
-        { value: 'Missed it', text: 'Missed it' }
-    ] },
-    { id: 'analysis_type_dropdown', label: 'Setup Type', category: 'analysis_type', options: [
-        { value: '', text: 'Select...' },
-        { value: 'MA Cross', text: 'MA Cross' },
-        { value: 'Support/Resistance', text: 'Support/Resistance' },
-        { value: 'Breakout - 2nd leg', text: 'Breakout - 2nd leg' },
-        { value: 'Pattern Breakout', text: 'Pattern Breakout' },
-        { value: 'H & S', text: 'H & S' },
-        { value: 'Cup & Handle', text: 'Cup & Handle' },
-        { value: 'RSI Overbought/Oversold', text: 'RSI Overbought/Oversold' },
-        { value: '3 Indians', text: '3 Indians' }
-    ] },
-    { id: 'setup_used_dropdown', label: 'Setup Used', category: 'setup', options: [
-        { value: '', text: 'Select...' },
-        { value: 'Head & Shoulders', text: '🏔️ Head & Shoulders' },
-        { value: 'Double Top', text: '⛰️ Double Top' },
-        { value: 'MA Cross', text: '📊 MA Cross' },
-        { value: 'Support/Resistance', text: '🔄 Support/Resistance' },
-        { value: 'Breakout - 2nd leg', text: '💥 Breakout - 2nd leg' },
-        { value: 'Pattern Breakout', text: '💥 Pattern Breakout' },
-        { value: 'Cup & Handle', text: '☕ Cup & Handle' },
-        { value: 'RSI Overbought/Oversold', text: '📈📉 RSI Overbought/Oversold' },
-        { value: '3 Indians', text: '🏹 3 Indians' },
-        { value: 'Candlestick Pattern', text: '🕯️ Candlestick Pattern' }
-    ] },
-    { id: 'discipline_dropdown', label: 'Emotional State', category: 'discipline', options: [
-        { value: '', text: 'Select...' },
-        { value: 'calm', text: '😌 Calm' },
-        { value: 'excited', text: '😃 Excited' },
-        { value: 'frustrated', text: '😤 Frustrated' },
-        { value: 'overconfident', text: '😎 Overconfident' },
-        { value: 'revenge', text: '😡 Revenge Trading' },
-        { value: 'fomo', text: '😰 FOMO' },
-        { value: 'bored', text: '😑 Bored/Overtrading' },
-        { value: 'worked_psychology', text: '🧑‍🏫 Worked on my psychology' }
-    ] },
-    { id: 'exit_dropdown', label: 'Exit Assessment', category: 'exit', options: [
-        { value: '', text: 'Select...' },
-        { value: 'Stop Hit', text: 'Stop Hit' },
-        { value: 'Trailing Stop Hit', text: 'Trailing Stop Hit' },
-        { value: 'Profit Target Reached', text: 'Profit Target Reached' },
-        { value: 'Fearful Early Exit', text: 'Fearful Early Exit' },
-        { value: 'Let Winners Run', text: 'Let Winners Run' },
-        { value: 'Held Too Long', text: 'Held Too Long' }
-    ] }
-];
+        // Config for T.R.A.D.E.R text dropdowns
+        const traderDropdowns = [
+            { id: 'market_conditions', label: 'Market Conditions', category: 'market', options: [
+                { value: '', text: 'Select Condition' },
+                { value: 'strong_uptrend', text: '📈 Strong Uptrend' },
+                { value: 'strong_downtrend', text: '📉 Strong Downtrend' },
+                { value: 'ranging_sideways', text: '↔️ Ranging/Sideways' },
+                { value: 'high_volatility', text: '⚡ High Volatility' },
+                { value: 'low_volatility', text: '😴 Low Volatility' }
+            ] },
+            { id: 'timing_dropdown', label: 'Timing Assessment', category: 'timing', options: [
+                { value: '', text: 'Select...' },
+                { value: 'Too early', text: 'Too early' },
+                { value: 'Perfect timing', text: 'Perfect timing' },
+                { value: 'Missed setup', text: 'Missed setup' },
+                { value: 'Late', text: 'Late' }
+            ] },
+            { id: 'risk_dropdown', label: 'Risk Assessment', category: 'risk', options: [
+                { value: '', text: 'Select...' },
+                { value: 'Small risk', text: 'Small risk' },
+                { value: 'Position too big', text: 'Position too big' },
+                { value: 'Just right', text: 'Just right' },
+            ] },
+            { id: 'analysis_quality_dropdown', label: 'Setup Quality', category: 'analysis_quality', options: [
+                { value: '', text: 'Select...' },
+                { value: 'Perfect recognition', text: 'Perfect recognition' },
+                { value: 'Forced trade', text: 'Forced trade' },
+                { value: 'Missed it', text: 'Missed it' }
+            ] },
+            { id: 'analysis_type_dropdown', label: 'Setup Type', category: 'analysis_type', options: [
+                { value: '', text: 'Select...' },
+                { value: 'MA Cross', text: 'MA Cross' },
+                { value: 'Support/Resistance', text: 'Support/Resistance' },
+                { value: 'Breakout - 2nd leg', text: 'Breakout - 2nd leg' },
+                { value: 'Pattern Breakout', text: 'Pattern Breakout' },
+                { value: 'H & S', text: 'H & S' },
+                { value: 'Cup & Handle', text: 'Cup & Handle' },
+                { value: 'RSI Overbought/Oversold', text: 'RSI Overbought/Oversold' },
+                { value: '3 Indians', text: '3 Indians' }
+            ] },
+            { id: 'setup_used_dropdown', label: 'Setup Used', category: 'setup', options: [
+                { value: '', text: 'Select...' },
+                { value: 'Head & Shoulders', text: '🏔️ Head & Shoulders' },
+                { value: 'Double Top', text: '⛰️ Double Top' },
+                { value: 'MA Cross', text: '📊 MA Cross' },
+                { value: 'Support/Resistance', text: '🔄 Support/Resistance' },
+                { value: 'Breakout - 2nd leg', text: '💥 Breakout - 2nd leg' },
+                { value: 'Pattern Breakout', text: '💥 Pattern Breakout' },
+                { value: 'Cup & Handle', text: '☕ Cup & Handle' },
+                { value: 'RSI Overbought/Oversold', text: '📈📉 RSI Overbought/Oversold' },
+                { value: '3 Indians', text: '🏹 3 Indians' },
+                { value: 'Candlestick Pattern', text: '🕯️ Candlestick Pattern' }
+            ] },
+            { id: 'discipline_dropdown', label: 'Emotional State', category: 'discipline', options: [
+                { value: '', text: 'Select...' },
+                { value: 'calm', text: '😌 Calm' },
+                { value: 'excited', text: '😃 Excited' },
+                { value: 'hesitant', text: '😕 Hesitant' },
+                { value: 'frustrated', text: '😤 Frustrated' },
+                { value: 'overconfident', text: '😎 Overconfident' },
+                { value: 'revenge', text: '😡 Revenge Trading' },
+                { value: 'fomo', text: '😰 FOMO' },
+                { value: 'bored', text: '😑 Bored/Overtrading' },
+                { value: 'worked_psychology', text: '🧑‍🏫 Worked on my psychology' }
+            ] },
+            { id: 'exit_dropdown', label: 'Exit Assessment', category: 'exit', options: [
+                { value: '', text: 'Select...' },
+                { value: 'Stop Hit', text: 'Stop Hit' },
+                { value: 'Trailing Stop Hit', text: 'Trailing Stop Hit' },
+                { value: 'Profit Target Reached', text: 'Profit Target Reached' },
+                { value: 'Fearful Early Exit', text: 'Fearful Early Exit' },
+                { value: 'Let Winners Run', text: 'Let Winners Run' },
+                { value: 'Held Too Long', text: 'Held Too Long' }
+            ] }
+        ];
 
         // Initialize scores with default values (0 = middle of -1, 0, 1 scale)
         let scores = {
@@ -817,17 +827,15 @@ const traderDropdowns = [
                 `;
                 container.innerHTML = html;
             });
-}
+        }
 
         // Function to load existing entry for today's date
         function loadTodayEntry() {
-            // FIXED: Use local date instead of UTC
             const today = getLocalDateString();
             const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
             const todayEntry = entries.find(entry => entry.date === today);
             
             if (todayEntry) {
-                // Load scores and update emoji buttons
                 if (todayEntry.scores) {
                     Object.keys(todayEntry.scores).forEach(category => {
                         scores[category] = todayEntry.scores[category];
@@ -835,7 +843,6 @@ const traderDropdowns = [
                     });
                 }
                 
-                // Load form fields
                 if (todayEntry.marketTimeframe) document.getElementById('market_timeframe').value = todayEntry.marketTimeframe;
                 if (todayEntry.marketConditions) document.getElementById('market_conditions').value = todayEntry.marketConditions;
                 if (todayEntry.riskPercent) document.getElementById('risk_percent').value = todayEntry.riskPercent;
@@ -845,28 +852,25 @@ const traderDropdowns = [
                 if (todayEntry.rMultiple) document.getElementById('r_multiple').value = todayEntry.rMultiple;
                 if (todayEntry.keyTakeaway) document.getElementById('key_takeaway').value = todayEntry.keyTakeaway;
                 
-                // NEW: Load T.R.A.D.E.R text dropdowns
                 if (todayEntry.traderTexts) {
                     Object.keys(todayEntry.traderTexts).forEach(category => {
                         const dropdownId = traderDropdowns.find(config => config.category === category)?.id;
                         if (dropdownId) {
-                            document.getElementById(dropdownId).value = todayEntry.traderTexts[category];
+                            const dropdown = document.getElementById(dropdownId);
+                            if (dropdown) dropdown.value = todayEntry.traderTexts[category];
                         }
                     });
                 }
                 
-                // Load green flags
                 if (todayEntry.greenFlags) {
                     greenFlags.clear();
                     todayEntry.greenFlags.forEach(flag => {
                         greenFlags.add(flag);
-                        const checkbox = document.getElementById(flag);
-                        if (checkbox) checkbox.checked = true;
+                        const button = document.querySelector(`[onclick="toggleGreenFlag('${flag}')"]`);
+                        if (button) button.classList.add('active');
                     });
-                    updateGreenFlagCounter();
                 }
                 
-                // Load red flags
                 if (todayEntry.redFlags) {
                     redFlags.clear();
                     todayEntry.redFlags.forEach(flag => {
@@ -874,29 +878,21 @@ const traderDropdowns = [
                         const button = document.querySelector(`[onclick="toggleRedFlag('${flag}')"]`);
                         if (button) button.classList.add('active');
                     });
-                    updateRedFlagCounter();
                 }
             }
         }
 
         // Set today's date automatically when page loads
         window.onload = function() {
-            // FIXED: Use helper for consistency (same as original logic, just cleaner)
             document.getElementById('date').value = getLocalDateString();
             
-            // NEW: Generate dropdowns
             generateTraderDropdowns();
             
-            // Load existing entry for today if it exists
             loadTodayEntry();
             
             displayWeeklyData();
-            updateGreenFlagCounter();
-            updateRedFlagCounter();
             
-            // Initialize all rating displays (only if no existing data was loaded)
             const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
-            // FIXED: Use local date here too
             const today = getLocalDateString();
             const todayEntry = entries.find(entry => entry.date === today);
             if (!todayEntry) {
@@ -912,12 +908,10 @@ const traderDropdowns = [
             updateRatingDisplay(category, rating);
         }
         
-        // Function to update rating button display (fixed for -1, 0, 1 values)
+        // Function to update rating button display
         function updateRatingDisplay(category, rating) {
-            // Find all rating buttons for this category and update their appearance
             const buttons = document.querySelectorAll(`[onclick*="setRating('${category}'"]`);
             buttons.forEach((btn) => {
-                // Extract the rating value from the onclick attribute
                 const onclickAttr = btn.getAttribute('onclick');
                 const ratingMatch = onclickAttr.match(/setRating\('.*?',\s*(-?\d+)\)/);
                 
@@ -943,8 +937,6 @@ const traderDropdowns = [
                 greenFlags.add(flagName);
                 button.classList.add('active');
             }
-            
-            updateGreenFlagCounter();
         }
         
         // Function to toggle red flag buttons
@@ -957,24 +949,6 @@ const traderDropdowns = [
             } else {
                 redFlags.add(flagName);
                 button.classList.add('active');
-            }
-            
-            updateRedFlagCounter();
-        }
-
-        // Function to update green flag counter display
-        function updateGreenFlagCounter() {
-            const counterElement = document.getElementById('greenFlagCount');
-            if (counterElement) {
-                counterElement.textContent = greenFlags.size;
-            }
-        }
-
-        // Function to update red flag counter display
-        function updateRedFlagCounter() {
-            const counterElement = document.getElementById('redFlagCount');
-            if (counterElement) {
-                counterElement.textContent = redFlags.size;
             }
         }
 
@@ -994,26 +968,20 @@ const traderDropdowns = [
         
         // Function to switch between Daily and Weekly sections
         function showSection(sectionName) {
-            // Hide all sections
             const sections = document.querySelectorAll('.section');
             sections.forEach(section => section.classList.remove('active'));
             
-            // Hide all nav button active states
             const navButtons = document.querySelectorAll('.nav-button');
             navButtons.forEach(button => button.classList.remove('active'));
             
-            // Show selected section
             document.getElementById(sectionName).classList.add('active');
             
-            // Highlight active nav button
             event.target.classList.add('active');
             
-            // If showing weekly, refresh the data
             if (sectionName === 'weekly') {
                 displayWeeklyData();
             }
-
-            // If switching to daily, reload today's data
+            
             if (sectionName === 'daily') {
                 loadTodayEntry();
             }
@@ -1021,25 +989,20 @@ const traderDropdowns = [
         
         // Function to save a daily entry
         function saveEntry() {
-            // Get all form data
             const date = document.getElementById('date').value;
             
-            // Check if date is filled
             if (!date) {
                 alert('Please select a date');
                 return;
             }
             
-            // Calculate daily total score
             const dailyTotal = Object.values(scores).reduce((sum, score) => sum + score, 0);
             
-            // NEW: Capture all T.R.A.D.E.R text dropdowns
             const traderTexts = {};
             traderDropdowns.forEach(config => {
                 traderTexts[config.category] = document.getElementById(config.id)?.value || '';
             });
             
-            // Create entry object with all the fields including red and green flags
             const entry = {
                 date: date,
                 marketTimeframe: document.getElementById('market_timeframe').value,
@@ -1054,18 +1017,14 @@ const traderDropdowns = [
                 keyTakeaway: document.getElementById('key_takeaway').value,
                 redFlags: Array.from(redFlags),
                 greenFlags: Array.from(greenFlags),
-                traderTexts: traderTexts  // NEW
+                traderTexts: traderTexts
             };     
             
-        
-            // Get existing entries from browser storage (or create empty array)
             let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
             
-            // Check if entry for this date already exists
             const existingIndex = entries.findIndex(entry => entry.date === date);
             
             if (existingIndex >= 0) {
-                // Update existing entry
                 entries[existingIndex] = entry;
                 const redFlagCount = entry.redFlags.length;
                 const greenFlagCount = entry.greenFlags.length;
@@ -1075,7 +1034,6 @@ const traderDropdowns = [
                 message += `🚩 Red flags: ${redFlagCount}\n`;
                 alert(message);
             } else {
-                // Add new entry
                 entries.push(entry);
                 const redFlagCount = entry.redFlags.length;
                 const greenFlagCount = entry.greenFlags.length;
@@ -1086,35 +1044,30 @@ const traderDropdowns = [
                 alert(message);
             }
             
-            // Save back to browser storage
             localStorage.setItem('tradingEntries', JSON.stringify(entries));
             
-            // After saving, reload the current entry to show updated data
             document.getElementById('dailyForm').reset();
-            // FIXED: Use local date for reset
             const today = getLocalDateString();
             document.getElementById('date').value = today;
 
-            // Reset internal state
+            generateTraderDropdowns();
+
             Object.keys(scores).forEach(category => {
                 scores[category] = 0;
             });
             greenFlags.clear();
             redFlags.clear();
 
-            // NEW: Reset dropdowns after save
             traderDropdowns.forEach(config => {
                 const dropdown = document.getElementById(config.id);
                 if (dropdown) dropdown.value = '';
             });
 
-            // Reload today's data after brief delay (shows what we just saved)
             setTimeout(loadTodayEntry, 100);
         }
         
         // Function to display weekly data in a table
         function displayWeeklyData() {
-            // Get all saved entries
             const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
             
             const tableContainer = document.getElementById('weeklyTable');
@@ -1124,10 +1077,8 @@ const traderDropdowns = [
                 return;
             }
             
-            // Sort entries by date (newest first)
             entries.sort((a, b) => new Date(b.date) - new Date(a.date));
             
-            // Create table HTML
             let tableHTML = `
                 <table>
                     <thead>
@@ -1136,7 +1087,7 @@ const traderDropdowns = [
                             <th>Instrument</th>
                             <th>Daily Score</th>
                             <th>T.R.A.D.E.R Scores</th>
-                            <th>T.R.A.D.E.R Details</th>  <!-- NEW COLUMN -->
+                            <th>T.R.A.D.E.R Details</th>
                             <th>Setup</th>
                             <th>Market</th>
                             <th>R value</th>
@@ -1148,15 +1099,12 @@ const traderDropdowns = [
                     <tbody>
             `;
             
-            // Add each entry as a table row
             entries.forEach(entry => {
-                // Handle both old and new data formats
                 let scoresText = '';
                 let dailyScore = 0;
                 if (entry.scores) {
                     dailyScore = entry.dailyTotal || Object.values(entry.scores).reduce((sum, score) => sum + score, 0);
                     
-                    // Only show non-zero scores
                     const scoreLabels = ['T', 'R', 'A', 'D', 'E', 'R'];
                     const scoreValues = [entry.scores.timing, entry.scores.risk, entry.scores.analysis, entry.scores.discipline, entry.scores.exit, entry.scores.results];
                     const nonZeroScores = [];
@@ -1170,25 +1118,26 @@ const traderDropdowns = [
                     scoresText = nonZeroScores.join(' ') || '------';
                 }                
 
-                // Extract and format T.R.A.D.E.R texts (one per line, excluding setup)
                 let traderDetails = '';
                 if (entry.traderTexts) {
                     const details = traderDropdowns.map(config => {
-                        // Skip setup category to avoid duplication with Setup column
                         if (config.category === 'setup' || config.category === 'market') return null;
                         const text = entry.traderTexts[config.category];
-                        return text ? `${config.category.charAt(0).toUpperCase()}: ${text}` : null;
+                        let displayText = text ? `${config.category.charAt(0).toUpperCase()}: ${text}` : null;
+                        if (config.category === 'risk' && entry.riskPercent) {
+                            displayText += ` (${entry.riskPercent}%)`;
+                        }
+                        return displayText;
                     }).filter(Boolean);
                     traderDetails = details.join('<br>');
                 }
                 
-                // Convert market condition value to display text
                 const conditionText = {
-                    'strong_uptrend': '📈 Strong Uptrend',
-                    'strong_downtrend': '📉 Strong Downtrend',
-                    'ranging_sideways': '↔️ Ranging/Sideways',
-                    'high_volatility': '⚡ High Volatility',
-                    'low_volatility': '😴 Low Volatility'
+                    'strong_uptrend': 'Strong Uptrend',
+                    'strong_downtrend': 'Strong Downtrend',
+                    'ranging_sideways': 'Ranging/Sideways',
+                    'high_volatility': 'High Volatility',
+                    'low_volatility': 'Low Volatility'
                 };
                 
                 const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
@@ -1197,7 +1146,6 @@ const traderDropdowns = [
                 const rMultipleDisplay = entry.rMultiple || '';
                 const takeawayDisplay = entry.keyTakeaway || '';
                 
-                // Format green flags for display
                 let greenFlagsDisplay = '';
                 if (entry.greenFlags && entry.greenFlags.length > 0) {
                     const greenFlagLabels = {
@@ -1206,23 +1154,27 @@ const traderDropdowns = [
                         'waited_setup': 'Setup',
                         'correct_timeframes': 'Timeframes',
                         'perfect_position_size': 'Position',
-                        'respected_risk': 'Risk',
                         'quick_loss_cut': 'Cut Loss',
-                        'good_entry_timing': 'Entry',
                         'hit_profit_target': 'Target',
                         'avoided_chasing': 'No Chase',
                         'emotional_control': 'Control',
-                        'took_breaks': 'Breaks',
                         'documented_trades': 'Docs',
                         'post_trade_analysis': 'Analysis',
-                        'applied_lessons': 'Lessons'
+                        'applied_lessons': 'Lessons',
+                        'stuck_risk_limits': 'Risk Limits',
+                        'waited_confluence': 'Confluence',
+                        'reviewed_last_trade': 'Reviewed Last',
+                        'neutral_mindset': 'Neutral Mindset',
+                        'documented_rationale': 'Rationale',
+                        'exited_on_plan': 'Exited on Plan',
+                        'adapted_conditions': 'Adapted',
+                        'celebrated_small_win': 'Small Win'
                     };
                     greenFlagsDisplay = entry.greenFlags.map(flag => 
                         `<span class="green-flag-tag">${greenFlagLabels[flag] || flag}</span>`
                     ).join(' ');
                 }
 
-                // Format red flags for display
                 let redFlagsDisplay = '';
                 if (entry.redFlags && entry.redFlags.length > 0) {
                     const flagLabels = {
@@ -1233,18 +1185,22 @@ const traderDropdowns = [
                         'added_loser': 'Added Loss',
                         'no_plan': 'No Plan',
                         'ignored_risk': 'Risk',
-                        'emotional': 'Emotional',
+                        'trader_error': 'Trader',
                         'news_trade': 'News',
                         'hope_hold': 'Hope',
                         'early_exit': 'Early Exit',
-                        'chased_price': 'Chased'
+                        'herd_behavior': 'Herd',
+                        'loss_aversion': 'Held Loser',
+                        'overconfidence': 'Overconfident',
+                        'confirmation_bias': 'Confirmation',
+                        'illusion_control': 'Illusion Control',
+                        'social_influence': 'Social Impulse'                    
                     };
                     redFlagsDisplay = entry.redFlags.map(flag => 
                         `<span class="red-flag-tag">${flagLabels[flag] || flag}</span>`
                     ).join(' ');
                 }
                 
-                // Color code the daily score
                 let scoreColor = '#333';
                 if (dailyScore > 0) scoreColor = 'var(--success)';
                 if (dailyScore < 0) scoreColor = 'var(--danger)';
@@ -1255,7 +1211,7 @@ const traderDropdowns = [
                         <td>${entry.marketTimeframe || ''}</td>
                         <td style="color: ${scoreColor};">${dailyScore}</td>
                         <td style="font-size: 12px;">${scoresText}</td>
-                        <td style="font-size: 10px; max-width: 150px;">${traderDetails || 'N/A'}</td>  <!-- NEW CELL -->
+                        <td style="font-size: 10px; max-width: 150px;">${traderDetails || 'N/A'}</td>
                         <td>${setupDisplay}</td>
                         <td>${marketDisplay}</td>
                         <td>${rMultipleDisplay}</td>
