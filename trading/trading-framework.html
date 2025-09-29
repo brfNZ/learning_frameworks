@@ -202,26 +202,28 @@
             font-size: 14px;
         }
 
-        /* Prominent Save Button - centered and bold (only for save) */
+        /* Prominent Save Button - centered with light blue fill */
         .save-btn {
             display: block;
-            width: 100%;
-            margin: 20px auto 0;  /* Centers horizontally, adds top space */
+            width: 66%;
+            margin: 8px auto 0;  /* Centers horizontally, close to textarea */
             padding: 12px 24px;  /* Slightly larger for prominence */
             font-size: 16px;  /* Bigger text */
             font-weight: 600;  /* Bolder */
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);  /* Blue gradient for eye-catch */
-            color: white;
-            border: none;  /* Clean look */
+            background: rgba(123, 179, 224, 0.1);  /* Light blue fill (subtle, using primary rgba) */
+            color: var(--primary-dark);  /* Dark blue text for contrast */
+            border: 2px solid var(--primary-dark);  /* Primary-dark border */
             border-radius: 12px;  /* Softer corners */
-            box-shadow: 0 2px 10px rgba(123, 179, 224, 0.3);  /* Subtle glow */
+            box-shadow: 0 2px 10px rgba(90, 155, 212, 0.2);  /* Subtle dark blue glow */
             transition: all 0.3s ease;
         }
 
-.save-btn:hover {
-    transform: translateY(-2px);  /* Lift effect */
-    box-shadow: 0 4px 15px rgba(123, 179, 224, 0.4);  /* Brighter glow */
-}
+        .save-btn:hover {
+            background: rgba(123, 179, 224, 0.2);  /* Slightly darker light blue on hover */
+            border-color: var(--primary);  /* Lighter border on hover */
+            transform: translateY(-2px);  /* Lift effect */
+            box-shadow: 0 4px 15px rgba(90, 155, 212, 0.3);  /* Brighter glow */
+        }
 
         
         label {
