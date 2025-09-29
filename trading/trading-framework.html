@@ -1099,6 +1099,9 @@ const traderDropdowns = [
             const today = getLocalDateString();
             document.getElementById('date').value = today;
 
+            // NEW: Re-generate dropdowns after reset
+            generateTraderDropdowns();
+
             // Reset internal state
             Object.keys(scores).forEach(category => {
                 scores[category] = 0;
