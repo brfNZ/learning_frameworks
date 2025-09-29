@@ -701,6 +701,24 @@
                         <button type="button" class="red-flag-btn" onclick="toggleRedFlag('chased_price')">
                             <span class="icon">🏃‍♂️</span> Chased Price
                         </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('herd_behavior')">
+                            <span class="icon">👥</span> Herd Behavior
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('loss_aversion')">
+                            <span class="icon">📉</span> Held Loser
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('overconfidence')">
+                            <span class="icon">😎</span> Overconfident
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('confirmation_bias')">
+                            <span class="icon">🔍</span> Confirmation Bias
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('illusion_control')">
+                            <span class="icon">🎮</span> Illusion of Control
+                        </button>
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('social_influence')">
+                            <span class="icon">📱</span> Social Impulse
+                        </button>                     
                     </div>
                 </div>
             </div>
@@ -1288,7 +1306,13 @@ const traderDropdowns = [
                         'news_trade': 'News',
                         'hope_hold': 'Hope',
                         'early_exit': 'Early Exit',
-                        'chased_price': 'Chased'
+                        'chased_price': 'Chased',
+                        'herd_behavior': 'Herd',
+                        'loss_aversion': 'Held Loser',
+                        'overconfidence': 'Overconfident',
+                        'confirmation_bias': 'Confirmation',
+                        'illusion_control': 'Illusion Control',
+                        'social_influence': 'Social Impulse'                      
                     };
                     redFlagsDisplay = entry.redFlags.map(flag => 
                         `<span class="red-flag-tag">${flagLabels[flag] || flag}</span>`
