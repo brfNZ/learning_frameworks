@@ -865,8 +865,12 @@ const traderDropdowns = [
                         if (button) button.classList.add('active');
                     });
                     updateGreenFlagCounter();
+
+                    // NEW: Debug log - add this line
+                        console.log('Load - Loaded greenFlags array:', todayEntry.greenFlags);  // From storage
+                        console.log('Load - Post-load Set size:', greenFlags.size);  // In memory
                 }
-                
+
                 // Load red flags
                 if (todayEntry.redFlags) {
                     redFlags.clear();
@@ -940,9 +944,11 @@ const traderDropdowns = [
             if (greenFlags.has(flagName)) {
                 greenFlags.delete(flagName);
                 button.classList.remove('active');
+                console.log('Toggle - Removed green flag:', flagName, 'Set size:', greenFlags.size);  // NEW: Log removal
             } else {
                 greenFlags.add(flagName);
                 button.classList.add('active');
+                
             }
             
             updateGreenFlagCounter();
@@ -1058,11 +1064,11 @@ const traderDropdowns = [
                 traderTexts: traderTexts  // NEW
             };     
             
-            // NEW: Debug logs - add these 3 lines
-            console.log('Saving greenFlags:', Array.from(greenFlags));  // Check green flags array
-            console.log('Saving traderTexts:', traderTexts);  // Check dropdown values
-            console.log('Full entry:', entry);  // Full object for overview
-        
+
+            // NEW: Debug logs - add these 2 lines (already have traderTexts?)
+            console.log('Save - greenFlags array:', Array.from(greenFlags));  // Should show ['followed_plan']
+            console.log('Save - Full entry greenFlags:', entry.greenFlags);  // Confirms in entry
+            
             // Get existing entries from browser storage (or create empty array)
             let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
             
@@ -1228,6 +1234,10 @@ const traderDropdowns = [
                     greenFlagsDisplay = entry.greenFlags.map(flag => 
                         `<span class="green-flag-tag">${greenFlagLabels[flag] || flag}</span>`
                     ).join(' ');
+
+                    // NEW: Debug log - add this line
+                        console.log('Table - greenFlags from entry:', entry.greenFlags, 'Display:', greenFlagsDisplay);  // Confirms table sees them                    
+                    
                 }
 
                 // Format red flags for display
