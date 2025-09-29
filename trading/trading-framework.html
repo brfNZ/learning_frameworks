@@ -1057,6 +1057,10 @@ const traderDropdowns = [
                 traderTexts: traderTexts  // NEW
             };     
             
+            // NEW: Debug logs - add these 3 lines
+            console.log('Saving greenFlags:', Array.from(greenFlags));  // Check green flags array
+            console.log('Saving traderTexts:', traderTexts);  // Check dropdown values
+            console.log('Full entry:', entry);  // Full object for overview
         
             // Get existing entries from browser storage (or create empty array)
             let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
