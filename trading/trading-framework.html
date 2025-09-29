@@ -573,9 +573,6 @@
             <div class="collapsible-content" id="green-flags-content">
                 <div class="green-flag-container">
                     <label style="text-align: center; color: var(--green-flag-dark); font-size: 14px; font-weight: 500;">Celebrate wins to build discipline & edge</label>
-                    <div id="greenFlagCounter" style="text-align: center; margin: 8px 0; font-weight: 500; color: var(--green-flag-dark); font-size: 13px;">
-                        Green ticks selected: <span id="greenFlagCount">0</span>
-                    </div>
                     <div class="green-flag-grid">
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('followed_plan')">
                             <span class="icon">📝</span> Followed Plan
@@ -649,9 +646,6 @@
             <div class="collapsible-content" id="red-flags-content">
                 <div class="red-flag-container">
                     <label style="text-align: center; color: var(--red-flag-dark); font-size: 14px; font-weight: 500;">Flag risks to break bad habits & protect capital</label>
-                    <div id="redFlagCounter" style="text-align: center; margin: 8px 0; font-weight: 500; color: var(--red-flag-dark); font-size: 13px;">
-                        Red flags selected: <span id="redFlagCount">0</span>
-                    </div>
                     <div class="red-flag-grid">
                         <button type="button" class="red-flag-btn" onclick="toggleRedFlag('revenge')">
                             <span class="icon">😡</span> Revenge Trading
@@ -980,9 +974,7 @@ const traderDropdowns = [
                 greenFlags.add(flagName);
                 button.classList.add('active');
                 
-            }
-            
-            updateGreenFlagCounter();
+            }           
         }
         
         // Function to toggle red flag buttons
@@ -996,8 +988,6 @@ const traderDropdowns = [
                 redFlags.add(flagName);
                 button.classList.add('active');
             }
-            
-            updateRedFlagCounter();
         }
 
         // Function to update green flag counter display
