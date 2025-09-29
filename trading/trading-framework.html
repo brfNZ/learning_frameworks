@@ -1181,8 +1181,14 @@ const traderDropdowns = [
                         // Skip setup category to avoid duplication with Setup column
                         if (config.category === 'setup' || config.category === 'market') return null;
                         const text = entry.traderTexts[config.category];
-                        return text ? `${config.category.charAt(0).toUpperCase()}: ${text}` : null;
+                        let displayText = text ? `${config.category.charAt(0).toUpperCase()}: ${text}` : null;
+                        // NEW: Append Risk % to R line
+                        if (config.category === 'risk' && entry.riskPercent) {
+                            displayText += ` (${entry.riskPercent}%)`;
+                        }
+                        return displayText;
                     }).filter(Boolean);
+
                     traderDetails = details.join('<br>');
                 }
                 
