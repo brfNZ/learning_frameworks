@@ -850,7 +850,8 @@ const traderDropdowns = [
                     Object.keys(todayEntry.traderTexts).forEach(category => {
                         const dropdownId = traderDropdowns.find(config => config.category === category)?.id;
                         if (dropdownId) {
-                            document.getElementById(dropdownId).value = todayEntry.traderTexts[category];
+                            const dropdown = document.getElementById(dropdownId);
+                            if (dropdown) dropdown.value = todayEntry.traderTexts[category];  // NEW: Null check
                         }
                     });
                 }
