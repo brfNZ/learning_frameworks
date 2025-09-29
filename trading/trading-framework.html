@@ -435,7 +435,7 @@
 
         /* NEW: Styling for R value column */
         th:nth-last-child(4), td:nth-last-child(4) {
-        min-width: 45px;
+        width: 52px;
         }
 
         th:nth-child(6), td:nth-child(6) {  /* Setup column */
@@ -454,7 +454,7 @@
         <button class="nav-button active" onclick="showSection('daily')">Daily Entry</button>
         <button class="nav-button" onclick="showSection('weekly')">Weekly Review</button>
     </div>
-    
+
     <!-- Daily Entry Section -->
     <div id="daily" class="section active">
         <form id="dailyForm">
@@ -860,8 +860,8 @@ const traderDropdowns = [
                     greenFlags.clear();
                     todayEntry.greenFlags.forEach(flag => {
                         greenFlags.add(flag);
-                        const checkbox = document.getElementById(flag);
-                        if (checkbox) checkbox.checked = true;
+                        const button = document.querySelector(`[onclick="toggleGreenFlag('${flag}')"]`);
+                        if (button) button.classList.add('active');
                     });
                     updateGreenFlagCounter();
                 }
