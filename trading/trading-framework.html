@@ -598,9 +598,6 @@
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('quick_loss_cut')">
                             <span class="icon">🛑</span> Quick Loss Cut
                         </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('good_entry_timing')">
-                            <span class="icon">⏰</span> Good Entry Timing
-                        </button>
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('hit_profit_target')">
                             <span class="icon">🎯</span> Hit Profit Target
                         </button>
@@ -610,9 +607,6 @@
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('emotional_control')">
                             <span class="icon">😌</span> Emotional Control
                         </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('took_breaks')">
-                            <span class="icon">⸻</span> Took Breaks
-                        </button>
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('documented_trades')">
                             <span class="icon">📝</span> Documented Trades
                         </button>
@@ -621,9 +615,6 @@
                         </button>
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('applied_lessons')">
                             <span class="icon">💡</span> Applied Lessons
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('continuous_learning')">
-                            <span class="icon">📚</span> Continuous Learning
                         </button>
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('stuck_risk_limits')">
                             <span class="icon">⚖️</span> Stuck to Risk Limits
@@ -686,8 +677,8 @@
                         <button type="button" class="red-flag-btn" onclick="toggleRedFlag('ignored_risk')">
                             <span class="icon">⚠️</span> Ignored Risk Rules
                         </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('emotional')">
-                            <span class="icon">💢</span> Emotional Trading
+                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('trader_error')">
+                            <span class="icon">💢</span> Trader error
                         </button>
                         <button type="button" class="red-flag-btn" onclick="toggleRedFlag('news_trade')">
                             <span class="icon">📰</span> News Reaction Trade
@@ -1268,11 +1259,9 @@ const traderDropdowns = [
                         'correct_timeframes': 'Timeframes',
                         'perfect_position_size': 'Position',
                         'quick_loss_cut': 'Cut Loss',
-                        'good_entry_timing': 'Entry',
                         'hit_profit_target': 'Target',
                         'avoided_chasing': 'No Chase',
                         'emotional_control': 'Control',
-                        'took_breaks': 'Breaks',
                         'documented_trades': 'Docs',
                         'post_trade_analysis': 'Analysis',
                         'applied_lessons': 'Lessons',
@@ -1302,7 +1291,7 @@ const traderDropdowns = [
                         'added_loser': 'Added Loss',
                         'no_plan': 'No Plan',
                         'ignored_risk': 'Risk',
-                        'emotional': 'Emotional',
+                        'trader_error': 'Trader',
                         'news_trade': 'News',
                         'hope_hold': 'Hope',
                         'early_exit': 'Early Exit',
@@ -1312,7 +1301,7 @@ const traderDropdowns = [
                         'overconfidence': 'Overconfident',
                         'confirmation_bias': 'Confirmation',
                         'illusion_control': 'Illusion Control',
-                        'social_influence': 'Social Impulse'                      
+                        'social_influence': 'Social Impulse'                    
                     };
                     redFlagsDisplay = entry.redFlags.map(flag => 
                         `<span class="red-flag-tag">${flagLabels[flag] || flag}</span>`
