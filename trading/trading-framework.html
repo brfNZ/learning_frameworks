@@ -625,6 +625,30 @@
                         <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('continuous_learning')">
                             <span class="icon">📚</span> Continuous Learning
                         </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('stuck_risk_limits')">
+                            <span class="icon">⚖️</span> Stuck to Risk Limits
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('waited_confluence')">
+                            <span class="icon">🔄</span> Multi-Timeframe Confluence
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('reviewed_last_trade')">
+                            <span class="icon">🔍</span> Reviewed Last Trade
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('neutral_mindset')">
+                            <span class="icon">🧠</span> Neutral Mindset (No Tilt)
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('documented_rationale')">
+                            <span class="icon">📝</span> Documented Rationale
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('exited_on_plan')">
+                            <span class="icon">🎯</span> Exited on Plan
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('adapted_conditions')">
+                            <span class="icon">🔄</span> Adapted to Conditions
+                        </button>
+                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('celebrated_small_win')">
+                            <span class="icon">🎉</span> Celebrated Small Win
+                        </button>                         
                     </div>
                 </div>
             </div>
@@ -1225,7 +1249,6 @@ const traderDropdowns = [
                         'waited_setup': 'Setup',
                         'correct_timeframes': 'Timeframes',
                         'perfect_position_size': 'Position',
-                        'respected_risk': 'Risk',
                         'quick_loss_cut': 'Cut Loss',
                         'good_entry_timing': 'Entry',
                         'hit_profit_target': 'Target',
@@ -1235,6 +1258,14 @@ const traderDropdowns = [
                         'documented_trades': 'Docs',
                         'post_trade_analysis': 'Analysis',
                         'applied_lessons': 'Lessons'
+                        'stuck_risk_limits': 'Risk Limits',
+                        'waited_confluence': 'Confluence',
+                        'reviewed_last_trade': 'Reviewed Last',
+                        'neutral_mindset': 'Neutral Mindset',
+                        'documented_rationale': 'Rationale',
+                        'exited_on_plan': 'Exited on Plan',
+                        'adapted_conditions': 'Adapted',
+                        'celebrated_small_win': 'Small Win'
                     };
                     greenFlagsDisplay = entry.greenFlags.map(flag => 
                         `<span class="green-flag-tag">${greenFlagLabels[flag] || flag}</span>`
