@@ -444,6 +444,14 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
+        th:nth-child(7), td:nth-child(7) {  /* Market column */
+            max-width: 120px;
+            font-size: 11px;   /* Matches setup */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
 </style>
 </head>
 <body>
@@ -758,6 +766,7 @@ const traderDropdowns = [
         { value: '', text: 'Select...' },
         { value: 'calm', text: '😌 Calm' },
         { value: 'excited', text: '😃 Excited' },
+        { value: 'hesitant', text: '😕 Hesitant' },
         { value: 'frustrated', text: '😤 Frustrated' },
         { value: 'overconfident', text: '😎 Overconfident' },
         { value: 'revenge', text: '😡 Revenge Trading' },
@@ -1194,11 +1203,11 @@ const traderDropdowns = [
                 
                 // Convert market condition value to display text
                 const conditionText = {
-                    'strong_uptrend': '📈 Strong Uptrend',
-                    'strong_downtrend': '📉 Strong Downtrend',
-                    'ranging_sideways': '↔️ Ranging/Sideways',
-                    'high_volatility': '⚡ High Volatility',
-                    'low_volatility': '😴 Low Volatility'
+                    'strong_uptrend': 'Strong Uptrend',
+                    'strong_downtrend': 'Strong Downtrend',
+                    'ranging_sideways': 'Ranging/Sideways',
+                    'high_volatility': 'High Volatility',
+                    'low_volatility': 'Low Volatility'
                 };
                 
                 const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
