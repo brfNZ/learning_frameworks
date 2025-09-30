@@ -108,6 +108,18 @@
             font-size: 14px;
         }
         
+        .section-header.positive {
+            background: white;
+            color: var(--green-flag);
+            border: 2px solid var(--green-flag);
+        }
+
+        .section-header.danger {
+            background: #ffebee;
+            color: var(--red-flag-dark);
+            border: 2px solid var(--red-flag);
+        }
+
         .section-header.collapsible {
             cursor: pointer;
             display: flex;
@@ -545,8 +557,8 @@
                 <input type="number" step="0.1" placeholder="+5.0 or -1.0" id="r_multiple" value="1.0">
             </div>
 
-            <div class="section-header collapsible" style="background: white; color: var(--green-flag); border: 2px solid var(--green-flag);" onclick="toggleMainSection('green-flags')">
-                <span>🟢 GREEN TICKS ✅ - What I Did Well</span>
+            <div class="section-header collapsible positive" onclick="toggleMainSection('green-flags')">
+                <span>GREEN ✅ - What I Did Well</span>
                 <span class="arrow">▼</span>
             </div>
             <div class="collapsible-content" id="green-flags-content">
@@ -617,9 +629,8 @@
                 </div>
             </div>
 
-
-            <div class="section-header red-flag collapsible" onclick="toggleMainSection('red-flags')">
-                <span>🚩 RED FLAGS & WARNING SIGNS</span>
+            <div class="section-header collapsible danger" onclick="toggleMainSection('red-flags')">
+            <span>🚩 RED FLAGS & WARNING SIGNS</span>
                 <span class="arrow">▼</span>
             </div>
             <div class="collapsible-content" id="red-flags-content">
