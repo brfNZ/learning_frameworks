@@ -6,8 +6,8 @@
     <title>My Trading Journal</title>
     <style>
         :root {
-            --primary: #8bc9fb;
-            --primary-dark: #6cb9fd;
+            --primary: #8cc2ee;
+            --primary-dark: #64a5df;
             --success: #A8D5A8;
             --table-header-gradient: #5A9BD4;
             --danger: #E8A5A5;
@@ -109,7 +109,7 @@
         }
         
         .section-header.positive {
-            background: #f0fff0;
+            background: #f6fff6;
             color: var(--green-flag);
             border: 2px solid var(--green-flag);
         }
@@ -455,6 +455,7 @@
     <div class="nav-buttons">
         <button class="nav-button active" onclick="showSection('daily')">Daily Entry</button>
         <button class="nav-button" onclick="showSection('weekly')">Weekly Review</button>
+        <button class="nav-button" id="exportBtn" style="display: none; background: var(--success); color: white; border-color: var(--success);" onclick="exportToCSV()">Export CSV</button>
     </div>
 
     <div id="daily" class="section active">
@@ -977,6 +978,8 @@
             }
         }
         
+
+
         // Function to switch between Daily and Weekly sections
         function showSection(sectionName) {
             const sections = document.querySelectorAll('.section');
@@ -991,7 +994,12 @@
             
             if (sectionName === 'weekly') {
                 displayWeeklyData();
+                document.getElementById('exportBtn').style.display = 'inline-block';
+            } else {
+                document.getElementById('exportBtn').style.display = 'none';
             }
+            
+             // Load today's entry when switching back to daily
             
             if (sectionName === 'daily') {
                 loadTodayEntry();
@@ -1077,6 +1085,63 @@
             setTimeout(loadTodayEntry, 100);
         }
         
+        function exportToCSV() {
+            const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+            
+            if (entries.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            // CSV headers
+            let csv = 'Date,Instrument,Daily Score,T Score,R Score,A Score,D Score,E Score,R Score,';
+            csv += 'Timing,Risk,Analysis Quality,Setup Type,Emotional State,Exit,';
+            csv += 'Market Condition,R-Multiple,Setup Details,Green Flags,Red Flags,Key Takeaway\n';
+            
+            // Sort by date
+            entries.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            // Add data rows
+            entries.forEach(entry => {
+                const row = [
+                    entry.date,
+                    entry.marketTimeframe || '',
+                    entry.dailyTotal || 0,
+                    entry.scores?.timing || 0,
+                    entry.scores?.risk || 0,
+                    entry.scores?.analysis || 0,
+                    entry.scores?.discipline || 0,
+                    entry.scores?.exit || 0,
+                    entry.scores?.results || 0,
+                    entry.traderTexts?.timing || '',
+                    entry.traderTexts?.risk || '',
+                    entry.traderTexts?.analysis_quality || '',
+                    entry.traderTexts?.analysis_type || '',
+                    entry.emotionalState || '',
+                    entry.traderTexts?.exit || '',
+                    entry.marketConditions || '',
+                    entry.rMultiple || '',
+                    entry.setupDetails || '',
+                    entry.greenFlags?.join(', ') || '',
+                    entry.redFlags?.join(', ') || '',
+                    (entry.keyTakeaway || '').replace(/"/g, '""')
+                ];
+                
+                csv += row.map(field => `"${field}"`).join(',') + '\n';
+            });
+            
+            // Create download
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `trading_journal_${getLocalDateString()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
         // Function to display weekly data in a table
         function displayWeeklyData() {
             const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
