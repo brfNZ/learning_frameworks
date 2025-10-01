@@ -428,24 +428,24 @@
         
         .save-btn {
             display: block;
-            width: 66%;
+            width: 20%;
             margin: 8px auto 0;
             padding: 12px 24px;
             font-size: 16px;
             font-weight: 600;
-            background: rgba(123, 179, 224, 0.1);
-            color: var(--primary-dark);
-            border: 2px solid var(--primary-dark);
+            background: var(--success);
+            color: white;
+            border: 2px solid var(--success);
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(90, 155, 212, 0.2);
+            box-shadow: 0 2px 10px rgba(168, 213, 168, 0.3);
             transition: all 0.3s ease;
         }
         
         .save-btn:hover {
-            background: rgba(123, 179, 224, 0.2);
-            border-color: var(--primary);
+            background: var(--green-flag-dark);
+            border-color: var(--green-flag-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(90, 155, 212, 0.3);
+            box-shadow: 0 4px 15px rgba(168, 213, 168, 0.4);
         }
     </style>
 </head>
@@ -455,6 +455,8 @@
     <div class="nav-buttons">
         <button class="nav-button active" onclick="showSection('daily')">Daily Entry</button>
         <button class="nav-button" onclick="showSection('weekly')">Weekly Review</button>
+        <button class="nav-button" id="saveTopBtn" style="background: var(--success); color: white; border-color: var(--success);" onclick="saveEntry()">Save</button>
+        <button class="nav-button" id="exportBtn" style="display: none; background: var(--success); color: white; border-color: var(--success);" onclick="exportToCSV()">Export CSV</button>    
     </div>
 
     <div id="daily" class="section active">
@@ -769,6 +771,7 @@
                 { value: 'Support/Resistance', text: '🔄 Support/Resistance' },
                 { value: 'Breakout - 2nd leg', text: '💥 Breakout - 2nd leg' },
                 { value: 'Pattern Breakout', text: '💥 Pattern Breakout' },
+                { value: 'Opening Breakout', text: '🌅 Opening Breakout' },
                 { value: 'Cup & Handle', text: '☕ Cup & Handle' },
                 { value: 'RSI Overbought/Oversold', text: '📈📉 RSI Overbought/Oversold' },
                 { value: '3 Indians', text: '🏹 3 Indians' },
@@ -977,6 +980,8 @@
             }
         }
         
+
+
         // Function to switch between Daily and Weekly sections
         function showSection(sectionName) {
             const sections = document.querySelectorAll('.section');
@@ -991,8 +996,14 @@
             
             if (sectionName === 'weekly') {
                 displayWeeklyData();
+                document.getElementById('exportBtn').style.display = 'inline-block';
+                document.getElementById('saveTopBtn').style.display = 'none';
+            } else {
+                document.getElementById('exportBtn').style.display = 'none';
+                document.getElementById('saveTopBtn').style.display = 'inline-block';   
             }
             
+             // Load today's entry when switching back to daily
             if (sectionName === 'daily') {
                 loadTodayEntry();
             }
@@ -1077,6 +1088,63 @@
             setTimeout(loadTodayEntry, 100);
         }
         
+        function exportToCSV() {
+            const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+            
+            if (entries.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            // CSV headers
+            let csv = 'Date,Instrument,Daily Score,T Score,R Score,A Score,D Score,E Score,R Score,';
+            csv += 'Timing,Risk,Analysis Quality,Setup Type,Emotional State,Exit,';
+            csv += 'Market Condition,R-Multiple,Setup Details,Green Flags,Red Flags,Key Takeaway\n';
+            
+            // Sort by date
+            entries.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            // Add data rows
+            entries.forEach(entry => {
+                const row = [
+                    entry.date,
+                    entry.marketTimeframe || '',
+                    entry.dailyTotal || 0,
+                    entry.scores?.timing || 0,
+                    entry.scores?.risk || 0,
+                    entry.scores?.analysis || 0,
+                    entry.scores?.discipline || 0,
+                    entry.scores?.exit || 0,
+                    entry.scores?.results || 0,
+                    entry.traderTexts?.timing || '',
+                    entry.traderTexts?.risk || '',
+                    entry.traderTexts?.analysis_quality || '',
+                    entry.traderTexts?.analysis_type || '',
+                    entry.emotionalState || '',
+                    entry.traderTexts?.exit || '',
+                    entry.marketConditions || '',
+                    entry.rMultiple || '',
+                    entry.setupDetails || '',
+                    entry.greenFlags?.join(', ') || '',
+                    entry.redFlags?.join(', ') || '',
+                    (entry.keyTakeaway || '').replace(/"/g, '""')
+                ];
+                
+                csv += row.map(field => `"${field}"`).join(',') + '\n';
+            });
+            
+            // Create download
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `trading_journal_${getLocalDateString()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
         // Function to display weekly data in a table
         function displayWeeklyData() {
             const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
