@@ -897,10 +897,7 @@
         }
 
         // Set today's date automatically when page loads
-        window.onload = function() {
-            //Clear localStorage for refresh  
-            localStorage.removeItem('tradingEntries');
-        
+        window.onload = function() {   
             document.getElementById('date').value = getLocalDateString();
             
             generateTraderDropdowns();
