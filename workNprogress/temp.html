@@ -428,24 +428,24 @@
         
         .save-btn {
             display: block;
-            width: 66%;
+            width: 50%;
             margin: 8px auto 0;
             padding: 12px 24px;
             font-size: 16px;
             font-weight: 600;
-            background: rgba(123, 179, 224, 0.1);
-            color: var(--primary-dark);
-            border: 2px solid var(--primary-dark);
+            background: var(--success);
+            color: white;
+            border: 2px solid var(--success);
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(90, 155, 212, 0.2);
+            box-shadow: 0 2px 10px rgba(168, 213, 168, 0.3);
             transition: all 0.3s ease;
         }
         
         .save-btn:hover {
-            background: rgba(123, 179, 224, 0.2);
-            border-color: var(--primary);
+            background: var(--green-flag-dark);
+            border-color: var(--green-flag-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(90, 155, 212, 0.3);
+            box-shadow: 0 4px 15px rgba(168, 213, 168, 0.4);
         }
     </style>
 </head>
@@ -455,6 +455,7 @@
     <div class="nav-buttons">
         <button class="nav-button active" onclick="showSection('daily')">Daily Entry</button>
         <button class="nav-button" onclick="showSection('weekly')">Weekly Review</button>
+        <button class="nav-button" id="saveTopBtn" style="background: var(--success); color: white; border-color: var(--success);" onclick="saveEntry()">Save</button>
         <button class="nav-button" id="exportBtn" style="display: none; background: var(--success); color: white; border-color: var(--success);" onclick="exportToCSV()">Export CSV</button>    
     </div>
 
@@ -478,8 +479,7 @@
                 <div class="rating-container">
                     <button type="button" class="emoji-btn" onclick="setRating('timing', -1)">😡<br><small>Bad</small></button>
                     <button type="button" class="emoji-btn" onclick="setRating('timing', 0)">😐<br><small>OK</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('timing', 1)">😊<br><small>Good</small></button>
-                </div>
+                    <button class="nav-button" id="exportBtn" style="display: none; background: var(--success); color: white; border-color: var(--success);" onclick="exportToCSV()">Export CSV</button>                </div>
             </div>
             <div id="timing-dropdown-container"></div>
             
@@ -995,12 +995,13 @@
             if (sectionName === 'weekly') {
                 displayWeeklyData();
                 document.getElementById('exportBtn').style.display = 'inline-block';
+                document.getElementById('saveTopBtn').style.display = 'none';
             } else {
                 document.getElementById('exportBtn').style.display = 'none';
+                document.getElementById('saveTopBtn').style.display = 'inline-block';   
             }
             
              // Load today's entry when switching back to daily
-            
             if (sectionName === 'daily') {
                 loadTodayEntry();
             }
