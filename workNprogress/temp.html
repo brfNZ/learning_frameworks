@@ -1305,22 +1305,22 @@
                         <td class="red-flags-column">${greenFlagsDisplay}</td>
                         <td class="red-flags-column">${redFlagsDisplay}</td>
 
-                        <td style="max-width:250px; padding:0; vertical-align:top;">
-                        <div style="
-                            display: -webkit-box;
-                            -webkit-line-clamp: 3;
-                            -webkit-box-orient: vertical;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            white-space: normal;
-                            word-wrap: break-word;  /* Add this for long words */
-                            line-height: 1.5em;
-                            height: 4.5em;
-                            cursor: help;
-                            padding: 8px 10px;
-                        " title="${takeawayDisplay.replace(/"/g, '&quot;')}">
-                            ${takeawayDisplay}
-                        </div>
+                        <td style="max-width: 200px; padding: 0; vertical-align: top;">
+                            <div style="
+                                display: -webkit-box;
+                                -webkit-line-clamp: 3;
+                                -webkit-box-orient: vertical;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: normal;
+                                word-break: break-word;  /* Add this line: Breaks long words to fit width */
+                                line-height: 1.5em;
+                                height: 4.5em; /* 3 lines x 1.5em */
+                                cursor: help;
+                                padding: 8px 10px;
+                            " title="${takeawayDisplay.replace(/"/g, '&quot;')}">
+                                ${takeawayDisplay}
+                            </div>
                         </td>
 
                         </tr>`;
