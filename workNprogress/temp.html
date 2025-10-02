@@ -897,7 +897,7 @@
         }
 
         // Set today's date automatically when page loads
-        window.onload = function() {   
+        window.onload = function() {
             document.getElementById('date').value = getLocalDateString();
             
             generateTraderDropdowns();
@@ -1296,7 +1296,7 @@
                         <td>${rMultipleDisplay}</td>
                         <td class="red-flags-column">${greenFlagsDisplay}</td>
                         <td class="red-flags-column">${redFlagsDisplay}</td>
-                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${takeawayDisplay}</td>
+                        <td style="max-width: 200px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3 -webkit-box-orient: vertical; line-height: 1.4em; max-height: 4.2em; cursor: help;" title="${takeawayDisplay.replace(/"/g, '&quot;')}">${takeawayDisplay}</td>
                     </tr>
                 `;
             });
