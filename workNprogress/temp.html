@@ -1304,7 +1304,7 @@ th:nth-child(11), td:nth-child(11) {
                         <td class="red-flags-column">${greenFlagsDisplay}</td>
                         <td class="red-flags-column">${redFlagsDisplay}</td>
 
-<td>
+<td style="padding: 0; vertical-align: top;">
     <div style="
         display: -webkit-box;
         -webkit-line-clamp: 3;
@@ -1313,15 +1313,14 @@ th:nth-child(11), td:nth-child(11) {
         text-overflow: ellipsis;
         white-space: normal;
         word-break: break-word;
-        line-height: 1.5em;
-        height: 4.5em;
+        line-height: 1.4em;  /* Add this: Tighter lines for better fit */
+        height: 4.2em;  /* Add this: Exactly 3 lines (1.4em x 3), fixes cutoff */
         cursor: help;
         padding: 8px 10px;
     " title="${takeawayDisplay.replace(/"/g, '&quot;')}">
         ${takeawayDisplay}
     </div>
-</td>
-
+</td>                       
 
                         </tr>
                 `;
