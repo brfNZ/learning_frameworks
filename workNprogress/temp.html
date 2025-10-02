@@ -344,7 +344,6 @@
             overflow: hidden;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             font-size: 13px;
-            table-layout: fixed;
         }
         
         th, td {
@@ -442,16 +441,6 @@ th:nth-child(10), td:nth-child(10) { width: 8%; }  /* Red Flags */
 /* Col 11 overridden below to 200px */
 
 
-/* Key Takeaway (11th column): Narrow width, smaller text, capped height */
-th:nth-child(11), td:nth-child(11) {
-    width: 120px;  /* Narrower: Matches your image, wraps 90% entries neatly */
-    font-size: 11px;
-    max-height: 4.5em;
-    overflow: hidden;
-    vertical-align: top;
-    box-sizing: border-box;
-    word-wrap: break-word;  /* Ensures long text breaks instead of spilling */
-}
 
         .save-btn {
             display: block;
