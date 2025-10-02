@@ -427,10 +427,13 @@
             text-overflow: ellipsis;
         }
 
-/* Lock Key Takeaway (11th column) to 200px */
+/* Key Takeaway (11th column): Fixed width, smaller text, capped height */
 th:nth-child(11), td:nth-child(11) {
     width: 200px;
+    font-size: 11px;  /* Add this: Reduces text size for more lines */
+    max-height: 4.5em;  /* Add this: Caps cell to exactly 3 lines, fixes cutoff */
     overflow: hidden;
+    vertical-align: top;
 }
 
         .save-btn {
@@ -1304,7 +1307,7 @@ th:nth-child(11), td:nth-child(11) {
                         <td class="red-flags-column">${greenFlagsDisplay}</td>
                         <td class="red-flags-column">${redFlagsDisplay}</td>
 
-<td style="padding: 0; vertical-align: top;">
+<td>
     <div style="
         display: -webkit-box;
         -webkit-line-clamp: 3;
@@ -1313,15 +1316,13 @@ th:nth-child(11), td:nth-child(11) {
         text-overflow: ellipsis;
         white-space: normal;
         word-break: break-word;
-        line-height: 1.4em;  /* Add this: Tighter lines for better fit */
-        height: 4.2em;  /* Add this: Exactly 3 lines (1.4em x 3), fixes cutoff */
+        line-height: 1.5em;
+        height: 100%;  /* Add this: Fills td height exactly, no cutoff */
         cursor: help;
-        padding: 8px 10px;
     " title="${takeawayDisplay.replace(/"/g, '&quot;')}">
         ${takeawayDisplay}
     </div>
-</td>                       
-
+</td>
                         </tr>
                 `;
             });
