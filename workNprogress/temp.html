@@ -443,15 +443,14 @@ th:nth-child(10), td:nth-child(10) { width: 8%; }  /* Red Flags */
 
 /* Key Takeaway (11th column): Fixed width, smaller text, capped height */
 th:nth-child(11), td:nth-child(11) {
-    width: 200px;
+    width: 150px;  /* Changed from 200px: Narrower to match image */
     font-size: 11px;
     max-height: 4.5em;
     overflow: hidden;
     vertical-align: top;
     box-sizing: border-box;
-    word-wrap: break-word;  /* Add this: Breaks long words to fit width, stops spills */
+    word-wrap: break-word;
 }
-
         .save-btn {
             display: block;
             width: 20%;
