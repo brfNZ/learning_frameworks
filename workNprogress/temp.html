@@ -1296,7 +1296,15 @@
                         <td>${rMultipleDisplay}</td>
                         <td class="red-flags-column">${greenFlagsDisplay}</td>
                         <td class="red-flags-column">${redFlagsDisplay}</td>
-                        <td style="max-width:200px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis; white-space:normal; line-height:1.5em; cursor:help;" title="${takeawayDisplay.replace(/"/g, '&quot;')}">${takeawayDisplay}</td>                `;
+
+                        <td style="max-width:200px; padding:0;">
+                        <div style="display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis; white-space:normal; line-height:1.5em; cursor:help; padding:8px 10px;"
+                            title="${takeawayDisplay.replace(/"/g, '&quot;')}">
+                            ${takeawayDisplay}
+                        </div>
+                        </td>
+
+                        </tr>`;
             });
             
             tableHTML += '</tbody></table>';
