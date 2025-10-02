@@ -426,7 +426,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
+/* Lock Key Takeaway (11th column) to 200px */
+th:nth-child(11), td:nth-child(11) {
+    width: 200px;
+    overflow: hidden;
+}
+
         .save-btn {
             display: block;
             width: 20%;
@@ -1298,7 +1304,7 @@
                         <td class="red-flags-column">${greenFlagsDisplay}</td>
                         <td class="red-flags-column">${redFlagsDisplay}</td>
 
-<td style="max-width: 200px; padding: 0; vertical-align: top;">
+<td>
     <div style="
         display: -webkit-box;
         -webkit-line-clamp: 3;
@@ -1315,6 +1321,7 @@
         ${takeawayDisplay}
     </div>
 </td>
+
 
                         </tr>
                 `;
