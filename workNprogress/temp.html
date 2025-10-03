@@ -844,62 +844,90 @@
             });
         }
 
-        // Function to load existing entry for today's date
+        // Load entry for today's date
         function loadTodayEntry() {
-            const today = getLocalDateString();
+            loadEntry(getLocalDateString());
+        }
+
+        // Load entry for any date
+        function loadEntry(date) {
             const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
-            const todayEntry = entries.find(entry => entry.date === today);
+            const entry = entries.find(e => e.date === date);
             
-            if (todayEntry) {
-                if (todayEntry.scores) {
-                    Object.keys(todayEntry.scores).forEach(category => {
-                        scores[category] = todayEntry.scores[category];
-                        updateRatingDisplay(category, todayEntry.scores[category]);
+            if (entry) {
+                // Scores & buttons
+                if (entry.scores) {
+                    Object.keys(entry.scores).forEach(category => {
+                        scores[category] = entry.scores[category];
+                        updateRatingDisplay(category, entry.scores[category]);
                     });
                 }
                 
-                if (todayEntry.marketTimeframe) document.getElementById('market_timeframe').value = todayEntry.marketTimeframe;
-                if (todayEntry.marketConditions) document.getElementById('market_conditions').value = todayEntry.marketConditions;
-                if (todayEntry.riskPercent) document.getElementById('risk_percent').value = todayEntry.riskPercent;
-                if (todayEntry.setupUsed) document.getElementById('setup_used_dropdown').value = todayEntry.setupUsed;
-                if (todayEntry.setupDetails) document.getElementById('setup_details').value = todayEntry.setupDetails;
-                if (todayEntry.emotionalState) document.getElementById('discipline_dropdown').value = todayEntry.emotionalState;
-                if (todayEntry.rMultiple) document.getElementById('r_multiple').value = todayEntry.rMultiple;
-                if (todayEntry.keyTakeaway) document.getElementById('key_takeaway').value = todayEntry.keyTakeaway;
+                // Basic fields
+                document.getElementById('market_timeframe').value = entry.marketTimeframe || '';
+                document.getElementById('risk_percent').value = entry.riskPercent || '1.0';
+                document.getElementById('setup_details').value = entry.setupDetails || '';
+                document.getElementById('r_multiple').value = entry.rMultiple || '1.0';
+                document.getElementById('key_takeaway').value = entry.keyTakeaway || '';
                 
-                if (todayEntry.traderTexts) {
-                    Object.keys(todayEntry.traderTexts).forEach(category => {
+                // Dropdowns
+                if (entry.traderTexts) {
+                    Object.keys(entry.traderTexts).forEach(category => {
                         const dropdownId = traderDropdowns.find(config => config.category === category)?.id;
                         if (dropdownId) {
                             const dropdown = document.getElementById(dropdownId);
-                            if (dropdown) dropdown.value = todayEntry.traderTexts[category];
+                            if (dropdown) dropdown.value = entry.traderTexts[category];
                         }
                     });
                 }
+                if (entry.setupUsed) document.getElementById('setup_used_dropdown').value = entry.setupUsed;
+                if (entry.emotionalState) document.getElementById('discipline_dropdown').value = entry.emotionalState;
+                if (entry.marketConditions) document.getElementById('market_conditions').value = entry.marketConditions;
                 
-                if (todayEntry.greenFlags) {
+                // Flags
+                if (entry.greenFlags) {
                     greenFlags.clear();
-                    todayEntry.greenFlags.forEach(flag => {
+                    entry.greenFlags.forEach(flag => {
                         greenFlags.add(flag);
                         const button = document.querySelector(`[onclick="toggleGreenFlag('${flag}')"]`);
                         if (button) button.classList.add('active');
                     });
                 }
-                
-                if (todayEntry.redFlags) {
+                if (entry.redFlags) {
                     redFlags.clear();
-                    todayEntry.redFlags.forEach(flag => {
+                    entry.redFlags.forEach(flag => {
                         redFlags.add(flag);
                         const button = document.querySelector(`[onclick="toggleRedFlag('${flag}')"]`);
                         if (button) button.classList.add('active');
                     });
                 }
+            } else {
+                // Clear form if no entry
+                document.getElementById('dailyForm').reset();
+                Object.keys(scores).forEach(category => {
+                    scores[category] = 0;
+                    updateRatingDisplay(category, 0);
+                });
+                greenFlags.clear();
+                redFlags.clear();
+                traderDropdowns.forEach(config => {
+                    const dropdown = document.getElementById(config.id);
+                    if (dropdown) dropdown.value = '';
+                });
             }
+            
+            // Refresh weekly table
+            displayWeeklyData();
         }
 
         // Set today's date automatically when page loads
         window.onload = function() {
             document.getElementById('date').value = getLocalDateString();
+
+            // Load entry when date changes
+            document.getElementById('date').addEventListener('change', function() {
+                loadEntry(this.value);
+            });
             
             generateTraderDropdowns();
             
@@ -1298,22 +1326,22 @@
                         <td class="red-flags-column">${greenFlagsDisplay}</td>
                         <td class="red-flags-column">${redFlagsDisplay}</td>
 
-<td>
-    <div style="
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: normal;
-        word-break: break-word;
-        line-height: 1.5em;
-        height: 100%;  /* Add this: Fills td height exactly, no cutoff */
-        cursor: help;
-    " title="${takeawayDisplay.replace(/"/g, '&quot;')}">
-        ${takeawayDisplay}
-    </div>
-</td>
+                <td>
+                    <div style="
+                        display: -webkit-box;
+                        -webkit-line-clamp: 3;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: normal;
+                        word-break: break-word;
+                        line-height: 1.5em;
+                        height: 100%;  /* Add this: Fills td height exactly, no cutoff */
+                        cursor: help;
+                    " title="${takeawayDisplay.replace(/"/g, '&quot;')}">
+                        ${takeawayDisplay}
+                    </div>
+                </td>
                         </tr>
                 `;
             });
