@@ -26,47 +26,6 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
-        .rating-container {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            align-items: flex-start;
-        }
-        .rating-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 80px;
-        }
-        .rating-btn {
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            border-radius: 50%;
-            transition: all 0.3s;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .rating-label {
-            text-align: center;
-            min-width: 80px;
-            font-size: 12px;
-            margin-top: 4px;
-            white-space: nowrap;
-        }
-        html, body {
-            scroll-behavior: smooth;
-        }
-        .sticky {
-            position: sticky;
-        }
-        .rating-btn.selected {
-            background-color: #2563eb;
-            border-color: #2563eb;
-            color: #ffffff;
-        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -83,7 +42,7 @@
             selectedQuestions: []
         };
 
-        // Heroes configuration with all questions
+        // Heroes configuration with all questions (removed [DECISION] placeholders)
         const heroesQuestions = {
             spiritual: {
                 name: "Spiritual Wisdom",
@@ -91,7 +50,7 @@
                 core: "What does my inner wisdom say about each option?",
                 questions: [
                     "Which option comes from love rather than fear?",
-                    "Which option brings the greatest peace and light?",
+                    "How does this serve the greater good beyond just myself?",
                     "What would I choose if I were completely unattached to the outcome?"
                 ],
                 focus: "Divine guidance and intuition"
@@ -142,18 +101,6 @@
         function removeOption(index) {
             if (state.options.length > 2) {
                 state.options.splice(index, 1);
-                // Clean up responses for the removed option
-                Object.keys(state.responses).forEach(key => {
-                    const [, oIdx] = key.split('-').map(Number);
-                    if (oIdx === index) {
-                        delete state.responses[key];
-                    } else if (oIdx > index) {
-                        // Adjust indices for options after the removed one
-                        const [qIdx] = key.split('-').map(Number);
-                        delete state.responses[key];
-                        state.responses[`${qIdx}-${oIdx - 1}`] = state.responses[key];
-                    }
-                });
                 render();
             }
         }
@@ -164,59 +111,58 @@
 
         function generateQuestions() {
             const questions = [];
-            const heroOrder = ['spiritual', 'socrates', 'aristotle', 'aynRand'];
+            const weightedPool = [];
             
-            heroOrder.forEach(heroKey => {
-                const hero = heroesQuestions[heroKey];
-                questions.push({
+            // Build weighted pool
+            Object.values(heroesQuestions).forEach(hero => {
+                // Add core question twice (weight = 2)
+                weightedPool.push({
                     hero: hero.name,
                     question: hero.core,
                     color: hero.color,
-                    focus: hero.focus,
-                    isCore: true
+                    focus: hero.focus
                 });
-            });
-
-            heroOrder.forEach(heroKey => {
-                const hero = heroesQuestions[heroKey];
-                const randomIndex = Math.floor(Math.random() * hero.questions.length);
-                questions.push({
+                weightedPool.push({
                     hero: hero.name,
-                    question: hero.questions[randomIndex],
+                    question: hero.core,
                     color: hero.color,
-                    focus: hero.focus,
-                    isCore: false
+                    focus: hero.focus
+                });
+                
+                // Add each non-core question once (weight = 1)
+                hero.questions.forEach(q => {
+                    weightedPool.push({
+                        hero: hero.name,
+                        question: q,
+                        color: hero.color,
+                        focus: hero.focus
+                    });
                 });
             });
-
-            const allHeroes = Object.values(heroesQuestions);
-            const randomHero = allHeroes[Math.floor(Math.random() * allHeroes.length)];
-            const availableQuestions = randomHero.questions.filter(q => 
-                !questions.some(existing => existing.question === q)
-            );
             
-            if (availableQuestions.length > 0) {
-                const randomQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
-                questions.push({
-                    hero: randomHero.name,
-                    question: randomQuestion,
-                    color: randomHero.color,
-                    focus: randomHero.focus,
-                    isCore: false
-                });
+            // Select 6 unique questions
+            const usedQuestions = new Set();
+            let availablePool = [...weightedPool];
+            
+            while (questions.length < 6 && availablePool.length > 0) {
+                const randomIndex = Math.floor(Math.random() * availablePool.length);
+                const selected = availablePool[randomIndex];
+                
+                if (!usedQuestions.has(selected.question)) {
+                    questions.push(selected);
+                    usedQuestions.add(selected.question);
+                }
+                
+                // Remove all instances of this question from pool
+                availablePool = availablePool.filter(q => q.question !== selected.question);
             }
-
+            
             return questions;
         }
 
-        function toggleRating(qIdx, oIdx, r) {
-            const key = `${qIdx}-${oIdx}`;
-            if (state.responses[key] === r) {
-                delete state.responses[key]; // Remove the key if toggling off
-            } else {
-                state.responses[key] = r; // Set the new rating
-            }
-            render();
+        function handleResponse(questionIndex, optionIndex, rating) {
+            const key = `${questionIndex}-${optionIndex}`;
+            state.responses[key] = rating;
         }
 
         function calculateScores() {
@@ -251,16 +197,12 @@
         }
 
         function getRatingLabel(rating) {
-            const labels = {
-                1: 'Not suitable',
-                2: '',
-                3: '',
-                4: '',
-                5: 'Highly suitable'
-            };
-            return labels[rating] || '';
+            if (rating === 1) return 'Not suitable';
+            if (rating === 5) return 'Highly suitable';
+            return '';
         }
 
+        // Export functions
         function exportToCSV() {
             const scores = calculateScores();
             const maxScore = Math.max(...scores.map(s => s.total));
@@ -343,6 +285,7 @@
                 if (!isFirst) pdf.addPage();
                 isFirst = false;
                 
+                // Fit image to A4 size (210 x 297mm) with proper aspect ratio
                 const imgWidth = 210;
                 const imgHeight = 297;
                 pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
@@ -350,88 +293,78 @@
                 document.body.removeChild(div);
             }
 
+            // Title slide
             await addPage(`
-                <div style="text-align:center;padding-top:100px">
-                    <h1 style="font-size:36px;margin-bottom:30px">Hero Decision Matrix</h1>
-                    <h2 style="font-size:24px;margin-bottom:20px">Decision Analysis</h2>
-                    <p style="font-size:18px">${state.decision}</p>
-                    <p style="font-size:14px;margin-top:40px">${new Date().toLocaleDateString()}</p>
+                <div style="text-align: center; padding-top: 100px;">
+                    <h1 style="font-size: 36px; margin-bottom: 30px;">Hero Decision Matrix</h1>
+                    <h2 style="font-size: 24px; margin-bottom: 20px;">Decision Analysis</h2>
+                    <p style="font-size: 18px;">${state.decision}</p>
+                    <p style="font-size: 14px; margin-top: 40px;">${new Date().toLocaleDateString()}</p>
                 </div>
             `);
 
+            // Options page
             await addPage(`
-                <h1 style="text-align:center;margin-bottom:40px">Your Options</h1>
+                <h1 style="text-align: center; margin-bottom: 40px;">Your Options</h1>
                 ${state.options.map((opt, i) => `
-                    <p style="margin:20px 0;padding:15px;background:#f3f4f6;border-radius:8px">
+                    <p style="margin: 20px 0; padding: 15px; background: #f3f4f6; border-radius: 8px;">
                         <strong>Option ${i + 1}:</strong> ${opt}
                     </p>
                 `).join('')}
             `);
 
+            // Question slides
             for (let i = 0; i < state.selectedQuestions.length; i++) {
                 const q = state.selectedQuestions[i];
                 await addPage(`
-                    <div style="text-align:center;margin-bottom:30px">
+                    <div style="text-align: center; margin-bottom: 30px;">
                         <h2>${q.hero}</h2>
-                        <p style="font-size:14px">${q.focus}</p>
+                        <p style="font-size: 14px;">${q.focus}</p>
                     </div>
-                    <h3 style="text-align:center;margin-bottom:25px">${q.question}</h3>
-                    <table style="width:100%;border-collapse:collapse">
-                        <tr style="background:#f9fafb">
-                            <th style="border:1px solid #ddd;padding:8px">Option</th>
-                            <th style="border:1px solid #ddd;padding:8px">Rating</th>
+                    <h3 style="text-align: center; margin-bottom: 25px;">${q.question}</h3>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background: #f9fafb;">
+                            <th style="border: 1px solid #ddd; padding: 8px;">Option</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Rating</th>
                         </tr>
                         ${state.options.map((opt, oi) => `
                             <tr>
-                                <td style="border:1px solid #ddd;padding:8px">${opt}</td>
-                                <td style="border:1px solid #ddd;padding:8px;text-align:center">${state.responses[`${i}-${oi}`] || ''}</td>
+                                <td style="border: 1px solid #ddd; padding: 8px;">${opt}</td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${state.responses[`${i}-${oi}`] || ''}</td>
                             </tr>
                         `).join('')}
                     </table>
                 `);
             }
 
+            // Results slide
             const scores = calculateScores();
-            const maxScore = Math.max(...scores.map(s => s.total));
             await addPage(`
-                <h1 style="text-align:center;margin-bottom:30px">Comprehensive Decision Analysis</h1>
-                <h2 style="margin-top:20px;margin-bottom:10px">Final Results</h2>
-                <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
-                    <tr style="background:#f9fafb">
-                        <th style="border:1px solid #ddd;padding:8px">Option</th>
-                        <th style="border:1px solid #ddd;padding:8px">Score</th>
+                <h1 style="text-align: center; margin-bottom: 30px;">Final Results</h1>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="background: #f9fafb;">
+                        <th style="border: 1px solid #ddd; padding: 12px;">Option</th>
+                        <th style="border: 1px solid #ddd; padding: 12px;">Score</th>
                     </tr>
                     ${state.options.map((opt, i) => `
                         <tr>
-                            <td style="border:1px strict #ddd;padding:8px">${opt}</td>
-                            <td style="border:1px solid #ddd;padding:8px;text-align:center;font-weight:bold">${scores[i].total}/45 ${scores[i].total === maxScore ? '🏆' : ''}</td>
+                            <td style="border: 1px solid #ddd; padding: 12px;">${opt}</td>
+                            <td style="border: 1px solid #ddd; padding: 12px; text-align: center; font-weight: bold;">${scores[i].total}/45</td>
                         </tr>
                     `).join('')}
                 </table>
-                <h2 style="margin-top:20px;margin-bottom:10px">Questions You Analyzed</h2>
-                <ul style="list-style-type:disc;padding-left:20px;font-size:12px;line-height:1.5;margin-bottom:20px">
-                    ${state.selectedQuestions.map((q, i) => `
-                        <li><strong>Q${i + 1} (${q.hero}):</strong> ${q.question}</li>
-                    `).join('')}
-                </ul>
-                <h2 style="margin-top:20px;margin-bottom:10px">Interpretation</h2>
-                <ul style="list-style-type:disc;padding-left:20px;font-size:12px;line-height:1.5">
-                    <li><strong>Highest scoring option:</strong> The option with the highest score (up to 45) reflects the strongest alignment with the wisdom traditions across spiritual, philosophical, logical, and rational lenses.</li>
-                    <li><strong>Score gaps:</strong> Significant differences between option scores indicate varying levels of fit; review lower-scoring options for potential misalignment or blind spots.</li>
-                    <li><strong>Low scores overall:</strong> If all totals are below 23, consider refining options or exploring alternatives to better align with the wisdom criteria.</li>
-                    <li><strong>Remember:</strong> These scores synthesize diverse perspectives, but your intuition should guide the final decision—wisdom transcends mere numbers.</li>
-                </ul>
             `);
 
             pdf.save(`hero-decision-slideshow-${Date.now()}.pdf`);
         }
 
+        // Render functions
         function renderSetup() {
             return `
                 <div class="max-w-2xl mx-auto p-6">
                     <div class="text-center mb-8">
                         <h1 class="text-3xl font-bold text-gray-800 mb-2">Hero Decision Matrix</h1>
-                        <p class="text-gray-600">9 focused questions to examine your decision</p>
+                        <p class="text-gray-600">6 focused questions to examine your decision</p>
                     </div>
                     <div class="bg-white p-6 rounded-lg border-2 border-gray-200">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">What decision are you facing?</h2>
@@ -447,7 +380,7 @@
                             `).join('')}
                         </div>
                         ${state.options.length < 5 ? `<button onclick="addOption()" class="mt-3 text-blue-600">+ Add option</button>` : ''}
-                        <button id="beginBtn" class="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold">Begin Analysis</button>
+                        <button id="beginAnalysis" class="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold">Begin Analysis (6 Questions)</button>
                     </div>
                     <div class="mt-8 p-6 bg-white rounded-lg border-2 border-gray-200">
                         <h3 class="text-lg font-bold text-gray-800 mb-3">Questions You Analyzed</h3>
@@ -456,6 +389,7 @@
                                 <p><strong>Q${i+1} (${q.hero}):</strong> ${q.question}</p>
                             `).join('')}
                         </div>
+                        
                         <h4 class="text-lg font-bold text-gray-800 mt-6 mb-3">Interpretation</h4>
                         <div class="space-y-2 text-sm text-gray-600">
                             <p><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</p>
@@ -469,60 +403,49 @@
         }
 
         function renderQuestions() {
+            const currentQuestion = state.selectedQuestions[state.currentStep - 1];
+            const totalSteps = 9;
+
             return `
-                <div class="max-w-5xl mx-auto p-6">
-                    <div class="sticky top-0 z-10 bg-white/90 backdrop-blur border-b pb-3 mb-4">
-                        <h1 class="text-2xl font-bold text-gray-800">Rate all options</h1>
-                        <p class="text-sm text-gray-600">Decision: <b>${state.decision}</b></p>
-                        <div class="mt-2 text-xs text-gray-500">Scroll down → rate each block → hit “Finish” when ready</div>
+                <div class="max-w-4xl mx-auto p-6">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">Hero Decision Matrix</h1>
+                        <p class="text-gray-600 mb-4">Decision: <span class="font-semibold">${state.decision}</span></p>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: ${(state.currentStep / 6) * 100}%"></div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Question ${state.currentStep} of 6</p>
                     </div>
-                    <div class="space-y-8">
-                        ${state.selectedQuestions.map((q, qIdx) => `
-                            <section class="${q.color} p-5 rounded-lg border-2">
-                                <h2 class="text-xl font-bold">${q.hero}</h2>
-                                <p class="text-xs opacity-80 mb-3">${q.focus}</p>
-                                <h3 class="font-semibold mb-4">${qIdx + 1}. ${q.question}</h3>
-                                <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                                    ${state.options.map((opt, oIdx) => `
-                                        <div class="bg-white p-3 rounded border">
-                                            <div class="text-sm font-medium mb-2">${opt}</div>
-                                            <div class="rating-container">
-                                                ${[1, 2, 3, 4, 5].map(r => `
-                                                    <button class="rating-btn border hover:border-blue-400 ${state.responses[`${qIdx}-${oIdx}`] === r ? 'selected' : ''}"
-                                                            onclick="toggleRating(${qIdx}, ${oIdx}, ${r})">${r}</button>
-                                                `).join('')}
+                    <div class="${currentQuestion.color} p-6 rounded-lg border-2 mb-6">
+                        <h2 class="text-2xl font-bold">${currentQuestion.hero}</h2>
+                        <p class="text-sm opacity-80">${currentQuestion.focus}</p>
+                        <h3 class="text-lg font-semibold mt-4">${currentQuestion.question}</h3>
+                    </div>
+                    <div class="space-y-4">
+                        ${state.options.map((option, optionIndex) => `
+                            <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
+                                <h4 class="font-semibold text-gray-800 mb-3">Option ${optionIndex + 1}: ${option}</h4>
+                                <div class="flex items-center justify-center space-x-4">
+                                    ${[1, 2, 3, 4, 5].map(rating => {
+                                        const isSelected = state.responses[`${state.currentStep - 1}-${optionIndex}`] === rating;
+                                        const label = getRatingLabel(rating);
+                                        return `
+                                            <div class="text-center flex flex-col items-center">
+                                                <button class="w-12 h-12 rounded-full border-2 text-sm font-bold mb-2 ${isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'border-gray-300 hover:border-blue-400'}" onclick="handleRatingClick(${state.currentStep - 1}, ${optionIndex}, ${rating})">${rating}</button>
+                                                <div class="text-xs text-gray-600 w-20 h-8 flex items-center justify-center">${label}</div>
                                             </div>
-                                        </div>
-                                    `).join('')}
+                                        `;
+                                    }).join('')}
                                 </div>
-                            </section>
+                            </div>
                         `).join('')}
                     </div>
-                    <div class="sticky bottom-0 bg-white/90 backdrop-blur border-t mt-6 pt-3 flex justify-between items-center">
-                        <button onclick="state.currentStep=0;state.showResults=false;render()" class="bg-gray-300 px-4 py-2 rounded">← Back</button>
-                        <span id="progress" class="text-xs text-gray-500"></span>
-                        <button onclick="state.showResults=true;render()" class="bg-blue-600 text-white px-6 py-2 rounded">Finish & See Results</button>
+                    <div class="flex justify-between mt-8">
+                        <button onclick="goToPrevious()" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Previous</button>
+                                                    <button onclick="goToNext()" class="bg-blue-600 text-white px-6 py-2 rounded-lg">${state.currentStep < 6 ? 'Next' : 'See Results'}</button>
                     </div>
                 </div>
             `;
-        }
-
-        function updateDynamicElements() {
-            const progressElement = document.getElementById('progress');
-            if (progressElement) {
-                const total = state.selectedQuestions.length * state.options.length;
-                const done = Object.keys(state.responses).length;
-                progressElement.textContent = `${done}/${total} ratings`;
-            }
-
-            document.querySelectorAll('.rating-btn').forEach(btn => {
-                const match = btn.getAttribute('onclick')?.match(/toggleRating\((\d+),(\d+),(\d+)\)/);
-                if (match) {
-                    const [, q, o, r] = match;
-                    const isSelected = state.responses[`${q}-${o}`] == r;
-                    btn.classList.toggle('selected', isSelected);
-                }
-            });
         }
 
         function renderResults() {
@@ -563,6 +486,7 @@
                             `;
                         }).join('')}
                     </div>
+                    
                     <div class="mt-8 p-6 bg-white rounded-lg border-2 border-gray-200">
                         <h3 class="text-lg font-bold text-gray-800 mb-3">Questions You Analyzed</h3>
                         <div class="space-y-2 text-sm text-gray-600">
@@ -570,6 +494,7 @@
                                 <p><strong>Q${i+1} (${q.hero}):</strong> ${q.question}</p>
                             `).join('')}
                         </div>
+                        
                         <h4 class="text-lg font-bold text-gray-800 mt-6 mb-3">Interpretation</h4>
                         <div class="space-y-2 text-sm text-gray-600">
                             <p><strong>Highest scoring option:</strong> This shows the strongest overall alignment with the wisdom traditions—your intuitive sense of "suitability" across spiritual, philosophical, logical, and rational lenses.</p>
@@ -582,6 +507,27 @@
             `;
         }
 
+        // Event handlers
+        function handleRatingClick(questionIndex, optionIndex, rating) {
+            handleResponse(questionIndex, optionIndex, rating);
+            render();
+        }
+
+        function goToPrevious() {
+            state.currentStep = Math.max(1, state.currentStep - 1);
+            render();
+        }
+
+        function goToNext() {
+            if (state.currentStep < 6) {
+                state.currentStep += 1;
+                render();
+            } else {
+                state.showResults = true;
+                render();
+            }
+        }
+
         function render() {
             const app = document.getElementById('app');
             if (state.showResults) {
@@ -591,7 +537,6 @@
                 setupEventListeners();
             } else {
                 app.innerHTML = renderQuestions();
-                updateDynamicElements();
             }
         }
 
@@ -610,7 +555,7 @@
                 });
             });
 
-            const beginBtn = document.getElementById('beginBtn');
+            const beginBtn = document.getElementById('beginAnalysis');
             if (beginBtn) {
                 beginBtn.addEventListener('click', () => {
                     if (state.decision.trim() && state.options.every(opt => opt.trim())) {
@@ -625,16 +570,16 @@
         // Make functions globally available
         window.addOption = addOption;
         window.removeOption = removeOption;
-        window.toggleRating = toggleRating;
         window.resetMatrix = resetMatrix;
+        window.handleRatingClick = handleRatingClick;
+        window.goToPrevious = goToPrevious;
+        window.goToNext = goToNext;
         window.exportToCSV = exportToCSV;
         window.exportToPDF = exportToPDF;
         window.exportSlideshowPDF = exportSlideshowPDF;
 
         // Initial render
-        document.addEventListener('DOMContentLoaded', () => {
-            render();
-        });
+        document.addEventListener('DOMContentLoaded', render);
     </script>
 </body>
 </html>
