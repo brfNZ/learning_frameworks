@@ -2,7 +2,7 @@ The generation process selects 7 questions with a bias toward core questions (we
 Based on a Monte Carlo simulation (100,000 runs), 
 here's the probability distribution for the number of core questions (non-core = 7 minus cores) in a set of 7:
 
-# Cores	# Non-Cores	Probability
+#Cores  #Non-Cores Probability
 0	        7	        0.3%
 1	        6	        4.7%
 2	        5	        22.3%
