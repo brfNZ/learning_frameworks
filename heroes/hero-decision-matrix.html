@@ -352,7 +352,8 @@
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
             let isFirst = true;
-            const activeCount = state.selectedQuestions.length - state.skipped.size;
+            const activeQuestions = state.selectedQuestions.filter((_, idx) => !state.skipped.has(idx));  // Only active
+            const activeCount = activeQuestions.length;
             const maxPossible = activeCount * 5;
             const scores = calculateScores();
             const maxScore = Math.max(...scores.map(s => s.total));
@@ -382,50 +383,53 @@
                 document.body.removeChild(div);
             }
 
+            // Merged Overview: Title + Decision + Options
             await addPage(`
-                <div style="text-align:center;padding-top:100px">
-                    <h1 style="font-size:36px;margin-bottom:30px">Hero Decision Matrix</h1>
-                    <h2 style="font-size:24px;margin-bottom:20px">Decision Analysis</h2>
-                    <p style="font-size:18px">${state.decision}</p>
-                    <p style="font-size:14px;margin-top:40px">${new Date().toLocaleDateString()}</p>
+                <div style="text-align:center;padding-top:50px">
+                    <h1 style="font-size:36px;margin-bottom:20px">Hero Decision Matrix</h1>
+                    <h2 style="font-size:24px;margin-bottom:20px">Decision Analysis: ${state.decision}</h2>
+                    <p style="font-size:14px;margin-bottom:40px">${new Date().toLocaleDateString()} | Based on ${activeCount}/7 questions</p>
+                    <h3 style="text-align:left;margin-bottom:20px;font-size:20px">Your Options</h3>
+                    ${state.options.map((opt, i) => `
+                        <p style="margin:15px 0;padding:15px;background:#f3f4f6;border-radius:8px">
+                            <strong>Option ${i + 1}:</strong> ${opt}
+                        </p>
+                    `).join('')}
                 </div>
             `);
 
-            await addPage(`
-                <h1 style="text-align:center;margin-bottom:40px">Your Options</h1>
-                ${state.options.map((opt, i) => `
-                    <p style="margin:20px 0;padding:15px;background:#f3f4f6;border-radius:8px">
-                        <strong>Option ${i + 1}:</strong> ${opt}
-                    </p>
-                `).join('')}
-            `);
-
-            for (let i = 0; i < state.selectedQuestions.length; i++) {
-                const q = state.selectedQuestions[i];
-                const isSkipped = state.skipped.has(i);
-                await addPage(`
-                    <div style="text-align:center;margin-bottom:30px">
-                        <h2>${q.hero} ${isSkipped ? '(Skipped)' : ''}</h2>
-                        <p style="font-size:14px">${q.focus}</p>
-                    </div>
-                    <h3 style="text-align:center;margin-bottom:25px">${q.question}</h3>
-                    ${isSkipped ? '<p style="text-align:center; font-style:italic; color:gray;">Skipped - Not included in scoring</p>' : `
-                        <table style="width:100%;border-collapse:collapse">
-                            <tr style="background:#f9fafb">
-                                <th style="border:1px solid #ddd;padding:8px">Option</th>
-                                <th style="border:1px solid #ddd;padding:8px">Rating</th>
-                            </tr>
-                            ${state.options.map((opt, oi) => `
-                                <tr>
-                                    <td style="border:1px solid #ddd;padding:8px">${opt}</td>
-                                    <td style="border:1px solid #ddd;padding:8px;text-align:center">${state.responses[`${i}-${oi}`] || ''}</td>
+            // Grouped Questions: 2-3 per page (dynamic chunks)
+            const questionsPerPage = 3;  // Tweak this (2 for more space, 3 for tighter)
+            for (let pageStart = 0; pageStart < activeQuestions.length; pageStart += questionsPerPage) {
+                const pageQuestions = activeQuestions.slice(pageStart, pageStart + questionsPerPage);
+                let pageContent = '<h1 style="text-align:center;margin-bottom:30px">Question Analysis</h1>';
+                pageQuestions.forEach((q, globalIdx) => {  // globalIdx for responses key
+                    const localIdx = activeQuestions.indexOf(q);  // Map to active index if needed, but use original i
+                    const origIdx = state.selectedQuestions.indexOf(q);  // Original index for responses
+                    pageContent += `
+                        <div style="margin-bottom:25px;padding:15px;border:1px solid #ddd;border-radius:8px">
+                            <h3 style="margin-bottom:10px;font-size:16px"><strong>${globalIdx + 1}. ${q.hero}:</strong> ${q.question}</h3>
+                            <p style="font-size:12px;margin-bottom:10px">${q.focus}</p>
+                            <table style="width:100%;border-collapse:collapse">
+                                <tr style="background:#f9fafb">
+                                    <th style="border:1px solid #ddd;padding:6px">Option</th>
+                                    <th style="border:1px solid #ddd;padding:6px">Rating</th>
                                 </tr>
-                            `).join('')}
-                        </table>
-                    `}
-                `);
+                                ${state.options.map((opt, oi) => `
+                                    <tr>
+                                        <td style="border:1px solid #ddd;padding:6px">${opt}</td>
+                                        <td style="border:1px solid #ddd;padding:6px;text-align:center">${state.responses[`${origIdx}-${oi}`] || ''}</td>
+                                    </tr>
+                                `).join('')}
+                            </table>
+                        </div>
+                    `;
+                });
+                await addPage(pageContent);
             }
 
+            // Final Results (unchanged, but note skips if any)
+            const skippedCount = state.selectedQuestions.length - activeCount;
             await addPage(`
                 <h1 style="text-align:center;margin-bottom:30px">Comprehensive Decision Analysis</h1>
                 <h2 style="margin-top:20px;margin-bottom:10px">Final Results</h2>
@@ -441,6 +445,7 @@
                         </tr>
                     `).join('')}
                 </table>
+                ${skippedCount > 0 ? `<p style="font-size:12px;color:gray;margin-bottom:10px">${skippedCount} question(s) skipped—not included in scoring.</p>` : ''}
                 <h2 style="margin-top:20px;margin-bottom:10px">Questions You Analyzed</h2>
                 <ul style="list-style-type:disc;padding-left:20px;font-size:12px;line-height:1.5;margin-bottom:20px">
                     ${state.selectedQuestions.map((q, i) => `
@@ -456,21 +461,19 @@
                 </ul>
             `);
 
-
             // Updated filename: Sanitize decision (trim spaces, limit length, replace invalid chars)
-                const sanitizedDecision = state.decision
-                    .replace(/[^a-zA-Z0-9\s-]/g, '')  // Keep letters, numbers, spaces, hyphens
-                    .trim()
-                    .replace(/\s+/g, '-')  // Replace spaces with hyphens
-                    .substring(0, 50)  // Cap at 50 chars
-                    .toLowerCase();
-                const filename = `hero-decision-slideshow-${sanitizedDecision || 'analysis'}.pdf`;
+            const sanitizedDecision = state.decision
+                .replace(/[^a-zA-Z0-9\s-]/g, '')  // Keep letters, numbers, spaces, hyphens
+                .trim()
+                .replace(/\s+/g, '-')  // Replace spaces with hyphens
+                .substring(0, 50)  // Cap at 50 chars
+                .toLowerCase();
+            const filename = `hero-decision-slideshow-${sanitizedDecision || 'analysis'}.pdf`;
 
-                pdf.save(filename);
-
-                //pdf.save(`hero-decision-slideshow-${Date.now()}.pdf`);
+            pdf.save(filename);
         }
 
+        
         function renderSetup() {
             return `
                 <div class="max-w-2xl mx-auto p-6">
