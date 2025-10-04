@@ -565,12 +565,8 @@
                     <div class="sticky bottom-0 bg-white/90 backdrop-blur border-t mt-6 pt-3 flex justify-between items-center">
                         <button onclick="state.currentStep=0;render()" class="bg-gray-300 px-4 py-2 rounded">← Back to Setup</button>
                         <span id="progress" class="text-xs text-gray-500">${doneRatings}/${totalRatingsNeeded} ratings (of ${activeQuestions.length}/7 active questions)</span>
+                        <button onclick="state.showResults=true;render()" class="bg-blue-600 text-white px-6 py-2 rounded">See Results</button>
 
-                        <div class="sticky bottom-0 bg-white/90 backdrop-blur border-t mt-6 pt-3 flex justify-between items-center">
-                            <button onclick="state.currentStep=0;render()" class="bg-gray-300 px-4 py-2 rounded">← Back to Setup</button>
-                            <span id="progress" class="text-xs text-gray-500">${doneRatings}/${totalRatingsNeeded} ratings (of ${activeQuestions.length}/7 active questions)</span>
-                            <button onclick="state.showResults=true;render()" class="bg-blue-600 text-white px-6 py-2 rounded">${doneRatings === totalRatingsNeeded ? 'See Results' : 'Finish & See Results'}</button>
-                        </div>
                     </div>
                 </div>
             `;
