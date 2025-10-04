@@ -5,7 +5,7 @@ here's the probability distribution for the number of core questions (non-core =
 #Cores  #Non-Cores  Probability
 0	        7	        0.3%
 1	        6	        4.7% 
-2	        5	        22.3%
+2	        5	        22.3% 
 3	        4	        43.2%
 4	        3	        29.5%
 
