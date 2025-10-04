@@ -360,7 +360,7 @@
 
             async function addPage(content) {
                 const div = document.createElement('div');
-                div.style.cssText = 'font-family: Arial, sans-serif; padding: 20px; width: 595px; min-height: 842px; background: white; box-sizing: border-box;';
+                div.style.cssText = 'font-family: Arial, sans-serif; padding: 15px; width: 595px; min-height: 842px; background: white; box-sizing: border-box;';  // Reduced padding
                 div.innerHTML = content;
                 document.body.appendChild(div);
 
@@ -398,27 +398,26 @@
                 </div>
             `);
 
-            // Grouped Questions: 2-3 per page (dynamic chunks)
-            const questionsPerPage = 3;  // Tweak this (2 for more space, 3 for tighter)
+            // Grouped Questions: 2 per page (reduced from 3 to prevent cutoff)
+            const questionsPerPage = 2;  // Safer fit; increase to 3 only if fonts shrink more
             for (let pageStart = 0; pageStart < activeQuestions.length; pageStart += questionsPerPage) {
                 const pageQuestions = activeQuestions.slice(pageStart, pageStart + questionsPerPage);
                 let pageContent = '<h1 style="text-align:center;margin-bottom:30px">Question Analysis</h1>';
                 pageQuestions.forEach((q, globalIdx) => {  // globalIdx for responses key
-                    const localIdx = activeQuestions.indexOf(q);  // Map to active index if needed, but use original i
                     const origIdx = state.selectedQuestions.indexOf(q);  // Original index for responses
                     pageContent += `
-                        <div style="margin-bottom:25px;padding:15px;border:1px solid #ddd;border-radius:8px">
-                            <h3 style="margin-bottom:10px;font-size:16px"><strong>${globalIdx + 1}. ${q.hero}:</strong> ${q.question}</h3>
-                            <p style="font-size:12px;margin-bottom:10px">${q.focus}</p>
+                        <div style="margin-bottom:20px;padding:12px;border:1px solid #ddd;border-radius:8px">  <!-- Reduced padding -->
+                            <h3 style="margin-bottom:8px;font-size:14px"><strong>${globalIdx + 1}. ${q.hero}:</strong> ${q.question}</h3>  <!-- Smaller font -->
+                            <p style="font-size:11px;margin-bottom:8px">${q.focus}</p>  <!-- Smaller font -->
                             <table style="width:100%;border-collapse:collapse">
                                 <tr style="background:#f9fafb">
-                                    <th style="border:1px solid #ddd;padding:6px">Option</th>
-                                    <th style="border:1px solid #ddd;padding:6px">Rating</th>
+                                    <th style="border:1px solid #ddd;padding:5px;font-size:12px">Option</th>  <!-- Smaller padding/font -->
+                                    <th style="border:1px solid #ddd;padding:5px;font-size:12px">Rating</th>
                                 </tr>
                                 ${state.options.map((opt, oi) => `
                                     <tr>
-                                        <td style="border:1px solid #ddd;padding:6px">${opt}</td>
-                                        <td style="border:1px solid #ddd;padding:6px;text-align:center">${state.responses[`${origIdx}-${oi}`] || ''}</td>
+                                        <td style="border:1px solid #ddd;padding:5px;font-size:12px">${opt}</td>
+                                        <td style="border:1px solid #ddd;padding:5px;font-size:12px;text-align:center">${state.responses[`${origIdx}-${oi}`] || ''}</td>
                                     </tr>
                                 `).join('')}
                             </table>
@@ -472,7 +471,6 @@
 
             pdf.save(filename);
         }
-
         
         function renderSetup() {
             return `
@@ -565,7 +563,7 @@
                     <div class="sticky bottom-0 bg-white/90 backdrop-blur border-t mt-6 pt-3 flex justify-between items-center">
                         <button onclick="state.currentStep=0;render()" class="bg-gray-300 px-4 py-2 rounded">← Back to Setup</button>
                         <span id="progress" class="text-xs text-gray-500">${doneRatings}/${totalRatingsNeeded} ratings (of ${activeQuestions.length}/7 active questions)</span>
-                        <button onclick="state.showResults=true;render()" class="bg-blue-600 text-white px-6 py-2 rounded">See Results</button>
+                        <button onclick="state.showResults=true;render()" class="bg-blue-600 text-white px-6 py-2 rounded">Finish & See Results</button>
                     </div>
                 </div>
             `;
