@@ -1312,6 +1312,29 @@ function saveEntry() {
  tableHTML += '</tbody></table>';
  tableContainer.innerHTML = tableHTML;
  }
+
+ // Load entry for today's date
+function loadTodayEntry() {
+    loadEntry(getLocalDateString());
+}
+
+// Set today's date automatically when page loads
+window.onload = function() {
+    document.getElementById('date').value = getLocalDateString();
+
+    // Load entry when date changes
+    document.getElementById('date').addEventListener('change', function() {
+        loadEntry(this.value);
+    });
+    
+    // Generate dropdowns after date setup
+    generateTraderDropdowns();
+    
+    loadTodayEntry();
+    
+    displayWeeklyData();
+};
+
  </script>
 </body>
 </html>
