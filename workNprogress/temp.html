@@ -891,27 +891,37 @@
  if (button) button.classList.add('active');
  });
  }
+
  } else {
- // Clear form if no entry
- document.getElementById('dailyForm').reset();
- Object.keys(scores).forEach(category => {
- scores[category] = 0;
- updateRatingDisplay(category, 0);
- });
- greenFlags.clear();
- redFlags.clear();
- traderDropdowns.forEach(config => {
- const dropdown = document.getElementById(config.id);
- if (dropdown) dropdown.value = '';
- });
- }
- 
+    // Clear form if no entry (manually, to preserve date)
+    document.getElementById('market_timeframe').value = '';
+    document.getElementById('risk_percent').value = '1.0';
+    document.getElementById('setup_details').value = '';
+    document.getElementById('r_multiple').value = '1.0';
+    document.getElementById('key_takeaway').value = '';
+    
+    // Clear dropdowns manually
+    traderDropdowns.forEach(config => {
+        const dropdown = document.getElementById(config.id);
+        if (dropdown) dropdown.value = '';
+    });
+    
+    Object.keys(scores).forEach(category => {
+        scores[category] = 0;
+        updateRatingDisplay(category, 0);
+    });
+    greenFlags.clear();
+    redFlags.clear();
+    
+    // Do NOT reset the full form to avoid clearing the date input
+}
+
  // Refresh weekly table
  displayWeeklyData();
  }
 
- // Set today's date automatically when page loads
- window.onload = function() {
+// Set today's date automatically when page loads
+window.onload = function() {
  document.getElementById('date').value = getLocalDateString();
 
  // Load entry when date changes
@@ -919,12 +929,13 @@
  loadEntry(this.value);
  });
  
+ // Generate dropdowns after date setup
  generateTraderDropdowns();
  
  loadTodayEntry();
  
  displayWeeklyData();
- };
+};
 
  // Function to set rating and update display
  function setRating(category, rating) {
@@ -989,8 +1000,6 @@
  header.classList.add('expanded');
  }
  }
- 
-
 
  // Function to switch between Daily and Weekly sections
  function showSection(sectionName) {
@@ -1014,74 +1023,78 @@
  }
  
  // Load current date entry when switching back to daily (preserves selection)
- if (sectionName === 'daily') {
- const currentDate = document.getElementById('date').value || getLocalDateString();
- loadEntry(currentDate);
- }
- } 
+if (sectionName === 'daily') {
+    // Load current date entry when switching back to daily (preserves selection)
+    const currentDate = document.getElementById('date').value || getLocalDateString();
+    loadEntry(currentDate);
+}
+}
  
- // Function to save a daily entry
- function saveEntry() {
- const date = document.getElementById('date').value;
- 
- if (!date) {
- alert('Please select a date');
- return;
- }
- 
- const dailyTotal = Object.values(scores).reduce((sum, score) => sum + score, 0);
- 
- const traderTexts = {};
- traderDropdowns.forEach(config => {
- traderTexts[config.category] = document.getElementById(config.id)?.value || '';
- });
- 
- const entry = {
- date: date,
- marketTimeframe: document.getElementById('market_timeframe').value,
- scores: { ...scores },
- dailyTotal: dailyTotal,
- marketConditions: document.getElementById('market_conditions').value,
- riskPercent: document.getElementById('risk_percent').value,
- setupUsed: document.getElementById('setup_used_dropdown').value,
- setupDetails: document.getElementById('setup_details').value,
- emotionalState: document.getElementById('discipline_dropdown').value,
- rMultiple: document.getElementById('r_multiple').value,
- keyTakeaway: document.getElementById('key_takeaway').value,
- redFlags: Array.from(redFlags),
- greenFlags: Array.from(greenFlags),
- traderTexts: traderTexts
- }; 
- 
- let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
- 
- const existingIndex = entries.findIndex(entry => entry.date === date);
- 
- if (existingIndex >= 0) {
- entries[existingIndex] = entry;
- const redFlagCount = entry.redFlags.length;
- const greenFlagCount = entry.greenFlags.length;
- let message = `Entry updated for ${formatDateShort(date)}\n`;
- message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
- message += `🟢 Green flags: ${greenFlagCount}\n`;
- message += `🚩 Red flags: ${redFlagCount}\n`;
- alert(message);
- } else {
- entries.push(entry);
- const redFlagCount = entry.redFlags.length;
- const greenFlagCount = entry.greenFlags.length;
- let message = `New entry saved for ${formatDateShort(date)}\n`;
- message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
- message += `🟢 Green flags: ${greenFlagCount}\n`;
- message += `🚩 Red flags: ${redFlagCount}\n`;
- alert(message);
- }
- 
- localStorage.setItem('tradingEntries', JSON.stringify(entries));
- 
- // Reload the saved entry to stay on the selected date and refresh display
- loadEntry(date);
- }
+
+// Function to save a daily entry
+function saveEntry() {
+    const date = document.getElementById('date').value;
+    
+    if (!date) {
+        alert('Please select a date');
+        return;
+    }
+    
+    const dailyTotal = Object.values(scores).reduce((sum, score) => sum + score, 0);
+    
+    const traderTexts = {};
+    traderDropdowns.forEach(config => {
+        traderTexts[config.category] = document.getElementById(config.id)?.value || '';
+    });
+    
+    const entry = {
+        date: date,
+        marketTimeframe: document.getElementById('market_timeframe').value,
+        scores: { ...scores },
+        dailyTotal: dailyTotal,
+        marketConditions: document.getElementById('market_conditions').value,
+        riskPercent: document.getElementById('risk_percent').value,
+        setupUsed: document.getElementById('setup_used_dropdown').value,
+        setupDetails: document.getElementById('setup_details').value,
+        emotionalState: document.getElementById('discipline_dropdown').value,
+        rMultiple: document.getElementById('r_multiple').value,
+        keyTakeaway: document.getElementById('key_takeaway').value,
+        redFlags: Array.from(redFlags),
+        greenFlags: Array.from(greenFlags),
+        traderTexts: traderTexts
+    };      
+    
+    let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+    
+    const existingIndex = entries.findIndex(entry => entry.date === date);
+    
+    if (existingIndex >= 0) {
+        entries[existingIndex] = entry;
+        const redFlagCount = entry.redFlags.length;
+        const greenFlagCount = entry.greenFlags.length;
+        let message = `Entry updated for ${formatDateShort(date)}\n`;
+        message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
+        message += `🟢 Green flags: ${greenFlagCount}\n`;
+        message += `🚩 Red flags: ${redFlagCount}\n`;
+        alert(message);
+    } else {
+        entries.push(entry);
+        const redFlagCount = entry.redFlags.length;
+        const greenFlagCount = entry.greenFlags.length;
+        let message = `New entry saved for ${formatDateShort(date)}\n`;
+        message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
+        message += `🟢 Green flags: ${greenFlagCount}\n`;
+        message += `🚩 Red flags: ${redFlagCount}\n`;
+        alert(message);
+    }
+    
+    localStorage.setItem('tradingEntries', JSON.stringify(entries));
+    
+    // Explicitly reload the saved entry (stays on selected date)
+    setTimeout(() => {
+        loadEntry(date);
+    }, 50);  // Small delay to ensure localStorage sync
+}
  
  function exportToCSV() {
  const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
