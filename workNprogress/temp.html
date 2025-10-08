@@ -834,108 +834,92 @@
  });
  }
 
- // Load entry for today's date
- function loadTodayEntry() {
- loadEntry(getLocalDateString());
- }
-
- // Load entry for any date
- function loadEntry(date) {
- const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
- const entry = entries.find(e => e.date === date);
- 
- if (entry) {
- // Scores & buttons
- if (entry.scores) {
- Object.keys(entry.scores).forEach(category => {
- scores[category] = entry.scores[category];
- updateRatingDisplay(category, entry.scores[category]);
- });
- }
- 
- // Basic fields
- document.getElementById('market_timeframe').value = entry.marketTimeframe || '';
- document.getElementById('risk_percent').value = entry.riskPercent || '1.0';
- document.getElementById('setup_details').value = entry.setupDetails || '';
- document.getElementById('r_multiple').value = entry.rMultiple || '1.0';
- document.getElementById('key_takeaway').value = entry.keyTakeaway || '';
- 
- // Dropdowns
- if (entry.traderTexts) {
- Object.keys(entry.traderTexts).forEach(category => {
- const dropdownId = traderDropdowns.find(config => config.category === category)?.id;
- if (dropdownId) {
- const dropdown = document.getElementById(dropdownId);
- if (dropdown) dropdown.value = entry.traderTexts[category];
- }
- });
- }
- if (entry.setupUsed) document.getElementById('setup_used_dropdown').value = entry.setupUsed;
- if (entry.emotionalState) document.getElementById('discipline_dropdown').value = entry.emotionalState;
- if (entry.marketConditions) document.getElementById('market_conditions').value = entry.marketConditions;
- 
- // Flags
- if (entry.greenFlags) {
- greenFlags.clear();
- entry.greenFlags.forEach(flag => {
- greenFlags.add(flag);
- const button = document.querySelector(`[onclick="toggleGreenFlag('${flag}')"]`);
- if (button) button.classList.add('active');
- });
- }
- if (entry.redFlags) {
- redFlags.clear();
- entry.redFlags.forEach(flag => {
- redFlags.add(flag);
- const button = document.querySelector(`[onclick="toggleRedFlag('${flag}')"]`);
- if (button) button.classList.add('active');
- });
- }
-
- } else {
-    // Clear form if no entry (manually, to preserve date)
-    document.getElementById('market_timeframe').value = '';
-    document.getElementById('risk_percent').value = '1.0';
-    document.getElementById('setup_details').value = '';
-    document.getElementById('r_multiple').value = '1.0';
-    document.getElementById('key_takeaway').value = '';
+// Load entry for any date
+function loadEntry(date) {
+    // Regenerate dropdowns first to ensure they exist
+    generateTraderDropdowns();
     
-    // Clear dropdowns manually
-    traderDropdowns.forEach(config => {
-        const dropdown = document.getElementById(config.id);
-        if (dropdown) dropdown.value = '';
-    });
-    
-    Object.keys(scores).forEach(category => {
-        scores[category] = 0;
-        updateRatingDisplay(category, 0);
-    });
+    // Always clear flags on date load for clean state
     greenFlags.clear();
     redFlags.clear();
+    // Clear all flag buttons visually
+    document.querySelectorAll('.green-flag-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.red-flag-btn').forEach(btn => btn.classList.remove('active'));
     
-    // Do NOT reset the full form to avoid clearing the date input
+    const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+    const entry = entries.find(e => e.date === date);
+    
+    if (entry) {
+        // Scores & buttons
+        if (entry.scores) {
+            Object.keys(entry.scores).forEach(category => {
+                scores[category] = entry.scores[category];
+                updateRatingDisplay(category, entry.scores[category]);
+            });
+        }
+        
+        // Basic fields
+        document.getElementById('market_timeframe').value = entry.marketTimeframe || '';
+        document.getElementById('risk_percent').value = entry.riskPercent || '1.0';
+        document.getElementById('setup_details').value = entry.setupDetails || '';
+        document.getElementById('r_multiple').value = entry.rMultiple || '1.0';
+        document.getElementById('key_takeaway').value = entry.keyTakeaway || '';
+        
+        // Dropdowns (now safe since generated)
+        if (entry.traderTexts) {
+            Object.keys(entry.traderTexts).forEach(category => {
+                const dropdownId = traderDropdowns.find(config => config.category === category)?.id;
+                if (dropdownId) {
+                    const dropdown = document.getElementById(dropdownId);
+                    if (dropdown) dropdown.value = entry.traderTexts[category];
+                }
+            });
+        }
+        if (entry.setupUsed) document.getElementById('setup_used_dropdown').value = entry.setupUsed;
+        if (entry.emotionalState) document.getElementById('discipline_dropdown').value = entry.emotionalState;
+        if (entry.marketConditions) document.getElementById('market_conditions').value = entry.marketConditions;
+        
+        // Re-apply flags from entry
+        if (entry.greenFlags) {
+            entry.greenFlags.forEach(flag => {
+                greenFlags.add(flag);
+                const button = document.querySelector(`[onclick="toggleGreenFlag('${flag}')"]`);
+                if (button) button.classList.add('active');
+            });
+        }
+        if (entry.redFlags) {
+            entry.redFlags.forEach(flag => {
+                redFlags.add(flag);
+                const button = document.querySelector(`[onclick="toggleRedFlag('${flag}')"]`);
+                if (button) button.classList.add('active');
+            });
+        }
+    } else {
+        // Clear form if no entry (manually, to preserve date)
+        document.getElementById('market_timeframe').value = '';
+        document.getElementById('risk_percent').value = '1.0';
+        document.getElementById('setup_details').value = '';
+        document.getElementById('r_multiple').value = '1.0';
+        document.getElementById('key_takeaway').value = '';
+        
+        // Clear dropdowns manually
+        traderDropdowns.forEach(config => {
+            const dropdown = document.getElementById(config.id);
+            if (dropdown) dropdown.value = '';
+        });
+        
+        Object.keys(scores).forEach(category => {
+            scores[category] = 0;
+            updateRatingDisplay(category, 0);
+        });
+        // Flags already cleared above
+        
+        // Do NOT reset the full form to avoid clearing the date input
+    }
+    
+    // Refresh weekly table
+    displayWeeklyData();
 }
-
- // Refresh weekly table
- displayWeeklyData();
- }
-
-// Set today's date automatically when page loads
-window.onload = function() {
- document.getElementById('date').value = getLocalDateString();
-
- // Load entry when date changes
- document.getElementById('date').addEventListener('change', function() {
- loadEntry(this.value);
- });
- 
- // Generate dropdowns after date setup
- generateTraderDropdowns();
- 
- loadTodayEntry();
- 
- displayWeeklyData();
-};
 
  // Function to set rating and update display
  function setRating(category, rating) {
