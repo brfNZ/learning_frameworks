@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Ching Hexagram Pages</title>
+    
+    <script>
+    let journal = JSON.parse(localStorage.getItem('ichingJournal')) || [];  // Load existing entries
+
+    function addEntry() {
+      const question = document.getElementById('question').value;
+      const hex = document.getElementById('hex').value;
+      const notes = document.getElementById('notes').value;
+      if (!question || !hex) return alert('Add question and hex!');
+      
+      const entry = {
+        id: Date.now(),  // Unique ID
+        date: new Date().toISOString().split('T')[0],  // YYYY-MM-DD
+        question: question,
+        hex: hex,  // e.g., "23: Po ䷖"
+        notes: notes  // Results, lines, etc.
+      };
+      journal.unshift(entry);  // Add to top
+      localStorage.setItem('ichingJournal', JSON.stringify(journal));
+      displayJournal();
+      clearForm();  // Reset fields
+    }
+
+    function displayJournal() {
+      const tbody = document.getElementById('journalBody');
+      tbody.innerHTML = '';  // Clear
+      journal.forEach(entry => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+          <td>${entry.date}</td>
+          <td>${entry.question}</td>
+          <td>${entry.hex}</td>
+          <td>${entry.notes}</td>
+          <td><button onclick="deleteEntry(${entry.id})">Delete</button></td>
+        `;
+      });
+    }
+
+    function deleteEntry(id) {
+      journal = journal.filter(e => e.id !== id);
+      localStorage.setItem('ichingJournal', JSON.stringify(journal));
+      displayJournal();
+    }
+
+    function clearForm() {
+      document.getElementById('question').value = '';
+      document.getElementById('hex').value = '';
+      document.getElementById('notes').value = '';
+    }
+
+    function exportJournal() {
+      const csv = ['Date,Question,Hex,Notes'].concat(journal.map(e => `${e.date},"${e.question}",${e.hex},"${e.notes}"`)).join('\n');
+      const blob = new Blob([csv], {type: 'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'iching-journal.csv'; a.click();
+    }
+
+    // Load on page start
+    displayJournal();
+    </script>
+</head>
+
+<body>
+    <h1>I Ching Hexagram Pages</h1>
+    
+    <h2>My Divination Journal</h2>
+    <form onsubmit="addEntry(); return false;">
+      <p><label>Question: <input type="text" id="question" placeholder="e.g., Career next steps?" required></label></p>
+      <p><label>Hexagram: <input type="text" id="hex" placeholder="e.g., 23: Po ䷖" required></label></p>
+      <p><label>Results/Notes: <textarea id="notes" placeholder="e.g., Splitting Apart; changing line 2; release old patterns"></textarea></label></p>
+      <button type="submit">Log Entry</button>
+    </form>
+    <button onclick="exportJournal()">Export to CSV</button>
+
+    <table id="journalTable" border="1">
+      <thead><tr><th>Date</th><th>Question</th><th>Hex</th><th>Notes</th><th>Actions</th></tr></thead>
+      <tbody id="journalBody"></tbody>
+    </table>
+    <p><em>Entries saved locally—clear browser data to reset. Search table with Ctrl+F.</em></p>
+    
+    <table border="1">
+        <tr><th>#</th><th>Name</th><th>Your Book A</th><th>Your Book B</th></tr>
+        <tr><td>1</td><td>Ch'ien / The Creative</td><td>pp. 3-10</td><td>pp. 5-12</td></tr>
+        <!-- Add rows for all 64; copy from a public I Ching table online -->
+    </table>
+</body>
+</html>
