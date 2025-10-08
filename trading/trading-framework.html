@@ -1,1344 +1,1340 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Trading Journal</title>
-    <style>
-        :root {
-            --primary: #8cc2ee;
-            --primary-dark: #64a5df;
-            --success: #A8D5A8;
-            --table-header-gradient: #5A9BD4;
-            --danger: #E8A5A5;
-            --info: #B8D0E8;
-            --light: #F8F9FB;
-            --dark: #5A6B7A;
-            --gradient: linear-gradient(135deg, #FAFBFC 0%, #F0F2F5 100%);
-            --red-flag: #E8A5A5;
-            --red-flag-dark: #D99494;
-            --green-flag: #A8D5A8;
-            --green-flag-dark: #95C895;
-        }
-        
-        body {
-            background: var(--gradient);
-            color: var(--dark);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            padding: 15px;
-            margin: 0;
-            min-height: 100vh;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--dark);
-            font-size: 24px;
-            font-weight: 600;
-        }
-        
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .nav-button {
-            background-color: white;
-            color: var(--primary);
-            padding: 8px 16px;
-            border: 2px solid var(--primary);
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-button.active {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .nav-button:hover {
-            background-color: var(--primary-dark);
-            color: white;
-        }
-        
-        .section {
-            display: none;
-        }
-        
-        .section.active {
-            display: block;
-        }
-        
-        .question {
-            margin: 12px 0;
-        }
-        
-        .question + .question {
-            margin-top: 6px;
-        }
-        
-        select {
-            padding: 6px 8px;
-            height: 36px;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-        
-        select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.1);
-        }
-        
-        .section-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 12px;
-            margin: 15px 0 12px 0;
-            text-align: center;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .section-header.positive {
-            background: #f6fff6;
-            color: var(--green-flag);
-            border: 2px solid var(--green-flag);
-        }
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>My Trading Journal</title>
+ <style>
+ :root {
+ --primary: #8cc2ee;
+ --primary-dark: #64a5df;
+ --success: #A8D5A8;
+ --table-header-gradient: #5A9BD4;
+ --danger: #E8A5A5;
+ --info: #B8D0E8;
+ --light: #F8F9FB;
+ --dark: #5A6B7A;
+ --gradient: linear-gradient(135deg, #FAFBFC 0%, #F0F2F5 100%);
+ --red-flag: #E8A5A5;
+ --red-flag-dark: #D99494;
+ --green-flag: #A8D5A8;
+ --green-flag-dark: #95C895;
+ }
+ 
+ body {
+ background: var(--gradient);
+ color: var(--dark);
+ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+ padding: 15px;
+ margin: 0;
+ min-height: 100vh;
+ max-width: 900px;
+ margin: 0 auto;
+ }
+ 
+ h1 {
+ text-align: center;
+ margin-bottom: 20px;
+ color: var(--dark);
+ font-size: 24px;
+ font-weight: 600;
+ }
+ 
+ .nav-buttons {
+ display: flex;
+ justify-content: center;
+ gap: 8px;
+ margin-bottom: 20px;
+ }
+ 
+ .nav-button {
+ background-color: white;
+ color: var(--primary);
+ padding: 8px 16px;
+ border: 2px solid var(--primary);
+ border-radius: 12px;
+ cursor: pointer;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.3s ease;
+ }
+ 
+ .nav-button.active {
+ background-color: var(--primary);
+ color: white;
+ }
+ 
+ .nav-button:hover {
+ background-color: var(--primary-dark);
+ color: white;
+ }
+ 
+ .section {
+ display: none;
+ }
+ 
+ .section.active {
+ display: block;
+ }
+ 
+ .question {
+ margin: 12px 0;
+ }
+ 
+ .question + .question {
+ margin-top: 6px;
+ }
+ 
+ select {
+ padding: 6px 8px;
+ height: 36px;
+ font-size: 13px;
+ line-height: 1.4;
+ }
+ 
+ select:focus {
+ border-color: var(--primary);
+ box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.1);
+ }
+ 
+ .section-header {
+ background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+ color: white;
+ padding: 10px 15px;
+ border-radius: 12px;
+ margin: 15px 0 12px 0;
+ text-align: center;
+ font-weight: 600;
+ font-size: 14px;
+ }
+ 
+ .section-header.positive {
+ background: #f6fff6;
+ color: var(--green-flag);
+ border: 2px solid var(--green-flag);
+ }
 
-        .section-header.danger {
-            background: #fcf5f6;
-            color: var(--red-flag-dark);
-            border: 2px solid var(--red-flag);
-        }
+ .section-header.danger {
+ background: #fcf5f6;
+ color: var(--red-flag-dark);
+ border: 2px solid var(--red-flag);
+ }
 
-        .section-header.collapsible {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-        
-        .section-header.collapsible:hover {
-            opacity: 0.9;
-        }
-        
-        .section-header.collapsible .arrow {
-            transition: transform 0.3s ease;
-            font-size: 16px;
-        }
-        
-        .section-header.collapsible.expanded .arrow {
-            transform: rotate(180deg);
-        }
-        
-        .collapsible-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease;
-        }
-        
-        .collapsible-content.expanded {
-            max-height: 2000px;
-        }
-        
-        .rating-container {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            align-items: center;
-            margin: 10px 0;
-        }
-        
-        .emoji-btn {
-            width: 60px;
-            height: 60px;
-            padding: 5px;
-            border-radius: 12px;
-            transition: all 0.3s;
-            font-size: 16px;
-            font-weight: 500;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid var(--primary);
-            background-color: white;
-            color: var(--primary);
-            cursor: pointer;
-        }
-        
-        .emoji-btn:hover {
-            border-color: var(--primary-dark);
-            background-color: rgba(123, 179, 224, 0.1);
-        }
-        
-        .emoji-btn.selected {
-            background-color: var(--primary);
-            border-color: var(--primary-dark);
-            color: white;
-            border-width: 3px;
-            box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.2);
-        }
-        
-        .rating-question {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin: 10px 0;
-            border: 1px solid #E5E7EB;
-            color: var(--dark);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-        
-        .rating-question label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 10px;
-            text-align: center;
-            color: var(--dark);
-            font-size: 14px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 4px;
-            font-weight: 500;
-            color: var(--dark);
-            font-size: 13px;
-        }
-        
-        input[type="text"], input[type="date"], input[type="number"], textarea, select {
-            width: 100%;
-            padding: 8px 10px;
-            background-color: white;
-            color: var(--dark);
-            border: 2px solid #E5E7EB;
-            border-radius: 8px;
-            font-size: 14px;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-        
-        input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(123, 179, 224, 0.1);
-        }
-        
-        textarea {
-            height: 60px;
-            resize: vertical;
-        }
-        
-        button {
-            background: white;
-            color: var(--success);
-            border: 2px solid var(--success);
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        button:hover {
-            background-color: rgba(168, 213, 168, 0.1);
-            border-color: var(--green-flag-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(168, 213, 168, 0.2);
-        }
-        
-        .green-flag-container {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin: 10px 0;
-            border: 1px solid #E5E7EB;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-        
-        .red-flag-container {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin: 10px 0;
-            border: 1px solid #E5E7EB;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-        
-        .red-flag-grid, .green-flag-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 8px;
-            margin-top: 10px;
-        }
-        
-        .red-flag-btn, .green-flag-btn {
-            background-color: white;
-            padding: 8px 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            justify-content: center;
-        }
-        
-        .red-flag-btn {
-            border: 2px solid var(--red-flag);
-            color: var(--red-flag);
-        }
-        
-        .red-flag-btn:hover {
-            background-color: rgba(232, 165, 165, 0.1);
-            border-color: var(--red-flag-dark);
-        }
-        
-        .red-flag-btn.active {
-            background-color: var(--red-flag);
-            color: white;
-            box-shadow: 0 2px 8px rgba(232, 165, 165, 0.3);
-        }
-        
-        .green-flag-btn {
-            border: 2px solid var(--green-flag);
-            color: var(--green-flag);
-        }
-        
-        .green-flag-btn:hover {
-            background-color: rgba(168, 213, 168, 0.1);
-            border-color: var(--green-flag-dark);
-        }
-        
-        .green-flag-btn.active {
-            background-color: var(--green-flag);
-            color: white;
-            box-shadow: 0 2px 8px rgba(168, 213, 168, 0.3);
-        }
-        
-        .red-flag-btn .icon, .green-flag-btn .icon {
-            font-size: 14px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            font-size: 13px;
-        }
-        
-        th, td {
-            border: 1px solid #E5E7EB;
-            padding: 8px 10px;
-            text-align: left;
-            box-sizing: border-box; /* Add this: Padding/borders inside width, stops overlap */
-        }
-        
-        th {
-            background: linear-gradient(180deg, var(--table-header-gradient) 0%, var(--primary) 100%);
-            color: white;
-            font-weight: 500;
-            font-size: 12px;
-        }
-        
-        td {
-            background-color: white;
-            color: var(--dark);
-        }
-        
-        tr:nth-child(even) td {
-            background-color: #FAFBFC;
-        }
-        
-        .no-data {
-            text-align: center;
-            font-style: italic;
-            color: var(--dark);
-            margin-top: 15px;
-            padding: 15px;
-            background: white;
-            border-radius: 12px;
-            border: 2px dashed #E5E7EB;
-            font-size: 14px;
-        }
-        
-        .red-flags-column {
-            max-width: 120px;
-            font-size: 11px;
-        }
-        
-        .red-flag-tag, .green-flag-tag {
-            display: inline-block;
-            padding: 2px 6px;
-            margin: 1px;
-            border-radius: 4px;
-            font-size: 10px;
-        }
-        
-        .red-flag-tag {
-            background-color: var(--red-flag);
-            color: white;
-        }
-        
-        .green-flag-tag {
-            background-color: var(--green-flag);
-            color: white;
-        }
-        
-        th:nth-child(1), td:nth-child(1) {
-            max-width: 50px;
-            white-space: nowrap;
-        }
-        
-        th:nth-last-child(4), td:nth-last-child(4) {
-            width: 55px;
-        }
-        
-        th:nth-child(6), td:nth-child(6) {
-            max-width: 180px;
-            font-size: 11px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        th:nth-child(7), td:nth-child(7) {
-            max-width: 120px;
-            font-size: 11px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+ .section-header.collapsible {
+ cursor: pointer;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ transition: all 0.3s ease;
+ }
+ 
+ .section-header.collapsible:hover {
+ opacity: 0.9;
+ }
+ 
+ .section-header.collapsible .arrow {
+ transition: transform 0.3s ease;
+ font-size: 16px;
+ }
+ 
+ .section-header.collapsible.expanded .arrow {
+ transform: rotate(180deg);
+ }
+ 
+ .collapsible-content {
+ max-height: 0;
+ overflow: hidden;
+ transition: max-height 0.4s ease;
+ }
+ 
+ .collapsible-content.expanded {
+ max-height: 2000px;
+ }
+ 
+ .rating-container {
+ display: flex;
+ justify-content: center;
+ gap: 6px;
+ align-items: center;
+ margin: 10px 0;
+ }
+ 
+ .emoji-btn {
+ width: 60px;
+ height: 60px;
+ padding: 5px;
+ border-radius: 12px;
+ transition: all 0.3s;
+ font-size: 16px;
+ font-weight: 500;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ border: 2px solid var(--primary);
+ background-color: white;
+ color: var(--primary);
+ cursor: pointer;
+ }
+ 
+ .emoji-btn:hover {
+ border-color: var(--primary-dark);
+ background-color: rgba(123, 179, 224, 0.1);
+ }
+ 
+ .emoji-btn.selected {
+ background-color: var(--primary);
+ border-color: var(--primary-dark);
+ color: white;
+ border-width: 3px;
+ box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.2);
+ }
+ 
+ .rating-question {
+ background: white;
+ border-radius: 12px;
+ padding: 15px;
+ margin: 10px 0;
+ border: 1px solid #E5E7EB;
+ color: var(--dark);
+ box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+ }
+ 
+ .rating-question label {
+ display: block;
+ font-weight: 500;
+ margin-bottom: 10px;
+ text-align: center;
+ color: var(--dark);
+ font-size: 14px;
+ }
+ 
+ label {
+ display: block;
+ margin-bottom: 4px;
+ font-weight: 500;
+ color: var(--dark);
+ font-size: 13px;
+ }
+ 
+ input[type="text"], input[type="date"], input[type="number"], textarea, select {
+ width: 100%;
+ padding: 8px 10px;
+ background-color: white;
+ color: var(--dark);
+ border: 2px solid #E5E7EB;
+ border-radius: 8px;
+ font-size: 14px;
+ box-sizing: border-box;
+ transition: all 0.3s ease;
+ }
+ 
+ input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+ border-color: var(--primary);
+ outline: none;
+ box-shadow: 0 0 0 3px rgba(123, 179, 224, 0.1);
+ }
+ 
+ textarea {
+ height: 60px;
+ resize: vertical;
+ }
+ 
+ button {
+ background: white;
+ color: var(--success);
+ border: 2px solid var(--success);
+ padding: 10px 20px;
+ border-radius: 8px;
+ font-size: 14px;
+ font-weight: 500;
+ cursor: pointer;
+ margin-top: 15px;
+ transition: all 0.3s ease;
+ }
+ 
+ button:hover {
+ background-color: rgba(168, 213, 168, 0.1);
+ border-color: var(--green-flag-dark);
+ transform: translateY(-1px);
+ box-shadow: 0 2px 8px rgba(168, 213, 168, 0.2);
+ }
+ 
+ .green-flag-container {
+ background: white;
+ border-radius: 12px;
+ padding: 15px;
+ margin: 10px 0;
+ border: 1px solid #E5E7EB;
+ box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+ }
+ 
+ .red-flag-container {
+ background: white;
+ border-radius: 12px;
+ padding: 15px;
+ margin: 10px 0;
+ border: 1px solid #E5E7EB;
+ box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+ }
+ 
+ .red-flag-grid, .green-flag-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+ gap: 8px;
+ margin-top: 10px;
+ }
+ 
+ .red-flag-btn, .green-flag-btn {
+ background-color: white;
+ padding: 8px 12px;
+ border-radius: 12px;
+ cursor: pointer;
+ font-size: 12px;
+ font-weight: 500;
+ transition: all 0.3s ease;
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ justify-content: center;
+ }
+ 
+ .red-flag-btn {
+ border: 2px solid var(--red-flag);
+ color: var(--red-flag);
+ }
+ 
+ .red-flag-btn:hover {
+ background-color: rgba(232, 165, 165, 0.1);
+ border-color: var(--red-flag-dark);
+ }
+ 
+ .red-flag-btn.active {
+ background-color: var(--red-flag);
+ color: white;
+ box-shadow: 0 2px 8px rgba(232, 165, 165, 0.3);
+ }
+ 
+ .green-flag-btn {
+ border: 2px solid var(--green-flag);
+ color: var(--green-flag);
+ }
+ 
+ .green-flag-btn:hover {
+ background-color: rgba(168, 213, 168, 0.1);
+ border-color: var(--green-flag-dark);
+ }
+ 
+ .green-flag-btn.active {
+ background-color: var(--green-flag);
+ color: white;
+ box-shadow: 0 2px 8px rgba(168, 213, 168, 0.3);
+ }
+ 
+ .red-flag-btn .icon, .green-flag-btn .icon {
+ font-size: 14px;
+ }
+ 
+ table {
+ width: 100%;
+ border-collapse: collapse;
+ margin-top: 15px;
+ background: white;
+ border-radius: 12px;
+ overflow: hidden;
+ box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+ font-size: 13px;
+ }
+ 
+ th, td {
+ border: 1px solid #E5E7EB;
+ padding: 8px 10px;
+ text-align: left;
+ box-sizing: border-box; /* Add this: Padding/borders inside width, stops overlap */
+ }
+ 
+ th {
+ background: linear-gradient(180deg, var(--table-header-gradient) 0%, var(--primary) 100%);
+ color: white;
+ font-weight: 500;
+ font-size: 12px;
+ }
+ 
+ td {
+ background-color: white;
+ color: var(--dark);
+ }
+ 
+ tr:nth-child(even) td {
+ background-color: #FAFBFC;
+ }
+ 
+ .no-data {
+ text-align: center;
+ font-style: italic;
+ color: var(--dark);
+ margin-top: 15px;
+ padding: 15px;
+ background: white;
+ border-radius: 12px;
+ border: 2px dashed #E5E7EB;
+ font-size: 14px;
+ }
+ 
+ .red-flags-column {
+ max-width: 120px;
+ font-size: 11px;
+ }
+ 
+ .red-flag-tag, .green-flag-tag {
+ display: inline-block;
+ padding: 2px 6px;
+ margin: 1px;
+ border-radius: 4px;
+ font-size: 10px;
+ }
+ 
+ .red-flag-tag {
+ background-color: var(--red-flag);
+ color: white;
+ }
+ 
+ .green-flag-tag {
+ background-color: var(--green-flag);
+ color: white;
+ }
+ 
+ th:nth-child(1), td:nth-child(1) {
+ max-width: 50px;
+ white-space: nowrap;
+ }
+ 
+ th:nth-last-child(4), td:nth-last-child(4) {
+ width: 55px;
+ }
+ 
+ th:nth-child(6), td:nth-child(6) {
+ max-width: 180px;
+ font-size: 11px;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ }
+ 
+ th:nth-child(7), td:nth-child(7) {
+ max-width: 120px;
+ font-size: 11px;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ }
 
-        .save-btn {
-            display: block;
-            width: 20%;
-            margin: 8px auto 0;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            background: var(--success);
-            color: white;
-            border: 2px solid var(--success);
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(168, 213, 168, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .save-btn:hover {
-            background: var(--green-flag-dark);
-            border-color: var(--green-flag-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(168, 213, 168, 0.4);
-        }
-    </style>
+ .save-btn {
+ display: block;
+ width: 20%;
+ margin: 8px auto 0;
+ padding: 12px 24px;
+ font-size: 16px;
+ font-weight: 600;
+ background: var(--success);
+ color: white;
+ border: 2px solid var(--success);
+ border-radius: 12px;
+ box-shadow: 0 2px 10px rgba(168, 213, 168, 0.3);
+ transition: all 0.3s ease;
+ }
+ 
+ .save-btn:hover {
+ background: var(--green-flag-dark);
+ border-color: var(--green-flag-dark);
+ transform: translateY(-2px);
+ box-shadow: 0 4px 15px rgba(168, 213, 168, 0.4);
+ }
+ </style>
 </head>
 <body>
-    <h1>Trading Journal</h1>
+ <h1>Trading Journal</h1>
+ 
+ <div class="nav-buttons">
+ <button class="nav-button active" onclick="showSection('daily')">Daily Entry</button>
+ <button class="nav-button" onclick="showSection('weekly')">Weekly Review</button>
+ <button class="nav-button" id="saveTopBtn" style="background: var(--success); color: white; border-color: var(--success);" onclick="saveEntry()">Save</button>
+ <button class="nav-button" id="exportBtn" style="display: none; background: var(--success); color: white; border-color: var(--success);" onclick="exportToCSV()">Export CSV</button> 
+ </div>
+
+ <div id="daily" class="section active">
+ <form id="dailyForm">
+ <div class="question">
+ <label for="date">Date:</label>
+ <input type="date" id="date" name="date">
+ </div>
+
+ <div class="question">
+ <label for="market_timeframe">Market & Timeframe:</label>
+ <input type="text" id="market_timeframe" name="market_timeframe" placeholder="eg. HK, USD/JPY - 1H, 4H, Daily...">
+ </div>
+ <div id="market-conditions-container"></div>
+
+ <div class="section-header">⏰ TIMING & TRIGGER</div>
+ 
+ <div class="rating-question">
+ <label>Entry Quality & Timing Score</label>
+ <div class="rating-container">
+ <button type="button" class="emoji-btn" onclick="setRating('timing', -1)">😡<br><small>Bad</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('timing', 0)">😐<br><small>OK</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('timing', 1)">😊<br><small>Good</small></button>
+ </div>
+ </div>
+ <div id="timing-dropdown-container"></div>
+ 
+ <div class="section-header">⚠️ RISK MANAGEMENT</div>
+ 
+ <div class="rating-question">
+ <label>Risk Control & Discipline</label>
+ <div class="rating-container">
+ <button type="button" class="emoji-btn" onclick="setRating('risk', -1)">😡<br><small>Bad</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('risk', 0)">😐<br><small>OK</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('risk', 1)">😊<br><small>Good</small></button>
+ </div>
+ </div>
+ <div id="risk-dropdown-container"></div>
+ 
+ <div class="question">
+ <label for="risk_percent">Risk %:</label>
+ <input type="number" step="0.1" placeholder="1.0%" id="risk_percent" value="1.0">
+ </div>
+ 
+ <div class="section-header">🎯 ANALYSIS & SETUP</div>
+ 
+ <div class="rating-question">
+ <label>Setup Quality & Analysis</label>
+ <div class="rating-container">
+ <button type="button" class="emoji-btn" onclick="setRating('analysis', -1)">😡<br><small>Bad</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('analysis', 0)">😐<br><small>OK</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('analysis', 1)">😊<br><small>Good</small></button>
+ </div>
+ </div>
+ <div id="analysis-dropdown-container"></div>
+ <div id="setup-dropdown-container"></div>
+ 
+ <div class="question"> 
+ <label for="setup_details">Setup Details (optional):</label>
+ <input type="text" id="setup_details" placeholder="e.g., hanging man, at 1.2500 resistance...">
+ </div>
+
+ <div class="section-header">🧠 DISCIPLINE & PSYCHOLOGY</div>
+ 
+ <div class="rating-question">
+ <label>Mental State & Discipline</label>
+ <div class="rating-container">
+ <button type="button" class="emoji-btn" onclick="setRating('discipline', -1)">😡<br><small>Bad</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('discipline', 0)">😐<br><small>OK</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('discipline', 1)">😊<br><small>Good</small></button>
+ </div>
+ </div>
+ <div id="discipline-dropdown-container"></div>
+ 
+ <div class="section-header">🚪 EXIT STRATEGY</div>
+ 
+ <div class="rating-question">
+ <label>Exit Timing & Execution</label>
+ <div class="rating-container">
+ <button type="button" class="emoji-btn" onclick="setRating('exit', -1)">😡<br><small>Bad</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('exit', 0)">😐<br><small>OK</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('exit', 1)">😊<br><small>Good</small></button>
+ </div>
+ </div>
+ <div id="exit-dropdown-container"></div>
+ 
+ <div class="section-header">💰 RESULTS & REWARD</div>
+ 
+ <div class="rating-question">
+ <label>Risk/Reward Outcome</label>
+ <div class="rating-container">
+ <button type="button" class="emoji-btn" onclick="setRating('results', -1)">😡<br><small>Bad</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('results', 0)">😐<br><small>OK</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('results', 1)">😊<br><small>Good</small></button>
+ </div>
+ </div>
+ 
+ <div class="question">
+ <label for="r_multiple">R value</label>
+ <input type="number" step="0.1" placeholder="+5.0 or -1.0" id="r_multiple" value="1.0">
+ </div>
+
+ <div class="section-header collapsible positive" onclick="toggleMainSection('green-flags')">
+ <span>✅ GREEN TICKS - What I Did Well</span>
+ <span class="arrow">▼</span>
+ </div>
+ <div class="collapsible-content" id="green-flags-content">
+ <div class="green-flag-container">
+ <label style="text-align: center; color: var(--green-flag-dark); font-size: 14px; font-weight: 500;">Celebrate wins to build discipline & edge</label>
+ <div class="green-flag-grid">
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('followed_plan')">
+ <span class="icon">📝</span> Followed Plan
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('premarket_analysis')">
+ <span class="icon">🔍</span> Pre-Market Analysis
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('waited_setup')">
+ <span class="icon">⏳</span> Waited for Setup
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('correct_timeframes')">
+ <span class="icon">📊</span> Correct Timeframes
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('perfect_position_size')">
+ <span class="icon">🎯</span> Perfect Position
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('quick_loss_cut')">
+ <span class="icon">🛑</span> Quick Loss Cut
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('hit_profit_target')">
+ <span class="icon">🎯</span> Hit Profit Target
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('avoided_chasing')">
+ <span class="icon">🏃‍♂️</span> Avoided Chasing
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('emotional_control')">
+ <span class="icon">😌</span> Emotional Control
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('documented_trades')">
+ <span class="icon">📝</span> Documented Trades
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('post_trade_analysis')">
+ <span class="icon">🤔</span> Post-Trade Analysis
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('applied_lessons')">
+ <span class="icon">💡</span> Applied Lessons
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('stuck_risk_limits')">
+ <span class="icon">⚖️</span> Stuck to Risk Limits
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('waited_confluence')">
+ <span class="icon">🔄</span> Multi-Timeframe Confluence
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('reviewed_last_trade')">
+ <span class="icon">🔍</span> Reviewed Last Trade
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('neutral_mindset')">
+ <span class="icon">🧠</span> Neutral Mindset (No Tilt)
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('documented_rationale')">
+ <span class="icon">📝</span> Documented Rationale
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('exited_on_plan')">
+ <span class="icon">🎯</span> Exited on Plan
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('adapted_conditions')">
+ <span class="icon">🔄</span> Adapted to Conditions
+ </button>
+ <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('celebrated_small_win')">
+ <span class="icon">🎉</span> Celebrated Small Win
+ </button> 
+ </div>
+ </div>
+ </div>
+
+ <div class="section-header collapsible danger" onclick="toggleMainSection('red-flags')">
+ <span>🚩 RED FLAGS</span>
+ <span class="arrow">▼</span>
+ </div>
+ <div class="collapsible-content" id="red-flags-content">
+ <div class="red-flag-container">
+ <label style="text-align: center; color: var(--red-flag-dark); font-size: 14px; font-weight: 500;">Flag risks to break bad habits & protect capital</label>
+ <div class="red-flag-grid">
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('revenge')">
+ <span class="icon">😡</span> Revenge Trading
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('overtrading')">
+ <span class="icon">🔄</span> Overtrading
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('fomo')">
+ <span class="icon">😰</span> FOMO Entry
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('moved_stop')">
+ <span class="icon">📍</span> Moved Stop Loss
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('added_loser')">
+ <span class="icon">➕</span> Added to Loser
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('no_plan')">
+ <span class="icon">❓</span> No Trading Plan
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('ignored_risk')">
+ <span class="icon">⚠️</span> Ignored Risk Rules
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('trader_error')">
+ <span class="icon">💢</span> Trader error
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('news_trade')">
+ <span class="icon">📰</span> News Reaction Trade
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('hope_hold')">
+ <span class="icon">🤞</span> Hope & Hold
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('early_exit')">
+ <span class="icon">🏃</span> Early Exit (Fear)
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('herd_behavior')">
+ <span class="icon">👥</span> Herd Behavior
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('loss_aversion')">
+ <span class="icon">📉</span> Held Loser
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('overconfidence')">
+ <span class="icon">😎</span> Overconfident
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('confirmation_bias')">
+ <span class="icon">🔍</span> Confirmation Bias
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('illusion_control')">
+ <span class="icon">🎮</span> Illusion of Control
+ </button>
+ <button type="button" class="red-flag-btn" onclick="toggleRedFlag('social_influence')">
+ <span class="icon">📱</span> Social Impulse
+ </button> 
+ </div>
+ </div>
+ </div>
+
+ <div class="section-header">💡 KEY TAKEAWAY</div>
+ <div class="question">
+ <label for="key_takeaway">Key lesson learned:</label>
+ <textarea id="key_takeaway" placeholder="What's the most important lesson from today's trading?"></textarea>
+ </div>
+ 
+ <div style="text-align: center; margin-top: 20px;">
+ <button type="button" class="save-btn" onclick="saveEntry()">SAVE Day Entry</button>
+ </div>
+
+ </form>
+ </div>
+ 
+ <!-- Weekly Review Section -->
+ <div id="weekly" class="section">
+ <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 15px;">Weekly Trading Review</h2>
+ <div id="weeklyTable"></div>
+ </div>
+
+ <script>
+ // Helper to get local YYYY-MM-DD string consistently (fixes timezone bug)
+ function getLocalDateString() {
+ const now = new Date();
+ const year = now.getFullYear();
+ const month = String(now.getMonth() + 1).padStart(2, '0');
+ const day = String(now.getDate()).padStart(2, '0');
+ return `${year}-${month}-${day}`;
+ }
+
+ // Config for T.R.A.D.E.R text dropdowns
+ const traderDropdowns = [
+ { id: 'market_conditions', label: 'Market Conditions', category: 'market', options: [
+ { value: '', text: 'Select Condition' },
+ { value: 'strong_uptrend', text: '📈 Strong Uptrend' },
+ { value: 'strong_downtrend', text: '📉 Strong Downtrend' },
+ { value: 'ranging_sideways', text: '↔️ Ranging/Sideways' },
+ { value: 'high_volatility', text: '⚡ High Volatility' },
+ { value: 'low_volatility', text: '😴 Low Volatility' }
+ ] },
+ { id: 'timing_dropdown', label: 'Timing Assessment', category: 'timing', options: [
+ { value: '', text: 'Select...' },
+ { value: 'Too early', text: 'Too early' },
+ { value: 'Perfect timing', text: 'Perfect timing' },
+ { value: 'Missed setup', text: 'Missed setup' },
+ { value: 'Late', text: 'Late' }
+ ] },
+ { id: 'risk_dropdown', label: 'Risk Assessment', category: 'risk', options: [
+ { value: '', text: 'Select...' },
+ { value: 'Small risk', text: 'Small risk' },
+ { value: 'Position too big', text: 'Position too big' },
+ { value: 'Just right', text: 'Just right' },
+ ] },
+ { id: 'analysis_quality_dropdown', label: 'Setup Quality', category: 'analysis_quality', options: [
+ { value: '', text: 'Select...' },
+ { value: 'Perfect recognition', text: 'Perfect recognition' },
+ { value: 'Forced trade', text: 'Forced trade' },
+ { value: 'Missed it', text: 'Missed it' }
+ ] },
+ { id: 'setup_used_dropdown', label: 'Setup Used', category: 'setup', options: [
+ { value: '', text: 'Select...' },
+ { value: 'Head & Shoulders', text: '🏔️ Head & Shoulders' },
+ { value: 'Double Top', text: '⛰️ Double Top' },
+ { value: 'MA Cross', text: '📊 MA Cross' },
+ { value: 'Support/Resistance', text: '⇅ Support/Resistance' },
+ { value: 'Breakout - 2nd leg', text: '💥 Breakout - 2nd leg' },
+ { value: 'Pattern Breakout', text: '💥 Pattern Breakout' },
+ { value: 'Opening Breakout', text: '🌅 Opening Breakout' },
+ { value: 'Cup & Handle', text: '☕ Cup & Handle' },
+ { value: 'RSI Overbought/Oversold', text: '📈📉 RSI Overbought/Oversold' },
+ { value: '3 Indians', text: '🏹 3 Indians' },
+ { value: 'Pivot Points', text: '🔃 Pivot Points' },
+ { value: 'Candlestick Pattern', text: '🕯️ Candlestick Pattern' }
+ ] },
+ { id: 'discipline_dropdown', label: 'Emotional State', category: 'discipline', options: [
+ { value: '', text: 'Select...' },
+ { value: 'calm', text: '😌 Calm' },
+ { value: 'excited', text: '😃 Excited' },
+ { value: 'hesitant', text: '😕 Hesitant' },
+ { value: 'frustrated', text: '😤 Frustrated' },
+ { value: 'overconfident', text: '😎 Overconfident' },
+ { value: 'revenge', text: '😡 Revenge Trading' },
+ { value: 'fomo', text: '😰 FOMO' },
+ { value: 'bored', text: '😑 Bored/Overtrading' },
+ { value: 'worked_psychology', text: '🧑‍🏫 Worked on my psychology' }
+ ] },
+ { id: 'exit_dropdown', label: 'Exit Assessment', category: 'exit', options: [
+ { value: '', text: 'Select...' },
+ { value: 'Stop Hit', text: 'Stop Hit' },
+ { value: 'Trailing Stop Hit', text: 'Trailing Stop Hit' },
+ { value: 'Profit Target Reached', text: 'Profit Target Reached' },
+ { value: 'Fearful Early Exit', text: 'Fearful Early Exit' },
+ { value: 'Let Winners Run', text: 'Let Winners Run' },
+ { value: 'Held Too Long', text: 'Held Too Long' }
+ ] }
+ ];
+
+ // Initialize scores with default values (0 = middle of -1, 0, 1 scale)
+ let scores = {
+ timing: 0,
+ risk: 0,
+ analysis: 0,
+ discipline: 0,
+ exit: 0,
+ results: 0
+ };
+
+ // Initialize red flags tracking
+ let redFlags = new Set();
+ 
+ // Initialize green flags tracking
+ let greenFlags = new Set();
+
+ // Function to format date as "Sep 25" instead of "2025-09-25"
+ function formatDateShort(dateString) {
+ const date = new Date(dateString);
+ const options = { month: 'short', day: 'numeric' };
+ return date.toLocaleDateString('en-US', options);
+ }
+
+ // Generate HTML for all T.R.A.D.E.R dropdowns (now per-section)
+ function generateTraderDropdowns() {
+ traderDropdowns.forEach(config => {
+ let containerId = `${config.category}-dropdown-container`;
+ if (config.category === 'market') containerId = 'market-conditions-container';
+ const container = document.getElementById(containerId);
+ if (!container) return; // Skip if placeholder missing
+
+ let html = `
+ <div class="question">
+ <label for="${config.id}">${config.label}:</label>
+ <select id="${config.id}">
+ ${config.options.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('')}
+ </select>
+ </div>
+ `;
+ container.innerHTML = html;
+ });
+ }
+
+// Load entry for any date
+function loadEntry(date) {
+    // Regenerate dropdowns first to ensure they exist
+    generateTraderDropdowns();
     
-    <div class="nav-buttons">
-        <button class="nav-button active" onclick="showSection('daily')">Daily Entry</button>
-        <button class="nav-button" onclick="showSection('weekly')">Weekly Review</button>
-        <button class="nav-button" id="saveTopBtn" style="background: var(--success); color: white; border-color: var(--success);" onclick="saveEntry()">Save</button>
-        <button class="nav-button" id="exportBtn" style="display: none; background: var(--success); color: white; border-color: var(--success);" onclick="exportToCSV()">Export CSV</button>    
-    </div>
-
-    <div id="daily" class="section active">
-        <form id="dailyForm">
-            <div class="question">
-                <label for="date">Date:</label>
-                <input type="date" id="date" name="date">
-            </div>
-
-            <div class="question">
-                <label for="market_timeframe">Market & Timeframe:</label>
-                <input type="text" id="market_timeframe" name="market_timeframe" placeholder="eg. HK, USD/JPY - 1H, 4H, Daily...">
-            </div>
-            <div id="market-conditions-container"></div>
-
-            <div class="section-header">⏰ TIMING & TRIGGER</div>
-            
-            <div class="rating-question">
-                <label>Entry Quality & Timing Score</label>
-                <div class="rating-container">
-                    <button type="button" class="emoji-btn" onclick="setRating('timing', -1)">😡<br><small>Bad</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('timing', 0)">😐<br><small>OK</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('timing', 1)">😊<br><small>Good</small></button>
-                </div>
-            </div>
-            <div id="timing-dropdown-container"></div>
-            
-            <div class="section-header">⚠️ RISK MANAGEMENT</div>
-            
-            <div class="rating-question">
-                <label>Risk Control & Discipline</label>
-                <div class="rating-container">
-                    <button type="button" class="emoji-btn" onclick="setRating('risk', -1)">😡<br><small>Bad</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('risk', 0)">😐<br><small>OK</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('risk', 1)">😊<br><small>Good</small></button>
-                </div>
-            </div>
-            <div id="risk-dropdown-container"></div>
-            
-            <div class="question">
-                <label for="risk_percent">Risk %:</label>
-                <input type="number" step="0.1" placeholder="1.0%" id="risk_percent" value="1.0">
-            </div>
+    // Always clear flags on date load for clean state
+    greenFlags.clear();
+    redFlags.clear();
+    // Clear all flag buttons visually
+    document.querySelectorAll('.green-flag-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.red-flag-btn').forEach(btn => btn.classList.remove('active'));
     
-            <div class="section-header">🎯 ANALYSIS & SETUP</div>
-            
-            <div class="rating-question">
-                <label>Setup Quality & Analysis</label>
-                <div class="rating-container">
-                    <button type="button" class="emoji-btn" onclick="setRating('analysis', -1)">😡<br><small>Bad</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('analysis', 0)">😐<br><small>OK</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('analysis', 1)">😊<br><small>Good</small></button>
-                </div>
-            </div>
-            <div id="analysis-dropdown-container"></div>
-            <div id="setup-dropdown-container"></div>
-            
-            <div class="question"> 
-                <label for="setup_details">Setup Details (optional):</label>
-                <input type="text" id="setup_details" placeholder="e.g., hanging man, at 1.2500 resistance...">
-            </div>
-
-            <div class="section-header">🧠 DISCIPLINE & PSYCHOLOGY</div>
-            
-            <div class="rating-question">
-                <label>Mental State & Discipline</label>
-                <div class="rating-container">
-                    <button type="button" class="emoji-btn" onclick="setRating('discipline', -1)">😡<br><small>Bad</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('discipline', 0)">😐<br><small>OK</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('discipline', 1)">😊<br><small>Good</small></button>
-                </div>
-            </div>
-            <div id="discipline-dropdown-container"></div>
-            
-            <div class="section-header">🚪 EXIT STRATEGY</div>
-            
-            <div class="rating-question">
-                <label>Exit Timing & Execution</label>
-                <div class="rating-container">
-                    <button type="button" class="emoji-btn" onclick="setRating('exit', -1)">😡<br><small>Bad</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('exit', 0)">😐<br><small>OK</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('exit', 1)">😊<br><small>Good</small></button>
-                </div>
-            </div>
-            <div id="exit-dropdown-container"></div>
-            
-            <div class="section-header">💰 RESULTS & REWARD</div>
-            
-            <div class="rating-question">
-                <label>Risk/Reward Outcome</label>
-                <div class="rating-container">
-                    <button type="button" class="emoji-btn" onclick="setRating('results', -1)">😡<br><small>Bad</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('results', 0)">😐<br><small>OK</small></button>
-                    <button type="button" class="emoji-btn" onclick="setRating('results', 1)">😊<br><small>Good</small></button>
-                </div>
-            </div>
-            
-            <div class="question">
-                <label for="r_multiple">R value</label>
-                <input type="number" step="0.1" placeholder="+5.0 or -1.0" id="r_multiple" value="1.0">
-            </div>
-
-            <div class="section-header collapsible positive" onclick="toggleMainSection('green-flags')">
-                <span>✅ GREEN TICKS - What I Did Well</span>
-                <span class="arrow">▼</span>
-            </div>
-            <div class="collapsible-content" id="green-flags-content">
-                <div class="green-flag-container">
-                    <label style="text-align: center; color: var(--green-flag-dark); font-size: 14px; font-weight: 500;">Celebrate wins to build discipline & edge</label>
-                    <div class="green-flag-grid">
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('followed_plan')">
-                            <span class="icon">📝</span> Followed Plan
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('premarket_analysis')">
-                            <span class="icon">🔍</span> Pre-Market Analysis
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('waited_setup')">
-                            <span class="icon">⏳</span> Waited for Setup
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('correct_timeframes')">
-                            <span class="icon">📊</span> Correct Timeframes
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('perfect_position_size')">
-                            <span class="icon">🎯</span> Perfect Position
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('quick_loss_cut')">
-                            <span class="icon">🛑</span> Quick Loss Cut
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('hit_profit_target')">
-                            <span class="icon">🎯</span> Hit Profit Target
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('avoided_chasing')">
-                            <span class="icon">🏃‍♂️</span> Avoided Chasing
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('emotional_control')">
-                            <span class="icon">😌</span> Emotional Control
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('documented_trades')">
-                            <span class="icon">📝</span> Documented Trades
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('post_trade_analysis')">
-                            <span class="icon">🤔</span> Post-Trade Analysis
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('applied_lessons')">
-                            <span class="icon">💡</span> Applied Lessons
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('stuck_risk_limits')">
-                            <span class="icon">⚖️</span> Stuck to Risk Limits
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('waited_confluence')">
-                            <span class="icon">🔄</span> Multi-Timeframe Confluence
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('reviewed_last_trade')">
-                            <span class="icon">🔍</span> Reviewed Last Trade
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('neutral_mindset')">
-                            <span class="icon">🧠</span> Neutral Mindset (No Tilt)
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('documented_rationale')">
-                            <span class="icon">📝</span> Documented Rationale
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('exited_on_plan')">
-                            <span class="icon">🎯</span> Exited on Plan
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('adapted_conditions')">
-                            <span class="icon">🔄</span> Adapted to Conditions
-                        </button>
-                        <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('celebrated_small_win')">
-                            <span class="icon">🎉</span> Celebrated Small Win
-                        </button>                         
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-header collapsible danger" onclick="toggleMainSection('red-flags')">
-            <span>🚩 RED FLAGS</span>
-                <span class="arrow">▼</span>
-            </div>
-            <div class="collapsible-content" id="red-flags-content">
-                <div class="red-flag-container">
-                    <label style="text-align: center; color: var(--red-flag-dark); font-size: 14px; font-weight: 500;">Flag risks to break bad habits & protect capital</label>
-                    <div class="red-flag-grid">
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('revenge')">
-                            <span class="icon">😡</span> Revenge Trading
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('overtrading')">
-                            <span class="icon">🔄</span> Overtrading
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('fomo')">
-                            <span class="icon">😰</span> FOMO Entry
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('moved_stop')">
-                            <span class="icon">📍</span> Moved Stop Loss
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('added_loser')">
-                            <span class="icon">➕</span> Added to Loser
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('no_plan')">
-                            <span class="icon">❓</span> No Trading Plan
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('ignored_risk')">
-                            <span class="icon">⚠️</span> Ignored Risk Rules
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('trader_error')">
-                            <span class="icon">💢</span> Trader error
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('news_trade')">
-                            <span class="icon">📰</span> News Reaction Trade
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('hope_hold')">
-                            <span class="icon">🤞</span> Hope & Hold
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('early_exit')">
-                            <span class="icon">🏃</span> Early Exit (Fear)
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('herd_behavior')">
-                            <span class="icon">👥</span> Herd Behavior
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('loss_aversion')">
-                            <span class="icon">📉</span> Held Loser
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('overconfidence')">
-                            <span class="icon">😎</span> Overconfident
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('confirmation_bias')">
-                            <span class="icon">🔍</span> Confirmation Bias
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('illusion_control')">
-                            <span class="icon">🎮</span> Illusion of Control
-                        </button>
-                        <button type="button" class="red-flag-btn" onclick="toggleRedFlag('social_influence')">
-                            <span class="icon">📱</span> Social Impulse
-                        </button>                     
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-header">💡 KEY TAKEAWAY</div>
-            <div class="question">
-                <label for="key_takeaway">Key lesson learned:</label>
-                <textarea id="key_takeaway" placeholder="What's the most important lesson from today's trading?"></textarea>
-            </div>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <button type="button" class="save-btn" onclick="saveEntry()">SAVE Day Entry</button>
-            </div>
-
-        </form>
-    </div>
+    const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+    const entry = entries.find(e => e.date === date);
     
-    <!-- Weekly Review Section -->
-    <div id="weekly" class="section">
-        <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 15px;">Weekly Trading Review</h2>
-        <div id="weeklyTable"></div>
-    </div>
-
-    <script>
-        // Helper to get local YYYY-MM-DD string consistently (fixes timezone bug)
-        function getLocalDateString() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        // Config for T.R.A.D.E.R text dropdowns
-        const traderDropdowns = [
-            { id: 'market_conditions', label: 'Market Conditions', category: 'market', options: [
-                { value: '', text: 'Select Condition' },
-                { value: 'strong_uptrend', text: '📈 Strong Uptrend' },
-                { value: 'strong_downtrend', text: '📉 Strong Downtrend' },
-                { value: 'ranging_sideways', text: '↔️ Ranging/Sideways' },
-                { value: 'high_volatility', text: '⚡ High Volatility' },
-                { value: 'low_volatility', text: '😴 Low Volatility' }
-            ] },
-            { id: 'timing_dropdown', label: 'Timing Assessment', category: 'timing', options: [
-                { value: '', text: 'Select...' },
-                { value: 'Too early', text: 'Too early' },
-                { value: 'Perfect timing', text: 'Perfect timing' },
-                { value: 'Missed setup', text: 'Missed setup' },
-                { value: 'Late', text: 'Late' }
-            ] },
-            { id: 'risk_dropdown', label: 'Risk Assessment', category: 'risk', options: [
-                { value: '', text: 'Select...' },
-                { value: 'Small risk', text: 'Small risk' },
-                { value: 'Position too big', text: 'Position too big' },
-                { value: 'Just right', text: 'Just right' },
-            ] },
-            { id: 'analysis_quality_dropdown', label: 'Setup Quality', category: 'analysis_quality', options: [
-                { value: '', text: 'Select...' },
-                { value: 'Perfect recognition', text: 'Perfect recognition' },
-                { value: 'Forced trade', text: 'Forced trade' },
-                { value: 'Missed it', text: 'Missed it' }
-            ] },
-            { id: 'setup_used_dropdown', label: 'Setup Used', category: 'setup', options: [
-                { value: '', text: 'Select...' },
-                { value: 'Head & Shoulders', text: '🏔️ Head & Shoulders' },
-                { value: 'Double Top', text: '⛰️ Double Top' },
-                { value: 'MA Cross', text: '📊 MA Cross' },
-                { value: 'Support/Resistance', text: '⇅ Support/Resistance' },
-                { value: 'Breakout - 2nd leg', text: '💥 Breakout - 2nd leg' },
-                { value: 'Pattern Breakout', text: '💥 Pattern Breakout' },
-                { value: 'Opening Breakout', text: '🌅 Opening Breakout' },
-                { value: 'Cup & Handle', text: '☕ Cup & Handle' },
-                { value: 'RSI Overbought/Oversold', text: '📈📉 RSI Overbought/Oversold' },
-                { value: '3 Indians', text: '🏹 3 Indians' },
-                { value: 'Pivot Points', text: '🔃 Pivot Points' },
-                { value: 'Candlestick Pattern', text: '🕯️ Candlestick Pattern' }
-            ] },
-            { id: 'discipline_dropdown', label: 'Emotional State', category: 'discipline', options: [
-                { value: '', text: 'Select...' },
-                { value: 'calm', text: '😌 Calm' },
-                { value: 'excited', text: '😃 Excited' },
-                { value: 'hesitant', text: '😕 Hesitant' },
-                { value: 'frustrated', text: '😤 Frustrated' },
-                { value: 'overconfident', text: '😎 Overconfident' },
-                { value: 'revenge', text: '😡 Revenge Trading' },
-                { value: 'fomo', text: '😰 FOMO' },
-                { value: 'bored', text: '😑 Bored/Overtrading' },
-                { value: 'worked_psychology', text: '🧑‍🏫 Worked on my psychology' }
-            ] },
-            { id: 'exit_dropdown', label: 'Exit Assessment', category: 'exit', options: [
-                { value: '', text: 'Select...' },
-                { value: 'Stop Hit', text: 'Stop Hit' },
-                { value: 'Trailing Stop Hit', text: 'Trailing Stop Hit' },
-                { value: 'Profit Target Reached', text: 'Profit Target Reached' },
-                { value: 'Fearful Early Exit', text: 'Fearful Early Exit' },
-                { value: 'Let Winners Run', text: 'Let Winners Run' },
-                { value: 'Held Too Long', text: 'Held Too Long' }
-            ] }
-        ];
-
-        // Initialize scores with default values (0 = middle of -1, 0, 1 scale)
-        let scores = {
-            timing: 0,
-            risk: 0,
-            analysis: 0,
-            discipline: 0,
-            exit: 0,
-            results: 0
-        };
-
-        // Initialize red flags tracking
-        let redFlags = new Set();
-        
-        // Initialize green flags tracking
-        let greenFlags = new Set();
-
-        // Function to format date as "Sep 25" instead of "2025-09-25"
-        function formatDateShort(dateString) {
-            const date = new Date(dateString);
-            const options = { month: 'short', day: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
-        }
-
-        // Generate HTML for all T.R.A.D.E.R dropdowns (now per-section)
-        function generateTraderDropdowns() {
-            traderDropdowns.forEach(config => {
-                let containerId = `${config.category}-dropdown-container`;
-                if (config.category === 'market') containerId = 'market-conditions-container';
-                const container = document.getElementById(containerId);
-                if (!container) return;  // Skip if placeholder missing
-
-                let html = `
-                    <div class="question">
-                        <label for="${config.id}">${config.label}:</label>
-                        <select id="${config.id}">
-                            ${config.options.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('')}
-                        </select>
-                    </div>
-                `;
-                container.innerHTML = html;
+    if (entry) {
+        // Scores & buttons
+        if (entry.scores) {
+            Object.keys(entry.scores).forEach(category => {
+                scores[category] = entry.scores[category];
+                updateRatingDisplay(category, entry.scores[category]);
             });
-        }
-
-        // Load entry for today's date
-        function loadTodayEntry() {
-            loadEntry(getLocalDateString());
-        }
-
-        // Load entry for any date
-        function loadEntry(date) {
-            const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
-            const entry = entries.find(e => e.date === date);
-            
-            if (entry) {
-                // Scores & buttons
-                if (entry.scores) {
-                    Object.keys(entry.scores).forEach(category => {
-                        scores[category] = entry.scores[category];
-                        updateRatingDisplay(category, entry.scores[category]);
-                    });
-                }
-                
-                // Basic fields
-                document.getElementById('market_timeframe').value = entry.marketTimeframe || '';
-                document.getElementById('risk_percent').value = entry.riskPercent || '1.0';
-                document.getElementById('setup_details').value = entry.setupDetails || '';
-                document.getElementById('r_multiple').value = entry.rMultiple || '1.0';
-                document.getElementById('key_takeaway').value = entry.keyTakeaway || '';
-                
-                // Dropdowns
-                if (entry.traderTexts) {
-                    Object.keys(entry.traderTexts).forEach(category => {
-                        const dropdownId = traderDropdowns.find(config => config.category === category)?.id;
-                        if (dropdownId) {
-                            const dropdown = document.getElementById(dropdownId);
-                            if (dropdown) dropdown.value = entry.traderTexts[category];
-                        }
-                    });
-                }
-                if (entry.setupUsed) document.getElementById('setup_used_dropdown').value = entry.setupUsed;
-                if (entry.emotionalState) document.getElementById('discipline_dropdown').value = entry.emotionalState;
-                if (entry.marketConditions) document.getElementById('market_conditions').value = entry.marketConditions;
-                
-                // Flags
-                if (entry.greenFlags) {
-                    greenFlags.clear();
-                    entry.greenFlags.forEach(flag => {
-                        greenFlags.add(flag);
-                        const button = document.querySelector(`[onclick="toggleGreenFlag('${flag}')"]`);
-                        if (button) button.classList.add('active');
-                    });
-                }
-                if (entry.redFlags) {
-                    redFlags.clear();
-                    entry.redFlags.forEach(flag => {
-                        redFlags.add(flag);
-                        const button = document.querySelector(`[onclick="toggleRedFlag('${flag}')"]`);
-                        if (button) button.classList.add('active');
-                    });
-                }
-            } else {
-                // Clear form if no entry
-                document.getElementById('dailyForm').reset();
-                Object.keys(scores).forEach(category => {
-                    scores[category] = 0;
-                    updateRatingDisplay(category, 0);
-                });
-                greenFlags.clear();
-                redFlags.clear();
-                traderDropdowns.forEach(config => {
-                    const dropdown = document.getElementById(config.id);
-                    if (dropdown) dropdown.value = '';
-                });
-            }
-            
-            // Refresh weekly table
-            displayWeeklyData();
-        }
-
-        // Set today's date automatically when page loads
-        window.onload = function() {
-            document.getElementById('date').value = getLocalDateString();
-
-            // Load entry when date changes
-            document.getElementById('date').addEventListener('change', function() {
-                loadEntry(this.value);
-            });
-            
-            generateTraderDropdowns();
-            
-            loadTodayEntry();
-            
-            displayWeeklyData();
-            
-            const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
-            const today = getLocalDateString();
-            const todayEntry = entries.find(entry => entry.date === today);
-            if (!todayEntry) {
-                Object.keys(scores).forEach(category => {
-                    updateRatingDisplay(category, scores[category]);
-                });
-            }
-        };
-
-        // Function to set rating and update display
-        function setRating(category, rating) {
-            scores[category] = rating;
-            updateRatingDisplay(category, rating);
         }
         
-        // Function to update rating button display
-        function updateRatingDisplay(category, rating) {
-            const buttons = document.querySelectorAll(`[onclick*="setRating('${category}'"]`);
-            buttons.forEach((btn) => {
-                const onclickAttr = btn.getAttribute('onclick');
-                const ratingMatch = onclickAttr.match(/setRating\('.*?',\s*(-?\d+)\)/);
-                
-                if (ratingMatch) {
-                    const btnRating = parseInt(ratingMatch[1]);
-                    if (btnRating === rating) {
-                        btn.classList.add('selected');
-                    } else {
-                        btn.classList.remove('selected');
-                    }
+        // Basic fields
+        document.getElementById('market_timeframe').value = entry.marketTimeframe || '';
+        document.getElementById('risk_percent').value = entry.riskPercent || '1.0';
+        document.getElementById('setup_details').value = entry.setupDetails || '';
+        document.getElementById('r_multiple').value = entry.rMultiple || '1.0';
+        document.getElementById('key_takeaway').value = entry.keyTakeaway || '';
+        
+        // Dropdowns (now safe since generated)
+        if (entry.traderTexts) {
+            Object.keys(entry.traderTexts).forEach(category => {
+                const dropdownId = traderDropdowns.find(config => config.category === category)?.id;
+                if (dropdownId) {
+                    const dropdown = document.getElementById(dropdownId);
+                    if (dropdown) dropdown.value = entry.traderTexts[category];
                 }
             });
         }
-
-        // Function to toggle green flag buttons
-        function toggleGreenFlag(flagName) {
-            const button = document.querySelector(`[onclick="toggleGreenFlag('${flagName}')"]`);
-            
-            if (greenFlags.has(flagName)) {
-                greenFlags.delete(flagName);
-                button.classList.remove('active');
-            } else {
-                greenFlags.add(flagName);
-                button.classList.add('active');
-            }
-        }
+        if (entry.setupUsed) document.getElementById('setup_used_dropdown').value = entry.setupUsed;
+        if (entry.emotionalState) document.getElementById('discipline_dropdown').value = entry.emotionalState;
+        if (entry.marketConditions) document.getElementById('market_conditions').value = entry.marketConditions;
         
-        // Function to toggle red flag buttons
-        function toggleRedFlag(flagName) {
-            const button = document.querySelector(`[onclick="toggleRedFlag('${flagName}')"]`);
-            
-            if (redFlags.has(flagName)) {
-                redFlags.delete(flagName);
-                button.classList.remove('active');
-            } else {
-                redFlags.add(flagName);
-                button.classList.add('active');
-            }
+        // Re-apply flags from entry
+        if (entry.greenFlags) {
+            entry.greenFlags.forEach(flag => {
+                greenFlags.add(flag);
+                const button = document.querySelector(`[onclick="toggleGreenFlag('${flag}')"]`);
+                if (button) button.classList.add('active');
+            });
         }
-
-        // Function to toggle main sections (green flags and red flags)
-        function toggleMainSection(sectionName) {
-            const header = document.querySelector(`[onclick="toggleMainSection('${sectionName}')"]`);
-            const content = document.getElementById(`${sectionName}-content`);
-            
-            if (content.classList.contains('expanded')) {
-                content.classList.remove('expanded');
-                header.classList.remove('expanded');
-            } else {
-                content.classList.add('expanded');
-                header.classList.add('expanded');
-            }
+        if (entry.redFlags) {
+            entry.redFlags.forEach(flag => {
+                redFlags.add(flag);
+                const button = document.querySelector(`[onclick="toggleRedFlag('${flag}')"]`);
+                if (button) button.classList.add('active');
+            });
         }
+    } else {
+        // Clear form if no entry (manually, to preserve date)
+        document.getElementById('market_timeframe').value = '';
+        document.getElementById('risk_percent').value = '1.0';
+        document.getElementById('setup_details').value = '';
+        document.getElementById('r_multiple').value = '1.0';
+        document.getElementById('key_takeaway').value = '';
         
-
-
-        // Function to switch between Daily and Weekly sections
-        function showSection(sectionName) {
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => section.classList.remove('active'));
-            
-            const navButtons = document.querySelectorAll('.nav-button');
-            navButtons.forEach(button => button.classList.remove('active'));
-            
-            document.getElementById(sectionName).classList.add('active');
-            
-            event.target.classList.add('active');
-            
-            if (sectionName === 'weekly') {
-                displayWeeklyData();
-                document.getElementById('exportBtn').style.display = 'inline-block';
-                document.getElementById('saveTopBtn').style.display = 'none';
-            } else {
-                document.getElementById('exportBtn').style.display = 'none';
-                document.getElementById('saveTopBtn').style.display = 'inline-block';   
-            }
-            
-             // Load today's entry when switching back to daily
-            if (sectionName === 'daily') {
-                loadTodayEntry();
-            }
-        }        
+        // Clear dropdowns manually
+        traderDropdowns.forEach(config => {
+            const dropdown = document.getElementById(config.id);
+            if (dropdown) dropdown.value = '';
+        });
         
-        // Function to save a daily entry
-        function saveEntry() {
-            const date = document.getElementById('date').value;
-            
-            if (!date) {
-                alert('Please select a date');
-                return;
-            }
-            
-            const dailyTotal = Object.values(scores).reduce((sum, score) => sum + score, 0);
-            
-            const traderTexts = {};
-            traderDropdowns.forEach(config => {
-                traderTexts[config.category] = document.getElementById(config.id)?.value || '';
-            });
-            
-            const entry = {
-                date: date,
-                marketTimeframe: document.getElementById('market_timeframe').value,
-                scores: { ...scores },
-                dailyTotal: dailyTotal,
-                marketConditions: document.getElementById('market_conditions').value,
-                riskPercent: document.getElementById('risk_percent').value,
-                setupUsed: document.getElementById('setup_used_dropdown').value,
-                setupDetails: document.getElementById('setup_details').value,
-                emotionalState: document.getElementById('discipline_dropdown').value,
-                rMultiple: document.getElementById('r_multiple').value,
-                keyTakeaway: document.getElementById('key_takeaway').value,
-                redFlags: Array.from(redFlags),
-                greenFlags: Array.from(greenFlags),
-                traderTexts: traderTexts
-            };     
-            
-            let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
-            
-            const existingIndex = entries.findIndex(entry => entry.date === date);
-            
-            if (existingIndex >= 0) {
-                entries[existingIndex] = entry;
-                const redFlagCount = entry.redFlags.length;
-                const greenFlagCount = entry.greenFlags.length;
-                let message = `Entry updated for ${formatDateShort(date)}\n`;
-                message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
-                message += `🟢 Green flags: ${greenFlagCount}\n`;
-                message += `🚩 Red flags: ${redFlagCount}\n`;
-                alert(message);
-            } else {
-                entries.push(entry);
-                const redFlagCount = entry.redFlags.length;
-                const greenFlagCount = entry.greenFlags.length;
-                let message = `New entry saved for ${formatDateShort(date)}\n`;
-                message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
-                message += `🟢 Green flags: ${greenFlagCount}\n`;
-                message += `🚩 Red flags: ${redFlagCount}\n`;
-                alert(message);
-            }
-            
-            localStorage.setItem('tradingEntries', JSON.stringify(entries));
-            
-            document.getElementById('dailyForm').reset();
-            const today = getLocalDateString();
-            document.getElementById('date').value = today;
-
-            generateTraderDropdowns();
-
-            Object.keys(scores).forEach(category => {
-                scores[category] = 0;
-            });
-            greenFlags.clear();
-            redFlags.clear();
-
-            traderDropdowns.forEach(config => {
-                const dropdown = document.getElementById(config.id);
-                if (dropdown) dropdown.value = '';
-            });
-
-            setTimeout(loadTodayEntry, 100);
-        }
+        Object.keys(scores).forEach(category => {
+            scores[category] = 0;
+            updateRatingDisplay(category, 0);
+        });
+        // Flags already cleared above
         
-        function exportToCSV() {
-            const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
-            
-            if (entries.length === 0) {
-                alert('No data to export');
-                return;
-            }
-            
-            // CSV headers
-            let csv = 'Date,Instrument,Daily Score,T Score,R Score,A Score,D Score,E Score,R Score,';
-            csv += 'Timing,Risk,Analysis Quality,Setup Type,Emotional State,Exit,';
-            csv += 'Market Condition,R-Multiple,Setup Details,Green Flags,Red Flags,Key Takeaway\n';
-            
-            // Sort by date
-            entries.sort((a, b) => new Date(a.date) - new Date(b.date));
-            
-            // Add data rows
-            entries.forEach(entry => {
-                const row = [
-                    entry.date,
-                    entry.marketTimeframe || '',
-                    entry.dailyTotal || 0,
-                    entry.scores?.timing || 0,
-                    entry.scores?.risk || 0,
-                    entry.scores?.analysis || 0,
-                    entry.scores?.discipline || 0,
-                    entry.scores?.exit || 0,
-                    entry.scores?.results || 0,
-                    entry.traderTexts?.timing || '',
-                    entry.traderTexts?.risk || '',
-                    entry.traderTexts?.analysis_quality || '',
-                    entry.traderTexts?.analysis_type || '',
-                    entry.emotionalState || '',
-                    entry.traderTexts?.exit || '',
-                    entry.marketConditions || '',
-                    entry.rMultiple || '',
-                    entry.setupDetails || '',
-                    entry.greenFlags?.join(', ') || '',
-                    entry.redFlags?.join(', ') || '',
-                    (entry.keyTakeaway || '').replace(/"/g, '""')
-                ];
-                
-                csv += row.map(field => `"${field}"`).join(',') + '\n';
-            });
-            
-            // Create download
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `trading_journal_${getLocalDateString()}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        }
+        // Do NOT reset the full form to avoid clearing the date input
+    }
+    
+    // Refresh weekly table
+    displayWeeklyData();
+}
 
-        // Function to display weekly data in a table
-        function displayWeeklyData() {
-            const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
-            
-            const tableContainer = document.getElementById('weeklyTable');
-            
-            if (entries.length === 0) {
-                tableContainer.innerHTML = '<div class="no-data">No entries saved yet. Add some daily entries first!</div>';
-                return;
-            }
-            
-            entries.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            let tableHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Instrument</th>
-                            <th>Daily Score</th>
-                            <th>T.R.A.D.E.R Scores</th>
-                            <th>T.R.A.D.E.R Details</th>
-                            <th>Setup</th>
-                            <th>Market</th>
-                            <th>R value</th>
-                            <th class="red-flags-column">Green Flags</th>
-                            <th class="red-flags-column">Red Flags</th>
-                            <th>Key Takeaway</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-            
-            entries.forEach(entry => {
-                let scoresText = '';
-                let dailyScore = 0;
-                if (entry.scores) {
-                    dailyScore = entry.dailyTotal || Object.values(entry.scores).reduce((sum, score) => sum + score, 0);
-                    
-                    const scoreLabels = ['T', 'R', 'A', 'D', 'E', 'R'];
-                    const scoreValues = [entry.scores.timing, entry.scores.risk, entry.scores.analysis, entry.scores.discipline, entry.scores.exit, entry.scores.results];
-                    const nonZeroScores = [];
-                    
-                    scoreValues.forEach((score, index) => {
-                        if (score !== 0) {
-                            nonZeroScores.push(`${scoreLabels[index]}:${score}`);
-                        }
-                    });
-                    
-                    scoresText = nonZeroScores.join(' ') || '------';
-                }                
+ // Function to set rating and update display
+ function setRating(category, rating) {
+ scores[category] = rating;
+ updateRatingDisplay(category, rating);
+ }
+ 
+ // Function to update rating button display
+ function updateRatingDisplay(category, rating) {
+ const buttons = document.querySelectorAll(`[onclick*="setRating('${category}'"]`);
+ buttons.forEach((btn) => {
+ const onclickAttr = btn.getAttribute('onclick');
+ const ratingMatch = onclickAttr.match(/setRating\('.*?',\s*(-?\d+)\)/);
+ 
+ if (ratingMatch) {
+ const btnRating = parseInt(ratingMatch[1]);
+ if (btnRating === rating) {
+ btn.classList.add('selected');
+ } else {
+ btn.classList.remove('selected');
+ }
+ }
+ });
+ }
 
-                let traderDetails = '';
-                if (entry.traderTexts) {
-                    const details = traderDropdowns.map(config => {
-                        if (config.category === 'setup' || config.category === 'market') return null;
-                        const text = entry.traderTexts[config.category];
-                        let displayText = text ? `${config.category.charAt(0).toUpperCase()}: ${text}` : null;
-                        if (config.category === 'risk' && entry.riskPercent) {
-                            displayText += ` (${entry.riskPercent}%)`;
-                        }
-                        return displayText;
-                    }).filter(Boolean);
-                    traderDetails = details.join('<br>');
-                }
-                
-                const conditionText = {
-                    'strong_uptrend': 'Strong Uptrend',
-                    'strong_downtrend': 'Strong Downtrend',
-                    'ranging_sideways': 'Ranging/Sideways',
-                    'high_volatility': 'High Volatility',
-                    'low_volatility': 'Low Volatility'
-                };
-                
-                const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
-                const setupDisplay = [entry.setupUsed, entry.setupDetails].filter(Boolean).join('<br>– ') || '';
+ // Function to toggle green flag buttons
+ function toggleGreenFlag(flagName) {
+ const button = document.querySelector(`[onclick="toggleGreenFlag('${flagName}')"]`);
+ 
+ if (greenFlags.has(flagName)) {
+ greenFlags.delete(flagName);
+ button.classList.remove('active');
+ } else {
+ greenFlags.add(flagName);
+ button.classList.add('active');
+ }
+ }
+ 
+ // Function to toggle red flag buttons
+ function toggleRedFlag(flagName) {
+ const button = document.querySelector(`[onclick="toggleRedFlag('${flagName}')"]`);
+ 
+ if (redFlags.has(flagName)) {
+ redFlags.delete(flagName);
+ button.classList.remove('active');
+ } else {
+ redFlags.add(flagName);
+ button.classList.add('active');
+ }
+ }
 
-                const rMultipleDisplay = entry.rMultiple || '';
-                const takeawayDisplay = entry.keyTakeaway || '';
-                
-                let greenFlagsDisplay = '';
-                if (entry.greenFlags && entry.greenFlags.length > 0) {
-                    const greenFlagLabels = {
-                        'followed_plan': 'Plan',
-                        'premarket_analysis': 'Analysis',
-                        'waited_setup': 'Setup',
-                        'correct_timeframes': 'Timeframes',
-                        'perfect_position_size': 'Position',
-                        'quick_loss_cut': 'Cut Loss',
-                        'hit_profit_target': 'Target',
-                        'avoided_chasing': 'No Chase',
-                        'emotional_control': 'Control',
-                        'documented_trades': 'Docs',
-                        'post_trade_analysis': 'Analysis',
-                        'applied_lessons': 'Lessons',
-                        'stuck_risk_limits': 'Risk Limits',
-                        'waited_confluence': 'Confluence',
-                        'reviewed_last_trade': 'Reviewed Last',
-                        'neutral_mindset': 'Neutral Mindset',
-                        'documented_rationale': 'Rationale',
-                        'exited_on_plan': 'Exited on Plan',
-                        'adapted_conditions': 'Adapted',
-                        'celebrated_small_win': 'Small Win'
-                    };
-                    greenFlagsDisplay = entry.greenFlags.map(flag => 
-                        `<span class="green-flag-tag">${greenFlagLabels[flag] || flag}</span>`
-                    ).join(' ');
-                }
+ // Function to toggle main sections (green flags and red flags)
+ function toggleMainSection(sectionName) {
+ const header = document.querySelector(`[onclick="toggleMainSection('${sectionName}')"]`);
+ const content = document.getElementById(`${sectionName}-content`);
+ 
+ if (content.classList.contains('expanded')) {
+ content.classList.remove('expanded');
+ header.classList.remove('expanded');
+ } else {
+ content.classList.add('expanded');
+ header.classList.add('expanded');
+ }
+ }
 
-                let redFlagsDisplay = '';
-                if (entry.redFlags && entry.redFlags.length > 0) {
-                    const flagLabels = {
-                        'revenge': 'Revenge',
-                        'overtrading': 'Overtrade',
-                        'fomo': 'FOMO',
-                        'moved_stop': 'Moved SL',
-                        'added_loser': 'Added Loss',
-                        'no_plan': 'No Plan',
-                        'ignored_risk': 'Risk',
-                        'trader_error': 'Trader',
-                        'news_trade': 'News',
-                        'hope_hold': 'Hope',
-                        'early_exit': 'Early Exit',
-                        'herd_behavior': 'Herd',
-                        'loss_aversion': 'Held Loser',
-                        'overconfidence': 'Overconfident',
-                        'confirmation_bias': 'Confirmation',
-                        'illusion_control': 'Illusion Control',
-                        'social_influence': 'Social Impulse'                    
-                    };
-                    redFlagsDisplay = entry.redFlags.map(flag => 
-                        `<span class="red-flag-tag">${flagLabels[flag] || flag}</span>`
-                    ).join(' ');
-                }
-                
-                let scoreColor = '#333';
-                if (dailyScore > 0) scoreColor = 'var(--success)';
-                if (dailyScore < 0) scoreColor = 'var(--danger)';
-                
-                tableHTML += `
-                    <tr>
-                        <td>${formatDateShort(entry.date)}</td>
-                        <td>${entry.marketTimeframe || ''}</td>
-                        <td style="color: ${scoreColor};">${dailyScore}</td>
-                        <td style="font-size: 12px;">${scoresText}</td>
-                        <td style="font-size: 10px; max-width: 150px;">${traderDetails || 'N/A'}</td>
-                        <td>${setupDisplay}</td>
-                        <td>${marketDisplay}</td>
-                        <td>${rMultipleDisplay}</td>
-                        <td class="red-flags-column">${greenFlagsDisplay}</td>
-                        <td class="red-flags-column">${redFlagsDisplay}</td>
+ // Function to switch between Daily and Weekly sections
+ function showSection(sectionName) {
+ const sections = document.querySelectorAll('.section');
+ sections.forEach(section => section.classList.remove('active'));
+ 
+ const navButtons = document.querySelectorAll('.nav-button');
+ navButtons.forEach(button => button.classList.remove('active'));
+ 
+ document.getElementById(sectionName).classList.add('active');
+ 
+ event.target.classList.add('active');
+ 
+ if (sectionName === 'weekly') {
+ displayWeeklyData();
+ document.getElementById('exportBtn').style.display = 'inline-block';
+ document.getElementById('saveTopBtn').style.display = 'none';
+ } else {
+ document.getElementById('exportBtn').style.display = 'none';
+ document.getElementById('saveTopBtn').style.display = 'inline-block'; 
+ }
+ 
+ // Load current date entry when switching back to daily (preserves selection)
+if (sectionName === 'daily') {
+    // Load current date entry when switching back to daily (preserves selection)
+    const currentDate = document.getElementById('date').value || getLocalDateString();
+    loadEntry(currentDate);
+}
+}
+ 
 
-                <td>
-                    <div style="
-                        display: -webkit-box;
-                        -webkit-line-clamp: 3;
-                        -webkit-box-orient: vertical;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        white-space: normal;
-                        word-break: break-word;
-                        line-height: 1.5em;
-                        height: 100%;  /* Add this: Fills td height exactly, no cutoff */
-                        cursor: help;
-                    " title="${takeawayDisplay.replace(/"/g, '&quot;')}">
-                        ${takeawayDisplay}
-                    </div>
-                </td>
-                        </tr>
-                `;
-            });
-            
-            tableHTML += '</tbody></table>';
-            tableContainer.innerHTML = tableHTML;
-        }
-    </script>
+// Function to save a daily entry
+function saveEntry() {
+    const date = document.getElementById('date').value;
+    
+    if (!date) {
+        alert('Please select a date');
+        return;
+    }
+    
+    const dailyTotal = Object.values(scores).reduce((sum, score) => sum + score, 0);
+    
+    const traderTexts = {};
+    traderDropdowns.forEach(config => {
+        traderTexts[config.category] = document.getElementById(config.id)?.value || '';
+    });
+    
+    const entry = {
+        date: date,
+        marketTimeframe: document.getElementById('market_timeframe').value,
+        scores: { ...scores },
+        dailyTotal: dailyTotal,
+        marketConditions: document.getElementById('market_conditions').value,
+        riskPercent: document.getElementById('risk_percent').value,
+        setupUsed: document.getElementById('setup_used_dropdown').value,
+        setupDetails: document.getElementById('setup_details').value,
+        emotionalState: document.getElementById('discipline_dropdown').value,
+        rMultiple: document.getElementById('r_multiple').value,
+        keyTakeaway: document.getElementById('key_takeaway').value,
+        redFlags: Array.from(redFlags),
+        greenFlags: Array.from(greenFlags),
+        traderTexts: traderTexts
+    };      
+    
+    let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+    
+    const existingIndex = entries.findIndex(entry => entry.date === date);
+    
+    if (existingIndex >= 0) {
+        entries[existingIndex] = entry;
+        const redFlagCount = entry.redFlags.length;
+        const greenFlagCount = entry.greenFlags.length;
+        let message = `Entry updated for ${formatDateShort(date)}\n`;
+        message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
+        message += `🟢 Green flags: ${greenFlagCount}\n`;
+        message += `🚩 Red flags: ${redFlagCount}\n`;
+        alert(message);
+    } else {
+        entries.push(entry);
+        const redFlagCount = entry.redFlags.length;
+        const greenFlagCount = entry.greenFlags.length;
+        let message = `New entry saved for ${formatDateShort(date)}\n`;
+        message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
+        message += `🟢 Green flags: ${greenFlagCount}\n`;
+        message += `🚩 Red flags: ${redFlagCount}\n`;
+        alert(message);
+    }
+    
+    localStorage.setItem('tradingEntries', JSON.stringify(entries));
+    
+    // Explicitly reload the saved entry (stays on selected date)
+    setTimeout(() => {
+        loadEntry(date);
+    }, 50);  // Small delay to ensure localStorage sync
+}
+ 
+ function exportToCSV() {
+ const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+ 
+ if (entries.length === 0) {
+ alert('No data to export');
+ return;
+ }
+ 
+ // CSV headers
+ let csv = 'Date,Instrument,Daily Score,T Score,R Score,A Score,D Score,E Score,R Score,';
+ csv += 'Timing,Risk,Analysis Quality,Setup Type,Emotional State,Exit,';
+ csv += 'Market Condition,R-Multiple,Setup Details,Green Flags,Red Flags,Key Takeaway\n';
+ 
+ // Sort by date
+ entries.sort((a, b) => new Date(a.date) - new Date(b.date));
+ 
+ // Add data rows
+ entries.forEach(entry => {
+ const row = [
+ entry.date,
+ entry.marketTimeframe || '',
+ entry.dailyTotal || 0,
+ entry.scores?.timing || 0,
+ entry.scores?.risk || 0,
+ entry.scores?.analysis || 0,
+ entry.scores?.discipline || 0,
+ entry.scores?.exit || 0,
+ entry.scores?.results || 0,
+ entry.traderTexts?.timing || '',
+ entry.traderTexts?.risk || '',
+ entry.traderTexts?.analysis_quality || '',
+ entry.traderTexts?.analysis_type || '',
+ entry.emotionalState || '',
+ entry.traderTexts?.exit || '',
+ entry.marketConditions || '',
+ entry.rMultiple || '',
+ entry.setupDetails || '',
+ entry.greenFlags?.join(', ') || '',
+ entry.redFlags?.join(', ') || '',
+ (entry.keyTakeaway || '').replace(/"/g, '""')
+ ];
+ 
+ csv += row.map(field => `"${field}"`).join(',') + '\n';
+ });
+ 
+ // Create download
+ const blob = new Blob([csv], { type: 'text/csv' });
+ const url = window.URL.createObjectURL(blob);
+ const a = document.createElement('a');
+ a.href = url;
+ a.download = `trading_journal_${getLocalDateString()}.csv`;
+ document.body.appendChild(a);
+ a.click();
+ document.body.removeChild(a);
+ window.URL.revokeObjectURL(url);
+ }
+
+ // Function to display weekly data in a table
+ function displayWeeklyData() {
+ const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+ 
+ const tableContainer = document.getElementById('weeklyTable');
+ 
+ if (entries.length === 0) {
+ tableContainer.innerHTML = '<div class="no-data">No entries saved yet. Add some daily entries first!</div>';
+ return;
+ }
+ 
+ entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+ 
+ let tableHTML = `
+ <table>
+ <thead>
+ <tr>
+ <th>Date</th>
+ <th>Instrument</th>
+ <th>Daily Score</th>
+ <th>T.R.A.D.E.R Scores</th>
+ <th>T.R.A.D.E.R Details</th>
+ <th>Setup</th>
+ <th>Market</th>
+ <th>R value</th>
+ <th class="red-flags-column">Green Flags</th>
+ <th class="red-flags-column">Red Flags</th>
+ <th>Key Takeaway</th>
+ </tr>
+ </thead>
+ <tbody>
+ `;
+ 
+ entries.forEach(entry => {
+ let scoresText = '';
+ let dailyScore = 0;
+ if (entry.scores) {
+ dailyScore = entry.dailyTotal || Object.values(entry.scores).reduce((sum, score) => sum + score, 0);
+ 
+ const scoreLabels = ['T', 'R', 'A', 'D', 'E', 'R'];
+ const scoreValues = [entry.scores.timing, entry.scores.risk, entry.scores.analysis, entry.scores.discipline, entry.scores.exit, entry.scores.results];
+ const nonZeroScores = [];
+ 
+ scoreValues.forEach((score, index) => {
+ if (score !== 0) {
+ nonZeroScores.push(`${scoreLabels[index]}:${score}`);
+ }
+ });
+ 
+ scoresText = nonZeroScores.join(' ') || '------';
+ } 
+
+ let traderDetails = '';
+ if (entry.traderTexts) {
+ const details = traderDropdowns.map(config => {
+ if (config.category === 'setup' || config.category === 'market') return null;
+ const text = entry.traderTexts[config.category];
+ let displayText = text ? `${config.category.charAt(0).toUpperCase()}: ${text}` : null;
+ if (config.category === 'risk' && entry.riskPercent) {
+ displayText += ` (${entry.riskPercent}%)`;
+ }
+ return displayText;
+ }).filter(Boolean);
+ traderDetails = details.join('<br>');
+ }
+ 
+ const conditionText = {
+ 'strong_uptrend': 'Strong Uptrend',
+ 'strong_downtrend': 'Strong Downtrend',
+ 'ranging_sideways': 'Ranging/Sideways',
+ 'high_volatility': 'High Volatility',
+ 'low_volatility': 'Low Volatility'
+ };
+ 
+ const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
+ const setupDisplay = [entry.setupUsed, entry.setupDetails].filter(Boolean).join('<br>– ') || '';
+
+ const rMultipleDisplay = entry.rMultiple || '';
+ const takeawayDisplay = entry.keyTakeaway || '';
+ 
+ let greenFlagsDisplay = '';
+ if (entry.greenFlags && entry.greenFlags.length > 0) {
+ const greenFlagLabels = {
+ 'followed_plan': 'Plan',
+ 'premarket_analysis': 'Analysis',
+ 'waited_setup': 'Setup',
+ 'correct_timeframes': 'Timeframes',
+ 'perfect_position_size': 'Position',
+ 'quick_loss_cut': 'Cut Loss',
+ 'hit_profit_target': 'Target',
+ 'avoided_chasing': 'No Chase',
+ 'emotional_control': 'Control',
+ 'documented_trades': 'Docs',
+ 'post_trade_analysis': 'Analysis',
+ 'applied_lessons': 'Lessons',
+ 'stuck_risk_limits': 'Risk Limits',
+ 'waited_confluence': 'Confluence',
+ 'reviewed_last_trade': 'Reviewed Last',
+ 'neutral_mindset': 'Neutral Mindset',
+ 'documented_rationale': 'Rationale',
+ 'exited_on_plan': 'Exited on Plan',
+ 'adapted_conditions': 'Adapted',
+ 'celebrated_small_win': 'Small Win'
+ };
+ greenFlagsDisplay = entry.greenFlags.map(flag => 
+ `<span class="green-flag-tag">${greenFlagLabels[flag] || flag}</span>`
+ ).join(' ');
+ }
+
+ let redFlagsDisplay = '';
+ if (entry.redFlags && entry.redFlags.length > 0) {
+ const flagLabels = {
+ 'revenge': 'Revenge',
+ 'overtrading': 'Overtrade',
+ 'fomo': 'FOMO',
+ 'moved_stop': 'Moved SL',
+ 'added_loser': 'Added Loss',
+ 'no_plan': 'No Plan',
+ 'ignored_risk': 'Risk',
+ 'trader_error': 'Trader',
+ 'news_trade': 'News',
+ 'hope_hold': 'Hope',
+ 'early_exit': 'Early Exit',
+ 'herd_behavior': 'Herd',
+ 'loss_aversion': 'Held Loser',
+ 'overconfidence': 'Overconfident',
+ 'confirmation_bias': 'Confirmation',
+ 'illusion_control': 'Illusion Control',
+ 'social_influence': 'Social Impulse' 
+ };
+ redFlagsDisplay = entry.redFlags.map(flag => 
+ `<span class="red-flag-tag">${flagLabels[flag] || flag}</span>`
+ ).join(' ');
+ }
+ 
+ let scoreColor = '#333';
+ if (dailyScore > 0) scoreColor = 'var(--success)';
+ if (dailyScore < 0) scoreColor = 'var(--danger)';
+ 
+ tableHTML += `
+ <tr>
+ <td>${formatDateShort(entry.date)}</td>
+ <td>${entry.marketTimeframe || ''}</td>
+ <td style="color: ${scoreColor};">${dailyScore}</td>
+ <td style="font-size: 12px;">${scoresText}</td>
+ <td style="font-size: 10px; max-width: 150px;">${traderDetails || 'N/A'}</td>
+ <td>${setupDisplay}</td>
+ <td>${marketDisplay}</td>
+ <td>${rMultipleDisplay}</td>
+ <td class="red-flags-column">${greenFlagsDisplay}</td>
+ <td class="red-flags-column">${redFlagsDisplay}</td>
+
+ <td>
+ <div style="
+ display: -webkit-box;
+ -webkit-line-clamp: 3;
+ -webkit-box-orient: vertical;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: normal;
+ word-break: break-word;
+ line-height: 1.5em;
+ height: 100%; /* Add this: Fills td height exactly, no cutoff */
+ cursor: help;
+ " title="${takeawayDisplay.replace(/"/g, '&quot;')}">
+ ${takeawayDisplay}
+ </div>
+ </td>
+ </tr>
+ `;
+ });
+ 
+ tableHTML += '</tbody></table>';
+ tableContainer.innerHTML = tableHTML;
+ }
+
+ // Load entry for today's date
+function loadTodayEntry() {
+    loadEntry(getLocalDateString());
+}
+
+// Set today's date automatically when page loads
+window.onload = function() {
+    document.getElementById('date').value = getLocalDateString();
+
+    // Load entry when date changes
+    document.getElementById('date').addEventListener('change', function() {
+        loadEntry(this.value);
+    });
+    
+    // Generate dropdowns after date setup
+    generateTraderDropdowns();
+    
+    loadTodayEntry();
+    
+    displayWeeklyData();
+};
+
+ </script>
 </body>
 </html>
