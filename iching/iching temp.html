@@ -46,7 +46,11 @@
         .i-ching-table td:nth-child(1) { padding: 0.75rem 0.5rem; white-space: nowrap; text-align: center; }
         .i-ching-table td:nth-child(2) { padding: 0.75rem 0.5rem; font-size: 3.00rem; white-space: nowrap; text-align: center; }
         .i-ching-table td:nth-child(3) { padding: 0.75rem 0.75rem; white-space: nowrap; }
-        .i-ching-table td:nth-child(n+4) { text-align: center; }
+        .i-ching-table th:nth-child(n+4) { 
+            text-align: center; 
+            width: 128px;
+            font-size: 0.5rem;  /* Add this line - makes book titles smaller */
+        }
         
         .i-ching-table tbody tr:nth-child(even) {
             background: #f3f4f6;
