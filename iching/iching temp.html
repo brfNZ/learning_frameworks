@@ -28,7 +28,11 @@
             color: #1f2937;
         }
         
-        .i-ching-table th:nth-child(1) { text-align: left; white-space: nowrap; }
+        .i-ching-table th:nth-child(1) { 
+            text-align: left; 
+            white-space: normal;
+            width: 60px;
+        }
         .i-ching-table th:nth-child(2) { text-align: left; white-space: nowrap; }
         .i-ching-table th:nth-child(3) { text-align: left; white-space: nowrap; }
         .i-ching-table th:nth-child(n+4) { text-align: center; width: 128px; }
@@ -38,7 +42,7 @@
             border-bottom: 1px solid #e5e7eb;
         }
         
-        .i-ching-table td:nth-child(1) { padding: 0.75rem 0.5rem; white-space: nowrap; }
+        .i-ching-table td:nth-child(1) { padding: 0.75rem 0.5rem; white-space: nowrap; text-align: center; }
         .i-ching-table td:nth-child(2) { padding: 0.75rem 0.5rem; font-size: 1.5rem; white-space: nowrap; }
         .i-ching-table td:nth-child(3) { padding: 0.75rem 0.75rem; white-space: nowrap; }
         .i-ching-table td:nth-child(n+4) { text-align: center; }
@@ -66,88 +70,85 @@
                 <table class="i-ching-table">
                     <thead>
                         <tr>
-                            <th>Gua number</th>
+                            <th>Gua<br>number</th>
                             <th>Symbol</th>
                             <th>Name</th>
-                            <th><img src="path/to/master-ni-cover.jpg" alt="I Ching Master Ni" class="book-cover">I Ching Master Ni</th>
-                            <th><img src="path/to/guide-cover.jpg" alt="Guide to the I Ching" class="book-cover">Guide to the I Ching</th>
-                            <th><img src="path/to/book3-cover.jpg" alt="Book 3" class="book-cover">Book 3</th>
-                            <th><img src="path/to/book4-cover.jpg" alt="Book 4" class="book-cover">Book 4</th>
-                            <th><img src="path/to/book5-cover.jpg" alt="Book 5" class="book-cover">Book 5</th>
-                            <th><img src="path/to/book6-cover.jpg" alt="Book 6" class="book-cover">Book 6</th>
-                            <th><img src="path/to/book7-cover.jpg" alt="Book 7" class="book-cover">Book 7</th>
-                            <th><img src="path/to/book8-cover.jpg" alt="Book 8" class="book-cover">Book 8</th>
-                            <th><img src="path/to/book9-cover.jpg" alt="Book 9" class="book-cover">Book 9</th>
-                            <th><img src="path/to/book10-cover.jpg" alt="Book 10" class="book-cover">Book 10</th>
-                            <th><img src="path/to/book11-cover.jpg" alt="Book 11" class="book-cover">Book 11</th>
-                            <th><img src="path/to/book12-cover.jpg" alt="Book 12" class="book-cover">Book 12</th>
+                            <th><img src="path/to/iching-cover.jpg" alt="The I Ching" class="book-cover">The I Ching</th>
+                            <th><img src="path/to/guide-cover.jpg" alt="A Guide to the I Ching" class="book-cover">A Guide to the I Ching</th>
+                            <th><img src="path/to/complete-cover.jpg" alt="The Complete I Ching.10th Ed" class="book-cover">The Complete I Ching.10th Ed</th>
+                            <th><img src="path/to/authentic-cover.jpg" alt="The Authentic I Ching" class="book-cover">The Authentic I Ching</th>
+                            <th><img src="path/to/pt1-cover.jpg" alt="I Ching Pt.1" class="book-cover">I Ching Pt.1</th>
+                            <th><img src="path/to/pt2-cover.jpg" alt="I Ching Pt.2" class="book-cover">I Ching Pt.2</th>
+                            <th><img src="path/to/taoist-cover.jpg" alt="Taoist I Ching" class="book-cover">Taoist I Ching</th>
+                            <th><img src="path/to/tao-org-cover.jpg" alt="Tao of Organisation" class="book-cover">Tao of Organisation</th>
+                            <th><img src="path/to/astrology-cover.jpg" alt="Astrology of I Jing" class="book-cover">Astrology of I Jing</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>1</td><td>䷀</td><td>The Creative</td><td>3</td><td>6</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>2</td><td>䷁</td><td>The Receptive</td><td>7</td><td>7</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>3</td><td>䷂</td><td>Difficulty at the Beginning</td><td>11</td><td>8</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>4</td><td>䷃</td><td>Youthful Folly</td><td>14</td><td>9</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>5</td><td>䷄</td><td>Waiting</td><td>17</td><td>11</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>6</td><td>䷅</td><td>Conflict</td><td>20</td><td>12</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>7</td><td>䷆</td><td>The Army</td><td>23</td><td>13</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>8</td><td>䷇</td><td>Holding Together</td><td>25</td><td>14</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>9</td><td>䷈</td><td>The Taming Power of the Small</td><td>28</td><td>16</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>10</td><td>䷉</td><td>Treading</td><td>30</td><td>17</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>11</td><td>䷊</td><td>Peace</td><td>32</td><td>18</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>12</td><td>䷋</td><td>Standstill</td><td>36</td><td>19</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>13</td><td>䷌</td><td>Fellowship with Men</td><td>38</td><td>20</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>14</td><td>䷍</td><td>Possession in Great Measure</td><td>41</td><td>22</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>15</td><td>䷎</td><td>Modesty</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>16</td><td>䷏</td><td>Enthusiasm</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>17</td><td>䷐</td><td>Following</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>18</td><td>䷑</td><td>Work on What Has Been Spoiled</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>19</td><td>䷒</td><td>Approach</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>20</td><td>䷓</td><td>Contemplation</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>21</td><td>䷔</td><td>Biting Through</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>22</td><td>䷕</td><td>Grace</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>23</td><td>䷖</td><td>Splitting Apart</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>24</td><td>䷗</td><td>Return</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>25</td><td>䷘</td><td>Innocence</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>26</td><td>䷙</td><td>The Taming Power of the Great</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>27</td><td>䷚</td><td>The Corners of the Mouth</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>28</td><td>䷛</td><td>Preponderance of the Great</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>29</td><td>䷜</td><td>The Abysmal</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>30</td><td>䷝</td><td>The Clinging</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>31</td><td>䷞</td><td>Influence</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>32</td><td>䷟</td><td>Duration</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>33</td><td>䷠</td><td>Retreat</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>34</td><td>䷡</td><td>The Power of the Great</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>35</td><td>䷢</td><td>Progress</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>36</td><td>䷣</td><td>Darkening of the Light</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>37</td><td>䷤</td><td>The Family</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>38</td><td>䷥</td><td>Opposition</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>39</td><td>䷦</td><td>Obstruction</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>40</td><td>䷧</td><td>Deliverance</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>41</td><td>䷨</td><td>Decrease</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>42</td><td>䷩</td><td>Increase</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>43</td><td>䷪</td><td>Break-through</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>44</td><td>䷫</td><td>Coming to Meet</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>45</td><td>䷬</td><td>Gathering Together</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>46</td><td>䷭</td><td>Pushing Upward</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>47</td><td>䷮</td><td>Oppression</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>48</td><td>䷯</td><td>The Well</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>49</td><td>䷰</td><td>Revolution</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>50</td><td>䷱</td><td>The Cauldron</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>51</td><td>䷲</td><td>The Arousing</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>52</td><td>䷳</td><td>Keeping Still</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>53</td><td>䷴</td><td>Development</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>54</td><td>䷵</td><td>The Marrying Maiden</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>55</td><td>䷶</td><td>Abundance</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>56</td><td>䷷</td><td>The Wanderer</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>57</td><td>䷸</td><td>The Gentle</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>58</td><td>䷹</td><td>The Joyous</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>59</td><td>䷺</td><td>Dispersion</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>60</td><td>䷻</td><td>Limitation</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>61</td><td>䷼</td><td>Inner Truth</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>62</td><td>䷽</td><td>Preponderance of the Small</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>63</td><td>䷾</td><td>After Completion</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>64</td><td>䷿</td><td>Before Completion</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>1</td><td>䷀</td><td>The Creative</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>2</td><td>䷁</td><td>The Receptive</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>3</td><td>䷂</td><td>Difficulty at the Beginning</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>4</td><td>䷃</td><td>Youthful Folly</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>5</td><td>䷄</td><td>Waiting</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>6</td><td>䷅</td><td>Conflict</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>7</td><td>䷆</td><td>The Army</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>8</td><td>䷇</td><td>Holding Together</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>9</td><td>䷈</td><td>The Taming Power of the Small</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>10</td><td>䷉</td><td>Treading</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>11</td><td>䷊</td><td>Peace</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>12</td><td>䷋</td><td>Standstill</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>13</td><td>䷌</td><td>Fellowship with Men</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>14</td><td>䷍</td><td>Possession in Great Measure</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>15</td><td>䷎</td><td>Modesty</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>16</td><td>䷏</td><td>Enthusiasm</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>17</td><td>䷐</td><td>Following</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>18</td><td>䷑</td><td>Work on What Has Been Spoiled</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>19</td><td>䷒</td><td>Approach</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>20</td><td>䷓</td><td>Contemplation</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>21</td><td>䷔</td><td>Biting Through</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>22</td><td>䷕</td><td>Grace</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>23</td><td>䷖</td><td>Splitting Apart</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>24</td><td>䷗</td><td>Return</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>25</td><td>䷘</td><td>Innocence</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>26</td><td>䷙</td><td>The Taming Power of the Great</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>27</td><td>䷚</td><td>The Corners of the Mouth</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>28</td><td>䷛</td><td>Preponderance of the Great</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>29</td><td>䷜</td><td>The Abysmal</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>30</td><td>䷝</td><td>The Clinging</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>31</td><td>䷞</td><td>Influence</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>32</td><td>䷟</td><td>Duration</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>33</td><td>䷠</td><td>Retreat</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>34</td><td>䷡</td><td>The Power of the Great</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>35</td><td>䷢</td><td>Progress</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>36</td><td>䷣</td><td>Darkening of the Light</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>37</td><td>䷤</td><td>The Family</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>38</td><td>䷥</td><td>Opposition</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>39</td><td>䷦</td><td>Obstruction</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>40</td><td>䷧</td><td>Deliverance</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>41</td><td>䷨</td><td>Decrease</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>42</td><td>䷩</td><td>Increase</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>43</td><td>䷪</td><td>Break-through</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>44</td><td>䷫</td><td>Coming to Meet</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>45</td><td>䷬</td><td>Gathering Together</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>46</td><td>䷭</td><td>Pushing Upward</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>47</td><td>䷮</td><td>Oppression</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>48</td><td>䷯</td><td>The Well</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>49</td><td>䷰</td><td>Revolution</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>50</td><td>䷱</td><td>The Cauldron</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>51</td><td>䷲</td><td>The Arousing</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>52</td><td>䷳</td><td>Keeping Still</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>53</td><td>䷴</td><td>Development</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>54</td><td>䷵</td><td>The Marrying Maiden</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>55</td><td>䷶</td><td>Abundance</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>56</td><td>䷷</td><td>The Wanderer</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>57</td><td>䷸</td><td>The Gentle</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>58</td><td>䷹</td><td>The Joyous</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>59</td><td>䷺</td><td>Dispersion</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>60</td><td>䷻</td><td>Limitation</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>61</td><td>䷼</td><td>Inner Truth</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>62</td><td>䷽</td><td>Preponderance of the Small</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>63</td><td>䷾</td><td>After Completion</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>64</td><td>䷿</td><td>Before Completion</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
                     </tbody>
                 </table>
             </div>
