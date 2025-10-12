@@ -55,6 +55,7 @@
             cursor: pointer;
             background: #fff;
             transition: all 0.2s;
+            position: relative;
         }
         
         .selection-btn:hover {
@@ -70,6 +71,15 @@
             font-weight: 700;
             color: #1e40af;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .stem-number {
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #3b82f6;
         }
         
         .trigram-symbol {
@@ -93,6 +103,7 @@
             font-size: 1rem;
             font-weight: 600;
             margin-bottom: 4px;
+            margin-top: 20px;
         }
         
         .stem-chinese {
@@ -282,40 +293,44 @@
             <div class="mb-8">
                 <h3 class="subsection-title">Select Lower Trigram (Bottom)</h3>
                 <div class="grid grid-cols-2 gap-4">
+                    <!-- Column 1 -->
                     <div class="selection-btn" data-value="1" data-type="trigram" onclick="selectTrigram(this)">
                         <div class="trigram-symbol">☰</div>
                         <div class="trigram-english">Heaven</div>
                         <div class="trigram-chinese">Qian</div>
-                    </div>
-                    <div class="selection-btn" data-value="2" data-type="trigram" onclick="selectTrigram(this)">
-                        <div class="trigram-symbol">☱</div>
-                        <div class="trigram-english">Lake</div>
-                        <div class="trigram-chinese">Dui</div>
-                    </div>
-                    <div class="selection-btn" data-value="3" data-type="trigram" onclick="selectTrigram(this)">
-                        <div class="trigram-symbol">☲</div>
-                        <div class="trigram-english">Fire</div>
-                        <div class="trigram-chinese">Li</div>
-                    </div>
-                    <div class="selection-btn" data-value="4" data-type="trigram" onclick="selectTrigram(this)">
-                        <div class="trigram-symbol">☳</div>
-                        <div class="trigram-english">Thunder</div>
-                        <div class="trigram-chinese">Zhen</div>
                     </div>
                     <div class="selection-btn" data-value="5" data-type="trigram" onclick="selectTrigram(this)">
                         <div class="trigram-symbol">☴</div>
                         <div class="trigram-english">Wind</div>
                         <div class="trigram-chinese">Xun</div>
                     </div>
+                    
+                    <div class="selection-btn" data-value="2" data-type="trigram" onclick="selectTrigram(this)">
+                        <div class="trigram-symbol">☱</div>
+                        <div class="trigram-english">Lake</div>
+                        <div class="trigram-chinese">Dui</div>
+                    </div>
                     <div class="selection-btn" data-value="6" data-type="trigram" onclick="selectTrigram(this)">
                         <div class="trigram-symbol">☵</div>
                         <div class="trigram-english">Water</div>
                         <div class="trigram-chinese">Kan</div>
                     </div>
+                    
+                    <div class="selection-btn" data-value="3" data-type="trigram" onclick="selectTrigram(this)">
+                        <div class="trigram-symbol">☲</div>
+                        <div class="trigram-english">Fire</div>
+                        <div class="trigram-chinese">Li</div>
+                    </div>
                     <div class="selection-btn" data-value="7" data-type="trigram" onclick="selectTrigram(this)">
                         <div class="trigram-symbol">☶</div>
                         <div class="trigram-english">Mountain</div>
                         <div class="trigram-chinese">Gen</div>
+                    </div>
+                    
+                    <div class="selection-btn" data-value="4" data-type="trigram" onclick="selectTrigram(this)">
+                        <div class="trigram-symbol">☳</div>
+                        <div class="trigram-english">Thunder</div>
+                        <div class="trigram-chinese">Zhen</div>
                     </div>
                     <div class="selection-btn" data-value="8" data-type="trigram" onclick="selectTrigram(this)">
                         <div class="trigram-symbol">☷</div>
@@ -328,55 +343,67 @@
             <div class="mb-8">
                 <h3 class="subsection-title">Select Heavenly Stem (Time of Day)</h3>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-3">
-                    <div class="selection-btn" data-value="7" data-type="stem" onclick="selectStem(this)">
-                        <div class="stem-time">11pm-1am</div>
-                        <div class="stem-chinese">Geng</div>
-                    </div>
-                    <div class="selection-btn" data-value="8" data-type="stem" onclick="selectStem(this)">
-                        <div class="stem-time">1am-3am</div>
-                        <div class="stem-chinese">Xin</div>
-                    </div>
-                    <div class="selection-btn" data-value="9" data-type="stem" onclick="selectStem(this)">
-                        <div class="stem-time">3am-5am</div>
-                        <div class="stem-chinese">Ren</div>
-                    </div>
-                    <div class="selection-btn" data-value="10" data-type="stem" onclick="selectStem(this)">
-                        <div class="stem-time">5am-7am</div>
-                        <div class="stem-chinese">Gui</div>
-                    </div>
-                    <div class="selection-btn" data-value="11" data-type="stem" onclick="selectStem(this)">
-                        <div class="stem-time">7am-9am</div>
-                        <div class="stem-chinese">Jia</div>
-                    </div>
-                    <div class="selection-btn" data-value="12" data-type="stem" onclick="selectStem(this)">
-                        <div class="stem-time">9am-11am</div>
-                        <div class="stem-chinese">Yi</div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
                     <div class="selection-btn" data-value="1" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">1</div>
                         <div class="stem-time">11am-1pm</div>
                         <div class="stem-chinese">Bing</div>
                     </div>
                     <div class="selection-btn" data-value="2" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">2</div>
                         <div class="stem-time">1pm-3pm</div>
                         <div class="stem-chinese">Ding</div>
                     </div>
                     <div class="selection-btn" data-value="3" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">3</div>
                         <div class="stem-time">3pm-5pm</div>
                         <div class="stem-chinese">Wu</div>
                     </div>
                     <div class="selection-btn" data-value="4" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">4</div>
                         <div class="stem-time">5pm-7pm</div>
                         <div class="stem-chinese">Ji</div>
                     </div>
                     <div class="selection-btn" data-value="5" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">5</div>
                         <div class="stem-time">7pm-9pm</div>
                         <div class="stem-chinese">Geng</div>
                     </div>
                     <div class="selection-btn" data-value="6" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">6</div>
                         <div class="stem-time">9pm-11pm</div>
                         <div class="stem-chinese">Xin</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                    <div class="selection-btn" data-value="7" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">7</div>
+                        <div class="stem-time">11pm-1am</div>
+                        <div class="stem-chinese">Geng</div>
+                    </div>
+                    <div class="selection-btn" data-value="8" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">8</div>
+                        <div class="stem-time">1am-3am</div>
+                        <div class="stem-chinese">Xin</div>
+                    </div>
+                    <div class="selection-btn" data-value="9" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">9</div>
+                        <div class="stem-time">3am-5am</div>
+                        <div class="stem-chinese">Ren</div>
+                    </div>
+                    <div class="selection-btn" data-value="10" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">10</div>
+                        <div class="stem-time">5am-7am</div>
+                        <div class="stem-chinese">Gui</div>
+                    </div>
+                    <div class="selection-btn" data-value="11" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">11</div>
+                        <div class="stem-time">7am-9am</div>
+                        <div class="stem-chinese">Jia</div>
+                    </div>
+                    <div class="selection-btn" data-value="12" data-type="stem" onclick="selectStem(this)">
+                        <div class="stem-number">12</div>
+                        <div class="stem-time">9am-11am</div>
+                        <div class="stem-chinese">Yi</div>
                     </div>
                 </div>
             </div>
