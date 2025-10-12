@@ -49,7 +49,7 @@
         .i-ching-table tbody tr:hover { background: #f9fafb; }
         
         .selection-btn {
-            padding: 20px 24px;
+            padding: 8px 10px;
             border: 2px solid #d1d5db;
             border-radius: 8px;
             text-align: center;
@@ -76,27 +76,27 @@
         
         .trigram-number, .stem-number {
             position: absolute;
-            top: 8px;
-            left: 12px;
-            font-size: 1.25rem;
+            top: 4px;
+            left: 6px;
+            font-size: 0.75rem;
             font-weight: 700;
             color: #3b82f6;
         }
         
         .trigram-symbol {
-            font-size: 4rem;
+            font-size: 2rem;
             line-height: 1;
-            margin-bottom: 8px;
-        }
-        
-        .trigram-english {
-            font-size: 1.1rem;
-            font-weight: 600;
             margin-bottom: 4px;
         }
         
+        .trigram-english {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
         .trigram-chinese {
-            font-size: 0.85rem;
+            font-size: 0.65rem;
             color: #6b7280;
         }
         
@@ -110,6 +110,38 @@
         .stem-chinese {
             font-size: 0.85rem;
             color: #6b7280;
+        }
+        
+        .compact-btn {
+            padding: 10px 8px;
+        }
+        
+        .compact-number {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 4px;
+        }
+        
+        .compact-time {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #4b5563;
+        }
+        
+        .hexagram-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            font-size: 5rem;
+            line-height: 1;
+        }
+        
+        .hex-arrow {
+            font-size: 3rem;
+            color: #10b981;
         }
         
         .section-card {
@@ -627,7 +659,7 @@
         window.toggleSequence = function() {
             currentSequence = currentSequence === 'fuxi' ? 'kingwen' : 'fuxi';
             document.getElementById('sequenceLabel').textContent = 
-                currentSequence === 'fuxi' ? 'Fu Xi Sequence' : 'King Wen Sequence';
+                currentSequence === 'fuxi' ? 'Fu Xi' : 'King Wen';
             renderTrigrams();
         }
 
@@ -762,17 +794,27 @@
                 <div class="result-box">
                     <h3>✨ Divination Result</h3>
                     
-                    <div class="calculation-box">
-                        Lower Trigram ${lowerTrigram} + Stem ${selectedStem} = ${sum}
+                    <p><strong>Lower Trigram:</strong> ${lowerName} (${lowerTrigram})</p>
+                    <p><strong>Heavenly Stem:</strong> ${stemTime} (${selectedStem})</p>
+                    <p><strong>Sum:</strong> ${lowerTrigram} + ${selectedStem} = ${sum}</p>
+                    <p><strong>Upper Trigram:</strong> ${upperName} (${upperTrigram})</p>
+                    
+                    <div class="hexagram-display">
+                        <div style="text-align: center;">
+                            <div>${hexSymbol}</div>
+                            <div style="font-size: 1rem; margin-top: 8px;">#${kingWen}</div>
+                        </div>
+                        <div class="hex-arrow">→</div>
+                        <div style="text-align: center;">
+                            <div>${transformedSymbol}</div>
+                            <div style="font-size: 1rem; margin-top: 8px;">#${transformedNum}</div>
+                        </div>
                     </div>
                     
-                    <p><strong>Lower Trigram (Bottom):</strong> ${lowerName} (${lowerTrigram})</p>
-                    <p><strong>Heavenly Stem (Time):</strong> ${stemTime} (${selectedStem})</p>
-                    <p><strong>Sum:</strong> ${lowerTrigram} + ${selectedStem} = ${sum}</p>
-                    <p><strong>Upper Trigram (Top):</strong> ${upperName} (${upperTrigram}) [${sum} mod 8 = ${upperTrigram}]</p>
                     <p><strong>Present Hexagram:</strong> #${kingWen} ${hexSymbol} - ${hexName}</p>
-                    <p><strong>Moving Line:</strong> ${movingLine} [${sum} mod 6 = ${movingLine === 6 ? '0 → 6' : movingLine}]</p>
+                    <p><strong>Moving Line:</strong> ${movingLine}</p>
                     <p><strong>Future Hexagram:</strong> #${transformedNum} ${transformedSymbol} - ${transformedName}</p>
+                    
                     <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
                         <button onclick="showRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine})" class="btn-info">🔗 Show Related Hexagrams</button>
                         <button onclick="prefillJournal(${kingWen}, ${transformedNum}, ${movingLine})" class="btn-success">📝 Add to Journal</button>
@@ -825,7 +867,7 @@
         }
 
         window.prefillJournal = function(kingWen, transformedNum, movingLine) {
-            const hex = `${kingWen}: ${names[kingWen - 1]} ${hexagrams[kingWen - 1]} → ${transformedNum}: ${names[transformedNum - 1]} ${hexagrams[transformedNum - 1]} (Line ${movingLine})`;
+            const hex = `#${kingWen} ${hexagrams[kingWen - 1]} → #${transformedNum} ${hexagrams[transformedNum - 1]} (Line ${movingLine})`;
             document.getElementById('hex').value = hex;
             document.getElementById('question').focus();
             window.scrollTo({ top: document.getElementById('question').offsetTop - 100, behavior: 'smooth' });
