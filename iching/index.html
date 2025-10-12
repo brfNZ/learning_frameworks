@@ -695,15 +695,17 @@
                 <div class="result-box">
                     <h3> Divination Result</h3>
                     
-                    <div class="calculation-box">
-                        ${lowerName} ${lowerTrigram} + ${stemTime} ${selectedStem} → ${lowerTrigram} + ${selectedStem} = ${sum}
-                    </div>
-                    
-                    <p><strong>Lower Trigram (Bottom):</strong> ${lowerName} (${lowerTrigram})</p>
-                    <p><strong>Upper Trigram (Top):</strong> ${upperName} (${upperTrigram})</p>
-                    <p><strong>Sum:</strong> ${sum} (${sum} mod 8 = ${upperTrigram})</p>
-                    <p><strong>Hexagram:</strong> #${kingWen} ${hexSymbol} - ${hexName}</p>
-                    <p><strong>Moving Line:</strong> ${movingLine} (${sum} mod 6 = ${movingLine})</p>
+                <div class="calculation-box">
+                Lower Trigram ${lowerTrigram} + Stem ${selectedStem} = ${sum}
+                </div>
+                
+                <p><strong>Lower Trigram (Bottom):</strong> ${lowerName} (${lowerTrigram})</p>
+                <p><strong>Heavenly Stem (Time):</strong> ${stemTime} (${selectedStem})</p>
+                <p><strong>Sum:</strong> ${lowerTrigram} + ${selectedStem} = ${sum}</p>
+                <p><strong>Upper Trigram (Top):</strong> ${upperName} (${upperTrigram}) [${sum} mod 8 = ${upperTrigram}]</p>
+                <p><strong>Hexagram:</strong> #${kingWen} ${hexSymbol} - ${hexName}</p>
+                <p><strong>Moving Line:</strong> ${movingLine} [${sum} mod 6 = ${movingLine === 6 ? '0 → 6' : movingLine}]</p>
+
                     <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
                         <button onclick="showRelevant(${kingWen})" class="btn-info"> Show Related Hexagrams</button>
                         <button onclick="prefillJournal(${kingWen}, ${movingLine})" class="btn-success"> Add to Journal</button>
