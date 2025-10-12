@@ -51,9 +51,16 @@
         
         .selection-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(150px, 1fr));
             gap: 10px;
             margin-bottom: 20px;
+        }
+        
+        .trigram-grid {
+            grid-template-columns: repeat(2, minmax(50%, 1fr));
+        }
+        
+        .stem-grid {
+            grid-template-columns: repeat(6, minmax(150px, 1fr));
         }
         
         .selection-btn {
@@ -94,6 +101,14 @@
         #divineBtn:hover {
             background: #218838;
         }
+        
+        #relevantSection {
+            display: none;
+        }
+        
+        #relevantSection.show {
+            display: block;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen p-6">
@@ -110,7 +125,7 @@
         <div>
             <div class="mb-4">
                 <h3 class="text-xl font-medium">Select Lower Trigram</h3>
-                <div class="selection-grid">
+                <div class="selection-grid trigram-grid">
                     <div class="selection-btn" data-value="1" data-type="trigram" onclick="selectTrigram(this)">☰ Qian</div>
                     <div class="selection-btn" data-value="2" data-type="trigram" onclick="selectTrigram(this)">☱ Dui</div>
                     <div class="selection-btn" data-value="3" data-type="trigram" onclick="selectTrigram(this)">☲ Li</div>
@@ -123,7 +138,7 @@
             </div>
             <div class="mb-4">
                 <h3 class="text-xl font-medium">Select Heavenly Stem (Time)</h3>
-                <div class="selection-grid" style="grid-template-columns: repeat(6, minmax(150px, 1fr));">
+                <div class="selection-grid stem-grid">
                     <div class="selection-btn" data-value="7" data-type="stem" onclick="selectStem(this)">Geng (11pm-1am)</div>
                     <div class="selection-btn" data-value="8" data-type="stem" onclick="selectStem(this)">Xin (1am-3am)</div>
                     <div class="selection-btn" data-value="9" data-type="stem" onclick="selectStem(this)">Ren (3am-5am)</div>
@@ -131,7 +146,7 @@
                     <div class="selection-btn" data-value="11" data-type="stem" onclick="selectStem(this)">Jia (7am-9am)</div>
                     <div class="selection-btn" data-value="12" data-type="stem" onclick="selectStem(this)">Yi (9am-11am)</div>
                 </div>
-                <div class="selection-grid" style="grid-template-columns: repeat(6, minmax(150px, 1fr)); margin-top: 10px;">
+                <div class="selection-grid stem-grid" style="margin-top: 10px;">
                     <div class="selection-btn" data-value="1" data-type="stem" onclick="selectStem(this)">Bing (11am-1pm)</div>
                     <div class="selection-btn" data-value="2" data-type="stem" onclick="selectStem(this)">Ding (1pm-3pm)</div>
                     <div class="selection-btn" data-value="3" data-type="stem" onclick="selectStem(this)">Wu (3pm-5pm)</div>
@@ -145,31 +160,33 @@
         <div id="divResult"></div>
 
         <!-- Relevant Rows Table -->
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Relevant Hexagrams</h2>
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="overflow-x-auto table-container">
-                <table class="i-ching-table">
-                    <thead>
-                        <tr>
-                            <th>Gua<br>number</th>
-                            <th>Symbol</th>
-                            <th>Name</th>
-                            <th><img src="covers/iching.png" alt="The Book of Changes" class="book-cover">The Book of Changes</th>
-                            <th><img src="covers/guide-iching.png" alt="A Guide to the I Ching" class="book-cover">A Guide to the I Ching</th>
-                            <th><img src="covers/complete-iching.png" alt="The Complete I Ching.10th Ed" class="book-cover">The Complete I Ching.10th Ed</th>
-                            <th><img src="covers/authentic-iching.png" alt="The Authentic I Ching" class="book-cover">The Authentic I Ching</th>
-                            <th><img src="covers/iching-pt1.png" alt="I Ching Wilhelm Pt.1" class="book-cover">I Ching Pt.1</th>
-                            <th><img src="covers/iching-pt2.png" alt="I Ching Wilhelm Pt.2" class="book-cover">I Ching Pt.2</th>
-                            <th><img src="covers/taoist-iching.png" alt="Taoist I Ching" class="book-cover">Taoist I Ching</th>
-                            <th><img src="covers/tao-organisation.png" alt="Tao of Organisation" class="book-cover">Tao of Organisation</th>
-                            <th><img src="covers/astrology-iching.png" alt="Astrology of I Ching" class="book-cover">Astrology of I Ching</th>
-                            <th><img src="covers/book10.png" alt="Book 10" class="book-cover">Book 10</th>
-                            <th><img src="covers/book11.png" alt="Book 11" class="book-cover">Book 11</th>
-                            <th><img src="covers/book12.png" alt="Book 12" class="book-cover">Book 12</th>
-                        </tr>
-                    </thead>
-                    <tbody id="relevantTableBody"></tbody>
-                </table>
+        <div id="relevantSection">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Relevant Hexagrams</h2>
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="overflow-x-auto table-container">
+                    <table class="i-ching-table">
+                        <thead>
+                            <tr>
+                                <th>Gua<br>number</th>
+                                <th>Symbol</th>
+                                <th>Name</th>
+                                <th><img src="covers/iching.png" alt="The Book of Changes" class="book-cover">The Book of Changes</th>
+                                <th><img src="covers/guide-iching.png" alt="A Guide to the I Ching" class="book-cover">A Guide to the I Ching</th>
+                                <th><img src="covers/complete-iching.png" alt="The Complete I Ching.10th Ed" class="book-cover">The Complete I Ching.10th Ed</th>
+                                <th><img src="covers/authentic-iching.png" alt="The Authentic I Ching" class="book-cover">The Authentic I Ching</th>
+                                <th><img src="covers/iching-pt1.png" alt="I Ching Wilhelm Pt.1" class="book-cover">I Ching Pt.1</th>
+                                <th><img src="covers/iching-pt2.png" alt="I Ching Wilhelm Pt.2" class="book-cover">I Ching Pt.2</th>
+                                <th><img src="covers/taoist-iching.png" alt="Taoist I Ching" class="book-cover">Taoist I Ching</th>
+                                <th><img src="covers/tao-organisation.png" alt="Tao of Organisation" class="book-cover">Tao of Organisation</th>
+                                <th><img src="covers/astrology-iching.png" alt="Astrology of I Ching" class="book-cover">Astrology of I Ching</th>
+                                <th><img src="covers/book10.png" alt="Book 10" class="book-cover">Book 10</th>
+                                <th><img src="covers/book11.png" alt="Book 11" class="book-cover">Book 11</th>
+                                <th><img src="covers/book12.png" alt="Book 12" class="book-cover">Book 12</th>
+                            </tr>
+                        </thead>
+                        <tbody id="relevantTableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -312,6 +329,8 @@
                 <button onclick="showRelevant(${kingWen})" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Show Relevant Hexagrams</button>
                 <button onclick="prefillJournal(${kingWen}, ${movingLine})" class="ml-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Log to Journal</button>
             `;
+
+            document.getElementById('relevantSection').classList.add('show');
 
             selectedTrigram = null;
             selectedStem = null;
