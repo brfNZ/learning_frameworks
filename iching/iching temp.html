@@ -105,21 +105,6 @@
         </div>
     </div>
 
-    <!-- Footer with Journal Section -->
-    <footer class="mt-8 bg-gray-100 p-6 rounded-xl shadow-lg">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Divination Journal</h2>
-        <form onsubmit="addEntry(event)" class="mb-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="question" placeholder="Enter your question..." class="p-2 border rounded">
-                <input type="text" id="hex" placeholder="Enter hexagram (e.g., 1: The Creative)" class="p-2 border rounded">
-            </div>
-            <textarea id="notes" placeholder="Add notes or insights..." class="w-full p-2 border rounded mt-2" rows="3"></textarea>
-            <button type="submit" class="mt-2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Log Entry</button>
-        </form>
-        <button onclick="exportJournal()" class="bg-green-500 text-white p-2 rounded hover:bg-green-600">Export Journal to CSV</button>
-        <div id="journalOutput" class="mt-4"></div>
-    </footer>
-
     <script>
         // ========== DATA SECTION (Optimized: Single books object for easy maintenance) ==========
         
@@ -200,57 +185,6 @@
 
         // Attach event listener for search
         document.getElementById('searchInput').addEventListener('keyup', filterTable);
-
-        // Journal functionality
-        let journal = JSON.parse(localStorage.getItem('ichingJournal')) || [];
-
-        function addEntry(event) {
-            event.preventDefault();
-            const question = document.getElementById('question').value;
-            const hex = document.getElementById('hex').value;
-            const notes = document.getElementById('notes').value;
-            if (!question || !hex) return alert('Please enter a question and hexagram!');
-
-            const entry = { id: Date.now(), date: new Date().toISOString().split('T')[0], question, hex, notes };
-            journal.unshift(entry);
-            localStorage.setItem('ichingJournal', JSON.stringify(journal));
-            displayJournal();
-            document.getElementById('question').value = '';
-            document.getElementById('hex').value = '';
-            document.getElementById('notes').value = '';
-        }
-
-        function displayJournal() {
-            const output = document.getElementById('journalOutput');
-            output.innerHTML = journal.map(entry => `
-                <div class="bg-white p-3 mb-2 rounded shadow">
-                    <p><strong>Date:</strong> ${entry.date}</p>
-                    <p><strong>Question:</strong> ${entry.question}</p>
-                    <p><strong>Hex:</strong> ${entry.hex}</p>
-                    <p><strong>Notes:</strong> ${entry.notes}</p>
-                    <button onclick="deleteEntry(${entry.id})" class="text-red-500 hover:text-red-700">Delete</button>
-                </div>
-            `).join('');
-        }
-
-        function deleteEntry(id) {
-            journal = journal.filter(e => e.id !== id);
-            localStorage.setItem('ichingJournal', JSON.stringify(journal));
-            displayJournal();
-        }
-
-        function exportJournal() {
-            const csv = ['Date,Question,Hex,Notes'].concat(journal.map(e => `${e.date},"${e.question}",${e.hex},"${e.notes}"`)).join('\n');
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'iching-journal.csv';
-            a.click();
-        }
-
-        // Load journal on page load
-        displayJournal();
     </script>
 </body>
 </html>
