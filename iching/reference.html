@@ -122,22 +122,24 @@
             `;
             tbody.appendChild(row);
         }
-            // Add click highlighting to reference table rows
-            document.addEventListener('DOMContentLoaded', function() {
-                const table = document.querySelector('.i-ching-table tbody');
-                if (table) {
-                    table.addEventListener('click', function(e) {
-                        const row = e.target.closest('tr');
-                        if (row) {
-                            // Remove highlight from all rows
-                            table.querySelectorAll('tr').forEach(r => r.classList.remove('highlighted'));
-                            // Add highlight to clicked row
-                            row.classList.add('highlighted');
-                        }
-                    });
+     }
+
+        // Add click highlighting to reference table rows
+        const table = document.querySelector('.i-ching-table tbody');
+        if (table) {
+            table.addEventListener('click', function(e) {
+                const row = e.target.closest('tr');
+                if (row) {
+                    // Remove highlight from all rows
+                    table.querySelectorAll('tr').forEach(r => r.classList.remove('highlighted'));
+                    // Add highlight to clicked row
+                    row.classList.add('highlighted');
                 }
             });
-
+        }
+    </script>
+</body>
+</html>
     </script>
 </body>
 </html>
