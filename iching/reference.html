@@ -47,6 +47,12 @@
         .i-ching-table tbody tr:hover { background: #f9fafb; }
         
         .table-container { max-width: 100%; overflow-x: auto; }
+
+        .i-ching-table tbody tr:hover { cursor: pointer; }
+        .i-ching-table tbody tr.highlighted { 
+            background: #dbeafe !important; 
+            border-left: 4px solid #3b82f6;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen p-6">
@@ -116,6 +122,23 @@
             `;
             tbody.appendChild(row);
         }
+<script>
+            // Add click highlighting to reference table rows
+            document.addEventListener('DOMContentLoaded', function() {
+                const table = document.querySelector('.i-ching-table tbody');
+                if (table) {
+                    table.addEventListener('click', function(e) {
+                        const row = e.target.closest('tr');
+                        if (row) {
+                            // Remove highlight from all rows
+                            table.querySelectorAll('tr').forEach(r => r.classList.remove('highlighted'));
+                            // Add highlight to clicked row
+                            row.classList.add('highlighted');
+                        }
+                    });
+                }
+            });
+</script>
     </script>
 </body>
 </html>
