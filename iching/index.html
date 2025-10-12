@@ -854,11 +854,15 @@
 
         window.divineTrigramStem = function() {
             if (!selectedTrigram || !selectedStem) return alert('Please select both a trigram and a stem!');
-
             const lowerTrigram = selectedTrigramNatural; // Use natural value for hexagram lookup
             const sum = selectedTrigram + selectedStem; // Use display number for calculation
-            let upperTrigram = sum % 8;
-            if (upperTrigram === 0) upperTrigram = 8;
+            let upperPosition = sum % 8;
+            if (upperPosition === 0) upperPosition = 8;
+
+            // Get upper trigram from current sequence order
+            const order = currentSequence === 'fuxi' ? fuxiOrder : kingWenOrder;
+            const upperTrigram = order[upperPosition - 1]; // Convert position to natural trigram value
+
             let movingLine = sum % 6 || 6;
             
             // Use IChingTable to get the hexagram number
