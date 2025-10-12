@@ -681,6 +681,16 @@
         // King Wen: rearranged order
         const kingWenOrder = [4, 5, 3, 8, 2, 1, 6, 7]; // Zhen, Xun, Li, Kun, Dui, Qian, Kan, Gen
 
+        // Stem times for display
+        const stemTimes = {
+            1: '11pm-1am', 2: '1am-3am', 3: '3am-5am', 4: '5am-7am', 
+            5: '7am-9am', 6: '9am-11am', 7: '11am-1pm', 8: '1pm-3pm',
+            9: '3pm-5pm', 10: '5pm-7pm', 11: '7pm-9pm', 12: '9pm-11pm'
+        };
+
+        // Initialize IChingTable
+        const iChingTable = new IChingTable();
+
         // Render trigrams based on current sequence
         function renderTrigrams() {
             const order = currentSequence === 'fuxi' ? fuxiOrder : kingWenOrder;
