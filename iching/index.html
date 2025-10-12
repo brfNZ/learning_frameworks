@@ -48,6 +48,52 @@
         
         .table-container { max-width: 100%; overflow-x: auto; }
         #divResult, #journalResult { border: 1px solid #ccc; padding: 10px; margin: 10px 0; background: #f9f9f9; }
+        
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .selection-btn {
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            background: #fff;
+            transition: all 0.3s;
+        }
+        
+        .selection-btn.selected {
+            border-color: #007BFF;
+            background: #e6f0fa;
+            font-weight: bold;
+        }
+        
+        .selection-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        #divineBtn {
+            display: none;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        #divineBtn:enabled {
+            display: inline-block;
+        }
+        
+        #divineBtn:hover {
+            background: #218838;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen p-6">
@@ -61,43 +107,39 @@
 
         <!-- Divination Section -->
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Divination</h2>
-        <form onsubmit="return false;" class="mb-6">
+        <div>
             <div class="mb-4">
-                <label class="block mb-2">Lower Trigram (1-8): 
-                    <select id="lowerTrigram" class="w-full p-2 border rounded">
-                        <option value="">Select...</option>
-                        <option value="1">1: Qian ☰</option>
-                        <option value="2">2: Dui ☱</option>
-                        <option value="3">3: Li ☲</option>
-                        <option value="4">4: Zhen ☳</option>
-                        <option value="5">5: Xun ☴</option>
-                        <option value="6">6: Kan ☵</option>
-                        <option value="7">7: Gen ☶</option>
-                        <option value="8">8: Kun ☷</option>
-                    </select>
-                </label>
+                <h3 class="text-xl font-medium">Select Lower Trigram</h3>
+                <div class="selection-grid">
+                    <div class="selection-btn" data-value="1" onclick="selectTrigram(this)">☰ Qian</div>
+                    <div class="selection-btn" data-value="2" onclick="selectTrigram(this)">☱ Dui</div>
+                    <div class="selection-btn" data-value="3" onclick="selectTrigram(this)">☲ Li</div>
+                    <div class="selection-btn" data-value="4" onclick="selectTrigram(this)">☳ Zhen</div>
+                    <div class="selection-btn" data-value="5" onclick="selectTrigram(this)">☴ Xun</div>
+                    <div class="selection-btn" data-value="6" onclick="selectTrigram(this)">☵ Kan</div>
+                    <div class="selection-btn" data-value="7" onclick="selectTrigram(this)">☶ Gen</div>
+                    <div class="selection-btn" data-value="8" onclick="selectTrigram(this)">☷ Kun</div>
+                </div>
             </div>
             <div class="mb-4">
-                <label class="block mb-2">Heavenly Stem (1-12): 
-                    <select id="stem" class="w-full p-2 border rounded">
-                        <option value="">Select...</option>
-                        <option value="1">1: Jia</option>
-                        <option value="2">2: Yi</option>
-                        <option value="3">3: Bing</option>
-                        <option value="4">4: Ding</option>
-                        <option value="5">5: Wu</option>
-                        <option value="6">6: Ji</option>
-                        <option value="7">7: Geng</option>
-                        <option value="8">8: Xin</option>
-                        <option value="9">9: Ren</option>
-                        <option value="10">10: Gui</option>
-                        <option value="11">11: Jia (cycle)</option>
-                        <option value="12">12: Yi (cycle)</option>
-                    </select>
-                </label>
+                <h3 class="text-xl font-medium">Select Heavenly Stem (Time)</h3>
+                <div class="selection-grid">
+                    <div class="selection-btn" data-value="1" onclick="selectStem(this)">Jia (11am-1pm)</div>
+                    <div class="selection-btn" data-value="2" onclick="selectStem(this)">Yi (1pm-3pm)</div>
+                    <div class="selection-btn" data-value="3" onclick="selectStem(this)">Bing (3pm-5pm)</div>
+                    <div class="selection-btn" data-value="4" onclick="selectStem(this)">Ding (5pm-7pm)</div>
+                    <div class="selection-btn" data-value="5" onclick="selectStem(this)">Wu (7pm-9pm)</div>
+                    <div class="selection-btn" data-value="6" onclick="selectStem(this)">Ji (9pm-11pm)</div>
+                    <div class="selection-btn" data-value="7" onclick="selectStem(this)">Geng (11pm-1am)</div>
+                    <div class="selection-btn" data-value="8" onclick="selectStem(this)">Xin (1am-3am)</div>
+                    <div class="selection-btn" data-value="9" onclick="selectStem(this)">Ren (3am-5am)</div>
+                    <div class="selection-btn" data-value="10" onclick="selectStem(this)">Gui (5am-7am)</div>
+                    <div class="selection-btn" data-value="11" onclick="selectStem(this)">Jia (7am-9am)</div>
+                    <div class="selection-btn" data-value="12" onclick="selectStem(this)">Yi (9am-11am)</div>
+                </div>
             </div>
-            <button type="button" onclick="divineTrigramStem()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Divine</button>
-        </form>
+            <button id="divineBtn" onclick="divineTrigramStem()" disabled>Divine</button>
+        </div>
         <div id="divResult"></div>
 
         <!-- Relevant Rows Table -->
@@ -169,6 +211,9 @@
         // Import shared data
         import { hexagrams, names, book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12 } from './data.js';
 
+        let selectedTrigram = null;
+        let selectedStem = null;
+
         // Journal data and functions
         let journal = JSON.parse(localStorage.getItem('ichingJournal')) || [];
 
@@ -221,23 +266,44 @@
         }
 
         // Divination functions
-        function divineTrigramStem() {
-            const lowerNum = parseInt(document.getElementById('lowerTrigram').value);
-            const stemNum = parseInt(document.getElementById('stem').value);
-            if (!lowerNum || !stemNum) return alert('Select both lower trigram and stem!');
+        function selectTrigram(btn) {
+            document.querySelectorAll('.selection-btn[data-type="trigram"]').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedTrigram = parseInt(btn.getAttribute('data-value'));
+            checkSelection();
+        }
 
-            const sum = lowerNum + stemNum;
+        function selectStem(btn) {
+            document.querySelectorAll('.selection-btn[data-type="stem"]').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedStem = parseInt(btn.getAttribute('data-value'));
+            checkSelection();
+        }
+
+        function checkSelection() {
+            const divineBtn = document.getElementById('divineBtn');
+            if (selectedTrigram && selectedStem) {
+                divineBtn.disabled = false;
+            } else {
+                divineBtn.disabled = true;
+            }
+        }
+
+        function divineTrigramStem() {
+            if (!selectedTrigram || !selectedStem) return alert('Please select both a trigram and a stem!');
+
+            const sum = selectedTrigram + selectedStem;
             let upperNum = sum % 8;
             if (upperNum === 0) upperNum = 8;
             let movingLine = sum % 6 || 6;
-            const kingWen = ((upperNum - 1) * 8) + lowerNum;
+            const kingWen = ((upperNum - 1) * 8) + selectedTrigram;
             const hexSymbol = hexagrams[kingWen - 1];
             const hexName = names[kingWen - 1];
 
             document.getElementById('divResult').innerHTML = `
                 <h3>Divination Result</h3>
                 <p><strong>Sum:</strong> ${sum}</p>
-                <p><strong>Lower Trigram:</strong> ${lowerNum}</p>
+                <p><strong>Lower Trigram:</strong> ${selectedTrigram}</p>
                 <p><strong>Upper Trigram:</strong> ${upperNum}</p>
                 <p><strong>Hexagram:</strong> #${kingWen} ${hexSymbol} (${hexName})</p>
                 <p><strong>Moving Line:</strong> ${movingLine}</p>
@@ -245,8 +311,10 @@
                 <button onclick="prefillJournal(${kingWen}, ${movingLine})" class="ml-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Log to Journal</button>
             `;
 
-            document.getElementById('lowerTrigram').value = '';
-            document.getElementById('stem').value = '';
+            selectedTrigram = null;
+            selectedStem = null;
+            document.getElementById('divineBtn').disabled = true;
+            document.querySelectorAll('.selection-btn').forEach(b => b.classList.remove('selected'));
         }
 
         function showRelevant(kingWen) {
