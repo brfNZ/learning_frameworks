@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    <script type="module">
+<script type="module">
         // Import shared data
         import { hexagrams, names, book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12 } from './data.js';
 
@@ -122,10 +122,9 @@
             `;
             tbody.appendChild(row);
         }
-     }
 
         // Add click highlighting to reference table rows
-        const table = document.querySelector('.i-ching-table tbody');
+        const table = tbody;
         if (table) {
             table.addEventListener('click', function(e) {
                 const row = e.target.closest('tr');
@@ -137,9 +136,6 @@
                 }
             });
         }
-    </script>
-</body>
-</html>
     </script>
 </body>
 </html>
