@@ -54,25 +54,5 @@ const book11 = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 3
 // Column 15: Book 12
 const book12 = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64];
 
-// I Ching Table class for hexagram lookup
-class IChingTable {
-    constructor() {
-        this.table = [
-            [1, 43, 14, 34, 9, 5, 26, 11],    // lower trigram 1
-            [10, 58, 38, 54, 61, 60, 41, 19], // lower trigram 2
-            [13, 49, 30, 55, 37, 63, 22, 36], // lower trigram 3
-            [25, 17, 21, 51, 42, 3, 27, 24],  // lower trigram 4
-            [44, 28, 50, 32, 57, 48, 18, 46], // lower trigram 5
-            [6, 47, 64, 40, 59, 29, 4, 7],    // lower trigram 6
-            [33, 31, 56, 62, 53, 39, 52, 15], // lower trigram 7
-            [12, 45, 35, 16, 20, 8, 23, 2]    // lower trigram 8
-        ];
-    }
-    
-    getHexagram(lowerTrigram, upperTrigram) {
-        return this.table[lowerTrigram - 1][upperTrigram - 1];
-    }
-}
-
 // Export for module use
-export { hexagrams, names, book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12, IChingTable };
+export { hexagrams, names, book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12 };
