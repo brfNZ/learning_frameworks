@@ -412,77 +412,75 @@
         <div class="section-card">
             <h2 class="section-title">🎲 Divination</h2>
             
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Left: Trigram Selection -->
-                <div>
-                    <div class="subsection-title">
-                        <span>Select Lower Trigram</span>
-                        <button class="btn-toggle" onclick="toggleSequence()">
-                            <span id="sequenceLabel">Fu Xi</span> 
-                        </button>
-                    </div>
-                    <div id="trigramGrid" class="grid grid-cols-2 gap-3">
-                        <!-- Trigrams will be populated by JavaScript -->
-                    </div>
+            <!-- Trigram Selection -->
+            <div class="mb-6">
+                <div class="subsection-title">
+                    <span>Select Lower Trigram</span>
+                    <button class="btn-toggle" onclick="toggleSequence()">
+                        <span id="sequenceLabel">Fu Xi</span> 
+                    </button>
                 </div>
-                
-                <!-- Right: Stem Selection -->
-                <div>
-                    <h3 class="subsection-title">Select Heavenly Stem</h3>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div class="selection-btn compact-btn" data-value="1" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">1</div>
-                            <div class="compact-time">11pm-1am</div>
-                        </div>
-                        <div class="selection-btn compact-btn" data-value="2" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">2</div>
-                            <div class="compact-time">1am-3am</div>
-                        </div>
-                        <div class="selection-btn compact-btn" data-value="3" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">3</div>
-                            <div class="compact-time">3am-5am</div>
-                        </div>
-                        <div class="selection-btn compact-btn" data-value="4" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">4</div>
-                            <div class="compact-time">5am-7am</div>
-                        </div>
-                        <div class="selection-btn compact-btn" data-value="5" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">5</div>
-                            <div class="compact-time">7am-9am</div>
-                        </div>
-                        <div class="selection-btn compact-btn" data-value="6" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">6</div>
-                            <div class="compact-time">9am-11am</div>
-                        </div>
-                        <div class="selection-btn compact-btn" data-value="7" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">7</div>
-                            <div class="compact-time">11am-1pm</div>
-                        </div>
-                        <div class="selection-btn compact-btn" data-value="8" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">8</div>
-                            <div class="compact-time">1pm-3pm</div>
-                        </div>
-                        <div class="selection-btn compact-btn" data-value="9" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">9</div>
-                            <div class="compact-time">3pm-5pm</div>
-                        </div>
-                        <div class="selection-btn compact-btn" data-value="10" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">10</div>
-                            <div class="compact-time">5pm-7pm</div>
-                        </div>
-                        <div class="selection-btn compact-btn" data-value="11" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">11</div>
-                            <div class="compact-time">7pm-9pm</div>
-                        </div>
-                        <div class="selection-btn compact-btn" data-value="12" data-type="stem" onclick="selectStem(this)">
-                            <div class="compact-number">12</div>
-                            <div class="compact-time">9pm-11pm</div>
-                        </div>
+                <div id="trigramGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <!-- Trigrams will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Stem Selection -->
+            <div class="mb-6">
+                <h3 class="subsection-title">Select Heavenly Stem (Time of Day)</h3>
+                <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
+                    <div class="selection-btn compact-btn" data-value="1" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">1</div>
+                        <div class="compact-time">11pm-1am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="2" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">2</div>
+                        <div class="compact-time">1am-3am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="3" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">3</div>
+                        <div class="compact-time">3am-5am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="4" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">4</div>
+                        <div class="compact-time">5am-7am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="5" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">5</div>
+                        <div class="compact-time">7am-9am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="6" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">6</div>
+                        <div class="compact-time">9am-11am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="7" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">7</div>
+                        <div class="compact-time">11am-1pm</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="8" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">8</div>
+                        <div class="compact-time">1pm-3pm</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="9" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">9</div>
+                        <div class="compact-time">3pm-5pm</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="10" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">10</div>
+                        <div class="compact-time">5pm-7pm</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="11" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">11</div>
+                        <div class="compact-time">7pm-9pm</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="12" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">12</div>
+                        <div class="compact-time">9pm-11pm</div>
                     </div>
                 </div>
             </div>
             
-            <div class="text-center mt-6">
+            <div class="text-center">
                 <button id="divineBtn" class="btn-primary" onclick="divineTrigramStem()" disabled>✨ Divine Hexagram</button>
             </div>
             
