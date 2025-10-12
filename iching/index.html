@@ -29,19 +29,21 @@
             font-size: 0.875rem;
         }
         
-        .i-ching-table th:first-child { text-align: left; white-space: normal; width: 70px; }
-        .i-ching-table th:nth-child(2) { text-align: center; white-space: nowrap; }
-        .i-ching-table th:nth-child(3) { text-align: left; white-space: nowrap; }
-        .i-ching-table th:nth-child(n+4) { text-align: center; width: 128px; font-size: 0.75rem; }
+        .i-ching-table th:first-child { text-align: left; white-space: normal; width: 180px; }
+        .i-ching-table th:nth-child(2) { text-align: center; white-space: nowrap; width: 70px; }
+        .i-ching-table th:nth-child(3) { text-align: center; white-space: nowrap; }
+        .i-ching-table th:nth-child(4) { text-align: left; white-space: nowrap; }
+        .i-ching-table th:nth-child(n+5) { text-align: center; width: 128px; font-size: 0.75rem; }
         
         .i-ching-table td {
             padding: 0.75rem;
             border-bottom: 1px solid #e5e7eb;
         }
         
-        .i-ching-table td:first-child { padding: 0.75rem 0.5rem; white-space: nowrap; text-align: center; }
-        .i-ching-table td:nth-child(2) { padding: 0.75rem 0.5rem; font-size: 2.5rem; white-space: nowrap; text-align: center; }
-        .i-ching-table td:nth-child(n+4) { text-align: center; }
+        .i-ching-table td:first-child { padding: 0.75rem; white-space: nowrap; text-align: left; }
+        .i-ching-table td:nth-child(2) { padding: 0.75rem 0.5rem; white-space: nowrap; text-align: center; }
+        .i-ching-table td:nth-child(3) { padding: 0.75rem 0.5rem; font-size: 2.5rem; white-space: nowrap; text-align: center; }
+        .i-ching-table td:nth-child(n+5) { text-align: center; }
         
         .i-ching-table tbody tr:nth-child(even) { background: #f3f4f6; }
         .i-ching-table tbody tr:hover { background: #f9fafb; }
@@ -311,16 +313,16 @@
     <div class="max-w-7xl mx-auto">
         <!-- Header -->
         <div class="text-center mb-10">
-            <h1 class="text-5xl font-bold text-gray-800 mb-4"> I Ching Divination</h1>
+            <h1 class="text-5xl font-bold text-gray-800 mb-4">☯ I Ching Divination</h1>
             <p class="text-xl text-gray-600 mb-6">Consult the Oracle and Record Your Insights</p>
             <a href="reference.html" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition shadow-md hover:shadow-lg">
-                 View Reference Table
+                📖 View Reference Table
             </a>
         </div>
 
         <!-- Divination Section -->
         <div class="section-card">
-            <h2 class="section-title"> Divination</h2>
+            <h2 class="section-title">🎲 Divination</h2>
             
             <div class="mb-8">
                 <div class="subsection-title">
@@ -403,7 +405,7 @@
             </div>
             
             <div class="text-center">
-                <button id="divineBtn" class="btn-primary" onclick="divineTrigramStem()" disabled> Divine Hexagram</button>
+                <button id="divineBtn" class="btn-primary" onclick="divineTrigramStem()" disabled>✨ Divine Hexagram</button>
             </div>
             
             <div id="divResult"></div>
@@ -412,11 +414,12 @@
         <!-- Relevant Hexagrams Table -->
         <div id="relevantSection" style="display: none;">
             <div class="section-card">
-                <h2 class="section-title"> Relevant Hexagrams</h2>
+                <h2 class="section-title">🔗 Relevant Hexagrams</h2>
                 <div class="overflow-x-auto">
                     <table class="i-ching-table">
                         <thead>
                             <tr>
+                                <th>Relationship</th>
                                 <th>Gua number</th>
                                 <th>Symbol</th>
                                 <th>Name</th>
@@ -439,7 +442,7 @@
 
         <!-- Journal Section -->
         <div class="section-card">
-            <h2 class="section-title"> Journal</h2>
+            <h2 class="section-title">📓 Journal</h2>
             
             <form onsubmit="addEntry(); return false;" class="mb-8">
                 <div class="grid md:grid-cols-2 gap-6 mb-6">
@@ -457,8 +460,8 @@
                     <textarea id="notes" class="input-field" placeholder="Record your interpretation, changing lines, and insights..."></textarea>
                 </div>
                 <div class="flex gap-3">
-                    <button type="submit" class="btn-success"> Save Entry</button>
-                    <button type="button" onclick="exportJournal()" class="btn-secondary"> Export to CSV</button>
+                    <button type="submit" class="btn-success">💾 Save Entry</button>
+                    <button type="button" onclick="exportJournal()" class="btn-secondary">📥 Export to CSV</button>
                 </div>
             </form>
             
@@ -507,17 +510,86 @@
         let selectedStem = null;
         let currentSequence = 'fuxi'; // 'fuxi' or 'kingwen'
 
-        // Trigram data
+        // Trigram data with binary representations
         const trigrams = {
-            1: { symbol: '☰', english: 'Heaven', chinese: 'Qian' },
-            2: { symbol: '☱', english: 'Lake', chinese: 'Dui' },
-            3: { symbol: '☲', english: 'Fire', chinese: 'Li' },
-            4: { symbol: '☳', english: 'Thunder', chinese: 'Zhen' },
-            5: { symbol: '☴', english: 'Wind', chinese: 'Xun' },
-            6: { symbol: '☵', english: 'Water', chinese: 'Kan' },
-            7: { symbol: '☶', english: 'Mountain', chinese: 'Gen' },
-            8: { symbol: '☷', english: 'Earth', chinese: 'Kun' }
+            1: { symbol: '☰', english: 'Heaven', chinese: 'Qian', binary: '111' },
+            2: { symbol: '☱', english: 'Lake', chinese: 'Dui', binary: '011' },
+            3: { symbol: '☲', english: 'Fire', chinese: 'Li', binary: '101' },
+            4: { symbol: '☳', english: 'Thunder', chinese: 'Zhen', binary: '001' },
+            5: { symbol: '☴', english: 'Wind', chinese: 'Xun', binary: '110' },
+            6: { symbol: '☵', english: 'Water', chinese: 'Kan', binary: '010' },
+            7: { symbol: '☶', english: 'Mountain', chinese: 'Gen', binary: '100' },
+            8: { symbol: '☷', english: 'Earth', chinese: 'Kun', binary: '000' }
         };
+
+        // Helper function to get trigram number from binary
+        function getTrigramFromBinary(binary) {
+            for (let [num, data] of Object.entries(trigrams)) {
+                if (data.binary === binary) return parseInt(num);
+            }
+            return null;
+        }
+
+        // Calculate transformed hexagram (with moving line changed)
+        function getTransformedHexagram(lowerTrigram, upperTrigram, movingLine) {
+            const lowerBinary = trigrams[lowerTrigram].binary;
+            const upperBinary = trigrams[upperTrigram].binary;
+            const hexBinary = upperBinary + lowerBinary;
+            
+            // Flip the moving line (1-indexed from bottom)
+            const lineIndex = 6 - movingLine; // Convert to 0-indexed from top
+            const hexArray = hexBinary.split('');
+            hexArray[lineIndex] = hexArray[lineIndex] === '0' ? '1' : '0';
+            const newHexBinary = hexArray.join('');
+            
+            const newUpperBinary = newHexBinary.substring(0, 3);
+            const newLowerBinary = newHexBinary.substring(3, 6);
+            
+            const newUpper = getTrigramFromBinary(newUpperBinary);
+            const newLower = getTrigramFromBinary(newLowerBinary);
+            
+            return iChingTable.getHexagram(newLower, newUpper);
+        }
+
+        // Calculate opposite hexagram (all lines flipped)
+        function getOppositeHexagram(lowerTrigram, upperTrigram) {
+            const lowerBinary = trigrams[lowerTrigram].binary;
+            const upperBinary = trigrams[upperTrigram].binary;
+            const hexBinary = upperBinary + lowerBinary;
+            
+            // Flip all lines
+            const flipped = hexBinary.split('').map(bit => bit === '0' ? '1' : '0').join('');
+            
+            const newUpperBinary = flipped.substring(0, 3);
+            const newLowerBinary = flipped.substring(3, 6);
+            
+            const newUpper = getTrigramFromBinary(newUpperBinary);
+            const newLower = getTrigramFromBinary(newLowerBinary);
+            
+            return iChingTable.getHexagram(newLower, newUpper);
+        }
+
+        // Calculate nuclear/mutual hexagram (inner hexagram)
+        function getNuclearHexagram(lowerTrigram, upperTrigram) {
+            const lowerBinary = trigrams[lowerTrigram].binary;
+            const upperBinary = trigrams[upperTrigram].binary;
+            const hexBinary = upperBinary + lowerBinary;
+            
+            // Lines 2,3,4 become lower trigram; lines 3,4,5 become upper trigram
+            // hexBinary is indexed from top: [0]=line6, [1]=line5, [2]=line4, [3]=line3, [4]=line2, [5]=line1
+            const newLowerBinary = hexBinary[3] + hexBinary[2] + hexBinary[1]; // lines 3,4,5 from bottom
+            const newUpperBinary = hexBinary[4] + hexBinary[3] + hexBinary[2]; // lines 2,3,4 from bottom
+            
+            const newUpper = getTrigramFromBinary(newUpperBinary);
+            const newLower = getTrigramFromBinary(newLowerBinary);
+            
+            return iChingTable.getHexagram(newLower, newUpper);
+        }
+
+        // Reverse hexagram (upside down) - swap upper and lower trigrams
+        function getReverseHexagram(lowerTrigram, upperTrigram) {
+            return iChingTable.getHexagram(upperTrigram, lowerTrigram);
+        }
 
         // Fu Xi sequence (Earlier Heaven)
         const fuxiSequence = [1, 5, 2, 6, 3, 7, 4, 8];
@@ -686,6 +758,11 @@
             const hexSymbol = hexagrams[kingWen - 1];
             const hexName = names[kingWen - 1];
 
+            // Calculate transformed hexagram
+            const transformedNum = getTransformedHexagram(lowerTrigram, upperTrigram, movingLine);
+            const transformedSymbol = hexagrams[transformedNum - 1];
+            const transformedName = names[transformedNum - 1];
+
             // Get names for display
             const lowerName = trigrams[lowerTrigram].chinese;
             const upperName = trigrams[upperTrigram].chinese;
@@ -693,39 +770,52 @@
 
             document.getElementById('divResult').innerHTML = `
                 <div class="result-box">
-                    <h3> Divination Result</h3>
+                    <h3>✨ Divination Result</h3>
                     
-                <div class="calculation-box">
-                Lower Trigram ${lowerTrigram} + Stem ${selectedStem} = ${sum}
-                </div>
-                
-                <p><strong>Lower Trigram (Bottom):</strong> ${lowerName} (${lowerTrigram})</p>
-                <p><strong>Heavenly Stem (Time):</strong> ${stemTime} (${selectedStem})</p>
-                <p><strong>Sum:</strong> ${lowerTrigram} + ${selectedStem} = ${sum}</p>
-                <p><strong>Upper Trigram (Top):</strong> ${upperName} (${upperTrigram}) [${sum} mod 8 = ${upperTrigram}]</p>
-                <p><strong>Hexagram:</strong> #${kingWen} ${hexSymbol} - ${hexName}</p>
-                <p><strong>Moving Line:</strong> ${movingLine} [${sum} mod 6 = ${movingLine === 6 ? '0 → 6' : movingLine}]</p>
-
+                    <div class="calculation-box">
+                        Lower Trigram ${lowerTrigram} + Stem ${selectedStem} = ${sum}
+                    </div>
+                    
+                    <p><strong>Lower Trigram (Bottom):</strong> ${lowerName} (${lowerTrigram})</p>
+                    <p><strong>Heavenly Stem (Time):</strong> ${stemTime} (${selectedStem})</p>
+                    <p><strong>Sum:</strong> ${lowerTrigram} + ${selectedStem} = ${sum}</p>
+                    <p><strong>Upper Trigram (Top):</strong> ${upperName} (${upperTrigram}) [${sum} mod 8 = ${upperTrigram}]</p>
+                    <p><strong>Present Hexagram:</strong> #${kingWen} ${hexSymbol} - ${hexName}</p>
+                    <p><strong>Moving Line:</strong> ${movingLine} [${sum} mod 6 = ${movingLine === 6 ? '0 → 6' : movingLine}]</p>
+                    <p><strong>Future Hexagram:</strong> #${transformedNum} ${transformedSymbol} - ${transformedName}</p>
                     <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
-                        <button onclick="showRelevant(${kingWen})" class="btn-info"> Show Related Hexagrams</button>
-                        <button onclick="prefillJournal(${kingWen}, ${movingLine})" class="btn-success"> Add to Journal</button>
+                        <button onclick="showRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine})" class="btn-info">🔗 Show Related Hexagrams</button>
+                        <button onclick="prefillJournal(${kingWen}, ${transformedNum}, ${movingLine})" class="btn-success">📝 Add to Journal</button>
                     </div>
                 </div>
             `;
 
-            showRelevant(kingWen);
+            showRelevant(lowerTrigram, upperTrigram, movingLine);
         }
 
-        window.showRelevant = function(kingWen) {
-            const inverse = 65 - kingWen;
-            const related = [kingWen];
-            if (inverse > 0 && inverse <= 64 && inverse !== kingWen) related.push(inverse);
+        window.showRelevant = function(lowerTrigram, upperTrigram, movingLine) {
+            const original = iChingTable.getHexagram(lowerTrigram, upperTrigram);
+            const transformed = getTransformedHexagram(lowerTrigram, upperTrigram, movingLine);
+            const opposite = getOppositeHexagram(lowerTrigram, upperTrigram);
+            const reverse = getReverseHexagram(lowerTrigram, upperTrigram);
+            const nuclear = getNuclearHexagram(lowerTrigram, upperTrigram);
+
+            const related = [
+                { label: 'Present (Original)', num: original },
+                { label: 'Future (Transformed)', num: transformed },
+                { label: 'Opposite (Inverse)', num: opposite },
+                { label: 'Reverse', num: reverse },
+                { label: 'Nuclear (Mutual)', num: nuclear }
+            ];
 
             const tbody = document.getElementById('relevantTableBody');
             tbody.innerHTML = '';
-            related.forEach(n => {
+            
+            related.forEach(item => {
+                const n = item.num;
                 const row = tbody.insertRow();
                 row.innerHTML = `
+                    <td style="font-weight: 600; color: #374151;">${item.label}</td>
                     <td>${n}</td>
                     <td>${hexagrams[n - 1]}</td>
                     <td>${names[n - 1]}</td>
@@ -744,8 +834,8 @@
             document.getElementById('relevantSection').style.display = 'block';
         }
 
-        window.prefillJournal = function(kingWen, movingLine) {
-            const hex = `${kingWen}: ${names[kingWen - 1]} ${hexagrams[kingWen - 1]} (Line ${movingLine})`;
+        window.prefillJournal = function(kingWen, transformedNum, movingLine) {
+            const hex = `${kingWen}: ${names[kingWen - 1]} ${hexagrams[kingWen - 1]} → ${transformedNum}: ${names[transformedNum - 1]} ${hexagrams[transformedNum - 1]} (Line ${movingLine})`;
             document.getElementById('hex').value = hex;
             document.getElementById('question').focus();
             window.scrollTo({ top: document.getElementById('question').offsetTop - 100, behavior: 'smooth' });
