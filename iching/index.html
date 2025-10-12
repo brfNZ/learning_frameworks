@@ -592,6 +592,7 @@
         let selectedTrigram = null;
         let selectedStem = null;
         let currentSequence = 'fuxi'; // 'fuxi' or 'kingwen'
+        let selectedTrigramNatural = null;
 
         // Trigram data with binary representations
         const trigrams = {
@@ -787,15 +788,17 @@
 
         // Divination functions with toggle behavior
         window.selectTrigram = function(btn) {
-            const value = parseInt(btn.getAttribute('data-value'));
+            const value = parseInt(btn.getAttribute('data-value')); // Display number for calculation
             
             if (btn.classList.contains('selected')) {
                 btn.classList.remove('selected');
                 selectedTrigram = null;
+                selectedTrigramNatural = null;
             } else {
                 document.querySelectorAll('.selection-btn[data-type="trigram"]').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
-                selectedTrigram = value;
+                selectedTrigram = value; // Use display number in calculation
+                selectedTrigramNatural = parseInt(btn.getAttribute('data-natural')); // For hexagram lookup
             }
             
             checkSelection();
@@ -828,8 +831,8 @@
         window.divineTrigramStem = function() {
             if (!selectedTrigram || !selectedStem) return alert('Please select both a trigram and a stem!');
 
-            const lowerTrigram = selectedTrigram;
-            const sum = lowerTrigram + selectedStem;
+            const lowerTrigram = selectedTrigramNatural; // Use natural value for hexagram lookup
+            const sum = selectedTrigram + selectedStem; // Use display number for calculation
             let upperTrigram = sum % 8;
             if (upperTrigram === 0) upperTrigram = 8;
             let movingLine = sum % 6 || 6;
