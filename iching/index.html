@@ -51,7 +51,7 @@
         
         .selection-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            grid-template-columns: repeat(2, minmax(150px, 1fr));
             gap: 10px;
             margin-bottom: 20px;
         }
@@ -111,31 +111,33 @@
             <div class="mb-4">
                 <h3 class="text-xl font-medium">Select Lower Trigram</h3>
                 <div class="selection-grid">
-                    <div class="selection-btn" data-value="1" onclick="selectTrigram(this)">☰ Qian</div>
-                    <div class="selection-btn" data-value="2" onclick="selectTrigram(this)">☱ Dui</div>
-                    <div class="selection-btn" data-value="3" onclick="selectTrigram(this)">☲ Li</div>
-                    <div class="selection-btn" data-value="4" onclick="selectTrigram(this)">☳ Zhen</div>
-                    <div class="selection-btn" data-value="5" onclick="selectTrigram(this)">☴ Xun</div>
-                    <div class="selection-btn" data-value="6" onclick="selectTrigram(this)">☵ Kan</div>
-                    <div class="selection-btn" data-value="7" onclick="selectTrigram(this)">☶ Gen</div>
-                    <div class="selection-btn" data-value="8" onclick="selectTrigram(this)">☷ Kun</div>
+                    <div class="selection-btn" data-value="1" data-type="trigram" onclick="selectTrigram(this)">☰ Qian</div>
+                    <div class="selection-btn" data-value="2" data-type="trigram" onclick="selectTrigram(this)">☱ Dui</div>
+                    <div class="selection-btn" data-value="3" data-type="trigram" onclick="selectTrigram(this)">☲ Li</div>
+                    <div class="selection-btn" data-value="4" data-type="trigram" onclick="selectTrigram(this)">☳ Zhen</div>
+                    <div class="selection-btn" data-value="5" data-type="trigram" onclick="selectTrigram(this)">☴ Xun</div>
+                    <div class="selection-btn" data-value="6" data-type="trigram" onclick="selectTrigram(this)">☵ Kan</div>
+                    <div class="selection-btn" data-value="7" data-type="trigram" onclick="selectTrigram(this)">☶ Gen</div>
+                    <div class="selection-btn" data-value="8" data-type="trigram" onclick="selectTrigram(this)">☷ Kun</div>
                 </div>
             </div>
             <div class="mb-4">
                 <h3 class="text-xl font-medium">Select Heavenly Stem (Time)</h3>
-                <div class="selection-grid">
-                    <div class="selection-btn" data-value="1" onclick="selectStem(this)">Jia (11am-1pm)</div>
-                    <div class="selection-btn" data-value="2" onclick="selectStem(this)">Yi (1pm-3pm)</div>
-                    <div class="selection-btn" data-value="3" onclick="selectStem(this)">Bing (3pm-5pm)</div>
-                    <div class="selection-btn" data-value="4" onclick="selectStem(this)">Ding (5pm-7pm)</div>
-                    <div class="selection-btn" data-value="5" onclick="selectStem(this)">Wu (7pm-9pm)</div>
-                    <div class="selection-btn" data-value="6" onclick="selectStem(this)">Ji (9pm-11pm)</div>
-                    <div class="selection-btn" data-value="7" onclick="selectStem(this)">Geng (11pm-1am)</div>
-                    <div class="selection-btn" data-value="8" onclick="selectStem(this)">Xin (1am-3am)</div>
-                    <div class="selection-btn" data-value="9" onclick="selectStem(this)">Ren (3am-5am)</div>
-                    <div class="selection-btn" data-value="10" onclick="selectStem(this)">Gui (5am-7am)</div>
-                    <div class="selection-btn" data-value="11" onclick="selectStem(this)">Jia (7am-9am)</div>
-                    <div class="selection-btn" data-value="12" onclick="selectStem(this)">Yi (9am-11am)</div>
+                <div class="selection-grid" style="grid-template-columns: repeat(6, minmax(150px, 1fr));">
+                    <div class="selection-btn" data-value="7" data-type="stem" onclick="selectStem(this)">Geng (11pm-1am)</div>
+                    <div class="selection-btn" data-value="8" data-type="stem" onclick="selectStem(this)">Xin (1am-3am)</div>
+                    <div class="selection-btn" data-value="9" data-type="stem" onclick="selectStem(this)">Ren (3am-5am)</div>
+                    <div class="selection-btn" data-value="10" data-type="stem" onclick="selectStem(this)">Gui (5am-7am)</div>
+                    <div class="selection-btn" data-value="11" data-type="stem" onclick="selectStem(this)">Jia (7am-9am)</div>
+                    <div class="selection-btn" data-value="12" data-type="stem" onclick="selectStem(this)">Yi (9am-11am)</div>
+                </div>
+                <div class="selection-grid" style="grid-template-columns: repeat(6, minmax(150px, 1fr)); margin-top: 10px;">
+                    <div class="selection-btn" data-value="1" data-type="stem" onclick="selectStem(this)">Bing (11am-1pm)</div>
+                    <div class="selection-btn" data-value="2" data-type="stem" onclick="selectStem(this)">Ding (1pm-3pm)</div>
+                    <div class="selection-btn" data-value="3" data-type="stem" onclick="selectStem(this)">Wu (3pm-5pm)</div>
+                    <div class="selection-btn" data-value="4" data-type="stem" onclick="selectStem(this)">Ji (5pm-7pm)</div>
+                    <div class="selection-btn" data-value="5" data-type="stem" onclick="selectStem(this)">Geng (7pm-9pm)</div>
+                    <div class="selection-btn" data-value="6" data-type="stem" onclick="selectStem(this)">Xin (9pm-11pm)</div>
                 </div>
             </div>
             <button id="divineBtn" onclick="divineTrigramStem()" disabled>Divine</button>
