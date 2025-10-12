@@ -575,10 +575,11 @@
             const upperBinary = trigrams[upperTrigram].binary;
             const hexBinary = upperBinary + lowerBinary;
             
-            // Lines 2,3,4 become lower trigram; lines 3,4,5 become upper trigram
-            // hexBinary is indexed from top: [0]=line6, [1]=line5, [2]=line4, [3]=line3, [4]=line2, [5]=line1
-            const newLowerBinary = hexBinary[4] + hexBinary[3] + hexBinary[2]; // lines 2,3,4 from bottom
-            const newUpperBinary = hexBinary[3] + hexBinary[2] + hexBinary[1]; // lines 3,4,5 from bottom
+            // Lower nuclear: lines 2,3,4 (reading line 4, then 3, then 2 = top to bottom)
+            const newLowerBinary = hexBinary[2] + hexBinary[3] + hexBinary[4];
+            
+            // Upper nuclear: lines 3,4,5 (reading line 5, then 4, then 3 = top to bottom)
+            const newUpperBinary = hexBinary[1] + hexBinary[2] + hexBinary[3];
             
             const newUpper = getTrigramFromBinary(newUpperBinary);
             const newLower = getTrigramFromBinary(newLowerBinary);
