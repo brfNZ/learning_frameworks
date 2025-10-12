@@ -483,52 +483,67 @@ System: <h1>
             </div>
         </div>
     </div>
+<script type="module">
+    // Import shared data and IChingTable
+    import { hexagrams, names, book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12, IChingTable } from './data.js';
 
-    <script type="module">
-        // Import shared data and IChingTable
-        import { hexagrams, names, book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12, IChingTable } from './data.js';
+    let selectedTrigram = null;
+    let selectedStem = null;
+    let currentSequence = 'fuxi'; // 'fuxi' or 'kingwen'
 
-        let selectedTrigram = null;
-        let selectedStem = null;
-        let currentSequence = 'fuxi'; // 'fuxi' or 'kingwen'
+    // Trigram data
+    const trigrams = {
+        1: { symbol: '☰', english: 'Heaven', chinese: 'Qian' },
+        2: { symbol: '☱', english: 'Lake', chinese: 'Dui' },
+        3: { symbol: '☲', english: 'Fire', chinese: 'Li' },
+        4: { symbol: '☳', english: 'Thunder', chinese: 'Zhen' },
+        5: { symbol: '☴', english: 'Wind', chinese: 'Xun' },
+        6: { symbol: '☵', english: 'Water', chinese: 'Kan' },
+        7: { symbol: '☶', english: 'Mountain', chinese: 'Gen' },
+        8: { symbol: '☷', english: 'Earth', chinese: 'Kun' }
+    };
 
-        // Trigram data
-        const trigrams = {
-            1: { symbol: '☰', english: 'Heaven', chinese: 'Qian' },
-            2: { symbol: '☱', english: 'Lake', chinese: 'Dui' },
-            3: { symbol: '☲', english: 'Fire', chinese: 'Li' },
-            4: { symbol: '☳', english: 'Thunder', chinese: 'Zhen' },
-            5: { symbol: '☴', english: 'Wind', chinese: 'Xun' },
-            6: { symbol: '☵', english: 'Water', chinese: 'Kan' },
-            7: { symbol: '☶', english: 'Mountain', chinese: 'Gen' },
-            8: { symbol: '☷', english: 'Earth', chinese: 'Kun' }
-        };
+    // Fu Xi sequence (Earlier Heaven)
+    const fuxiSequence = [1, 5, 2, 6, 3, 7, 4, 8];
 
-        // Fu Xi sequence (Earlier Heaven)
-        const fuxiSequence = [1, 5, 2, 6, 3, 7, 4, 8];
+    // King Wen sequence (Later Heaven)
+    const kingwenSequence = [6, 8, 4, 5, 1, 2, 7, 3];
 
-        // King Wen sequence (Later Heaven)
-        const kingwenSequence = [6, 8, 4, 5, 1, 2, 7, 3];
+    // Stem times for display
+    const stemTimes = {
+        1: '11pm-1am', 2: '1am-3am', 3: '3am-5am', 4: '5am-7am', 
+        5: '7am-9am', 6: '9am-11am', 7: '11am-1pm', 8: '1pm-3pm',
+        9: '3pm-5pm', 10: '5pm-7pm', 11: '7pm-9pm', 12: '9pm-11pm'
+    };
 
-        // Stem times for display
-        const stemTimes = {
-            1: '11pm-1am', 2: '1am-3am', 3: '3am-5am', 4: '5am-7am', 
-            5: '7am-9am', 6: '9am-11am', 7: '11am-1pm', 8: '1pm-3pm',
-            9: '3pm-5pm', 10: '5pm-7pm', 11: '7pm-9pm', 12: '9pm-11pm'
-        };
+    // Initialize IChingTable
+    let iChingTable;
+    try {
+        iChingTable = new IChingTable();
+        console.log('IChingTable initialized successfully');
+    } catch (error) {
+        console.error('Failed to initialize IChingTable:', error);
+    }
 
-        // Initialize IChingTable
-        const iChingTable = new IChingTable();
-
-        // Render trigrams based on current sequence
-        function renderTrigrams() {
+    // Render trigrams based on current sequence
+    function renderTrigrams() {
+        try {
+            console.log('Rendering trigrams with sequence:', currentSequence);
             const sequence = currentSequence === 'fuxi' ? fuxiSequence : kingwenSequence;
             const grid = document.getElementById('trigramGrid');
+            if (!grid) {
+                console.error('trigramGrid element not found');
+                return;
+            }
             grid.innerHTML = '';
 
             sequence.forEach((trigramValue, index) => {
                 const displayNumber = index + 1; // Display 1-8
                 const trigram = trigrams[trigramValue];
+                if (!trigram) {
+                    console.error(`Trigram not found for value: ${trigramValue}`);
+                    return;
+                }
                 const isSelected = selectedTrigram === trigramValue ? 'selected' : '';
                 
                 const btn = document.createElement('div');
@@ -544,20 +559,29 @@ System: <h1>
                 `;
                 grid.appendChild(btn);
             });
+            console.log('Trigram grid rendered successfully');
+        } catch (error) {
+            console.error('Error in renderTrigrams:', error);
         }
+    }
 
-        // Toggle sequence
-        window.toggleSequence = function() {
+    // Toggle sequence
+    window.toggleSequence = function() {
+        try {
             currentSequence = currentSequence === 'fuxi' ? 'kingwen' : 'fuxi';
             document.getElementById('sequenceLabel').textContent = 
                 currentSequence === 'fuxi' ? 'Fu Xi Sequence' : 'King Wen Sequence';
             renderTrigrams();
+        } catch (error) {
+            console.error('Error in toggleSequence:', error);
         }
+    }
 
-        // Journal data and functions
-        let journal = JSON.parse(localStorage.getItem('ichingJournal')) || [];
+    // Journal data and functions
+    let journal = JSON.parse(localStorage.getItem('ichingJournal')) || [];
 
-        window.addEntry = function() {
+    window.addEntry = function() {
+        try {
             const question = document.getElementById('question').value;
             const hex = document.getElementById('hex').value;
             const notes = document.getElementById('notes').value;
@@ -568,9 +592,13 @@ System: <h1>
             localStorage.setItem('ichingJournal', JSON.stringify(journal));
             displayJournal();
             clearForm();
+        } catch (error) {
+            console.error('Error in addEntry:', error);
         }
+    }
 
-        function displayJournal() {
+    function displayJournal() {
+        try {
             const tbody = document.getElementById('journalBody');
             tbody.innerHTML = '';
             if (journal.length === 0) {
@@ -587,22 +615,34 @@ System: <h1>
                     <td style="text-align:center;"><button onclick="deleteEntry(${entry.id})" class="btn-danger">Delete</button></td>
                 `;
             });
+        } catch (error) {
+            console.error('Error in displayJournal:', error);
         }
+    }
 
-        window.deleteEntry = function(id) {
+    window.deleteEntry = function(id) {
+        try {
             if (!confirm('Delete this journal entry?')) return;
             journal = journal.filter(e => e.id !== id);
             localStorage.setItem('ichingJournal', JSON.stringify(journal));
             displayJournal();
+        } catch (error) {
+            console.error('Error in deleteEntry:', error);
         }
+    }
 
-        function clearForm() {
+    function clearForm() {
+        try {
             document.getElementById('question').value = '';
             document.getElementById('hex').value = '';
             document.getElementById('notes').value = '';
+        } catch (error) {
+            console.error('Error in clearForm:', error);
         }
+    }
 
-        window.exportJournal = function() {
+    window.exportJournal = function() {
+        try {
             if (journal.length === 0) {
                 alert('No entries to export!');
                 return;
@@ -615,10 +655,14 @@ System: <h1>
             a.download = 'iching-journal.csv';
             a.click();
             URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error in exportJournal:', error);
         }
+    }
 
-        // Divination functions with toggle behavior
-        window.selectTrigram = function(btn) {
+    // Divination functions with toggle behavior
+    window.selectTrigram = function(btn) {
+        try {
             const value = parseInt(btn.getAttribute('data-value'));
             
             if (btn.classList.contains('selected')) {
@@ -631,9 +675,13 @@ System: <h1>
             }
             
             checkSelection();
+        } catch (error) {
+            console.error('Error in selectTrigram:', error);
         }
+    }
 
-        window.selectStem = function(btn) {
+    window.selectStem = function(btn) {
+        try {
             const value = parseInt(btn.getAttribute('data-value'));
             
             if (btn.classList.contains('selected')) {
@@ -646,18 +694,26 @@ System: <h1>
             }
             
             checkSelection();
+        } catch (error) {
+            console.error('Error in selectStem:', error);
         }
+    }
 
-        function checkSelection() {
+    function checkSelection() {
+        try {
             const divineBtn = document.getElementById('divineBtn');
             if (selectedTrigram && selectedStem) {
                 divineBtn.disabled = false;
             } else {
                 divineBtn.disabled = true;
             }
+        } catch (error) {
+            console.error('Error in checkSelection:', error);
         }
+    }
 
-        window.divineTrigramStem = function() {
+    window.divineTrigramStem = function() {
+        try {
             if (!selectedTrigram || !selectedStem) return alert('Please select both a trigram and a stem!');
 
             const lowerTrigram = selectedTrigram;
@@ -697,9 +753,13 @@ System: <h1>
             `;
 
             showRelevant(kingWen);
+        } catch (error) {
+            console.error('Error in divineTrigramStem:', error);
         }
+    }
 
-        window.showRelevant = function(kingWen) {
+    window.showRelevant = function(kingWen) {
+        try {
             const inverse = 65 - kingWen;
             const related = [kingWen];
             if (inverse > 0 && inverse <= 64 && inverse !== kingWen) related.push(inverse);
@@ -728,18 +788,30 @@ System: <h1>
             });
             
             document.getElementById('relevantSection').style.display = 'block';
+        } catch (error) {
+            console.error('Error in showRelevant:', error);
         }
+    }
 
-        window.prefillJournal = function(kingWen, movingLine) {
+    window.prefillJournal = function(kingWen, movingLine) {
+        try {
             const hex = `${kingWen}: ${names[kingWen - 1]} ${hexagrams[kingWen - 1]} (Line ${movingLine})`;
             document.getElementById('hex').value = hex;
             document.getElementById('question').focus();
             window.scrollTo({ top: document.getElementById('question').offsetTop - 100, behavior: 'smooth' });
+        } catch (error) {
+            console.error('Error in prefillJournal:', error);
         }
+    }
 
-        // Initialize
+    // Initialize
+    try {
+        console.log('Initializing application...');
         renderTrigrams();
         displayJournal();
-    </script>
-</body>
+        console.log('Initialization complete');
+    } catch (error) {
+        console.error('Initialization error:', error);
+    }
+</script>
 </html>
