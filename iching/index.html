@@ -588,9 +588,21 @@
 
         // Reverse hexagram (upside down) - swap upper and lower trigrams
         function getReverseHexagram(lowerTrigram, upperTrigram) {
-            return iChingTable.getHexagram(upperTrigram, lowerTrigram);
+            const lowerBinary = trigrams[lowerTrigram].binary;
+            const upperBinary = trigrams[upperTrigram].binary;
+            const hexBinary = upperBinary + lowerBinary;
+            
+            // Reverse the entire hexagram (turn upside down)
+            const reversed = hexBinary.split('').reverse().join('');
+            
+            const newUpperBinary = reversed.substring(0, 3);
+            const newLowerBinary = reversed.substring(3, 6);
+            
+            const newUpper = getTrigramFromBinary(newUpperBinary);
+            const newLower = getTrigramFromBinary(newLowerBinary);
+            
+            return iChingTable.getHexagram(newLower, newUpper);
         }
-
         // Fu Xi sequence (Earlier Heaven)
         const fuxiSequence = [1, 5, 2, 6, 3, 7, 4, 8];
 
