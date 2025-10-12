@@ -46,7 +46,11 @@
         .i-ching-table td:nth-child(n+5) { text-align: center; }
         
         .i-ching-table tbody tr:nth-child(even) { background: #f3f4f6; }
-        .i-ching-table tbody tr:hover { background: #f9fafb; }
+        .i-ching-table tbody tr:hover { background: #f9fafb; cursor: pointer; }
+        .i-ching-table tbody tr.highlighted { 
+            background: #dbeafe !important; 
+            border-left: 4px solid #3b82f6;
+        }
         
         .selection-btn {
             padding: 8px 10px;
@@ -127,6 +131,51 @@
             font-size: 0.75rem;
             font-weight: 600;
             color: #4b5563;
+        }
+        
+        /* Responsive sizing - smaller on larger screens */
+        @media (min-width: 768px) {
+            .selection-btn {
+                padding: 6px 8px;
+            }
+            .trigram-symbol {
+                font-size: 1.75rem;
+            }
+            .trigram-english {
+                font-size: 0.7rem;
+            }
+            .trigram-chinese {
+                font-size: 0.6rem;
+            }
+            .compact-btn {
+                padding: 8px 6px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .selection-btn {
+                padding: 5px 6px;
+            }
+            .trigram-symbol {
+                font-size: 1.5rem;
+            }
+            .trigram-english {
+                font-size: 0.65rem;
+            }
+            .trigram-chinese {
+                font-size: 0.55rem;
+            }
+            .trigram-number {
+                font-size: 0.7rem;
+                top: 3px;
+                left: 5px;
+            }
+            .compact-btn {
+                padding: 7px 5px;
+            }
+            .compact-time {
+                font-size: 0.7rem;
+            }
         }
         
         .hexagram-display {
@@ -352,6 +401,13 @@
             </a>
         </div>
 
+        <!-- Question Section -->
+        <div class="section-card">
+            <h2 class="section-title">🙏 Your Question</h2>
+            <p class="text-gray-600 mb-4">Focus on your question before consulting the oracle.</p>
+            <input type="text" id="currentQuestion" class="input-field" placeholder="What guidance do I need today?">
+        </div>
+
         <!-- Divination Section -->
         <div class="section-card">
             <h2 class="section-title">🎲 Divination</h2>
@@ -464,28 +520,12 @@
 
         <!-- Journal Section -->
         <div class="section-card">
-            <h2 class="section-title">📓 Journal</h2>
+            <h2 class="section-title">📓 Journal Archive</h2>
+            <p class="text-gray-600 mb-4">Your past divinations and insights.</p>
             
-            <form onsubmit="addEntry(); return false;" class="mb-8">
-                <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Question</label>
-                        <input type="text" id="question" class="input-field" placeholder="What guidance do I need today?" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Hexagram</label>
-                        <input type="text" id="hex" class="input-field" placeholder="e.g., 1: The Creative ䷀" required>
-                    </div>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Results & Notes</label>
-                    <textarea id="notes" class="input-field" placeholder="Record your interpretation, changing lines, and insights..."></textarea>
-                </div>
-                <div class="flex gap-3">
-                    <button type="submit" class="btn-success">💾 Save Entry</button>
-                    <button type="button" onclick="exportJournal()" class="btn-secondary">📥 Export to CSV</button>
-                </div>
-            </form>
+            <div class="flex gap-3 mb-6">
+                <button type="button" onclick="exportJournal()" class="btn-secondary">📥 Export to CSV</button>
+            </div>
             
             <div class="overflow-x-auto">
                 <table class="i-ching-table">
@@ -591,16 +631,16 @@
             return iChingTable.getHexagram(newLower, newUpper);
         }
 
+        // Calculate nuclear/mutual hexagram (inner hexagram)
         function getNuclearHexagram(lowerTrigram, upperTrigram) {
             const lowerBinary = trigrams[lowerTrigram].binary;
             const upperBinary = trigrams[upperTrigram].binary;
             const hexBinary = upperBinary + lowerBinary;
             
-            // Lower nuclear: lines 2,3,4 (reading line 4, then 3, then 2 = top to bottom)
-            const newLowerBinary = hexBinary[2] + hexBinary[3] + hexBinary[4];
-            
-            // Upper nuclear: lines 3,4,5 (reading line 5, then 4, then 3 = top to bottom)
-            const newUpperBinary = hexBinary[1] + hexBinary[2] + hexBinary[3];
+            // Lines 2,3,4 become lower trigram; lines 3,4,5 become upper trigram
+            // hexBinary is indexed from top: [0]=line6, [1]=line5, [2]=line4, [3]=line3, [4]=line2, [5]=line1
+            const newLowerBinary = hexBinary[3] + hexBinary[2] + hexBinary[1]; // lines 3,4,5 from bottom
+            const newUpperBinary = hexBinary[4] + hexBinary[3] + hexBinary[2]; // lines 2,3,4 from bottom
             
             const newUpper = getTrigramFromBinary(newUpperBinary);
             const newLower = getTrigramFromBinary(newLowerBinary);
@@ -608,21 +648,9 @@
             return iChingTable.getHexagram(newLower, newUpper);
         }
 
+        // Reverse hexagram (upside down) - swap upper and lower trigrams
         function getReverseHexagram(lowerTrigram, upperTrigram) {
-            const lowerBinary = trigrams[lowerTrigram].binary;
-            const upperBinary = trigrams[upperTrigram].binary;
-            const hexBinary = upperBinary + lowerBinary;
-            
-            // Reverse the entire hexagram (turn upside down)
-            const reversed = hexBinary.split('').reverse().join('');
-            
-            const newUpperBinary = reversed.substring(0, 3);
-            const newLowerBinary = reversed.substring(3, 6);
-            
-            const newUpper = getTrigramFromBinary(newUpperBinary);
-            const newLower = getTrigramFromBinary(newLowerBinary);
-            
-            return iChingTable.getHexagram(newLower, newUpper);
+            return iChingTable.getHexagram(upperTrigram, lowerTrigram);
         }
 
         // Fu Xi sequence (Earlier Heaven)
@@ -648,9 +676,7 @@
             grid.innerHTML = '';
 
             sequence.forEach((trigramValue, index) => {
-                const row = Math.floor(index / 2);
-                const col = index % 2;
-                const displayNumber = col === 0 ? row + 1 : row + 5;
+                const displayNumber = index + 1; // Display 1-8
                 const trigram = trigrams[trigramValue];
                 const isSelected = selectedTrigram === trigramValue ? 'selected' : '';
                 
@@ -680,34 +706,27 @@
         // Journal data and functions
         let journal = JSON.parse(localStorage.getItem('ichingJournal')) || [];
 
-        window.addEntry = function() {
-            const question = document.getElementById('question').value;
-            const hex = document.getElementById('hex').value;
-            const notes = document.getElementById('notes').value;
-            if (!question || !hex) return alert('Please add question and hexagram!');
-            
-            const entry = { id: Date.now(), date: new Date().toISOString().split('T')[0], question, hex, notes };
-            journal.unshift(entry);
-            localStorage.setItem('ichingJournal', JSON.stringify(journal));
-            displayJournal();
-            clearForm();
-        }
-
         function displayJournal() {
             const tbody = document.getElementById('journalBody');
             tbody.innerHTML = '';
             if (journal.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#6b7280;">No entries yet. Start by logging your first divination above.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#6b7280;">No entries yet. Start by entering a question and performing a divination.</td></tr>';
                 return;
             }
             journal.forEach(entry => {
                 const row = tbody.insertRow();
+                row.onclick = function() {
+                    // Remove highlight from all rows
+                    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('highlighted'));
+                    // Add highlight to clicked row
+                    this.classList.add('highlighted');
+                };
                 row.innerHTML = `
                     <td>${entry.date}</td>
                     <td>${entry.question}</td>
                     <td>${entry.hex}</td>
                     <td>${entry.notes || '-'}</td>
-                    <td style="text-align:center;"><button onclick="deleteEntry(${entry.id})" class="btn-danger">Delete</button></td>
+                    <td style="text-align:center;"><button onclick="event.stopPropagation(); deleteEntry(${entry.id})" class="btn-danger">Delete</button></td>
                 `;
             });
         }
@@ -717,12 +736,6 @@
             journal = journal.filter(e => e.id !== id);
             localStorage.setItem('ichingJournal', JSON.stringify(journal));
             displayJournal();
-        }
-
-        function clearForm() {
-            document.getElementById('question').value = '';
-            document.getElementById('hex').value = '';
-            document.getElementById('notes').value = '';
         }
 
         window.exportJournal = function() {
@@ -881,10 +894,34 @@
         }
 
         window.prefillJournal = function(kingWen, transformedNum, movingLine) {
+            const question = document.getElementById('currentQuestion').value;
+            if (!question.trim()) {
+                alert('Please enter your question first!');
+                document.getElementById('currentQuestion').focus();
+                return;
+            }
+            
+            const notes = prompt('Add your notes and interpretation (optional):');
+            if (notes === null) return; // User cancelled
+            
             const hex = `#${kingWen} ${hexagrams[kingWen - 1]} → #${transformedNum} ${hexagrams[transformedNum - 1]} (Line ${movingLine})`;
-            document.getElementById('hex').value = hex;
-            document.getElementById('question').focus();
-            window.scrollTo({ top: document.getElementById('question').offsetTop - 100, behavior: 'smooth' });
+            
+            const entry = { 
+                id: Date.now(), 
+                date: new Date().toISOString().split('T')[0], 
+                question, 
+                hex, 
+                notes: notes || '' 
+            };
+            
+            journal.unshift(entry);
+            localStorage.setItem('ichingJournal', JSON.stringify(journal));
+            displayJournal();
+            
+            // Clear the question for next reading
+            document.getElementById('currentQuestion').value = '';
+            
+            alert('Entry saved to journal!');
         }
 
         // Initialize
