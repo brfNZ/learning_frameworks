@@ -312,7 +312,8 @@
     <div class="max-w-7xl mx-auto">
         <!-- Header -->
         <div class="text-center mb-10">
-            <h1 class="text-5xl font-bold text-gray-800 mb-4">☯ I Ching Divination</h1>
+            <h1 class="text-5xl font-bold text-gray-800 mb-4">☯ I Ching Divination</亚博
+System: <h1>
             <p class="text-xl text-gray-600 mb-6">Consult the Oracle and Record Your Insights</p>
             <a href="reference.html" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition shadow-md hover:shadow-lg">
                 📚 View Reference Table
@@ -430,6 +431,9 @@
                                 <th><img src="covers/taoist-iching.png" alt="Taoist I Ching" class="book-cover">Taoist I Ching</th>
                                 <th><img src="covers/tao-organisation.png" alt="Tao of Organisation" class="book-cover">Tao of Organisation</th>
                                 <th><img src="covers/astrology-iching.png" alt="Astrology of I Ching" class="book-cover">Astrology of I Ching</th>
+                                <th><img src="covers/book10.png" alt="Book 10" class="book-cover">Book 10</th>
+                                <th><img src="covers/book11.png" alt="Book 11" class="book-cover">Book 11</th>
+                                <th><img src="covers/book12.png" alt="Book 12" class="book-cover">Book 12</th>
                             </tr>
                         </thead>
                         <tbody id="relevantTableBody"></tbody>
@@ -479,279 +483,263 @@
             </div>
         </div>
     </div>
-<script type="module">
-    // Import shared data
-    import { hexagrams, names, book1, book2, book3, book4, book5, book6, book7, book8, book9 } from './data.js';
 
-    // I Ching Table class for hexagram lookup
-    class IChingTable {
-        constructor() {
-            this.table = [
-                [1, 43, 14, 34, 9, 5, 26, 11],    // lower trigram 1
-                [10, 58, 38, 54, 61, 60, 41, 19], // lower trigram 2
-                [13, 49, 30, 55, 37, 63, 22, 36], // lower trigram 3
-                [25, 17, 21, 51, 42, 3, 27, 24],  // lower trigram 4
-                [44, 28, 50, 32, 57, 48, 18, 46], // lower trigram 5
-                [6, 47, 64, 40, 59, 29, 4, 7],    // lower trigram 6
-                [33, 31, 56, 62, 53, 39, 52, 15], // lower trigram 7
-                [12, 45, 35, 16, 20, 8, 23, 2]    // lower trigram 8
-            ];
+    <script type="module">
+        // Import shared data and IChingTable
+        import { hexagrams, names, book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12, IChingTable } from './data.js';
+
+        let selectedTrigram = null;
+        let selectedStem = null;
+        let currentSequence = 'fuxi'; // 'fuxi' or 'kingwen'
+
+        // Trigram data
+        const trigrams = {
+            1: { symbol: '☰', english: 'Heaven', chinese: 'Qian' },
+            2: { symbol: '☱', english: 'Lake', chinese: 'Dui' },
+            3: { symbol: '☲', english: 'Fire', chinese: 'Li' },
+            4: { symbol: '☳', english: 'Thunder', chinese: 'Zhen' },
+            5: { symbol: '☴', english: 'Wind', chinese: 'Xun' },
+            6: { symbol: '☵', english: 'Water', chinese: 'Kan' },
+            7: { symbol: '☶', english: 'Mountain', chinese: 'Gen' },
+            8: { symbol: '☷', english: 'Earth', chinese: 'Kun' }
+        };
+
+        // Fu Xi sequence (Earlier Heaven)
+        const fuxiSequence = [1, 5, 2, 6, 3, 7, 4, 8];
+
+        // King Wen sequence (Later Heaven)
+        const kingwenSequence = [6, 8, 4, 5, 1, 2, 7, 3];
+
+        // Stem times for display
+        const stemTimes = {
+            1: '11pm-1am', 2: '1am-3am', 3: '3am-5am', 4: '5am-7am', 
+            5: '7am-9am', 6: '9am-11am', 7: '11am-1pm', 8: '1pm-3pm',
+            9: '3pm-5pm', 10: '5pm-7pm', 11: '7pm-9pm', 12: '9pm-11pm'
+        };
+
+        // Initialize IChingTable
+        const iChingTable = new IChingTable();
+
+        // Render trigrams based on current sequence
+        function renderTrigrams() {
+            const sequence = currentSequence === 'fuxi' ? fuxiSequence : kingwenSequence;
+            const grid = document.getElementById('trigramGrid');
+            grid.innerHTML = '';
+
+            sequence.forEach((trigramValue, index) => {
+                const displayNumber = index + 1; // Display 1-8
+                const trigram = trigrams[trigramValue];
+                const isSelected = selectedTrigram === trigramValue ? 'selected' : '';
+                
+                const btn = document.createElement('div');
+                btn.className = `selection-btn ${isSelected}`;
+                btn.setAttribute('data-value', trigramValue);
+                btn.setAttribute('data-type', 'trigram');
+                btn.onclick = function() { selectTrigram(this); };
+                btn.innerHTML = `
+                    <div class="trigram-number">${displayNumber}</div>
+                    <div class="trigram-symbol">${trigram.symbol}</div>
+                    <div class="trigram-english">${trigram.english}</div>
+                    <div class="trigram-chinese">${trigram.chinese}</div>
+                `;
+                grid.appendChild(btn);
+            });
         }
-        
-        getHexagram(lowerTrigram, upperTrigram) {
-            return this.table[lowerTrigram - 1][upperTrigram - 1];
+
+        // Toggle sequence
+        window.toggleSequence = function() {
+            currentSequence = currentSequence === 'fuxi' ? 'kingwen' : 'fuxi';
+            document.getElementById('sequenceLabel').textContent = 
+                currentSequence === 'fuxi' ? 'Fu Xi Sequence' : 'King Wen Sequence';
+            renderTrigrams();
         }
-    }
 
-    let selectedTrigram = null;
-    let selectedStem = null;
-    let currentSequence = 'fuxi'; // 'fuxi' or 'kingwen'
+        // Journal data and functions
+        let journal = JSON.parse(localStorage.getItem('ichingJournal')) || [];
 
-    // Trigram data
-    const trigrams = {
-        1: { symbol: '☰', english: 'Heaven', chinese: 'Qian' },
-        2: { symbol: '☱', english: 'Lake', chinese: 'Dui' },
-        3: { symbol: '☲', english: 'Fire', chinese: 'Li' },
-        4: { symbol: '☳', english: 'Thunder', chinese: 'Zhen' },
-        5: { symbol: '☴', english: 'Wind', chinese: 'Xun' },
-        6: { symbol: '☵', english: 'Water', chinese: 'Kan' },
-        7: { symbol: '☶', english: 'Mountain', chinese: 'Gen' },
-        8: { symbol: '☷', english: 'Earth', chinese: 'Kun' }
-    };
-
-    // Fu Xi sequence (Earlier Heaven)
-    const fuxiSequence = [1, 5, 2, 6, 3, 7, 4, 8];
-
-    // King Wen sequence (Later Heaven)
-    const kingwenSequence = [6, 8, 4, 5, 1, 2, 7, 3];
-
-    // Stem times for display
-    const stemTimes = {
-        1: '11pm-1am', 2: '1am-3am', 3: '3am-5am', 4: '5am-7am', 
-        5: '7am-9am', 6: '9am-11am', 7: '11am-1pm', 8: '1pm-3pm',
-        9: '3pm-5pm', 10: '5pm-7pm', 11: '7pm-9pm', 12: '9pm-11pm'
-    };
-
-    // Initialize IChingTable
-    const iChingTable = new IChingTable();
-
-    // Render trigrams based on current sequence
-    function renderTrigrams() {
-        const sequence = currentSequence === 'fuxi' ? fuxiSequence : kingwenSequence;
-        const grid = document.getElementById('trigramGrid');
-        grid.innerHTML = '';
-
-        sequence.forEach((trigramValue, index) => {
-            const displayNumber = index + 1; // Display 1-8
-            const trigram = trigrams[trigramValue];
-            const isSelected = selectedTrigram === trigramValue ? 'selected' : '';
+        window.addEntry = function() {
+            const question = document.getElementById('question').value;
+            const hex = document.getElementById('hex').value;
+            const notes = document.getElementById('notes').value;
+            if (!question || !hex) return alert('Please add question and hexagram!');
             
-            const btn = document.createElement('div');
-            btn.className = `selection-btn ${isSelected}`;
-            btn.setAttribute('data-value', trigramValue);
-            btn.setAttribute('data-type', 'trigram');
-            btn.onclick = function() { selectTrigram(this); };
-            btn.innerHTML = `
-                <div class="trigram-number">${displayNumber}</div>
-                <div class="trigram-symbol">${trigram.symbol}</div>
-                <div class="trigram-english">${trigram.english}</div>
-                <div class="trigram-chinese">${trigram.chinese}</div>
-            `;
-            grid.appendChild(btn);
-        });
-    }
+            const entry = { id: Date.now(), date: new Date().toISOString().split('T')[0], question, hex, notes };
+            journal.unshift(entry);
+            localStorage.setItem('ichingJournal', JSON.stringify(journal));
+            displayJournal();
+            clearForm();
+        }
 
-    // Toggle sequence
-    window.toggleSequence = function() {
-        currentSequence = currentSequence === 'fuxi' ? 'kingwen' : 'fuxi';
-        document.getElementById('sequenceLabel').textContent = 
-            currentSequence === 'fuxi' ? 'Fu Xi Sequence' : 'King Wen Sequence';
+        function displayJournal() {
+            const tbody = document.getElementById('journalBody');
+            tbody.innerHTML = '';
+            if (journal.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#6b7280;">No entries yet. Start by logging your first divination above.</td></tr>';
+                return;
+            }
+            journal.forEach(entry => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${entry.date}</td>
+                    <td>${entry.question}</td>
+                    <td>${entry.hex}</td>
+                    <td>${entry.notes || '-'}</td>
+                    <td style="text-align:center;"><button onclick="deleteEntry(${entry.id})" class="btn-danger">Delete</button></td>
+                `;
+            });
+        }
+
+        window.deleteEntry = function(id) {
+            if (!confirm('Delete this journal entry?')) return;
+            journal = journal.filter(e => e.id !== id);
+            localStorage.setItem('ichingJournal', JSON.stringify(journal));
+            displayJournal();
+        }
+
+        function clearForm() {
+            document.getElementById('question').value = '';
+            document.getElementById('hex').value = '';
+            document.getElementById('notes').value = '';
+        }
+
+        window.exportJournal = function() {
+            if (journal.length === 0) {
+                alert('No entries to export!');
+                return;
+            }
+            const csv = ['Date,Question,Hexagram,Notes'].concat(journal.map(e => `${e.date},"${e.question}","${e.hex}","${e.notes || ''}"`)).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'iching-journal.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Divination functions with toggle behavior
+        window.selectTrigram = function(btn) {
+            const value = parseInt(btn.getAttribute('data-value'));
+            
+            if (btn.classList.contains('selected')) {
+                btn.classList.remove('selected');
+                selectedTrigram = null;
+            } else {
+                document.querySelectorAll('.selection-btn[data-type="trigram"]').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedTrigram = value;
+            }
+            
+            checkSelection();
+        }
+
+        window.selectStem = function(btn) {
+            const value = parseInt(btn.getAttribute('data-value'));
+            
+            if (btn.classList.contains('selected')) {
+                btn.classList.remove('selected');
+                selectedStem = null;
+            } else {
+                document.querySelectorAll('.selection-btn[data-type="stem"]').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedStem = value;
+            }
+            
+            checkSelection();
+        }
+
+        function checkSelection() {
+            const divineBtn = document.getElementById('divineBtn');
+            if (selectedTrigram && selectedStem) {
+                divineBtn.disabled = false;
+            } else {
+                divineBtn.disabled = true;
+            }
+        }
+
+        window.divineTrigramStem = function() {
+            if (!selectedTrigram || !selectedStem) return alert('Please select both a trigram and a stem!');
+
+            const lowerTrigram = selectedTrigram;
+            const sum = lowerTrigram + selectedStem;
+            let upperTrigram = sum % 8;
+            if (upperTrigram === 0) upperTrigram = 8;
+            let movingLine = sum % 6 || 6;
+            
+            // Use IChingTable to get the hexagram number
+            const kingWen = iChingTable.getHexagram(lowerTrigram, upperTrigram);
+            const hexSymbol = hexagrams[kingWen - 1];
+            const hexName = names[kingWen - 1];
+
+            // Get names for display
+            const lowerName = trigrams[lowerTrigram].chinese;
+            const upperName = trigrams[upperTrigram].chinese;
+            const stemTime = stemTimes[selectedStem];
+
+            document.getElementById('divResult').innerHTML = `
+                <div class="result-box">
+                    <h3>✨ Divination Result</h3>
+                    
+                    <div class="calculation-box">
+                        ${lowerName} ${lowerTrigram} + ${stemTime} ${selectedStem} → ${lowerTrigram} + ${selectedStem} = ${sum}
+                    </div>
+                    
+                    <p><strong>Lower Trigram (Bottom):</strong> ${lowerName} (${lowerTrigram})</p>
+                    <p><strong>Upper Trigram (Top):</strong> ${upperName} (${upperTrigram})</p>
+                    <p><strong>Sum:</strong> ${sum} (${sum} mod 8 = ${upperTrigram})</p>
+                    <p><strong>Hexagram:</strong> #${kingWen} ${hexSymbol} - ${hexName}</p>
+                    <p><strong>Moving Line:</strong> ${movingLine} (${sum} mod 6 = ${movingLine})</p>
+                    <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
+                        <button onclick="showRelevant(${kingWen})" class="btn-info">📖 Show Related Hexagrams</button>
+                        <button onclick="prefillJournal(${kingWen}, ${movingLine})" class="btn-success">📝 Add to Journal</button>
+                    </div>
+                </div>
+            `;
+
+            showRelevant(kingWen);
+        }
+
+        window.showRelevant = function(kingWen) {
+            const inverse = 65 - kingWen;
+            const related = [kingWen];
+            if (inverse > 0 && inverse <= 64 && inverse !== kingWen) related.push(inverse);
+
+            const tbody = document.getElementById('relevantTableBody');
+            tbody.innerHTML = '';
+            related.forEach(n => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${n}</td>
+                    <td>${hexagrams[n - 1]}</td>
+                    <td>${names[n - 1]}</td>
+                    <td>${book1[n - 1] || '-'}</td>
+                    <td>${book2[n - 1] || '-'}</td>
+                    <td>${book3[n - 1] || '-'}</td>
+                    <td>${book4[n - 1] || '-'}</td>
+                    <td>${book5[n - 1] || '-'}</td>
+                    <td>${book6[n - 1] || '-'}</td>
+                    <td>${book7[n - 1] || '-'}</td>
+                    <td>${book8[n - 1] || '-'}</td>
+                    <td>${book9[n - 1] || '-'}</td>
+                    <td>${book10[n - 1] || '-'}</td>
+                    <td>${book11[n - 1] || '-'}</td>
+                    <td>${book12[n - 1] || '-'}</td>
+                `;
+            });
+            
+            document.getElementById('relevantSection').style.display = 'block';
+        }
+
+        window.prefillJournal = function(kingWen, movingLine) {
+            const hex = `${kingWen}: ${names[kingWen - 1]} ${hexagrams[kingWen - 1]} (Line ${movingLine})`;
+            document.getElementById('hex').value = hex;
+            document.getElementById('question').focus();
+            window.scrollTo({ top: document.getElementById('question').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        // Initialize
         renderTrigrams();
-    }
-
-    // Journal data and functions
-    let journal = JSON.parse(localStorage.getItem('ichingJournal')) || [];
-
-    window.addEntry = function() {
-        const question = document.getElementById('question').value;
-        const hex = document.getElementById('hex').value;
-        const notes = document.getElementById('notes').value;
-        if (!question || !hex) return alert('Please add question and hexagram!');
-        
-        const entry = { id: Date.now(), date: new Date().toISOString().split('T')[0], question, hex, notes };
-        journal.unshift(entry);
-        localStorage.setItem('ichingJournal', JSON.stringify(journal));
         displayJournal();
-        clearForm();
-    }
-
-    function displayJournal() {
-        const tbody = document.getElementById('journalBody');
-        tbody.innerHTML = '';
-        if (journal.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#6b7280;">No entries yet. Start by logging your first divination above.</td></tr>';
-            return;
-        }
-        journal.forEach(entry => {
-            const row = tbody.insertRow();
-            row.innerHTML = `
-                <td>${entry.date}</td>
-                <td>${entry.question}</td>
-                <td>${entry.hex}</td>
-                <td>${entry.notes || '-'}</td>
-                <td style="text-align:center;"><button onclick="deleteEntry(${entry.id})" class="btn-danger">Delete</button></td>
-            `;
-        });
-    }
-
-    window.deleteEntry = function(id) {
-        if (!confirm('Delete this journal entry?')) return;
-        journal = journal.filter(e => e.id !== id);
-        localStorage.setItem('ichingJournal', JSON.stringify(journal));
-        displayJournal();
-    }
-
-    function clearForm() {
-        document.getElementById('question').value = '';
-        document.getElementById('hex').value = '';
-        document.getElementById('notes').value = '';
-    }
-
-    window.exportJournal = function() {
-        if (journal.length === 0) {
-            alert('No entries to export!');
-            return;
-        }
-        const csv = ['Date,Question,Hexagram,Notes'].concat(journal.map(e => `${e.date},"${e.question}","${e.hex}","${e.notes || ''}"`)).join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'iching-journal.csv';
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-
-    // Divination functions with toggle behavior
-    window.selectTrigram = function(btn) {
-        const value = parseInt(btn.getAttribute('data-value'));
-        
-        if (btn.classList.contains('selected')) {
-            btn.classList.remove('selected');
-            selectedTrigram = null;
-        } else {
-            document.querySelectorAll('.selection-btn[data-type="trigram"]').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedTrigram = value;
-        }
-        
-        checkSelection();
-    }
-
-    window.selectStem = function(btn) {
-        const value = parseInt(btn.getAttribute('data-value'));
-        
-        if (btn.classList.contains('selected')) {
-            btn.classList.remove('selected');
-            selectedStem = null;
-        } else {
-            document.querySelectorAll('.selection-btn[data-type="stem"]').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedStem = value;
-        }
-        
-        checkSelection();
-    }
-
-    function checkSelection() {
-        const divineBtn = document.getElementById('divineBtn');
-        if (selectedTrigram && selectedStem) {
-            divineBtn.disabled = false;
-        } else {
-            divineBtn.disabled = true;
-        }
-    }
-
-    window.divineTrigramStem = function() {
-        if (!selectedTrigram || !selectedStem) return alert('Please select both a trigram and a stem!');
-
-        const lowerTrigram = selectedTrigram;
-        const sum = lowerTrigram + selectedStem;
-        let upperTrigram = sum % 8;
-        if (upperTrigram === 0) upperTrigram = 8;
-        let movingLine = sum % 6 || 6;
-        
-        // Use IChingTable to get the hexagram number
-        const kingWen = iChingTable.getHexagram(lowerTrigram, upperTrigram);
-        const hexSymbol = hexagrams[kingWen - 1];
-        const hexName = names[kingWen - 1];
-
-        // Get names for display
-        const lowerName = trigrams[lowerTrigram].chinese;
-        const upperName = trigrams[upperTrigram].chinese;
-        const stemTime = stemTimes[selectedStem];
-
-        document.getElementById('divResult').innerHTML = `
-            <div class="result-box">
-                <h3>✨ Divination Result</h3>
-                
-                <div class="calculation-box">
-                    ${lowerName} ${lowerTrigram} + ${stemTime} ${selectedStem} → ${lowerTrigram} + ${selectedStem} = ${sum}
-                </div>
-                
-                <p><strong>Lower Trigram (Bottom):</strong> ${lowerName} (${lowerTrigram})</p>
-                <p><strong>Upper Trigram (Top):</strong> ${upperName} (${upperTrigram})</p>
-                <p><strong>Sum:</strong> ${sum} (${sum} mod 8 = ${upperTrigram})</p>
-                <p><strong>Hexagram:</strong> #${kingWen} ${hexSymbol} - ${hexName}</p>
-                <p><strong>Moving Line:</strong> ${movingLine} (${sum} mod 6 = ${movingLine})</p>
-                <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
-                    <button onclick="showRelevant(${kingWen})" class="btn-info">📖 Show Related Hexagrams</button>
-                    <button onclick="prefillJournal(${kingWen}, ${movingLine})" class="btn-success">📝 Add to Journal</button>
-                </div>
-            </div>
-        `;
-
-        showRelevant(kingWen);
-    }
-
-    window.showRelevant = function(kingWen) {
-        const inverse = 65 - kingWen;
-        const related = [kingWen];
-        if (inverse > 0 && inverse <= 64 && inverse !== kingWen) related.push(inverse);
-
-        const tbody = document.getElementById('relevantTableBody');
-        tbody.innerHTML = '';
-        related.forEach(n => {
-            const row = tbody.insertRow();
-            row.innerHTML = `
-                <td>${n}</td>
-                <td>${hexagrams[n - 1]}</td>
-                <td>${names[n - 1]}</td>
-                <td>${book1[n - 1] || '-'}</td>
-                <td>${book2[n - 1] || '-'}</td>
-                <td>${book3[n - 1] || '-'}</td>
-                <td>${book4[n - 1] || '-'}</td>
-                <td>${book5[n - 1] || '-'}</td>
-                <td>${book6[n - 1] || '-'}</td>
-                <td>${book7[n - 1] || '-'}</td>
-                <td>${book8[n - 1] || '-'}</td>
-                <td>${book9[n - 1] || '-'}</td>
-            `;
-        });
-        
-        document.getElementById('relevantSection').style.display = 'block';
-    }
-
-    window.prefillJournal = function(kingWen, movingLine) {
-        const hex = `${kingWen}: ${names[kingWen - 1]} ${hexagrams[kingWen - 1]} (Line ${movingLine})`;
-        document.getElementById('hex').value = hex;
-        document.getElementById('question').focus();
-        window.scrollTo({ top: document.getElementById('question').offsetTop - 100, behavior: 'smooth' });
-    }
-
-    // Initialize
-    renderTrigrams();
-    displayJournal();
-</script>
+    </script>
 </body>
 </html>
