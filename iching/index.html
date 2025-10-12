@@ -520,8 +520,31 @@
 
         <!-- Journal Section -->
         <div class="section-card">
-            <h2 class="section-title">📓 Journal Archive</h2>
-            <p class="text-gray-600 mb-4">Your past divinations and insights.</p>
+            <h2 class="section-title">📓 Journal Entry</h2>
+            <p class="text-gray-600 mb-4">Review and save your divination.</p>
+            
+            <form onsubmit="addEntry(); return false;" class="mb-8">
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Question</label>
+                        <input type="text" id="journalQuestion" class="input-field" placeholder="Question will auto-fill from above" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Hexagram</label>
+                        <input type="text" id="hex" class="input-field" placeholder="Hexagram will auto-fill" required>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Notes & Interpretation</label>
+                    <textarea id="notes" class="input-field" placeholder="Add your insights, interpretation, and reflections..."></textarea>
+                </div>
+                <div class="flex gap-3">
+                    <button type="submit" class="btn-success">💾 Save to Journal</button>
+                    <button type="button" onclick="clearJournalForm()" class="btn-secondary">Clear Form</button>
+                </div>
+            </form>
+            
+            <h3 class="section-title" style="font-size: 1.25rem; margin-top: 32px;">Past Entries</h3>
             
             <div class="flex gap-3 mb-6">
                 <button type="button" onclick="exportJournal()" class="btn-secondary">📥 Export to CSV</button>
@@ -705,6 +728,26 @@
 
         // Journal data and functions
         let journal = JSON.parse(localStorage.getItem('ichingJournal')) || [];
+
+        window.addEntry = function() {
+            const question = document.getElementById('journalQuestion').value;
+            const hex = document.getElementById('hex').value;
+            const notes = document.getElementById('notes').value;
+            if (!question || !hex) return alert('Please add question and hexagram!');
+            
+            const entry = { id: Date.now(), date: new Date().toISOString().split('T')[0], question, hex, notes };
+            journal.unshift(entry);
+            localStorage.setItem('ichingJournal', JSON.stringify(journal));
+            displayJournal();
+            clearJournalForm();
+            alert('Entry saved to journal!');
+        }
+
+        window.clearJournalForm = function() {
+            document.getElementById('journalQuestion').value = '';
+            document.getElementById('hex').value = '';
+            document.getElementById('notes').value = '';
+        }
 
         function displayJournal() {
             const tbody = document.getElementById('journalBody');
@@ -901,27 +944,15 @@
                 return;
             }
             
-            const notes = prompt('Add your notes and interpretation (optional):');
-            if (notes === null) return; // User cancelled
-            
             const hex = `#${kingWen} ${hexagrams[kingWen - 1]} → #${transformedNum} ${hexagrams[transformedNum - 1]} (Line ${movingLine})`;
             
-            const entry = { 
-                id: Date.now(), 
-                date: new Date().toISOString().split('T')[0], 
-                question, 
-                hex, 
-                notes: notes || '' 
-            };
+            // Auto-fill the journal form
+            document.getElementById('journalQuestion').value = question;
+            document.getElementById('hex').value = hex;
+            document.getElementById('notes').focus();
             
-            journal.unshift(entry);
-            localStorage.setItem('ichingJournal', JSON.stringify(journal));
-            displayJournal();
-            
-            // Clear the question for next reading
-            document.getElementById('currentQuestion').value = '';
-            
-            alert('Entry saved to journal!');
+            // Scroll to journal section
+            window.scrollTo({ top: document.querySelector('#journalQuestion').offsetTop - 100, behavior: 'smooth' });
         }
 
         // Initialize
