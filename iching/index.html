@@ -345,65 +345,65 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-3">
                     <div class="selection-btn" data-value="1" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">1</div>
-                        <div class="stem-time">11am-1pm</div>
-                        <div class="stem-chinese">Bing</div>
+                        <div class="stem-time">11pm-1am</div>
+                        <div class="stem-chinese">Geng</div>
                     </div>
                     <div class="selection-btn" data-value="2" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">2</div>
-                        <div class="stem-time">1pm-3pm</div>
-                        <div class="stem-chinese">Ding</div>
+                        <div class="stem-time">1am-3am</div>
+                        <div class="stem-chinese">Xin</div>
                     </div>
                     <div class="selection-btn" data-value="3" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">3</div>
-                        <div class="stem-time">3pm-5pm</div>
-                        <div class="stem-chinese">Wu</div>
+                        <div class="stem-time">3am-5am</div>
+                        <div class="stem-chinese">Ren</div>
                     </div>
                     <div class="selection-btn" data-value="4" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">4</div>
-                        <div class="stem-time">5pm-7pm</div>
-                        <div class="stem-chinese">Ji</div>
+                        <div class="stem-time">5am-7am</div>
+                        <div class="stem-chinese">Gui</div>
                     </div>
                     <div class="selection-btn" data-value="5" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">5</div>
-                        <div class="stem-time">7pm-9pm</div>
-                        <div class="stem-chinese">Geng</div>
+                        <div class="stem-time">7am-9am</div>
+                        <div class="stem-chinese">Jia</div>
                     </div>
                     <div class="selection-btn" data-value="6" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">6</div>
-                        <div class="stem-time">9pm-11pm</div>
-                        <div class="stem-chinese">Xin</div>
+                        <div class="stem-time">9am-11am</div>
+                        <div class="stem-chinese">Yi</div>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
                     <div class="selection-btn" data-value="7" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">7</div>
-                        <div class="stem-time">11pm-1am</div>
-                        <div class="stem-chinese">Geng</div>
+                        <div class="stem-time">11am-1pm</div>
+                        <div class="stem-chinese">Bing</div>
                     </div>
                     <div class="selection-btn" data-value="8" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">8</div>
-                        <div class="stem-time">1am-3am</div>
-                        <div class="stem-chinese">Xin</div>
+                        <div class="stem-time">1pm-3pm</div>
+                        <div class="stem-chinese">Ding</div>
                     </div>
                     <div class="selection-btn" data-value="9" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">9</div>
-                        <div class="stem-time">3am-5am</div>
-                        <div class="stem-chinese">Ren</div>
+                        <div class="stem-time">3pm-5pm</div>
+                        <div class="stem-chinese">Wu</div>
                     </div>
                     <div class="selection-btn" data-value="10" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">10</div>
-                        <div class="stem-time">5am-7am</div>
-                        <div class="stem-chinese">Gui</div>
+                        <div class="stem-time">5pm-7pm</div>
+                        <div class="stem-chinese">Ji</div>
                     </div>
                     <div class="selection-btn" data-value="11" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">11</div>
-                        <div class="stem-time">7am-9am</div>
-                        <div class="stem-chinese">Jia</div>
+                        <div class="stem-time">7pm-9pm</div>
+                        <div class="stem-chinese">Geng</div>
                     </div>
                     <div class="selection-btn" data-value="12" data-type="stem" onclick="selectStem(this)">
                         <div class="stem-number">12</div>
-                        <div class="stem-time">9am-11am</div>
-                        <div class="stem-chinese">Yi</div>
+                        <div class="stem-time">9pm-11pm</div>
+                        <div class="stem-chinese">Xin</div>
                     </div>
                 </div>
             </div>
@@ -558,18 +558,38 @@
             URL.revokeObjectURL(url);
         }
 
-        // Divination functions
+        // Divination functions with toggle behavior
         window.selectTrigram = function(btn) {
-            document.querySelectorAll('.selection-btn[data-type="trigram"]').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedTrigram = parseInt(btn.getAttribute('data-value'));
+            const value = parseInt(btn.getAttribute('data-value'));
+            
+            // Toggle behavior: if already selected, deselect it
+            if (btn.classList.contains('selected')) {
+                btn.classList.remove('selected');
+                selectedTrigram = null;
+            } else {
+                // Remove selection from all other trigram buttons
+                document.querySelectorAll('.selection-btn[data-type="trigram"]').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedTrigram = value;
+            }
+            
             checkSelection();
         }
 
         window.selectStem = function(btn) {
-            document.querySelectorAll('.selection-btn[data-type="stem"]').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedStem = parseInt(btn.getAttribute('data-value'));
+            const value = parseInt(btn.getAttribute('data-value'));
+            
+            // Toggle behavior: if already selected, deselect it
+            if (btn.classList.contains('selected')) {
+                btn.classList.remove('selected');
+                selectedStem = null;
+            } else {
+                // Remove selection from all other stem buttons
+                document.querySelectorAll('.selection-btn[data-type="stem"]').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedStem = value;
+            }
+            
             checkSelection();
         }
 
@@ -613,10 +633,9 @@
 
             showRelevant(kingWen);
 
-            selectedTrigram = null;
-            selectedStem = null;
-            document.getElementById('divineBtn').disabled = true;
-            document.querySelectorAll('.selection-btn').forEach(b => b.classList.remove('selected'));
+            // DON'T clear selections - keep them visible
+            // selectedTrigram and selectedStem remain set
+            // Buttons stay selected so user can see what they chose
         }
 
         window.showRelevant = function(kingWen) {
