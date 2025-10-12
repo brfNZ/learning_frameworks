@@ -614,7 +614,9 @@
             grid.innerHTML = '';
 
             sequence.forEach((trigramValue, index) => {
-                const displayNumber = index + 1; // Display 1-8
+                const row = Math.floor(index / 2);
+                const col = index % 2;
+                const displayNumber = col === 0 ? row + 1 : row + 5;
                 const trigram = trigrams[trigramValue];
                 const isSelected = selectedTrigram === trigramValue ? 'selected' : '';
                 
