@@ -880,38 +880,39 @@
             const upperName = trigrams[upperTrigram].chinese;
             const stemTime = stemTimes[selectedStem];
 
-            document.getElementById('divResult').innerHTML = `
-                <div class="result-box">
-                    <h3>✨ Divination Result</h3>
-                    
-                    <p><strong>Lower Trigram:</strong> ${lowerName} (${selectedTrigram})</p>
-                    <p><strong>Heavenly Stem:</strong> ${stemTime} (${selectedStem})</p>
-                    <p><strong>Sum:</strong> ${selectedTrigram} + ${selectedStem} = ${sum}</p>
-                    <p><strong>Upper Trigram:</strong> ${upperName} (${upperPosition})</p>
-
-                    <div class="hexagram-display">
-                        <div style="text-align: center;">
-                            <div>${hexSymbol}</div>
-                            <div style="font-size: 1rem; margin-top: 8px;">#${kingWen}</div>
-                        </div>
-                        <div class="hex-arrow">→</div>
-                        <div style="text-align: center;">
-                            <div>${transformedSymbol}</div>
-                            <div style="font-size: 1rem; margin-top: 8px;">#${transformedNum}</div>
-                        </div>
+        document.getElementById('divResult').innerHTML = `
+            <div class="result-box">
+                <h3>✨ Divination Result</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                    <div>
+                        <p style="margin: 5px 0;"><strong>Lower:</strong> ${lowerName} (${selectedTrigram})</p>
+                        <p style="margin: 5px 0;"><strong>Upper:</strong> ${upperName} (${upperPosition})</p>
                     </div>
-                    
-                    <p><strong>Present Hexagram:</strong> #${kingWen} ${hexSymbol} - ${hexName}</p>
-                    <p><strong>Moving Line:</strong> ${movingLine}</p>
-                    <p><strong>Future Hexagram:</strong> #${transformedNum} ${transformedSymbol} - ${transformedName}</p>
-                    
-                    <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
-                        <button onclick="showRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine})" class="btn-info">🔗 Show Related Hexagrams</button>
-                        <button onclick="prefillJournal(${kingWen}, ${transformedNum}, ${movingLine})" class="btn-success">📝 Add to Journal</button>
+                    <div>
+                        <p style="margin: 5px 0;"><strong>Stem:</strong> ${stemTime} (${selectedStem})</p>
+                        <p style="margin: 5px 0;"><strong>Sum:</strong> ${sum} → Line ${movingLine} <span style="color: #10b981; font-size: 1.5rem;">●</span></p>
                     </div>
                 </div>
 
-            `;
+                <div class="hexagram-display" style="margin: 16px 0;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 4rem;">${hexSymbol}</div>
+                        <div style="font-size: 0.9rem; font-weight: 600; margin-top: 4px;">#${kingWen} ${hexName}</div>
+                    </div>
+                    <div class="hex-arrow">→</div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 4rem;">${transformedSymbol}</div>
+                        <div style="font-size: 0.9rem; font-weight: 600; margin-top: 4px;">#${transformedNum} ${transformedName}</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap; justify-content: center;">
+                    <button onclick="showRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine})" class="btn-info">🔗 Related Hexagrams</button>
+                    <button onclick="prefillJournal(${kingWen}, ${transformedNum}, ${movingLine})" class="btn-success">📝 Add to Journal</button>
+                </div>
+            </div>
+        `;
 
             showRelevant(lowerTrigram, upperTrigram, movingLine);
         }
