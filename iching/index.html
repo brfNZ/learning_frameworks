@@ -866,6 +866,70 @@
             checkSelection();
         }
 
+        window.divineTrigramStem = function() {
+            if (!selectedTrigram || !selectedStem) return;
+            
+            const sum = selectedTrigram + selectedStem;
+            const upperPosition = sum > 8 ? sum - 8 : sum;
+            const movingLine = sum > 8 ? sum - 8 : sum;
+            
+            // Use natural values for lookup
+            const order = currentSequence === 'fuxi' ? fuxiOrder : kingWenOrder;
+            const lowerTrigram = selectedTrigramNatural;
+            const upperTrigram = order[upperPosition - 1];
+            
+            const kingWen = iChingTable.getHexagram(lowerTrigram, upperTrigram);
+            const hexSymbol = hexagrams[kingWen - 1];
+            const hexName = names[kingWen - 1];
+            
+            const transformedNum = getTransformedHexagram(lowerTrigram, upperTrigram, movingLine);
+            const transformedSymbol = hexagrams[transformedNum - 1];
+            const transformedName = names[transformedNum - 1];
+            
+            const transformedTrigrams = getTransformedTrigrams(lowerTrigram, upperTrigram, movingLine);
+            
+            document.getElementById('divResult').innerHTML = `
+                <div class="result-box">
+                    <h3>✨ Divination Result</h3>
+                    
+                    <!-- Compact Calculation Summary -->
+                    <div style="background: #fff; border: 2px solid #86efac; border-radius: 8px; padding: 12px; margin: 16px 0;">
+                        <p style="margin: 4px 0; font-size: 0.95rem;"><strong>Lower:</strong> ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese}) ${selectedTrigram} + <strong>Stem:</strong> ${selectedStem} = ${sum}</p>
+                        <p style="margin: 4px 0; font-size: 0.95rem;"><strong>Upper:</strong> ${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) ${upperPosition} | <span style="color: #ef4444; font-weight: 700;">Line: ${movingLine}</span></p>
+                    </div>
+                    
+                    <!-- Hexagram Comparison - Horizontal -->
+                    <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; margin: 24px 0;">
+                        
+                        <!-- Present Hexagram -->
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #166534; margin-bottom: 8px;">PRESENT</div>
+                            <div style="font-size: 7rem; line-height: 1; margin: 16px 0;">${hexSymbol}</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; margin: 8px 0;">#${kingWen} ${hexName}</div>
+                            <div style="font-size: 0.9rem; color: #166534;">${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) / ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese})</div>
+                        </div>
+                        
+                        <!-- Arrow -->
+                        <div style="font-size: 3rem; color: #10b981;">→</div>
+                        
+                        <!-- Future Hexagram -->
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #166534; margin-bottom: 8px;">FUTURE</div>
+                            <div style="font-size: 7rem; line-height: 1; margin: 16px 0;">${transformedSymbol}</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; margin: 8px 0;">#${transformedNum} ${transformedName}</div>
+                            <div style="font-size: 0.9rem; color: #166534;">${trigrams[transformedTrigrams.upper].english} (${trigrams[transformedTrigrams.upper].chinese}) / ${trigrams[transformedTrigrams.lower].english} (${trigrams[transformedTrigrams.lower].chinese})</div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; justify-content: center;">
+                        <button onclick="showRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine})" class="btn-info">🔗 Show Related Hexagrams</button>
+                        <button onclick="prefillJournal(${kingWen}, ${transformedNum}, ${movingLine})" class="btn-success">📝 Add to Journal</button>
+                    </div>
+                </div>
+            `;
+        }
+
         function checkSelection() {
             const divineBtn = document.getElementById('divineBtn');
             if (selectedTrigram && selectedStem) {
@@ -874,49 +938,6 @@
                 divineBtn.disabled = true;
             }
         }
-
-        document.getElementById('divResult').innerHTML = `
-            <div class="result-box">
-                <h3>✨ Divination Result</h3>
-                
-                <!-- Compact Calculation Summary -->
-                <div style="background: #fff; border: 2px solid #86efac; border-radius: 8px; padding: 12px; margin: 16px 0;">
-                    <p style="margin: 4px 0; font-size: 0.95rem;"><strong>Lower:</strong> ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese}) ${selectedTrigram} + <strong>Stem:</strong> ${selectedStem} = ${sum}</p>
-                    <p style="margin: 4px 0; font-size: 0.95rem;"><strong>Upper:</strong> ${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) ${upperPosition} | <span style="color: #ef4444; font-weight: 700;">Line: ${movingLine}</span></p>
-                </div>
-                
-                <!-- Hexagram Comparison - Horizontal -->
-                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; margin: 24px 0;">
-                    
-                    <!-- Present Hexagram -->
-                    <div style="text-align: center;">
-                        <div style="font-size: 0.9rem; font-weight: 600; color: #166534; margin-bottom: 8px;">PRESENT</div>
-                        <div style="font-size: 7rem; line-height: 1; margin: 16px 0;">${hexSymbol}</div>
-                        <div style="font-size: 1.1rem; font-weight: 700; margin: 8px 0;">#${kingWen} ${hexName}</div>
-                        <div style="font-size: 0.9rem; color: #166534;">${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) / ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese})</div>
-                    </div>
-                    
-                    <!-- Arrow -->
-                    <div style="font-size: 3rem; color: #10b981;">→</div>
-                    
-                    <!-- Future Hexagram -->
-                    <div style="text-align: center;">
-                        <div style="font-size: 0.9rem; font-weight: 600; color: #166534; margin-bottom: 8px;">FUTURE</div>
-                        <div style="font-size: 7rem; line-height: 1; margin: 16px 0;">${transformedSymbol}</div>
-                        <div style="font-size: 1.1rem; font-weight: 700; margin: 8px 0;">#${transformedNum} ${transformedName}</div>
-                        <div style="font-size: 0.9rem; color: #166534;">${trigrams[getTransformedTrigrams(lowerTrigram, upperTrigram, movingLine).upper].english} (${trigrams[getTransformedTrigrams(lowerTrigram, upperTrigram, movingLine).upper].chinese}) / ${trigrams[getTransformedTrigrams(lowerTrigram, upperTrigram, movingLine).lower].english} (${trigrams[getTransformedTrigrams(lowerTrigram, upperTrigram, movingLine).lower].chinese})</div>
-                    </div>
-                    
-                </div>
-                
-                <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; justify-content: center;">
-                    <button onclick="showRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine})" class="btn-info">🔗 Show Related Hexagrams</button>
-                    <button onclick="prefillJournal(${kingWen}, ${transformedNum}, ${movingLine})" class="btn-success">📝 Add to Journal</button>
-                </div>
-            </div>
-        `;
-
-
 
         window.showRelevant = function(lowerTrigram, upperTrigram, movingLine) {
             const section = document.getElementById('relevantSection');
