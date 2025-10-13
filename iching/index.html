@@ -921,12 +921,21 @@
         }
 
         window.showRelevant = function(lowerTrigram, upperTrigram, movingLine) {
+            const section = document.getElementById('relevantSection');
+            
+            // Toggle visibility
+            if (section.style.display === 'block') {
+                section.style.display = 'none';
+                return;
+            }
+            
+            // If hidden, populate and show
             const original = iChingTable.getHexagram(lowerTrigram, upperTrigram);
             const transformed = getTransformedHexagram(lowerTrigram, upperTrigram, movingLine);
             const opposite = getOppositeHexagram(lowerTrigram, upperTrigram);
             const reverse = getReverseHexagram(lowerTrigram, upperTrigram);
             const nuclear = getNuclearHexagram(lowerTrigram, upperTrigram);
-
+        
             const related = [
                 { label: 'Present (Original)', num: original },
                 { label: 'Future (Transformed)', num: transformed },
@@ -934,7 +943,7 @@
                 { label: 'Reverse', num: reverse },
                 { label: 'Nuclear (Mutual)', num: nuclear }
             ];
-
+        
             const tbody = document.getElementById('relevantTableBody');
             tbody.innerHTML = '';
             
@@ -955,15 +964,12 @@
                     <td>${book7[n - 1] || '-'}</td>
                     <td>${book8[n - 1] || '-'}</td>
                     <td>${book9[n - 1] || '-'}</td>
-                    <td>${book10[n - 1] || '-'}</td>
-                    <td>${book11[n - 1] || '-'}</td>
-                    <td>${book12[n - 1] || '-'}</td>
                 `;
             });
             
-            document.getElementById('relevantSection').style.display = 'block';
+            section.style.display = 'block';
         }
-
+        
         window.prefillJournal = function(kingWen, transformedNum, movingLine) {
             const question = document.getElementById('currentQuestion').value;
             if (!question.trim()) {
