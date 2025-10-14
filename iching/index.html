@@ -920,16 +920,16 @@
                     
                     <!-- Hexagram Info -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
-                        <div>
+                        <div style="text-align: center;">
                             <div style="font-size: 1.05rem; font-weight: 700; margin-bottom: 6px;">#${kingWen} ${hexName}</div>
-                            <div style="font-size: 0.85rem; color: #166534;">${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) / ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese})</div>                            </div>
-                        <div>
+                            <div style="font-size: 0.85rem; color: #166534;">${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) / ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese})</div>
+                        </div>
+                        <div style="text-align: center;">
                             <div style="font-size: 1.05rem; font-weight: 700; margin-bottom: 6px;">#${transformedNum} ${transformedName}</div>
-                            <div style="font-size: 0.85rem; color: #166534;">${trigrams[transformedTrigrams.upper].english} (${trigrams[transformedTrigrams.upper].chinese}) / ${trigrams[transformedTrigrams.lower].english} (${trigrams[transformedTrigrams.lower].chinese})</div>                        <div style="font-size: 0.85rem; color: #166534;">${trigrams[transformedTrigrams.upper].english} / ${trigrams[transformedTrigrams.lower].english}</div>
+                            <div style="font-size: 0.85rem; color: #166534;">${trigrams[transformedTrigrams.upper].english} (${trigrams[transformedTrigrams.upper].chinese}) / ${trigrams[transformedTrigrams.lower].english} (${trigrams[transformedTrigrams.lower].chinese})</div>
                         </div>
                     </div>
-                </div>
-                    
+                                        
                     <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; justify-content: center;">
                         <button onclick="showRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine})" class="btn-info">🔗 Show Related Hexagrams</button>
                         <button onclick="prefillJournal(${kingWen}, ${transformedNum}, ${movingLine})" class="btn-success">📝 Add to Journal</button>
