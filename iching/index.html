@@ -527,7 +527,11 @@
             <p class="text-gray-600 mb-4">Review and save your divination.</p>
             
             <form onsubmit="addEntry(); return false;" class="mb-8">
-                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Date</label>
+                        <input type="date" id="journalDate" class="input-field" required>
+                    </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Question</label>
                         <input type="text" id="journalQuestion" class="input-field" placeholder="Question will auto-fill from above" required>
@@ -561,7 +565,7 @@
                             <th>Question</th>
                             <th style="width: 200px;">Hexagram</th>
                             <th>Notes</th>
-                            <th style="width: 100px;">Actions</th>
+                            <th style="width: 140px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="journalBody"></tbody>
@@ -573,18 +577,19 @@
     <script type="module">
         // Import shared data
         import { hexagrams, names, book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12 } from './data.js';
+        
         // I Ching Table class for hexagram lookup
         class IChingTable {
             constructor() {
                 this.table = [
-                    [1, 43, 14, 34, 9, 5, 26, 11],    // lower trigram 1
-                    [10, 58, 38, 54, 61, 60, 41, 19], // lower trigram 2
-                    [13, 49, 30, 55, 37, 63, 22, 36], // lower trigram 3
-                    [25, 17, 21, 51, 42, 3, 27, 24],  // lower trigram 4
-                    [44, 28, 50, 32, 57, 48, 18, 46], // lower trigram 5
-                    [6, 47, 64, 40, 59, 29, 4, 7],    // lower trigram 6
-                    [33, 31, 56, 62, 53, 39, 52, 15], // lower trigram 7
-                    [12, 45, 35, 16, 20, 8, 23, 2]    // lower trigram 8
+                    [1, 43, 14, 34, 9, 5, 26, 11],
+                    [10, 58, 38, 54, 61, 60, 41, 19],
+                    [13, 49, 30, 55, 37, 63, 22, 36],
+                    [25, 17, 21, 51, 42, 3, 27, 24],
+                    [44, 28, 50, 32, 57, 48, 18, 46],
+                    [6, 47, 64, 40, 59, 29, 4, 7],
+                    [33, 31, 56, 62, 53, 39, 52, 15],
+                    [12, 45, 35, 16, 20, 8, 23, 2]
                 ];
             }
 
@@ -595,7 +600,7 @@
 
         let selectedTrigram = null;
         let selectedStem = null;
-        let currentSequence = 'fuxi'; // 'fuxi' or 'kingwen'
+        let currentSequence = 'fuxi';
         let selectedTrigramNatural = null;
 
         // Trigram data with binary representations
@@ -610,7 +615,6 @@
             8: { symbol: '☷', english: 'Earth', chinese: 'Kun', binary: '000' }
         };
 
-        // Helper function to get trigram number from binary
         function getTrigramFromBinary(binary) {
             for (let [num, data] of Object.entries(trigrams)) {
                 if (data.binary === binary) return parseInt(num);
@@ -618,14 +622,12 @@
             return null;
         }
 
-        // Calculate transformed hexagram (with moving line changed)
         function getTransformedHexagram(lowerTrigram, upperTrigram, movingLine) {
             const lowerBinary = trigrams[lowerTrigram].binary;
             const upperBinary = trigrams[upperTrigram].binary;
             const hexBinary = upperBinary + lowerBinary;
             
-            // Flip the moving line (1-indexed from bottom)
-            const lineIndex = 6 - movingLine; // Convert to 0-indexed from top
+            const lineIndex = 6 - movingLine;
             const hexArray = hexBinary.split('');
             hexArray[lineIndex] = hexArray[lineIndex] === '0' ? '1' : '0';
             const newHexBinary = hexArray.join('');
@@ -639,7 +641,6 @@
             return iChingTable.getHexagram(newLower, newUpper);
         }
 
-        // Helper to get transformed trigrams for display
         function getTransformedTrigrams(lowerTrigram, upperTrigram, movingLine) {
             const lowerBinary = trigrams[lowerTrigram].binary;
             const upperBinary = trigrams[upperTrigram].binary;
@@ -659,13 +660,11 @@
             };
         }
 
-        // Calculate opposite hexagram (all lines flipped)
         function getOppositeHexagram(lowerTrigram, upperTrigram) {
             const lowerBinary = trigrams[lowerTrigram].binary;
             const upperBinary = trigrams[upperTrigram].binary;
             const hexBinary = upperBinary + lowerBinary;
             
-            // Flip all lines
             const flipped = hexBinary.split('').map(bit => bit === '0' ? '1' : '0').join('');
             
             const newUpperBinary = flipped.substring(0, 3);
@@ -677,17 +676,13 @@
             return iChingTable.getHexagram(newLower, newUpper);
         }
 
-        // Calculate nuclear/mutual hexagram (inner hexagram)
         function getNuclearHexagram(lowerTrigram, upperTrigram) {
             const lowerBinary = trigrams[lowerTrigram].binary;
             const upperBinary = trigrams[upperTrigram].binary;
             const hexBinary = upperBinary + lowerBinary;
             
-            // Lines 2,3,4 become lower trigram; lines 3,4,5 become upper trigram
-            // hexBinary is indexed from top: [0]=line6, [1]=line5, [2]=line4, [3]=line3, [4]=line2, [5]=line1
-
-            const newLowerBinary  = hexBinary[2] + hexBinary[3] + hexBinary[4]; // lines 2,3,4 from bottom
-            const newUpperBinary = hexBinary[1] + hexBinary[2] + hexBinary[3]; // lines 3,4,5 from bottom
+            const newLowerBinary  = hexBinary[2] + hexBinary[3] + hexBinary[4];
+            const newUpperBinary = hexBinary[1] + hexBinary[2] + hexBinary[3];
            
             const newUpper = getTrigramFromBinary(newUpperBinary);
             const newLower = getTrigramFromBinary(newLowerBinary);
@@ -695,13 +690,11 @@
             return iChingTable.getHexagram(newLower, newUpper);
         }
 
-        // Reverse hexagram (upside down) - swap upper and lower trigrams
         function getReverseHexagram(lowerTrigram, upperTrigram) {
             const lowerBinary = trigrams[lowerTrigram].binary;
             const upperBinary = trigrams[upperTrigram].binary;
             const hexBinary = upperBinary + lowerBinary;
             
-            // Reverse the entire hexagram (turn upside down)
             const reversed = hexBinary.split('').reverse().join('');
             
             const newUpperBinary = reversed.substring(0, 3);
@@ -713,37 +706,25 @@
             return iChingTable.getHexagram(newLower, newUpper);
         }
 
-        // Fu Xi: natural order with natural numbering
-        const fuxiOrder = [1, 2, 3, 4, 5, 6, 7, 8]; // Qian, Dui, Li, Zhen, Xun, Kan, Gen, Kun
+        const fuxiOrder = [1, 2, 3, 4, 5, 6, 7, 8];
+        const kingWenOrder = [4, 5, 3, 8, 2, 1, 6, 7];
 
-        // King Wen: rearranged order
-        const kingWenOrder = [4, 5, 3, 8, 2, 1, 6, 7]; // Zhen, Xun, Li, Kun, Dui, Qian, Kan, Gen
-
-        // Stem times for display
-        const stemTimes = {
-            1: '11pm-1am', 2: '1am-3am', 3: '3am-5am', 4: '5am-7am', 
-            5: '7am-9am', 6: '9am-11am', 7: '11am-1pm', 8: '1pm-3pm',
-            9: '3pm-5pm', 10: '5pm-7pm', 11: '7pm-9pm', 12: '9pm-11pm'
-        };
-
-        // Initialize IChingTable
         const iChingTable = new IChingTable();
 
-        // Render trigrams based on current sequence
         function renderTrigrams() {
             const order = currentSequence === 'fuxi' ? fuxiOrder : kingWenOrder;
             const grid = document.getElementById('trigramGrid');
             grid.innerHTML = '';
 
             order.forEach((naturalTrigramValue, index) => {
-                const displayNumber = index + 1; // Always display as 1-8 in order
+                const displayNumber = index + 1;
                 const trigram = trigrams[naturalTrigramValue];
                 const isSelected = selectedTrigram === displayNumber ? 'selected' : '';
                 
                 const btn = document.createElement('div');
                 btn.className = `selection-btn ${isSelected}`;
-                btn.setAttribute('data-value', displayNumber); // Store display number
-                btn.setAttribute('data-natural', naturalTrigramValue); // Store natural value for lookup
+                btn.setAttribute('data-value', displayNumber);
+                btn.setAttribute('data-natural', naturalTrigramValue);
                 btn.setAttribute('data-type', 'trigram');
                 btn.onclick = function() { selectTrigram(this); };
                 btn.innerHTML = `
@@ -756,7 +737,6 @@
             });
         }
 
-        // Toggle sequence
         window.toggleSequence = function() {
             currentSequence = currentSequence === 'fuxi' ? 'kingwen' : 'fuxi';
             document.getElementById('sequenceLabel').textContent = 
@@ -766,25 +746,40 @@
 
         // Journal data and functions
         let journal = JSON.parse(localStorage.getItem('ichingJournal')) || [];
+        let editingEntryId = null;
 
         window.addEntry = function() {
+            const date = document.getElementById('journalDate').value;
             const question = document.getElementById('journalQuestion').value;
             const hex = document.getElementById('hex').value;
             const notes = document.getElementById('notes').value;
-            if (!question || !hex) return alert('Please add question and hexagram!');
             
-            const entry = { id: Date.now(), date: new Date().toISOString().split('T')[0], question, hex, notes };
-            journal.unshift(entry);
+            if (!date || !question || !hex) return alert('Please add date, question and hexagram!');
+            
+            if (editingEntryId) {
+                const index = journal.findIndex(e => e.id === editingEntryId);
+                if (index !== -1) {
+                    journal[index] = { id: editingEntryId, date, question, hex, notes };
+                    alert('Entry updated!');
+                }
+                editingEntryId = null;
+            } else {
+                const entry = { id: Date.now(), date, question, hex, notes };
+                journal.unshift(entry);
+                alert('Entry saved to journal!');
+            }
+            
             localStorage.setItem('ichingJournal', JSON.stringify(journal));
             displayJournal();
             clearJournalForm();
-            alert('Entry saved to journal!');
         }
 
         window.clearJournalForm = function() {
+            document.getElementById('journalDate').value = '';
             document.getElementById('journalQuestion').value = '';
             document.getElementById('hex').value = '';
             document.getElementById('notes').value = '';
+            editingEntryId = null;
         }
 
         function displayJournal() {
@@ -797,9 +792,7 @@
             journal.forEach(entry => {
                 const row = tbody.insertRow();
                 row.onclick = function() {
-                    // Remove highlight from all rows
                     tbody.querySelectorAll('tr').forEach(r => r.classList.remove('highlighted'));
-                    // Add highlight to clicked row
                     this.classList.add('highlighted');
                 };
                 row.innerHTML = `
@@ -807,9 +800,25 @@
                     <td>${entry.question}</td>
                     <td>${entry.hex}</td>
                     <td>${entry.notes || '-'}</td>
-                    <td style="text-align:center;"><button onclick="event.stopPropagation(); deleteEntry(${entry.id})" class="btn-danger">Delete</button></td>
+                    <td style="text-align:center;">
+                        <button onclick="event.stopPropagation(); editEntry(${entry.id})" class="btn-info" style="padding: 6px 14px; font-size: 0.875rem; margin-right: 4px;">Edit</button>
+                        <button onclick="event.stopPropagation(); deleteEntry(${entry.id})" class="btn-danger">Delete</button>
+                    </td>
                 `;
             });
+        }
+
+        window.editEntry = function(id) {
+            const entry = journal.find(e => e.id === id);
+            if (!entry) return;
+            
+            editingEntryId = id;
+            document.getElementById('journalDate').value = entry.date;
+            document.getElementById('journalQuestion').value = entry.question;
+            document.getElementById('hex').value = entry.hex;
+            document.getElementById('notes').value = entry.notes || '';
+            
+            window.scrollTo({ top: document.querySelector('#journalDate').offsetTop - 100, behavior: 'smooth' });
         }
 
         window.deleteEntry = function(id) {
@@ -834,9 +843,8 @@
             URL.revokeObjectURL(url);
         }
 
-        // Divination functions with toggle behavior
         window.selectTrigram = function(btn) {
-            const value = parseInt(btn.getAttribute('data-value')); // Display number for calculation
+            const value = parseInt(btn.getAttribute('data-value'));
             
             if (btn.classList.contains('selected')) {
                 btn.classList.remove('selected');
@@ -845,8 +853,8 @@
             } else {
                 document.querySelectorAll('.selection-btn[data-type="trigram"]').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
-                selectedTrigram = value; // Use display number in calculation
-                selectedTrigramNatural = parseInt(btn.getAttribute('data-natural')); // For hexagram lookup
+                selectedTrigram = value;
+                selectedTrigramNatural = parseInt(btn.getAttribute('data-natural'));
             }
             
             checkSelection();
@@ -874,7 +882,6 @@
             const upperPosition = sum > 8 ? sum - 8 : sum;
             const movingLine = ((sum - 1) % 6) + 1;
             
-            // Use natural values for lookup
             const order = currentSequence === 'fuxi' ? fuxiOrder : kingWenOrder;
             const lowerTrigram = selectedTrigramNatural;
             const upperTrigram = order[upperPosition - 1];
@@ -891,18 +898,15 @@
             
             document.getElementById('divResult').innerHTML = `
                 <div class="result-box">
-                    <h3 style="text-align: center;">✨ Divination Result</h3>
+                    <h3>✨ Divination Result</h3>
                     
-                    <!-- Compact Calculation Summary -->
-                    <div style="background: #fff; border: 2px solid #86efac; border-radius: 8px; padding: 10px; margin: 16px auto; max-width: 400px; text-align: center;">
+                    <div style="background: #fff; border: 2px solid #86efac; border-radius: 8px; padding: 10px; margin: 16px auto; max-width: 500px; text-align: center;">
                         <p style="margin: 4px 0; font-size: 0.85rem;"><strong>Lower:</strong> ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese}) ${selectedTrigram} + <strong>Stem:</strong> ${selectedStem} = ${sum}</p>
                         <p style="margin: 4px 0; font-size: 0.85rem;"><strong>Upper:</strong> ${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) ${upperPosition} | Line: <span style="color: #b91c1c; font-weight: 700;">${movingLine}</span></p>
                     </div>
                     
-                    <!-- Hexagram Comparison -->
                     <div style="display: flex; justify-content: center; align-items: flex-start; gap: 15px; margin: 24px 0;">
                         
-                        <!-- Present Hexagram -->
                         <div style="text-align: center;">
                             <div style="font-size: 0.75rem; font-weight: 600; color: #166534; margin-bottom: 6px;">PRESENT</div>
                             <div style="font-size: 4.5rem; line-height: 1; margin-bottom: 12px;">${hexSymbol}</div>
@@ -911,13 +915,12 @@
                             <div style="font-size: 0.75rem; color: #166534; white-space: nowrap;">${trigrams[upperTrigram].english} / ${trigrams[lowerTrigram].english}</div>
                         </div>
                         
-                        <!-- Future Hexagram -->
                         <div style="text-align: center;">
                             <div style="font-size: 0.75rem; font-weight: 600; color: #166534; margin-bottom: 6px;">FUTURE</div>
                             <div style="font-size: 4.5rem; line-height: 1; margin-bottom: 12px;">${transformedSymbol}</div>
                             <div style="font-size: 0.95rem; font-weight: 700; color: #1f2937; margin-bottom: 3px;">#${transformedNum}</div>
                             <div style="font-size: 0.9rem; font-weight: 600; color: #374151; margin-bottom: 5px;">${transformedName}</div>
-                            <div style="font-size: 0.75rem; color: #166534; white-space: nowrap;">${trigrams[transformedTrigrams.upper].english} / ${trigrams[transformedTrigrams.lower].english} </div>
+                            <div style="font-size: 0.75rem; color: #166534; white-space: nowrap;">${trigrams[transformedTrigrams.upper].english} / ${trigrams[transformedTrigrams.lower].english}</div>
                         </div>
                         
                     </div>
@@ -929,6 +932,7 @@
                 </div>
             `;
         }
+
         function checkSelection() {
             const divineBtn = document.getElementById('divineBtn');
             if (selectedTrigram && selectedStem) {
@@ -941,13 +945,11 @@
         window.showRelevant = function(lowerTrigram, upperTrigram, movingLine) {
             const section = document.getElementById('relevantSection');
             
-            // Toggle visibility
             if (section.style.display === 'block') {
                 section.style.display = 'none';
                 return;
             }
             
-            // If hidden, populate and show
             const original = iChingTable.getHexagram(lowerTrigram, upperTrigram);
             const transformed = getTransformedHexagram(lowerTrigram, upperTrigram, movingLine);
             const opposite = getOppositeHexagram(lowerTrigram, upperTrigram);
@@ -985,7 +987,6 @@
                     <td>${book10[n - 1] || '-'}</td>
                     <td>${book11[n - 1] || '-'}</td>
                     <td>${book12[n - 1] || '-'}</td>
-                    
                 `;
             });
             
@@ -1002,16 +1003,14 @@
             
             const hex = `#${kingWen} ${hexagrams[kingWen - 1]} → #${transformedNum} ${hexagrams[transformedNum - 1]} (Line ${movingLine})`;
             
-            // Auto-fill the journal form
+            document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('journalQuestion').value = question;
             document.getElementById('hex').value = hex;
             document.getElementById('notes').focus();
             
-            // Scroll to journal section
-            window.scrollTo({ top: document.querySelector('#journalQuestion').offsetTop - 100, behavior: 'smooth' });
+            window.scrollTo({ top: document.querySelector('#journalDate').offsetTop - 100, behavior: 'smooth' });
         }
 
-        // Initialize
         renderTrigrams();
         displayJournal();
     </script>
