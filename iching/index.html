@@ -527,10 +527,14 @@
             <p class="text-gray-600 mb-4">Review and save your divination.</p>
             
             <form onsubmit="addEntry(); return false;" class="mb-8">
-                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                <div class="grid md:grid-cols-4 gap-6 mb-6">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Date</label>
                         <input type="date" id="journalDate" class="input-field" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Stem/Time</label>
+                        <input type="text" id="journalStem" class="input-field" placeholder="Auto-fills" readonly>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Question</label>
@@ -561,7 +565,7 @@
                 <table class="i-ching-table">
                     <thead>
                         <tr>
-                            <th style="width: 100px;">Date</th>
+                            <th style="width: 120px;">Date</th>
                             <th>Question</th>
                             <th style="width: 200px;">Hexagram</th>
                             <th>Notes</th>
@@ -578,6 +582,13 @@
         // Import shared data
         import { hexagrams, names, book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12 } from './data.js';
         
+        // Stem time mappings
+        const stemTimes = {
+            1: '11pm-1am', 2: '1am-3am', 3: '3am-5am', 4: '5am-7am', 
+            5: '7am-9am', 6: '9am-11am', 7: '11am-1pm', 8: '1pm-3pm',
+            9: '3pm-5pm', 10: '5pm-7pm', 11: '7pm-9pm', 12: '9pm-11pm'
+        };
+
         // I Ching Table class for hexagram lookup
         class IChingTable {
             constructor() {
@@ -750,6 +761,7 @@
 
         window.addEntry = function() {
             const date = document.getElementById('journalDate').value;
+            const stem = document.getElementById('journalStem').value;
             const question = document.getElementById('journalQuestion').value;
             const hex = document.getElementById('hex').value;
             const notes = document.getElementById('notes').value;
@@ -759,12 +771,12 @@
             if (editingEntryId) {
                 const index = journal.findIndex(e => e.id === editingEntryId);
                 if (index !== -1) {
-                    journal[index] = { id: editingEntryId, date, question, hex, notes };
+                    journal[index] = { id: editingEntryId, date, stem, question, hex, notes };
                     alert('Entry updated!');
                 }
                 editingEntryId = null;
             } else {
-                const entry = { id: Date.now(), date, question, hex, notes };
+                const entry = { id: Date.now(), date, stem, question, hex, notes };
                 journal.unshift(entry);
                 alert('Entry saved to journal!');
             }
@@ -776,6 +788,7 @@
 
         window.clearJournalForm = function() {
             document.getElementById('journalDate').value = '';
+            document.getElementById('journalStem').value = '';
             document.getElementById('journalQuestion').value = '';
             document.getElementById('hex').value = '';
             document.getElementById('notes').value = '';
@@ -795,8 +808,9 @@
                     tbody.querySelectorAll('tr').forEach(r => r.classList.remove('highlighted'));
                     this.classList.add('highlighted');
                 };
+                const dateDisplay = entry.stem ? `${entry.date}<br><span style="font-size:0.8rem;color:#6b7280;">${entry.stem}</span>` : entry.date;
                 row.innerHTML = `
-                    <td>${entry.date}</td>
+                    <td>${dateDisplay}</td>
                     <td>${entry.question}</td>
                     <td>${entry.hex}</td>
                     <td>${entry.notes || '-'}</td>
@@ -814,6 +828,7 @@
             
             editingEntryId = id;
             document.getElementById('journalDate').value = entry.date;
+            document.getElementById('journalStem').value = entry.stem || '';
             document.getElementById('journalQuestion').value = entry.question;
             document.getElementById('hex').value = entry.hex;
             document.getElementById('notes').value = entry.notes || '';
@@ -833,7 +848,9 @@
                 alert('No entries to export!');
                 return;
             }
-            const csv = ['Date,Question,Hexagram,Notes'].concat(journal.map(e => `${e.date},"${e.question}","${e.hex}","${e.notes || ''}"`)).join('\n');
+            const csv = ['Date,Stem/Time,Question,Hexagram,Notes'].concat(
+                journal.map(e => `${e.date},"${e.stem || ''}","${e.question}","${e.hex}","${e.notes || ''}"`)
+            ).join('\n');
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1002,8 +1019,10 @@
             }
             
             const hex = `#${kingWen} ${hexagrams[kingWen - 1]} → #${transformedNum} ${hexagrams[transformedNum - 1]} (Line ${movingLine})`;
+            const stemTime = selectedStem ? `${selectedStem} (${stemTimes[selectedStem]})` : '';
             
             document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('journalStem').value = stemTime;
             document.getElementById('journalQuestion').value = question;
             document.getElementById('hex').value = hex;
             document.getElementById('notes').focus();
