@@ -1,4 +1,629 @@
-<!-- Modal for View Reading -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Ching Divination</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .book-cover {
+            width: 100px;
+            height: 180px;
+            object-fit: contain;
+            margin: 0 auto 8px;
+            display: block;
+        }
+        
+        .i-ching-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .i-ching-table thead {
+            background: #d1d5db;
+        }
+        
+        .i-ching-table th {
+            padding: 1rem;
+            font-weight: bold;
+            color: #1f2937;
+            font-size: 0.875rem;
+        }
+        
+        .i-ching-table th:first-child { text-align: left; white-space: normal; width: 180px; }
+        .i-ching-table th:nth-child(2) { text-align: center; white-space: nowrap; width: 70px; }
+        .i-ching-table th:nth-child(3) { text-align: center; white-space: nowrap; }
+        .i-ching-table th:nth-child(4) { text-align: left; white-space: nowrap; }
+        .i-ching-table th:nth-child(n+5) { text-align: center; width: 128px; font-size: 0.75rem; }
+        
+        .i-ching-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .i-ching-table td:first-child { padding: 0.75rem; white-space: nowrap; text-align: left; }
+        .i-ching-table td:nth-child(2) { padding: 0.75rem 0.5rem; white-space: nowrap; text-align: center; }
+        .i-ching-table td:nth-child(3) { padding: 0.75rem 0.5rem; font-size: 2.5rem; white-space: nowrap; text-align: center; }
+        .i-ching-table td:nth-child(n+5) { text-align: center; }
+        
+        .i-ching-table tbody tr:nth-child(even) { background: #f3f4f6; }
+        .i-ching-table tbody tr:hover { background: #f9fafb; cursor: pointer; }
+        .i-ching-table tbody tr.highlighted { 
+            background: #dbeafe !important; 
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .selection-btn {
+            padding: 8px 10px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            background: #fff;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .selection-btn:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .selection-btn.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+            font-weight: 700;
+            color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .trigram-number, .stem-number {
+            position: absolute;
+            top: 4px;
+            left: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+        
+        .trigram-symbol {
+            font-size: 2.25rem;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        
+        .trigram-english {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .trigram-chinese {
+            font-size: 0.65rem;
+            color: #6b7280;
+        }
+        
+        .stem-time {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            margin-top: 20px;
+        }
+        
+        .stem-chinese {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        
+        .compact-btn {
+            padding: 10px 8px;
+        }
+        
+        .compact-number {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 4px;
+        }
+        
+        .compact-time {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #4b5563;
+        }
+        
+        /* Responsive sizing - smaller on larger screens */
+        @media (min-width: 768px) {
+            .selection-btn {
+                padding: 6px 8px;
+            }
+            .trigram-symbol {
+                font-size: 2.75rem;
+            }
+            .trigram-english {
+                font-size: 0.7rem;
+            }
+            .trigram-chinese {
+                font-size: 0.6rem;
+            }
+            .compact-btn {
+                padding: 8px 6px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .selection-btn {
+                padding: 5px 6px;
+            }
+            .trigram-symbol {
+                font-size: 3.25rem;
+            }
+            .trigram-english {
+                font-size: 0.65rem;
+            }
+            .trigram-chinese {
+                font-size: 0.55rem;
+            }
+            .trigram-number {
+                font-size: 0.7rem;
+                top: 3px;
+                left: 5px;
+            }
+            .compact-btn {
+                padding: 7px 5px;
+            }
+            .compact-time {
+                font-size: 0.7rem;
+            }
+        }
+        
+        .hexagram-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            font-size: 5rem;
+            line-height: 1;
+        }
+        
+        .hex-arrow {
+            font-size: 3rem;
+            color: #10b981;
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .result-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+        
+        .result-box h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #166534;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .result-box p {
+            margin: 10px 0;
+            color: #166534;
+            font-size: 1.05rem;
+        }
+        
+        .result-box strong {
+            color: #14532d;
+        }
+        
+        .calculation-box {
+            background: #fff;
+            border: 2px solid #86efac;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #166534;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            padding: 14px 28px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+        
+        .btn-toggle {
+            padding: 10px 20px;
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+        
+        .btn-toggle:hover {
+            background: #7c3aed;
+            transform: translateY(-1px);
+        }
+        
+        .btn-success {
+            padding: 12px 24px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            padding: 12px 24px;
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-1px);
+        }
+        
+        .btn-info {
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+        
+        .btn-info:hover {
+            background: #2563eb;
+        }
+        
+        .btn-danger {
+            padding: 6px 14px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        textarea.input-field {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: sticky;
+            top: 0;
+            right: 0;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #6b7280;
+            cursor: pointer;
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            z-index: 10;
+        }
+        
+        .modal-close:hover {
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-5xl font-bold text-gray-800 mb-4">☯ I Ching Divination</h1>
+            <p class="text-xl text-gray-600 mb-6">Consult the Oracle and Record Your Insights</p>
+            <a href="reference.html" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition shadow-md hover:shadow-lg">
+                📖 View Reference Table
+            </a>
+        </div>
+
+        <!-- Question Section -->
+        <div class="section-card">
+            <h2 class="section-title">🙏 Your Question</h2>
+            <p class="text-gray-600 mb-4">Focus on your question before consulting the oracle.</p>
+            <input type="text" id="currentQuestion" class="input-field" placeholder="What guidance do I need today?">
+        </div>
+
+        <!-- Divination Section -->
+        <div class="section-card">
+            <h2 class="section-title">🎲 Divination</h2>
+            
+            <!-- Trigram Selection -->
+            <div class="mb-6">
+                <div class="subsection-title">
+                    <span>Select Lower Trigram</span>
+                    <button class="btn-toggle" onclick="toggleSequence()">
+                        <span id="sequenceLabel">Mode: Fu Xi</span> 
+                    </button>
+                </div>
+                <div id="trigramGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <!-- Trigrams will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Stem Selection -->
+            <div class="mb-6">
+                <h3 class="subsection-title">Select Heavenly Stem (Time of Day)</h3>
+                <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
+                    <div class="selection-btn compact-btn" data-value="1" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">1</div>
+                        <div class="compact-time">11pm-1am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="2" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">2</div>
+                        <div class="compact-time">1am-3am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="3" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">3</div>
+                        <div class="compact-time">3am-5am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="4" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">4</div>
+                        <div class="compact-time">5am-7am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="5" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">5</div>
+                        <div class="compact-time">7am-9am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="6" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">6</div>
+                        <div class="compact-time">9am-11am</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="7" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">7</div>
+                        <div class="compact-time">11am-1pm</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="8" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">8</div>
+                        <div class="compact-time">1pm-3pm</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="9" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">9</div>
+                        <div class="compact-time">3pm-5pm</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="10" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">10</div>
+                        <div class="compact-time">5pm-7pm</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="11" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">11</div>
+                        <div class="compact-time">7pm-9pm</div>
+                    </div>
+                    <div class="selection-btn compact-btn" data-value="12" data-type="stem" onclick="selectStem(this)">
+                        <div class="compact-number">12</div>
+                        <div class="compact-time">9pm-11pm</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button id="divineBtn" class="btn-primary" onclick="divineTrigramStem()" disabled>✨ Divine Hexagram</button>
+            </div>
+            
+            <div id="divResult"></div>
+        </div>
+
+        <!-- Relevant Hexagrams Table -->
+        <div id="relevantSection" style="display: none;">
+            <div class="section-card">
+                <h2 class="section-title">📗 Relevant Hexagrams</h2>
+                <div class="overflow-x-auto">
+                    <table class="i-ching-table">
+                        <thead>
+                            <tr>
+                                <th>Relationship</th>
+                                <th>Gua number</th>
+                                <th>Symbol</th>
+                                <th>Name</th>
+                                <th><img src="covers/iching.png" alt="The Book of Changes" class="book-cover">The Book of Changes</th>
+                                <th><img src="covers/guide-iching.png" alt="A Guide to the I Ching" class="book-cover">A Guide to the I Ching</th>
+                                <th><img src="covers/complete-iching.png" alt="The Complete I Ching.10th Ed" class="book-cover">The Complete I Ching.10th Ed</th>
+                                <th><img src="covers/authentic-iching.png" alt="The Authentic I Ching" class="book-cover">The Authentic I Ching</th>
+                                <th><img src="covers/iching-pt1.png" alt="I Ching Wilhelm Pt.1" class="book-cover">I Ching Pt.1</th>
+                                <th><img src="covers/iching-pt2.png" alt="I Ching Wilhelm Pt.2" class="book-cover">I Ching Pt.2</th>
+                                <th><img src="covers/taoist-iching.png" alt="Taoist I Ching" class="book-cover">Taoist I Ching</th>
+                                <th><img src="covers/tao-organisation.png" alt="Tao of Organisation" class="book-cover">Tao of Organisation</th>
+                                <th><img src="covers/astrology-iching.png" alt="Astrology of I Ching" class="book-cover">Astrology of I Ching</th>
+                                <th><img src="covers/illustrated-iching.png" alt="The Illustrated I Ching" class="book-cover">The Illustrated I Ching</th>
+                                <th><img src="covers/dragon-iching.png" alt="The Portable Dragon" class="book-cover">The Portable Dragon</th>
+                                <th><img src="covers/mandalas-iching.png" alt="I Ching Mandalas" class="book-cover">I Ching Mandalas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="relevantTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journal Section -->
+        <div class="section-card">
+            <h2 class="section-title">📝 Journal Entry</h2>
+            <p class="text-gray-600 mb-4">Review and save your divination.</p>
+            
+            <form onsubmit="addEntry(); return false;" class="mb-8">
+                <div class="grid md:grid-cols-4 gap-6 mb-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Date</label>
+                        <input type="date" id="journalDate" class="input-field" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Stem/Time</label>
+                        <input type="text" id="journalStem" class="input-field" placeholder="Auto-fills" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Question</label>
+                        <input type="text" id="journalQuestion" class="input-field" placeholder="Question will auto-fill from above" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Hexagram</label>
+                        <input type="text" id="hex" class="input-field" placeholder="Hexagram will auto-fill" required>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Notes & Interpretation</label>
+                    <textarea id="notes" class="input-field" placeholder="Add your insights, interpretation, and reflections..."></textarea>
+                </div>
+                <input type="hidden" id="readingData">
+                <div class="flex gap-3">
+                    <button type="submit" class="btn-success">💾 Save to Journal</button>
+                    <button type="button" onclick="clearJournalForm()" class="btn-secondary">Clear Form</button>
+                </div>
+            </form>
+            
+            <h3 class="section-title" style="font-size: 1.25rem; margin-top: 32px;">Past Entries</h3>
+            
+            <div class="flex gap-3 mb-6">
+                <button type="button" onclick="exportJournal()" class="btn-secondary">📥 Export to CSV</button>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="i-ching-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 120px;">Date</th>
+                            <th>Question</th>
+                            <th style="width: 200px;">Hexagram</th>
+                            <th>Notes</th>
+                            <th style="width: 180px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="journalBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for View Reading -->
     <div id="readingModal" class="modal-overlay" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -33,3 +658,620 @@
             </div>
         </div>
     </div>
+
+    <script type="module">
+        // Import shared data
+        import { hexagrams, names, book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12 } from './data.js';
+        
+        // Stem time mappings
+        const stemTimes = {
+            1: '11pm-1am', 2: '1am-3am', 3: '3am-5am', 4: '5am-7am', 
+            5: '7am-9am', 6: '9am-11am', 7: '11am-1pm', 8: '1pm-3pm',
+            9: '3pm-5pm', 10: '5pm-7pm', 11: '7pm-9pm', 12: '9pm-11pm'
+        };
+
+        // I Ching Table class for hexagram lookup
+        class IChingTable {
+            constructor() {
+                this.table = [
+                    [1, 43, 14, 34, 9, 5, 26, 11],
+                    [10, 58, 38, 54, 61, 60, 41, 19],
+                    [13, 49, 30, 55, 37, 63, 22, 36],
+                    [25, 17, 21, 51, 42, 3, 27, 24],
+                    [44, 28, 50, 32, 57, 48, 18, 46],
+                    [6, 47, 64, 40, 59, 29, 4, 7],
+                    [33, 31, 56, 62, 53, 39, 52, 15],
+                    [12, 45, 35, 16, 20, 8, 23, 2]
+                ];
+            }
+
+            getHexagram(lowerTrigram, upperTrigram) {
+                return this.table[lowerTrigram - 1][upperTrigram - 1];
+            }
+        }
+
+        let selectedTrigram = null;
+        let selectedStem = null;
+        let currentSequence = 'fuxi';
+        let selectedTrigramNatural = null;
+
+        // Trigram data with binary representations
+        const trigrams = {
+            1: { symbol: '☰', english: 'Heaven', chinese: 'Qian', binary: '111' },
+            2: { symbol: '☱', english: 'Lake', chinese: 'Dui', binary: '011' },
+            3: { symbol: '☲', english: 'Fire', chinese: 'Li', binary: '101' },
+            4: { symbol: '☳', english: 'Thunder', chinese: 'Zhen', binary: '001' },
+            5: { symbol: '☴', english: 'Wind', chinese: 'Xun', binary: '110' },
+            6: { symbol: '☵', english: 'Water', chinese: 'Kan', binary: '010' },
+            7: { symbol: '☶', english: 'Mountain', chinese: 'Gen', binary: '100' },
+            8: { symbol: '☷', english: 'Earth', chinese: 'Kun', binary: '000' }
+        };
+
+        function getTrigramFromBinary(binary) {
+            for (let [num, data] of Object.entries(trigrams)) {
+                if (data.binary === binary) return parseInt(num);
+            }
+            return null;
+        }
+
+        function getTransformedHexagram(lowerTrigram, upperTrigram, movingLine) {
+            const lowerBinary = trigrams[lowerTrigram].binary;
+            const upperBinary = trigrams[upperTrigram].binary;
+            const hexBinary = upperBinary + lowerBinary;
+            
+            const lineIndex = 6 - movingLine;
+            const hexArray = hexBinary.split('');
+            hexArray[lineIndex] = hexArray[lineIndex] === '0' ? '1' : '0';
+            const newHexBinary = hexArray.join('');
+            
+            const newUpperBinary = newHexBinary.substring(0, 3);
+            const newLowerBinary = newHexBinary.substring(3, 6);
+            
+            const newUpper = getTrigramFromBinary(newUpperBinary);
+            const newLower = getTrigramFromBinary(newLowerBinary);
+            
+            return iChingTable.getHexagram(newLower, newUpper);
+        }
+
+        function getTransformedTrigrams(lowerTrigram, upperTrigram, movingLine) {
+            const lowerBinary = trigrams[lowerTrigram].binary;
+            const upperBinary = trigrams[upperTrigram].binary;
+            const hexBinary = upperBinary + lowerBinary;
+            
+            const lineIndex = 6 - movingLine;
+            const hexArray = hexBinary.split('');
+            hexArray[lineIndex] = hexArray[lineIndex] === '0' ? '1' : '0';
+            const newHexBinary = hexArray.join('');
+            
+            const newUpperBinary = newHexBinary.substring(0, 3);
+            const newLowerBinary = newHexBinary.substring(3, 6);
+            
+            return {
+                upper: getTrigramFromBinary(newUpperBinary),
+                lower: getTrigramFromBinary(newLowerBinary)
+            };
+        }
+
+        function getOppositeHexagram(lowerTrigram, upperTrigram) {
+            const lowerBinary = trigrams[lowerTrigram].binary;
+            const upperBinary = trigrams[upperTrigram].binary;
+            const hexBinary = upperBinary + lowerBinary;
+            
+            const flipped = hexBinary.split('').map(bit => bit === '0' ? '1' : '0').join('');
+            
+            const newUpperBinary = flipped.substring(0, 3);
+            const newLowerBinary = flipped.substring(3, 6);
+            
+            const newUpper = getTrigramFromBinary(newUpperBinary);
+            const newLower = getTrigramFromBinary(newLowerBinary);
+            
+            return iChingTable.getHexagram(newLower, newUpper);
+        }
+
+        function getNuclearHexagram(lowerTrigram, upperTrigram) {
+            const lowerBinary = trigrams[lowerTrigram].binary;
+            const upperBinary = trigrams[upperTrigram].binary;
+            const hexBinary = upperBinary + lowerBinary;
+            
+            const newLowerBinary  = hexBinary[2] + hexBinary[3] + hexBinary[4];
+            const newUpperBinary = hexBinary[1] + hexBinary[2] + hexBinary[3];
+           
+            const newUpper = getTrigramFromBinary(newUpperBinary);
+            const newLower = getTrigramFromBinary(newLowerBinary);
+            
+            return iChingTable.getHexagram(newLower, newUpper);
+        }
+
+        function getReverseHexagram(lowerTrigram, upperTrigram) {
+            const lowerBinary = trigrams[lowerTrigram].binary;
+            const upperBinary = trigrams[upperTrigram].binary;
+            const hexBinary = upperBinary + lowerBinary;
+            
+            const reversed = hexBinary.split('').reverse().join('');
+            
+            const newUpperBinary = reversed.substring(0, 3);
+            const newLowerBinary = reversed.substring(3, 6);
+            
+            const newUpper = getTrigramFromBinary(newUpperBinary);
+            const newLower = getTrigramFromBinary(newLowerBinary);
+            
+            return iChingTable.getHexagram(newLower, newUpper);
+        }
+
+        const fuxiOrder = [1, 2, 3, 4, 5, 6, 7, 8];
+        const kingWenOrder = [4, 5, 3, 8, 2, 1, 6, 7];
+
+        const iChingTable = new IChingTable();
+
+        function renderTrigrams() {
+            const order = currentSequence === 'fuxi' ? fuxiOrder : kingWenOrder;
+            const grid = document.getElementById('trigramGrid');
+            grid.innerHTML = '';
+
+            order.forEach((naturalTrigramValue, index) => {
+                const displayNumber = index + 1;
+                const trigram = trigrams[naturalTrigramValue];
+                const isSelected = selectedTrigram === displayNumber ? 'selected' : '';
+                
+                const btn = document.createElement('div');
+                btn.className = `selection-btn ${isSelected}`;
+                btn.setAttribute('data-value', displayNumber);
+                btn.setAttribute('data-natural', naturalTrigramValue);
+                btn.setAttribute('data-type', 'trigram');
+                btn.onclick = function() { selectTrigram(this); };
+                btn.innerHTML = `
+                    <div class="trigram-number">${displayNumber}</div>
+                    <div class="trigram-symbol">${trigram.symbol}</div>
+                    <div class="trigram-english">${trigram.english}</div>
+                    <div class="trigram-chinese">${trigram.chinese}</div>
+                `;
+                grid.appendChild(btn);
+            });
+        }
+
+        window.toggleSequence = function() {
+            currentSequence = currentSequence === 'fuxi' ? 'kingwen' : 'fuxi';
+            document.getElementById('sequenceLabel').textContent = 
+            currentSequence === 'fuxi' ? 'Mode: Fu Xi' : 'Mode: King Wen';   
+            renderTrigrams();
+        }
+
+        // Journal data and functions
+        let journal = JSON.parse(localStorage.getItem('ichingJournal')) || [];
+        let editingEntryId = null;
+
+        window.addEntry = function() {
+            const date = document.getElementById('journalDate').value;
+            const stem = document.getElementById('journalStem').value;
+            const question = document.getElementById('journalQuestion').value;
+            const hex = document.getElementById('hex').value;
+            const notes = document.getElementById('notes').value;
+            const readingData = document.getElementById('readingData').value;
+            
+            if (!date || !question || !hex) return alert('Please add date, question and hexagram!');
+            
+            if (editingEntryId) {
+                const index = journal.findIndex(e => e.id === editingEntryId);
+                if (index !== -1) {
+                    journal[index] = { id: editingEntryId, date, stem, question, hex, notes, readingData };
+                    alert('Entry updated!');
+                }
+                editingEntryId = null;
+            } else {
+                const entry = { id: Date.now(), date, stem, question, hex, notes, readingData };
+                journal.unshift(entry);
+                alert('Entry saved to journal!');
+            }
+            
+            localStorage.setItem('ichingJournal', JSON.stringify(journal));
+            displayJournal();
+            clearJournalForm();
+        }
+
+        window.clearJournalForm = function() {
+            document.getElementById('journalDate').value = '';
+            document.getElementById('journalStem').value = '';
+            document.getElementById('journalQuestion').value = '';
+            document.getElementById('hex').value = '';
+            document.getElementById('notes').value = '';
+            document.getElementById('readingData').value = '';
+            editingEntryId = null;
+        }
+
+        function displayJournal() {
+            const tbody = document.getElementById('journalBody');
+            tbody.innerHTML = '';
+            if (journal.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#6b7280;">No entries yet. Start by entering a question and performing a divination.</td></tr>';
+                return;
+            }
+            journal.forEach(entry => {
+                const row = tbody.insertRow();
+                row.onclick = function() {
+                    tbody.querySelectorAll('tr').forEach(r => r.classList.remove('highlighted'));
+                    this.classList.add('highlighted');
+                };
+                const dateDisplay = entry.stem ? `${entry.date}<br><span style="font-size:0.8rem;color:#6b7280;">${entry.stem}</span>` : entry.date;
+                const hasReading = entry.readingData ? true : false;
+                const viewBtn = hasReading ? `<button onclick="event.stopPropagation(); viewReading(${entry.id})" class="btn-info" style="padding: 6px 14px; font-size: 0.875rem; margin-right: 4px;">View</button>` : '';
+                row.innerHTML = `
+                    <td>${dateDisplay}</td>
+                    <td>${entry.question}</td>
+                    <td>${entry.hex}</td>
+                    <td>${entry.notes || '-'}</td>
+                    <td style="text-align:center;">
+                        ${viewBtn}
+                        <button onclick="event.stopPropagation(); editEntry(${entry.id})" class="btn-info" style="padding: 6px 14px; font-size: 0.875rem; margin-right: 4px;">Edit</button>
+                        <button onclick="event.stopPropagation(); deleteEntry(${entry.id})" class="btn-danger">Delete</button>
+                    </td>
+                `;
+            });
+        }
+
+        window.editEntry = function(id) {
+            const entry = journal.find(e => e.id === id);
+            if (!entry) return;
+            
+            editingEntryId = id;
+            document.getElementById('journalDate').value = entry.date;
+            document.getElementById('journalStem').value = entry.stem || '';
+            document.getElementById('journalQuestion').value = entry.question;
+            document.getElementById('hex').value = entry.hex;
+            document.getElementById('notes').value = entry.notes || '';
+            document.getElementById('readingData').value = entry.readingData || '';
+            
+            window.scrollTo({ top: document.querySelector('#journalDate').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        window.deleteEntry = function(id) {
+            if (!confirm('Delete this journal entry?')) return;
+            journal = journal.filter(e => e.id !== id);
+            localStorage.setItem('ichingJournal', JSON.stringify(journal));
+            displayJournal();
+        }
+        
+        window.viewReading = function(id) {
+            const entry = journal.find(e => e.id === id);
+            if (!entry || !entry.readingData) return;
+            
+            const data = JSON.parse(entry.readingData);
+            const { lowerTrigram, upperTrigram, stem, movingLine, kingWen, transformedNum } = data;
+            
+            const hexSymbol = hexagrams[kingWen - 1];
+            const hexName = names[kingWen - 1];
+            const transformedSymbol = hexagrams[transformedNum - 1];
+            const transformedName = names[transformedNum - 1];
+            const transformedTrigrams = getTransformedTrigrams(lowerTrigram, upperTrigram, movingLine);
+            
+            const sum = (lowerTrigram <= 8 ? lowerTrigram : lowerTrigram % 8) + stem;
+            const upperPosition = sum > 8 ? sum - 8 : sum;
+            
+            document.getElementById('modalReadingContent').innerHTML = `
+                <div class="result-box" style="margin: 0;">
+                    <h3>✨ Saved Reading</h3>
+                    
+                    <div style="background: #fff; border: 2px solid #86efac; border-radius: 8px; padding: 10px; margin: 16px auto; max-width: 500px; text-align: center;">
+                        <p style="margin: 4px 0; font-size: 0.85rem;"><strong>Lower:</strong> ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese}) + <strong>Stem:</strong> ${stem} = ${sum}</p>
+                        <p style="margin: 4px 0; font-size: 0.85rem;"><strong>Upper:</strong> ${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) ${upperPosition} | Line: <span style="color: #b91c1c; font-weight: 700;">${movingLine}</span></p>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: center; align-items: flex-start; gap: 15px; margin: 24px 0;">
+                        
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.75rem; font-weight: 600; color: #166534; margin-bottom: 6px;">PRESENT</div>
+                            <div style="font-size: 4.5rem; line-height: 1; margin-bottom: 12px;">${hexSymbol}</div>
+                            <div style="font-size: 0.95rem; font-weight: 700; color: #1f2937; margin-bottom: 3px;">#${kingWen}</div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #374151; margin-bottom: 5px;">${hexName}</div>
+                            <div style="font-size: 0.75rem; color: #166534; white-space: nowrap;">${trigrams[upperTrigram].english} / ${trigrams[lowerTrigram].english}</div>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.75rem; font-weight: 600; color: #166534; margin-bottom: 6px;">FUTURE</div>
+                            <div style="font-size: 4.5rem; line-height: 1; margin-bottom: 12px;">${transformedSymbol}</div>
+                            <div style="font-size: 0.95rem; font-weight: 700; color: #1f2937; margin-bottom: 3px;">#${transformedNum}</div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #374151; margin-bottom: 5px;">${transformedName}</div>
+                            <div style="font-size: 0.75rem; color: #166534; white-space: nowrap;">${trigrams[transformedTrigrams.upper].english} / ${trigrams[transformedTrigrams.lower].english}</div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; justify-content: center;">
+                        <button onclick="showModalRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine}, 'present')" class="btn-info">📗 Related: Present</button>
+                        <button onclick="showModalRelevant(${transformedTrigrams.lower}, ${transformedTrigrams.upper}, ${movingLine}, 'future')" class="btn-info">📗 Related: Future</button>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 16px; background: #f9fafb; border-radius: 8px;">
+                        <p style="margin: 8px 0; color: #374151;"><strong>Question:</strong> ${entry.question}</p>
+                        <p style="margin: 8px 0; color: #374151;"><strong>Date:</strong> ${entry.date} ${entry.stem ? `- ${entry.stem}` : ''}</p>
+                        ${entry.notes ? `<p style="margin: 8px 0; color: #374151;"><strong>Notes:</strong> ${entry.notes}</p>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('readingModal').style.display = 'flex';
+        }
+        
+        window.closeModal = function(event) {
+            if (!event || event.target.id === 'readingModal') {
+                document.getElementById('readingModal').style.display = 'none';
+                document.getElementById('modalRelevantSection').style.display = 'none';
+                currentModalRelatedView = null;
+            }
+        }
+
+        window.exportJournal = function() {
+            if (journal.length === 0) {
+                alert('No entries to export!');
+                return;
+            }
+            const csv = ['Date,Stem/Time,Question,Hexagram,Notes'].concat(
+                journal.map(e => `${e.date},"${e.stem || ''}","${e.question}","${e.hex}","${e.notes || ''}"`)
+            ).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'iching-journal.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        window.selectTrigram = function(btn) {
+            const value = parseInt(btn.getAttribute('data-value'));
+            
+            if (btn.classList.contains('selected')) {
+                btn.classList.remove('selected');
+                selectedTrigram = null;
+                selectedTrigramNatural = null;
+            } else {
+                document.querySelectorAll('.selection-btn[data-type="trigram"]').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedTrigram = value;
+                selectedTrigramNatural = parseInt(btn.getAttribute('data-natural'));
+            }
+            
+            checkSelection();
+        }
+
+        window.selectStem = function(btn) {
+            const value = parseInt(btn.getAttribute('data-value'));
+            
+            if (btn.classList.contains('selected')) {
+                btn.classList.remove('selected');
+                selectedStem = null;
+            } else {
+                document.querySelectorAll('.selection-btn[data-type="stem"]').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedStem = value;
+            }
+            
+            checkSelection();
+        }
+
+        window.divineTrigramStem = function() {
+            if (!selectedTrigram || !selectedStem) return;
+            
+            const sum = selectedTrigram + selectedStem;
+            const upperPosition = sum > 8 ? sum - 8 : sum;
+            const movingLine = ((sum - 1) % 6) + 1;
+            
+            const order = currentSequence === 'fuxi' ? fuxiOrder : kingWenOrder;
+            const lowerTrigram = selectedTrigramNatural;
+            const upperTrigram = order[upperPosition - 1];
+            
+            const kingWen = iChingTable.getHexagram(lowerTrigram, upperTrigram);
+            const hexSymbol = hexagrams[kingWen - 1];
+            const hexName = names[kingWen - 1];
+            
+            const transformedNum = getTransformedHexagram(lowerTrigram, upperTrigram, movingLine);
+            const transformedSymbol = hexagrams[transformedNum - 1];
+            const transformedName = names[transformedNum - 1];
+            
+            const transformedTrigrams = getTransformedTrigrams(lowerTrigram, upperTrigram, movingLine);
+            
+            document.getElementById('divResult').innerHTML = `
+                <div class="result-box">
+                    <h3>✨ Divination Result</h3>
+                    
+                    <div style="background: #fff; border: 2px solid #86efac; border-radius: 8px; padding: 10px; margin: 16px auto; max-width: 500px; text-align: center;">
+                        <p style="margin: 4px 0; font-size: 0.85rem;"><strong>Lower:</strong> ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese}) ${selectedTrigram} + <strong>Stem:</strong> ${selectedStem} = ${sum}</p>
+                        <p style="margin: 4px 0; font-size: 0.85rem;"><strong>Upper:</strong> ${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) ${upperPosition} | Line: <span style="color: #b91c1c; font-weight: 700;">${movingLine}</span></p>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: center; align-items: flex-start; gap: 15px; margin: 24px 0;">
+                        
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.75rem; font-weight: 600; color: #166534; margin-bottom: 6px;">PRESENT</div>
+                            <div style="font-size: 4.5rem; line-height: 1; margin-bottom: 12px;">${hexSymbol}</div>
+                            <div style="font-size: 0.95rem; font-weight: 700; color: #1f2937; margin-bottom: 3px;">#${kingWen}</div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #374151; margin-bottom: 5px;">${hexName}</div>
+                            <div style="font-size: 0.75rem; color: #166534; white-space: nowrap;">${trigrams[upperTrigram].english} / ${trigrams[lowerTrigram].english}</div>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.75rem; font-weight: 600; color: #166534; margin-bottom: 6px;">FUTURE</div>
+                            <div style="font-size: 4.5rem; line-height: 1; margin-bottom: 12px;">${transformedSymbol}</div>
+                            <div style="font-size: 0.95rem; font-weight: 700; color: #1f2937; margin-bottom: 3px;">#${transformedNum}</div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #374151; margin-bottom: 5px;">${transformedName}</div>
+                            <div style="font-size: 0.75rem; color: #166534; white-space: nowrap;">${trigrams[transformedTrigrams.upper].english} / ${trigrams[transformedTrigrams.lower].english}</div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; justify-content: center;">
+                        <button onclick="showRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine}, 'present')" class="btn-info">📗 Related: Present</button>
+                        <button onclick="showRelevant(${transformedTrigrams.lower}, ${transformedTrigrams.upper}, ${movingLine}, 'future')" class="btn-info">📗 Related: Future</button>
+                        <button onclick="prefillJournal(${kingWen}, ${transformedNum}, ${movingLine})" class="btn-success">📝 Add to Journal</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkSelection() {
+            const divineBtn = document.getElementById('divineBtn');
+            if (selectedTrigram && selectedStem) {
+                divineBtn.disabled = false;
+            } else {
+                divineBtn.disabled = true;
+            }
+        }
+
+        // Track which related view is showing
+        let currentRelatedView = null;
+        let currentModalRelatedView = null;
+
+        window.showRelevant = function(lowerTrigram, upperTrigram, movingLine, type = 'present') {
+            const section = document.getElementById('relevantSection');
+            
+            // If clicking the same button that's already showing, toggle off
+            if (section.style.display === 'block' && currentRelatedView === type) {
+                section.style.display = 'none';
+                currentRelatedView = null;
+                return;
+            }
+            
+            // Otherwise show/switch content
+            currentRelatedView = type;
+            
+            const original = iChingTable.getHexagram(lowerTrigram, upperTrigram);
+            const transformed = getTransformedHexagram(lowerTrigram, upperTrigram, movingLine);
+            const opposite = getOppositeHexagram(lowerTrigram, upperTrigram);
+            const reverse = getReverseHexagram(lowerTrigram, upperTrigram);
+            const nuclear = getNuclearHexagram(lowerTrigram, upperTrigram);
+        
+            const label = type === 'present' ? 'Present' : 'Future';
+            const related = [
+                { label: `${label} (Original)`, num: original },
+                { label: 'Transformed', num: transformed },
+                { label: 'Opposite (Inverse)', num: opposite },
+                { label: 'Reverse', num: reverse },
+                { label: 'Nuclear (Mutual)', num: nuclear }
+            ];
+        
+            const tbody = document.getElementById('relevantTableBody');
+            tbody.innerHTML = '';
+            
+            related.forEach(item => {
+                const n = item.num;
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td style="font-weight: 600; color: #374151;">${item.label}</td>
+                    <td>${n}</td>
+                    <td>${hexagrams[n - 1]}</td>
+                    <td>${names[n - 1]}</td>
+                    <td>${book1[n - 1] || '-'}</td>
+                    <td>${book2[n - 1] || '-'}</td>
+                    <td>${book3[n - 1] || '-'}</td>
+                    <td>${book4[n - 1] || '-'}</td>
+                    <td>${book5[n - 1] || '-'}</td>
+                    <td>${book6[n - 1] || '-'}</td>
+                    <td>${book7[n - 1] || '-'}</td>
+                    <td>${book8[n - 1] || '-'}</td>
+                    <td>${book9[n - 1] || '-'}</td>
+                    <td>${book10[n - 1] || '-'}</td>
+                    <td>${book11[n - 1] || '-'}</td>
+                    <td>${book12[n - 1] || '-'}</td>
+                `;
+            });
+            
+            section.style.display = 'block';
+        }
+
+        window.showModalRelevant = function(lowerTrigram, upperTrigram, movingLine, type = 'present') {
+            const section = document.getElementById('modalRelevantSection');
+            
+            // If clicking the same button that's already showing, toggle off
+            if (section.style.display === 'block' && currentModalRelatedView === type) {
+                section.style.display = 'none';
+                currentModalRelatedView = null;
+                return;
+            }
+            
+            // Otherwise show/switch content
+            currentModalRelatedView = type;
+            
+            const original = iChingTable.getHexagram(lowerTrigram, upperTrigram);
+            const transformed = getTransformedHexagram(lowerTrigram, upperTrigram, movingLine);
+            const opposite = getOppositeHexagram(lowerTrigram, upperTrigram);
+            const reverse = getReverseHexagram(lowerTrigram, upperTrigram);
+            const nuclear = getNuclearHexagram(lowerTrigram, upperTrigram);
+        
+            const label = type === 'present' ? 'Present' : 'Future';
+            const related = [
+                { label: `${label} (Original)`, num: original },
+                { label: 'Transformed', num: transformed },
+                { label: 'Opposite (Inverse)', num: opposite },
+                { label: 'Reverse', num: reverse },
+                { label: 'Nuclear (Mutual)', num: nuclear }
+            ];
+        
+            const tbody = document.getElementById('modalRelevantTableBody');
+            tbody.innerHTML = '';
+            
+            related.forEach(item => {
+                const n = item.num;
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td style="font-weight: 600; color: #374151;">${item.label}</td>
+                    <td>${n}</td>
+                    <td>${hexagrams[n - 1]}</td>
+                    <td>${names[n - 1]}</td>
+                    <td>${book1[n - 1] || '-'}</td>
+                    <td>${book2[n - 1] || '-'}</td>
+                    <td>${book3[n - 1] || '-'}</td>
+                    <td>${book4[n - 1] || '-'}</td>
+                    <td>${book5[n - 1] || '-'}</td>
+                    <td>${book6[n - 1] || '-'}</td>
+                    <td>${book7[n - 1] || '-'}</td>
+                    <td>${book8[n - 1] || '-'}</td>
+                    <td>${book9[n - 1] || '-'}</td>
+                    <td>${book10[n - 1] || '-'}</td>
+                    <td>${book11[n - 1] || '-'}</td>
+                    <td>${book12[n - 1] || '-'}</td>
+                `;
+            });
+            
+            section.style.display = 'block';
+        }
+        
+        window.prefillJournal = function(kingWen, transformedNum, movingLine) {
+            const question = document.getElementById('currentQuestion').value;
+            if (!question.trim()) {
+                alert('Please enter your question first!');
+                document.getElementById('currentQuestion').focus();
+                return;
+            }
+            
+            const hex = `#${kingWen} ${hexagrams[kingWen - 1]} → #${transformedNum} ${hexagrams[transformedNum - 1]} (Line ${movingLine})`;
+            const stemTime = selectedStem ? `${selectedStem} (${stemTimes[selectedStem]})` : '';
+            
+            // Save reading data for later viewing
+            const order = currentSequence === 'fuxi' ? fuxiOrder : kingWenOrder;
+            const lowerTrigram = selectedTrigramNatural;
+            const upperTrigram = order[(selectedTrigram + selectedStem > 8 ? selectedTrigram + selectedStem - 8 : selectedTrigram + selectedStem) - 1];
+            
+            const readingData = JSON.stringify({
+                lowerTrigram,
+                upperTrigram,
+                stem: selectedStem,
+                movingLine,
+                sequence: currentSequence,
+                kingWen,
+                transformedNum
+            });
+            
+            document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('journalStem').value = stemTime;
+            document.getElementById('journalQuestion').value = question;
+            document.getElementById('hex').value = hex;
+            document.getElementById('readingData').value = readingData;
+            document.getElementById('notes').focus();
+            
+            window.scrollTo({ top: document.querySelector('#journalDate').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        renderTrigrams();
+        displayJournal();
+    </script>
+</body>
+</html>
