@@ -963,11 +963,6 @@
         window.showRelevant = function(lowerTrigram, upperTrigram, movingLine, type = 'present') {
             const section = document.getElementById('relevantSection');
             
-            if (section.style.display === 'block') {
-                section.style.display = 'none';
-                return;
-            }
-            
             const original = iChingTable.getHexagram(lowerTrigram, upperTrigram);
             const transformed = getTransformedHexagram(lowerTrigram, upperTrigram, movingLine);
             const opposite = getOppositeHexagram(lowerTrigram, upperTrigram);
