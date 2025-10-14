@@ -871,8 +871,7 @@
             
             const sum = selectedTrigram + selectedStem;
             const upperPosition = sum > 8 ? sum - 8 : sum;
-            const movingLine = sum > 8 ? sum - 8 : sum;
-            
+            const movingLine = ((sum - 1) % 6) + 1;             
             // Use natural values for lookup
             const order = currentSequence === 'fuxi' ? fuxiOrder : kingWenOrder;
             const lowerTrigram = selectedTrigramNatural;
