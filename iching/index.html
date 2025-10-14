@@ -892,7 +892,7 @@
                     <h3>✨ Divination Result</h3>
                     
                     <!-- Compact Calculation Summary -->
-                        <div style="text-align: center; margin: 24px auto; max-width: 900px;">
+                    <div style="background: #fff; border: 2px solid #86efac; border-radius: 8px; padding: 12px; margin: 16px 0;">
                         <p style="margin: 4px 0; font-size: 0.95rem;"><strong>Lower:</strong> ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese}) ${selectedTrigram} + <strong>Stem:</strong> ${selectedStem} = ${sum}</p>
                         <p style="margin: 4px 0; font-size: 0.95rem;"><strong>Upper:</strong> ${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) ${upperPosition} | Line: <span style="color: #872323; font-weight: 700;">${movingLine}</span></p>
                     </div>
@@ -907,7 +907,7 @@
                                 <div style="font-size: 6rem; line-height: 1; width: 120px; text-align: center;">${hexSymbol}</div>
                                 <div style="width: 120px;">
                                     <div style="font-size: 1.05rem; font-weight: 700; margin: 12px 0 6px; text-align: right;">#${kingWen} ${hexName}</div>
-                                    <div style="font-size: 0.85rem; color: #166534; text-align: right; white-space: nowrap;">${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) / ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese})</div>
+                                    <div style="font-size: 0.85rem; color: #166534; text-align: right;">${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) / ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese})</div>
                                 </div>
                             </div>
                             
@@ -920,7 +920,7 @@
                                 <div style="font-size: 6rem; line-height: 1; width: 120px; text-align: center;">${transformedSymbol}</div>
                                 <div style="width: 120px;">
                                     <div style="font-size: 1.05rem; font-weight: 700; margin: 12px 0 6px; text-align: left;">#${transformedNum} ${transformedName}</div>
-                                    <div style="font-size: 0.85rem; color: #166534; text-align: left; white-space: nowrap;">${trigrams[transformedTrigrams.upper].english} (${trigrams[transformedTrigrams.upper].chinese}) / ${trigrams[transformedTrigrams.lower].english} (${trigrams[transformedTrigrams.lower].chinese})</div>
+                                    <div style="font-size: 0.85rem; color: #166534; text-align: left;">${trigrams[transformedTrigrams.upper].english} (${trigrams[transformedTrigrams.upper].chinese}) / ${trigrams[transformedTrigrams.lower].english} (${trigrams[transformedTrigrams.lower].chinese})</div>
                                 </div>
                             </div>     
                     </div>
