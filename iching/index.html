@@ -871,7 +871,8 @@
             
             const sum = selectedTrigram + selectedStem;
             const upperPosition = sum > 8 ? sum - 8 : sum;
-            const movingLine = ((sum - 1) % 6) + 1;             
+            const movingLine = ((sum - 1) % 6) + 1;
+            
             // Use natural values for lookup
             const order = currentSequence === 'fuxi' ? fuxiOrder : kingWenOrder;
             const lowerTrigram = selectedTrigramNatural;
@@ -894,35 +895,33 @@
                     <!-- Compact Calculation Summary -->
                     <div style="background: #fff; border: 2px solid #86efac; border-radius: 8px; padding: 12px; margin: 16px 0;">
                         <p style="margin: 4px 0; font-size: 0.95rem;"><strong>Lower:</strong> ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese}) ${selectedTrigram} + <strong>Stem:</strong> ${selectedStem} = ${sum}</p>
-                        <p style="margin: 4px 0; font-size: 0.95rem;"><strong>Upper:</strong> ${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) ${upperPosition} | Line: <span style="color: #872323; font-weight: 700;">${movingLine}</span></p>
+                        <p style="margin: 4px 0; font-size: 0.95rem;"><strong>Upper:</strong> ${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) ${upperPosition} | Line: <span style="color: #b91c1c; font-weight: 700;">${movingLine}</span></p>
                     </div>
                     
-                    <!-- Hexagram Comparison - Centered & Compact -->
-                    <div style="text-align: center; margin: 24px auto;">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 20px 0;">
-                            
-                            <!-- Present Hexagram -->
-                            <div style="display: inline-block;">
-                                <div style="font-size: 0.85rem; font-weight: 600; color: #166534; margin-bottom: 8px;">PRESENT</div>
-                                <div style="font-size: 6rem; line-height: 1; width: 120px; text-align: center;">${hexSymbol}</div>
-                                <div style="width: 120px;">
-                                    <div style="font-size: 1.05rem; font-weight: 700; margin: 12px 0 6px; text-align: right;">#${kingWen} ${hexName}</div>
-                                    <div style="font-size: 0.85rem; color: #166534; text-align: right;">${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) / ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese})</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Arrow -->
-                            <div style="font-size: 2.5rem; color: #10b981; margin: 0 -10px;">→</div>
-                            
-                            <!-- Future Hexagram -->
-                            <div style="display: inline-block;">
-                                <div style="font-size: 0.85rem; font-weight: 600; color: #166534; margin-bottom: 8px;">FUTURE</div>
-                                <div style="font-size: 6rem; line-height: 1; width: 120px; text-align: center;">${transformedSymbol}</div>
-                                <div style="width: 120px;">
-                                    <div style="font-size: 1.05rem; font-weight: 700; margin: 12px 0 6px; text-align: left;">#${transformedNum} ${transformedName}</div>
-                                    <div style="font-size: 0.85rem; color: #166534; text-align: left;">${trigrams[transformedTrigrams.upper].english} (${trigrams[transformedTrigrams.upper].chinese}) / ${trigrams[transformedTrigrams.lower].english} (${trigrams[transformedTrigrams.lower].chinese})</div>
-                                </div>
-                            </div>     
+                    <!-- Hexagram Comparison -->
+                    <div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; margin: 32px 0;">
+                        
+                        <!-- Present Hexagram -->
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.85rem; font-weight: 600; color: #166534; margin-bottom: 8px;">PRESENT</div>
+                            <div style="font-size: 6rem; line-height: 1; margin-bottom: 16px;">${hexSymbol}</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: #1f2937; margin-bottom: 4px;">#${kingWen}</div>
+                            <div style="font-size: 1rem; font-weight: 600; color: #374151; margin-bottom: 6px;">${hexName}</div>
+                            <div style="font-size: 0.85rem; color: #166534; white-space: nowrap;">${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) / ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese})</div>
+                        </div>
+                        
+                        <!-- Arrow -->
+                        <div style="font-size: 3rem; color: #10b981; align-self: center; padding-top: 60px;">→</div>
+                        
+                        <!-- Future Hexagram -->
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.85rem; font-weight: 600; color: #166534; margin-bottom: 8px;">FUTURE</div>
+                            <div style="font-size: 6rem; line-height: 1; margin-bottom: 16px;">${transformedSymbol}</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: #1f2937; margin-bottom: 4px;">#${transformedNum}</div>
+                            <div style="font-size: 1rem; font-weight: 600; color: #374151; margin-bottom: 6px;">${transformedName}</div>
+                            <div style="font-size: 0.85rem; color: #166534; white-space: nowrap;">${trigrams[transformedTrigrams.upper].english} (${trigrams[transformedTrigrams.upper].chinese}) / ${trigrams[transformedTrigrams.lower].english} (${trigrams[transformedTrigrams.lower].chinese})</div>
+                        </div>
+                        
                     </div>
                     
                     <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; justify-content: center;">
@@ -931,8 +930,7 @@
                     </div>
                 </div>
             `;
-        }
-
+}
         function checkSelection() {
             const divineBtn = document.getElementById('divineBtn');
             if (selectedTrigram && selectedStem) {
