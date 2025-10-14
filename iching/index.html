@@ -943,7 +943,8 @@
                     </div>
                     
                     <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; justify-content: center;">
-                        <button onclick="showRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine})" class="btn-info">🔗 Show Related Hexagrams</button>
+                        <button onclick="showRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine}, 'present')" class="btn-info">🔗 Related: Present</button>
+                        <button onclick="showRelevant(${transformedTrigrams.lower}, ${transformedTrigrams.upper}, ${movingLine}, 'future')" class="btn-info">🔗 Related: Future</button>
                         <button onclick="prefillJournal(${kingWen}, ${transformedNum}, ${movingLine})" class="btn-success">📝 Add to Journal</button>
                     </div>
                 </div>
@@ -959,7 +960,7 @@
             }
         }
 
-        window.showRelevant = function(lowerTrigram, upperTrigram, movingLine) {
+        window.showRelevant = function(lowerTrigram, upperTrigram, movingLine, type = 'present') {
             const section = document.getElementById('relevantSection');
             
             if (section.style.display === 'block') {
@@ -973,9 +974,10 @@
             const reverse = getReverseHexagram(lowerTrigram, upperTrigram);
             const nuclear = getNuclearHexagram(lowerTrigram, upperTrigram);
         
+            const label = type === 'present' ? 'Present' : 'Future';
             const related = [
-                { label: 'Present (Original)', num: original },
-                { label: 'Future (Transformed)', num: transformed },
+                { label: `${label} (Original)`, num: original },
+                { label: 'Transformed', num: transformed },
                 { label: 'Opposite (Inverse)', num: opposite },
                 { label: 'Reverse', num: reverse },
                 { label: 'Nuclear (Mutual)', num: nuclear }
