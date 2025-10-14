@@ -390,6 +390,50 @@
             align-items: center;
             justify-content: space-between;
         }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: sticky;
+            top: 0;
+            right: 0;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #6b7280;
+            cursor: pointer;
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            z-index: 10;
+        }
+        
+        .modal-close:hover {
+            color: #1f2937;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen p-6">
@@ -549,6 +593,7 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Notes & Interpretation</label>
                     <textarea id="notes" class="input-field" placeholder="Add your insights, interpretation, and reflections..."></textarea>
                 </div>
+                <input type="hidden" id="readingData">
                 <div class="flex gap-3">
                     <button type="submit" class="btn-success">💾 Save to Journal</button>
                     <button type="button" onclick="clearJournalForm()" class="btn-secondary">Clear Form</button>
@@ -569,12 +614,20 @@
                             <th>Question</th>
                             <th style="width: 200px;">Hexagram</th>
                             <th>Notes</th>
-                            <th style="width: 140px;">Actions</th>
+                            <th style="width: 180px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="journalBody"></tbody>
                 </table>
             </div>
+        </div>
+    </div>
+    
+    <!-- Modal for View Reading -->
+    <div id="readingModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div id="modalReadingContent"></div>
         </div>
     </div>
 
@@ -765,18 +818,19 @@
             const question = document.getElementById('journalQuestion').value;
             const hex = document.getElementById('hex').value;
             const notes = document.getElementById('notes').value;
+            const readingData = document.getElementById('readingData').value;
             
             if (!date || !question || !hex) return alert('Please add date, question and hexagram!');
             
             if (editingEntryId) {
                 const index = journal.findIndex(e => e.id === editingEntryId);
                 if (index !== -1) {
-                    journal[index] = { id: editingEntryId, date, stem, question, hex, notes };
+                    journal[index] = { id: editingEntryId, date, stem, question, hex, notes, readingData };
                     alert('Entry updated!');
                 }
                 editingEntryId = null;
             } else {
-                const entry = { id: Date.now(), date, stem, question, hex, notes };
+                const entry = { id: Date.now(), date, stem, question, hex, notes, readingData };
                 journal.unshift(entry);
                 alert('Entry saved to journal!');
             }
@@ -792,6 +846,7 @@
             document.getElementById('journalQuestion').value = '';
             document.getElementById('hex').value = '';
             document.getElementById('notes').value = '';
+            document.getElementById('readingData').value = '';
             editingEntryId = null;
         }
 
@@ -809,12 +864,15 @@
                     this.classList.add('highlighted');
                 };
                 const dateDisplay = entry.stem ? `${entry.date}<br><span style="font-size:0.8rem;color:#6b7280;">${entry.stem}</span>` : entry.date;
+                const hasReading = entry.readingData ? true : false;
+                const viewBtn = hasReading ? `<button onclick="event.stopPropagation(); viewReading(${entry.id})" class="btn-info" style="padding: 6px 14px; font-size: 0.875rem; margin-right: 4px;">View</button>` : '';
                 row.innerHTML = `
                     <td>${dateDisplay}</td>
                     <td>${entry.question}</td>
                     <td>${entry.hex}</td>
                     <td>${entry.notes || '-'}</td>
                     <td style="text-align:center;">
+                        ${viewBtn}
                         <button onclick="event.stopPropagation(); editEntry(${entry.id})" class="btn-info" style="padding: 6px 14px; font-size: 0.875rem; margin-right: 4px;">Edit</button>
                         <button onclick="event.stopPropagation(); deleteEntry(${entry.id})" class="btn-danger">Delete</button>
                     </td>
@@ -832,6 +890,7 @@
             document.getElementById('journalQuestion').value = entry.question;
             document.getElementById('hex').value = entry.hex;
             document.getElementById('notes').value = entry.notes || '';
+            document.getElementById('readingData').value = entry.readingData || '';
             
             window.scrollTo({ top: document.querySelector('#journalDate').offsetTop - 100, behavior: 'smooth' });
         }
@@ -841,6 +900,73 @@
             journal = journal.filter(e => e.id !== id);
             localStorage.setItem('ichingJournal', JSON.stringify(journal));
             displayJournal();
+        }
+        
+        window.viewReading = function(id) {
+            const entry = journal.find(e => e.id === id);
+            if (!entry || !entry.readingData) return;
+            
+            const data = JSON.parse(entry.readingData);
+            const { lowerTrigram, upperTrigram, stem, movingLine, kingWen, transformedNum } = data;
+            
+            const hexSymbol = hexagrams[kingWen - 1];
+            const hexName = names[kingWen - 1];
+            const transformedSymbol = hexagrams[transformedNum - 1];
+            const transformedName = names[transformedNum - 1];
+            const transformedTrigrams = getTransformedTrigrams(lowerTrigram, upperTrigram, movingLine);
+            
+            const sum = (lowerTrigram <= 8 ? lowerTrigram : lowerTrigram % 8) + stem;
+            const upperPosition = sum > 8 ? sum - 8 : sum;
+            
+            document.getElementById('modalReadingContent').innerHTML = `
+                <div class="result-box" style="margin: 0;">
+                    <h3>✨ Saved Reading</h3>
+                    
+                    <div style="background: #fff; border: 2px solid #86efac; border-radius: 8px; padding: 10px; margin: 16px auto; max-width: 500px; text-align: center;">
+                        <p style="margin: 4px 0; font-size: 0.85rem;"><strong>Lower:</strong> ${trigrams[lowerTrigram].english} (${trigrams[lowerTrigram].chinese}) + <strong>Stem:</strong> ${stem} = ${sum}</p>
+                        <p style="margin: 4px 0; font-size: 0.85rem;"><strong>Upper:</strong> ${trigrams[upperTrigram].english} (${trigrams[upperTrigram].chinese}) ${upperPosition} | Line: <span style="color: #b91c1c; font-weight: 700;">${movingLine}</span></p>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: center; align-items: flex-start; gap: 15px; margin: 24px 0;">
+                        
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.75rem; font-weight: 600; color: #166534; margin-bottom: 6px;">PRESENT</div>
+                            <div style="font-size: 4.5rem; line-height: 1; margin-bottom: 12px;">${hexSymbol}</div>
+                            <div style="font-size: 0.95rem; font-weight: 700; color: #1f2937; margin-bottom: 3px;">#${kingWen}</div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #374151; margin-bottom: 5px;">${hexName}</div>
+                            <div style="font-size: 0.75rem; color: #166534; white-space: nowrap;">${trigrams[upperTrigram].english} / ${trigrams[lowerTrigram].english}</div>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.75rem; font-weight: 600; color: #166534; margin-bottom: 6px;">FUTURE</div>
+                            <div style="font-size: 4.5rem; line-height: 1; margin-bottom: 12px;">${transformedSymbol}</div>
+                            <div style="font-size: 0.95rem; font-weight: 700; color: #1f2937; margin-bottom: 3px;">#${transformedNum}</div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #374151; margin-bottom: 5px;">${transformedName}</div>
+                            <div style="font-size: 0.75rem; color: #166534; white-space: nowrap;">${trigrams[transformedTrigrams.upper].english} / ${trigrams[transformedTrigrams.lower].english}</div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; justify-content: center;">
+                        <button onclick="showRelevant(${lowerTrigram}, ${upperTrigram}, ${movingLine}, 'present')" class="btn-info">🔗 Related: Present</button>
+                        <button onclick="showRelevant(${transformedTrigrams.lower}, ${transformedTrigrams.upper}, ${movingLine}, 'future')" class="btn-info">🔗 Related: Future</button>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 16px; background: #f9fafb; border-radius: 8px;">
+                        <p style="margin: 8px 0; color: #374151;"><strong>Question:</strong> ${entry.question}</p>
+                        <p style="margin: 8px 0; color: #374151;"><strong>Date:</strong> ${entry.date} ${entry.stem ? `- ${entry.stem}` : ''}</p>
+                        ${entry.notes ? `<p style="margin: 8px 0; color: #374151;"><strong>Notes:</strong> ${entry.notes}</p>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('readingModal').style.display = 'flex';
+        }
+        
+        window.closeModal = function(event) {
+            if (!event || event.target.id === 'readingModal') {
+                document.getElementById('readingModal').style.display = 'none';
+            }
         }
 
         window.exportJournal = function() {
@@ -1031,10 +1157,26 @@
             const hex = `#${kingWen} ${hexagrams[kingWen - 1]} → #${transformedNum} ${hexagrams[transformedNum - 1]} (Line ${movingLine})`;
             const stemTime = selectedStem ? `${selectedStem} (${stemTimes[selectedStem]})` : '';
             
+            // Save reading data for later viewing
+            const order = currentSequence === 'fuxi' ? fuxiOrder : kingWenOrder;
+            const lowerTrigram = selectedTrigramNatural;
+            const upperTrigram = order[(selectedTrigram + selectedStem > 8 ? selectedTrigram + selectedStem - 8 : selectedTrigram + selectedStem) - 1];
+            
+            const readingData = JSON.stringify({
+                lowerTrigram,
+                upperTrigram,
+                stem: selectedStem,
+                movingLine,
+                sequence: currentSequence,
+                kingWen,
+                transformedNum
+            });
+            
             document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('journalStem').value = stemTime;
             document.getElementById('journalQuestion').value = question;
             document.getElementById('hex').value = hex;
+            document.getElementById('readingData').value = readingData;
             document.getElementById('notes').focus();
             
             window.scrollTo({ top: document.querySelector('#journalDate').offsetTop - 100, behavior: 'smooth' });
