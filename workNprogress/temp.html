@@ -1,154 +1,154 @@
-import { useState } from 'react';
-
-export default function TaoTeChingDivination() {
-  const [lines, setLines] = useState([null, null, null, null]);
-  const [verseNumber, setVerseNumber] = useState(null);
-  const [history, setHistory] = useState([]);
-
-  const generateDivination = () => {
-    // Generate 4 random lines: 0 = solid (yang), 1 = broken (yin), 2 = dashed (old yin)
-    const newLines = [
-      Math.floor(Math.random() * 3),
-      Math.floor(Math.random() * 3),
-      Math.floor(Math.random() * 3),
-      Math.floor(Math.random() * 3)
-    ];
-    setLines(newLines);
-
-    // Convert base-3 to decimal (0-80), then map to verse (1-81)
-    const base3Value = newLines.reduce((acc, val, idx) => {
-      return acc + (val * Math.pow(3, 3 - idx));
-    }, 0);
-
-    const verse = base3Value + 1;
-    
-    setVerseNumber(verse);
-    setHistory([...history, verse]);
-  };
-
-  const reset = () => {
-    setLines([null, null, null, null]);
-    setVerseNumber(null);
-  };
-
-  const renderLine = (lineType) => {
-    const lineStyle = {
-      height: '12px',
-      backgroundColor: 'white',
-      display: 'inline-block'
-    };
-
-    if (lineType === null) {
-      return (
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-          <div style={{ ...lineStyle, width: '24px' }}></div>
-          <div style={{ ...lineStyle, width: '24px' }}></div>
-          <div style={{ ...lineStyle, width: '24px' }}></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tao Te Ching - I Ching Divination</title>
+    <style>
+        body { background: linear-gradient(to bottom right, #1e293b, #334155, #0f172a); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 500px; width: 100%; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 60px; margin: 0 0 10px 0; }
+        .header h2 { font-size: 36px; font-weight: bold; color: white; margin: 0 0 8px 0; }
+        .header p { color: #cbd5e1; margin: 0; }
+        .card { background: #475569; border-radius: 12px; padding: 40px; box-shadow: 0 20px 25px rgba(0,0,0,0.3); border: 1px solid #64748b; }
+        .lines-display { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 4px; }
+        .line-segment { background-color: white; height: 12px; display: inline-block; }
+        .solid { width: 80px; }
+        .broken-line { display: flex; gap: 16px; justify-content: center; }
+        .broken-segment { width: 32px; }
+        .dashed-line { display: flex; gap: 6px; justify-content: center; }
+        .dashed-segment { width: 26px; }
+        .verse-display { text-align: center; padding: 20px; background: #334155; border-radius: 8px; margin-bottom: 20px; }
+        .verse-label { color: #cbd5e1; font-size: 14px; margin-bottom: 8px; }
+        .verse-number { font-size: 48px; font-weight: bold; color: #fbbf24; }
+        .instruction { text-align: center; padding: 20px; background: #334155; border-radius: 8px; margin-bottom: 20px; color: #cbd5e1; font-size: 14px; }
+        .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
+        button { flex: 1; font-weight: bold; padding: 14px 16px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: all 0.2s; }
+        .generate-btn { background: #b45309; color: white; }
+        .generate-btn:hover { background: #92400e; }
+        .reset-btn { background: #64748b; color: white; }
+        .reset-btn:hover { background: #475569; }
+        .history { margin-top: 30px; background: #475569; border-radius: 12px; padding: 20px; border: 1px solid #64748b; display: none; }
+        .history.show { display: block; }
+        .history h3 { color: white; margin: 0 0 12px 0; font-size: 14px; font-weight: bold; }
+        .history-items { display: flex; flex-wrap: wrap; gap: 8px; }
+        .history-item { background: #334155; color: #fbbf24; font-weight: bold; padding: 6px 12px; border-radius: 6px; font-size: 13px; }
+        .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☯</h1>
+            <h2>Tao Te Ching</h2>
+            <p>I Ching Verse Selector</p>
         </div>
-      );
-    } else if (lineType === 0) {
-      // Solid line
-      return <div style={{ ...lineStyle, width: '80px', marginBottom: '8px' }}></div>;
-    } else if (lineType === 1) {
-      // Broken line (two segments)
-      return (
-        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px' }}>
-          <div style={{ ...lineStyle, width: '32px' }}></div>
-          <div style={{ ...lineStyle, width: '32px' }}></div>
-        </div>
-      );
-    } else {
-      // Dashed line (three segments)
-      return (
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '8px' }}>
-          <div style={{ ...lineStyle, width: '20px' }}></div>
-          <div style={{ ...lineStyle, width: '20px' }}></div>
-          <div style={{ ...lineStyle, width: '20px' }}></div>
-        </div>
-      );
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-      <div className="max-w-md mx-auto">
-        {/* Title */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-2">☯</h1>
-          <h2 className="text-3xl font-bold text-white mb-2">Tao Te Ching</h2>
-          <p className="text-slate-300">I Ching Verse Selector</p>
-        </div>
-
-        {/* Card */}
-        <div className="bg-slate-700 rounded-lg p-8 shadow-2xl border border-slate-600">
-          
-          {/* Yin/Yang Lines Display */}
-          <div className="mb-8 flex flex-col items-center" style={{lineHeight: '0.2'}}>
-            {lines.map((line, idx) => (
-              <div key={idx} className="flex justify-center">
-                {renderLine(line)}
-              </div>
-            ))}
-          </div>
-
-          {/* Verse Number Display */}
-          {verseNumber && (
-            <div className="text-center mb-8 p-4 bg-slate-600 rounded">
-              <p className="text-slate-300 text-sm mb-1">Your Verse</p>
-              <p className="text-5xl font-bold text-yellow-400">Verse {verseNumber}</p>
+        <div class="card">
+            <div class="lines-display" id="linesDisplay"></div>
+            <div id="verseDisplay"></div>
+            <div class="button-group">
+                <button class="generate-btn" onclick="generateDivination()">Generate</button>
+                <button class="reset-btn" onclick="reset()">Reset</button>
             </div>
-          )}
-
-          {/* Instructions */}
-          {!verseNumber && (
-            <div className="text-center mb-8 p-4 bg-slate-600 rounded">
-              <p className="text-slate-300 text-sm">
-                Click "Generate" to cast your divination and receive a verse for meditation
-              </p>
+            <div class="history" id="historySection">
+                <h3>Recent Verses</h3>
+                <div class="history-items" id="historyItems"></div>
             </div>
-          )}
-
-          {/* Buttons */}
-          <div className="flex gap-3 mb-6">
-            <button
-              onClick={generateDivination}
-              className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded transition"
-            >
-              Generate
-            </button>
-            <button
-              onClick={reset}
-              className="flex-1 bg-slate-500 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded transition"
-            >
-              Reset
-            </button>
-          </div>
-
-
         </div>
-
-        {/* History */}
-        {history.length > 0 && (
-          <div className="mt-8 bg-slate-700 rounded-lg p-6 border border-slate-600">
-            <h3 className="text-white font-bold mb-3">Recent Verses</h3>
-            <div className="flex flex-wrap gap-2">
-              {history.map((verse, idx) => (
-                <div
-                  key={idx}
-                  className="bg-slate-600 text-yellow-400 font-bold py-1 px-3 rounded text-sm"
-                >
-                  {verse}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Footer Note */}
-        <p className="text-center text-slate-500 text-xs mt-8">
-          Use this to randomly select a verse from the Tao Te Ching (1-81) for your daily study
-        </p>
-      </div>
+        <p class="footer">Use this to randomly select a verse from the Tao Te Ching (1-81) for your daily study</p>
     </div>
-  );
-}
+    <script>
+        var lines = [null, null, null, null];
+        var verseNumber = null;
+        var history = [];
+        function createLineDisplay(lineType) {
+            var wrapper = document.createElement('div');
+            if (lineType === 0) {
+                var solid = document.createElement('div');
+                solid.className = 'line-segment solid';
+                wrapper.appendChild(solid);
+            } else if (lineType === 1) {
+                var broken = document.createElement('div');
+                broken.className = 'broken-line';
+                var seg1 = document.createElement('div');
+                seg1.className = 'line-segment broken-segment';
+                var seg2 = document.createElement('div');
+                seg2.className = 'line-segment broken-segment';
+                broken.appendChild(seg1);
+                broken.appendChild(seg2);
+                wrapper.appendChild(broken);
+            } else if (lineType === 2) {
+                var dashed = document.createElement('div');
+                dashed.className = 'dashed-line';
+                var d1 = document.createElement('div');
+                d1.className = 'line-segment dashed-segment';
+                var d2 = document.createElement('div');
+                d2.className = 'line-segment dashed-segment';
+                var d3 = document.createElement('div');
+                d3.className = 'line-segment dashed-segment';
+                dashed.appendChild(d1);
+                dashed.appendChild(d2);
+                dashed.appendChild(d3);
+                wrapper.appendChild(dashed);
+            } else {
+                var empty = document.createElement('div');
+                empty.className = 'dashed-line';
+                empty.style.opacity = '0.3';
+                var e1 = document.createElement('div');
+                e1.className = 'line-segment dashed-segment';
+                var e2 = document.createElement('div');
+                e2.className = 'line-segment dashed-segment';
+                var e3 = document.createElement('div');
+                e3.className = 'line-segment dashed-segment';
+                empty.appendChild(e1);
+                empty.appendChild(e2);
+                empty.appendChild(e3);
+                wrapper.appendChild(empty);
+            }
+            return wrapper;
+        }
+        function updateDisplay() {
+            var display = document.getElementById('linesDisplay');
+            display.innerHTML = '';
+            for (var i = 0; i < lines.length; i++) {
+                display.appendChild(createLineDisplay(lines[i]));
+            }
+            var verseDiv = document.getElementById('verseDisplay');
+            if (verseNumber !== null) {
+                verseDiv.innerHTML = '<div class="verse-display"><div class="verse-label">Your Verse</div><div class="verse-number">Verse ' + verseNumber + '</div></div>';
+            } else {
+                verseDiv.innerHTML = '<div class="instruction">Click "Generate" to cast your divination and receive a verse for meditation</div>';
+            }
+            if (history.length > 0) {
+                var histSection = document.getElementById('historySection');
+                histSection.classList.add('show');
+                var histItems = document.getElementById('historyItems');
+                histItems.innerHTML = '';
+                for (var h = 0; h < history.length; h++) {
+                    var item = document.createElement('div');
+                    item.className = 'history-item';
+                    item.textContent = history[h];
+                    histItems.appendChild(item);
+                }
+            }
+        }
+        function generateDivination() {
+            lines[0] = Math.floor(Math.random() * 3);
+            lines[1] = Math.floor(Math.random() * 3);
+            lines[2] = Math.floor(Math.random() * 3);
+            lines[3] = Math.floor(Math.random() * 3);
+            var base3 = lines[0] * 27 + lines[1] * 9 + lines[2] * 3 + lines[3];
+            verseNumber = base3 + 1;
+            history.push(verseNumber);
+            updateDisplay();
+        }
+        function reset() {
+            lines = [null, null, null, null];
+            verseNumber = null;
+            updateDisplay();
+        }
+        updateDisplay();
+    </script>
+</body>
+</html>
