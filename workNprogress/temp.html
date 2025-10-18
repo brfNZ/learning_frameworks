@@ -1,99 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Tao Te Ching Diviner</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tao Te Ching - I Ching Divination</title>
     <style>
-        body { background: #1e293b; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: Arial; margin: 0; }
-        .container { background: #475569; padding: 40px; border-radius: 12px; text-align: center; max-width: 400px; }
-        h1 { color: white; margin: 0 0 10px 0; }
-        .subtitle { color: #cbd5e1; margin-bottom: 30px; }
-        .lines { margin: 30px 0; }
-        .line { margin: 8px 0; display: flex; justify-content: center; }
-        .segment { background: white; height: 12px; }
+        body { background: linear-gradient(to bottom right, #1e293b, #334155, #0f172a); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 500px; width: 100%; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 60px; margin: 0 0 10px 0; }
+        .header h2 { font-size: 36px; font-weight: bold; color: white; margin: 0 0 8px 0; }
+        .header p { color: #cbd5e1; margin: 0; }
+        .card { background: #475569; border-radius: 12px; padding: 40px; box-shadow: 0 20px 25px rgba(0,0,0,0.3); border: 1px solid #64748b; }
+        .lines-display { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 4px; }
+        .line-segment { background-color: white; height: 12px; display: inline-block; }
         .solid { width: 80px; }
-        .seg { width: 32px; margin: 0 8px; }
-        .small { width: 26px; margin: 0 3px; }
-        .verse { font-size: 48px; color: #fbbf24; font-weight: bold; margin: 20px 0; }
-        button { padding: 12px 20px; margin: 5px; font-size: 16px; cursor: pointer; border: none; border-radius: 8px; }
-        .gen { background: #b45309; color: white; }
-        .res { background: #64748b; color: white; }
-        .history { margin-top: 20px; }
-        .item { display: inline-block; background: #334155; color: #fbbf24; padding: 5px 10px; margin: 3px; border-radius: 5px; }
+        .broken-line { display: flex; gap: 16px; justify-content: center; }
+        .broken-segment { width: 32px; }
+        .dashed-line { display: flex; gap: 6px; justify-content: center; }
+        .dashed-segment { width: 26px; }
+        .verse-display { text-align: center; padding: 20px; background: #334155; border-radius: 8px; margin-bottom: 20px; }
+        .verse-label { color: #cbd5e1; font-size: 14px; margin-bottom: 8px; }
+        .verse-number { font-size: 48px; font-weight: bold; color: #fbbf24; }
+        .instruction { text-align: center; padding: 20px; background: #334155; border-radius: 8px; margin-bottom: 20px; color: #cbd5e1; font-size: 14px; }
+        .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
+        button { flex: 1; font-weight: bold; padding: 14px 16px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: all 0.2s; }
+        .generate-btn { background: #b45309; color: white; }
+        .generate-btn:hover { background: #92400e; }
+        .reset-btn { background: #64748b; color: white; }
+        .reset-btn:hover { background: #475569; }
+        .history { margin-top: 30px; background: #475569; border-radius: 12px; padding: 20px; border: 1px solid #64748b; display: none; }
+        .history.show { display: block; }
+        .history h3 { color: white; margin: 0 0 12px 0; font-size: 14px; font-weight: bold; }
+        .history-items { display: flex; flex-wrap: wrap; gap: 8px; }
+        .history-item { background: #334155; color: #fbbf24; font-weight: bold; padding: 6px 12px; border-radius: 6px; font-size: 13px; }
+        .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>☯ Tao Te Ching</h1>
-        <div class="subtitle">I Ching Verse Selector</div>
-        
-        <div class="lines" id="lines"></div>
-        <div class="verse" id="verse">---</div>
-        
-        <button class="gen" onclick="generate()">Generate</button>
-        <button class="res" onclick="resetApp()">Reset</button>
-        
-        <div class="history" id="history"></div>
+        <div class="header">
+            <h1>☯</h1>
+            <h2>Tao Te Ching</h2>
+            <p>I Ching Verse Selector</p>
+        </div>
+        <div class="card">
+            <div class="lines-display" id="linesDisplay"></div>
+            <div id="verseDisplay"></div>
+            <div class="button-group">
+                <button class="generate-btn" id="genBtn">Generate</button>
+                <button class="reset-btn" id="resetBtn">Reset</button>
+            </div>
+            <div class="history" id="historySection">
+                <h3>Recent Verses</h3>
+                <div class="history-items" id="historyItems"></div>
+            </div>
+        </div>
+        <p class="footer">Use this to randomly select a verse from the Tao Te Ching (1-81) for your daily study</p>
     </div>
 
     <script>
-        var lines = [null, null, null, null];
-        var verse = null;
-        var hist = [];
+        var state = {
+            lines: [null, null, null, null],
+            verseNumber: null,
+            history: []
+        };
 
-        function drawLine(type) {
+        function getLineHTML(type) {
             if (type === 0) {
-                return '<div class="line"><div class="segment solid"></div></div>';
+                return '<div class="line-segment solid"></div>';
             } else if (type === 1) {
-                return '<div class="line"><div class="segment seg"></div><div class="segment seg"></div></div>';
+                return '<div class="broken-line"><div class="line-segment broken-segment"></div><div class="line-segment broken-segment"></div></div>';
             } else if (type === 2) {
-                return '<div class="line"><div class="segment small"></div><div class="segment small"></div><div class="segment small"></div></div>';
+                return '<div class="dashed-line"><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div></div>';
             } else {
-                return '<div class="line" style="opacity: 0.3;"><div class="segment small"></div><div class="segment small"></div><div class="segment small"></div></div>';
+                return '<div class="dashed-line" style="opacity:0.3"><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div></div>';
             }
         }
 
-        function display() {
-            var html = '';
+        function updateDisplay() {
+            var linesHTML = '';
             for (var i = 0; i < 4; i++) {
-                html += drawLine(lines[i]);
+                linesHTML += getLineHTML(state.lines[i]);
             }
-            document.getElementById('lines').innerHTML = html;
+            document.getElementById('linesDisplay').innerHTML = linesHTML;
 
-            if (verse) {
-                document.getElementById('verse').innerHTML = 'Verse ' + verse;
+            var verseHTML = '';
+            if (state.verseNumber !== null) {
+                verseHTML = '<div class="verse-display"><div class="verse-label">Your Verse</div><div class="verse-number">Verse ' + state.verseNumber + '</div></div>';
             } else {
-                document.getElementById('verse').innerHTML = '---';
+                verseHTML = '<div class="instruction">Click "Generate" to cast your divination and receive a verse for meditation</div>';
             }
+            document.getElementById('verseDisplay').innerHTML = verseHTML;
 
-            if (hist.length > 0) {
-                var h = '';
-                for (var j = 0; j < hist.length; j++) {
-                    h += '<div class="item">' + hist[j] + '</div>';
+            if (state.history.length > 0) {
+                document.getElementById('historySection').classList.add('show');
+                var histHTML = '';
+                for (var h = 0; h < state.history.length; h++) {
+                    histHTML += '<div class="history-item">' + state.history[h] + '</div>';
                 }
-                document.getElementById('history').innerHTML = h;
+                document.getElementById('historyItems').innerHTML = histHTML;
             }
         }
 
         function generate() {
-            lines[0] = Math.floor(Math.random() * 3);
-            lines[1] = Math.floor(Math.random() * 3);
-            lines[2] = Math.floor(Math.random() * 3);
-            lines[3] = Math.floor(Math.random() * 3);
+            state.lines[0] = Math.floor(Math.random() * 3);
+            state.lines[1] = Math.floor(Math.random() * 3);
+            state.lines[2] = Math.floor(Math.random() * 3);
+            state.lines[3] = Math.floor(Math.random() * 3);
 
-            var v = lines[0] * 27 + lines[1] * 9 + lines[2] * 3 + lines[3] + 1;
-            verse = v;
-            hist.push(v);
+            var base3 = state.lines[0] * 27 + state.lines[1] * 9 + state.lines[2] * 3 + state.lines[3];
+            state.verseNumber = base3 + 1;
+            state.history.push(state.verseNumber);
 
-            display();
+            updateDisplay();
         }
 
         function resetApp() {
-            lines = [null, null, null, null];
-            verse = null;
-            display();
+            state.lines = [null, null, null, null];
+            state.verseNumber = null;
+            updateDisplay();
         }
 
-        display();
+        document.getElementById('genBtn').addEventListener('click', generate);
+        document.getElementById('resetBtn').addEventListener('click', resetApp);
+
+        updateDisplay();
     </script>
 </body>
 </html>
