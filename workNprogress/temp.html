@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tao Te Ching - I Ching Divination</title>
+    <title>Tao Te Ching - Journal & Divination</title>
     <style>
-        body { background: linear-gradient(to bottom right, #1e293b, #334155, #0f172a); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 500px; width: 100%; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: linear-gradient(to bottom right, #1e293b, #334155, #0f172a); min-height: 100vh; font-family: system-ui, -apple-system, sans-serif; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 40px; }
-        .header h1 { font-size: 60px; margin: 0 0 10px 0; }
-        .header h2 { font-size: 36px; font-weight: bold; color: white; margin: 0 0 8px 0; }
-        .header p { color: #cbd5e1; margin: 0; }
-        .card { background: #475569; border-radius: 12px; padding: 40px; box-shadow: 0 20px 25px rgba(0,0,0,0.3); border: 1px solid #64748b; }
+        .header h1 { font-size: 60px; margin-bottom: 10px; }
+        .header h2 { font-size: 36px; font-weight: bold; color: white; margin-bottom: 8px; }
+        .header p { color: #cbd5e1; }
+        .main { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 1000px) { .main { grid-template-columns: 1fr; } }
+        .card { background: #475569; border-radius: 12px; padding: 30px; box-shadow: 0 20px 25px rgba(0,0,0,0.3); border: 1px solid #64748b; }
         .lines-display { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 4px; }
         .line-segment { background-color: white; height: 12px; display: inline-block; }
         .solid { width: 80px; }
@@ -24,17 +27,25 @@
         .verse-number { font-size: 48px; font-weight: bold; color: #fbbf24; }
         .instruction { text-align: center; padding: 20px; background: #334155; border-radius: 8px; margin-bottom: 20px; color: #cbd5e1; font-size: 14px; }
         .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
-        button { flex: 1; font-weight: bold; padding: 14px 16px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: all 0.2s; }
-        .generate-btn { background: #b45309; color: white; }
+        button { font-weight: bold; padding: 12px 16px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+        .generate-btn { background: #b45309; color: white; flex: 1; }
         .generate-btn:hover { background: #92400e; }
-        .reset-btn { background: #64748b; color: white; }
+        .reset-btn { background: #64748b; color: white; flex: 1; }
         .reset-btn:hover { background: #475569; }
-        .history { margin-top: 30px; background: #475569; border-radius: 12px; padding: 20px; border: 1px solid #64748b; display: none; }
-        .history.show { display: block; }
-        .history h3 { color: white; margin: 0 0 12px 0; font-size: 14px; font-weight: bold; }
-        .history-items { display: flex; flex-wrap: wrap; gap: 8px; }
-        .history-item { background: #334155; color: #fbbf24; font-weight: bold; padding: 6px 12px; border-radius: 6px; font-size: 13px; }
-        .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 20px; }
+        .save-btn { background: #059669; color: white; width: 100%; margin-bottom: 12px; }
+        .save-btn:hover { background: #047857; }
+        .export-btn { background: #7c3aed; color: white; width: 100%; }
+        .export-btn:hover { background: #6d28d9; }
+        textarea { width: 100%; height: 200px; padding: 12px; background: #334155; color: white; border: 1px solid #64748b; border-radius: 8px; font-family: system-ui; font-size: 14px; resize: vertical; }
+        textarea::placeholder { color: #94a3b8; }
+        .journal-section h3 { color: white; margin-bottom: 12px; font-size: 16px; }
+        .entries-list { max-height: 400px; overflow-y: auto; margin-bottom: 12px; }
+        .entry-item { background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid #64748b; transition: all 0.2s; }
+        .entry-item:hover { background: #3f4a5c; border-color: #fbbf24; }
+        .entry-date { color: #cbd5e1; font-size: 12px; }
+        .entry-verse { color: #fbbf24; font-weight: bold; font-size: 14px; }
+        .entry-preview { color: #cbd5e1; font-size: 12px; margin-top: 4px; }
+        .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; }
     </style>
 </head>
 <body>
@@ -42,29 +53,53 @@
         <div class="header">
             <h1>☯</h1>
             <h2>Tao Te Ching</h2>
-            <p>I Ching Verse Selector</p>
+            <p>Journal & I Ching Divination</p>
         </div>
-        <div class="card">
-            <div class="lines-display" id="linesDisplay"></div>
-            <div id="verseDisplay"></div>
-            <div class="button-group">
-                <button class="generate-btn" id="genBtn">Generate</button>
-                <button class="reset-btn" id="resetBtn">Reset</button>
+
+        <div class="main">
+            <!-- Divination Panel -->
+            <div class="card">
+                <div class="lines-display" id="linesDisplay"></div>
+                <div id="verseDisplay"></div>
+                <div class="button-group">
+                    <button class="generate-btn" id="genBtn">Generate</button>
+                    <button class="reset-btn" id="resetBtn">Reset</button>
+                </div>
             </div>
-            <div class="history" id="historySection">
-                <h3>Recent Verses</h3>
-                <div class="history-items" id="historyItems"></div>
+
+            <!-- Journal Panel -->
+            <div class="card journal-section">
+                <h3>Journal Entry</h3>
+                <textarea id="journalText" placeholder="Write your reflections here..."></textarea>
+                <button class="save-btn" id="saveBtn">Save Entry</button>
+                <button class="export-btn" id="exportBtn">Export to CSV</button>
+                
+                <h3 style="margin-top: 20px;">Past Entries</h3>
+                <div class="entries-list" id="entriesList"></div>
             </div>
         </div>
-        <p class="footer">Use this to randomly select a verse from the Tao Te Ching (1-81) for your daily study</p>
+
+        <p class="footer">Use this to randomly select a verse and journal your reflections</p>
     </div>
 
     <script>
         var state = {
             lines: [null, null, null, null],
             verseNumber: null,
-            history: []
+            currentEditId: null,
+            entries: []
         };
+
+        function loadEntries() {
+            var saved = localStorage.getItem('taoEntries');
+            if (saved) {
+                state.entries = JSON.parse(saved);
+            }
+        }
+
+        function saveEntries() {
+            localStorage.setItem('taoEntries', JSON.stringify(state.entries));
+        }
 
         function getLineHTML(type) {
             if (type === 0) {
@@ -92,15 +127,68 @@
                 verseHTML = '<div class="instruction">Click "Generate" to cast your divination and receive a verse for meditation</div>';
             }
             document.getElementById('verseDisplay').innerHTML = verseHTML;
+        }
 
-            if (state.history.length > 0) {
-                document.getElementById('historySection').classList.add('show');
-                var histHTML = '';
-                for (var h = 0; h < state.history.length; h++) {
-                    histHTML += '<div class="history-item">' + state.history[h] + '</div>';
-                }
-                document.getElementById('historyItems').innerHTML = histHTML;
+        function updateEntriesList() {
+            var list = document.getElementById('entriesList');
+            list.innerHTML = '';
+            for (var i = state.entries.length - 1; i >= 0; i--) {
+                var entry = state.entries[i];
+                var item = document.createElement('div');
+                item.className = 'entry-item';
+                item.innerHTML = '<div class="entry-date">' + entry.date + '</div><div class="entry-verse">Verse ' + entry.verse + '</div><div class="entry-preview">' + entry.text.substring(0, 50) + '...</div>';
+                item.onclick = (function(index) {
+                    return function() { selectEntry(index); };
+                })(i);
+                list.appendChild(item);
             }
+        }
+
+        function selectEntry(index) {
+            state.currentEditId = index;
+            document.getElementById('journalText').value = state.entries[index].text;
+        }
+
+        function saveEntry() {
+            if (state.verseNumber === null) {
+                alert('Generate a verse first');
+                return;
+            }
+            var text = document.getElementById('journalText').value;
+            var now = new Date().toISOString().split('T')[0];
+            
+            if (state.currentEditId !== null) {
+                state.entries[state.currentEditId].text = text;
+            } else {
+                state.entries.push({
+                    date: now,
+                    verse: state.verseNumber,
+                    lines: state.lines.slice(),
+                    text: text
+                });
+            }
+            
+            saveEntries();
+            updateEntriesList();
+            document.getElementById('journalText').value = '';
+            state.currentEditId = null;
+            alert('Entry saved!');
+        }
+
+        function exportCSV() {
+            var csv = 'Date,Verse,Notes\n';
+            for (var i = 0; i < state.entries.length; i++) {
+                var entry = state.entries[i];
+                var notes = entry.text.replace(/"/g, '""').replace(/\n/g, ' ');
+                csv += entry.date + ',' + entry.verse + ',"' + notes + '"\n';
+            }
+            
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'tao-journal-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
         }
 
         function generate() {
@@ -111,21 +199,28 @@
 
             var base3 = state.lines[0] * 27 + state.lines[1] * 9 + state.lines[2] * 3 + state.lines[3];
             state.verseNumber = base3 + 1;
-            state.history.push(state.verseNumber);
-
+            state.currentEditId = null;
+            
             updateDisplay();
+            document.getElementById('journalText').value = '';
         }
 
         function resetApp() {
             state.lines = [null, null, null, null];
             state.verseNumber = null;
+            state.currentEditId = null;
             updateDisplay();
+            document.getElementById('journalText').value = '';
         }
 
         document.getElementById('genBtn').addEventListener('click', generate);
         document.getElementById('resetBtn').addEventListener('click', resetApp);
+        document.getElementById('saveBtn').addEventListener('click', saveEntry);
+        document.getElementById('exportBtn').addEventListener('click', exportCSV);
 
+        loadEntries();
         updateDisplay();
+        updateEntriesList();
     </script>
 </body>
 </html>
