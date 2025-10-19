@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art of War - 52 Week Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: linear-gradient(to bottom right, #1e293b, #334155, #0f172a); min-height: 100vh; font-family: system-ui, -apple-system, sans-serif; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 48px; margin-bottom: 10px; color: white; }
+        .header h2 { font-size: 28px; font-weight: bold; color: white; margin-bottom: 8px; }
+        .header p { color: #cbd5e1; }
+        .main { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 1000px) { .main { grid-template-columns: 1fr; } }
+        .card { background: #475569; border-radius: 12px; padding: 30px; box-shadow: 0 20px 25px rgba(0,0,0,0.3); border: 1px solid #64748b; }
+        .passage-display { text-align: center; padding: 20px; background: #334155; border-radius: 8px; margin-bottom: 20px; }
+        .week-number { font-size: 20px; margin-bottom: 10px; color: white; }
+        .passage-title { color: #fbbf24; font-size: 36px; font-weight: bold; line-height: 1.3; }
+        .passage-chapter { color: #cbd5e1; font-size: 14px; margin-top: 10px; }
+        .instruction { text-align: center; padding: 20px; background: #334155; border-radius: 8px; margin-bottom: 20px; color: #cbd5e1; font-size: 14px; }
+        .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
+        button { font-weight: bold; padding: 12px 16px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+        .next-btn { background: #b45309; color: white; flex: 1; }
+        .next-btn:hover { background: #92400e; }
+        .reset-btn { background: #64748b; color: white; flex: 1; }
+        .reset-btn:hover { background: #475569; }
+        .save-btn { background: #059669; color: white; width: 100%; margin-bottom: 12px; }
+        .save-btn:hover { background: #047857; }
+        .export-btn { background: #7c3aed; color: white; width: 100%; }
+        .export-btn:hover { background: #6d28d9; }
+        textarea { width: 100%; height: 200px; padding: 12px; background: #334155; color: white; border: 1px solid #64748b; border-radius: 8px; font-family: system-ui; font-size: 14px; resize: vertical; }
+        textarea::placeholder { color: #94a3b8; }
+        input[type="number"] { padding: 10px; background: #1e293b; color: white; border: 1px solid #64748b; border-radius: 6px; font-size: 14px; }
+        .journal-section h3 { color: white; margin-bottom: 12px; font-size: 16px; }
+        .manual-week { display: grid; grid-template-columns: 1fr auto; gap: 12px; margin-bottom: 20px; padding: 12px; background: #334155; border-radius: 8px; }
+        .entries-list { max-height: 400px; overflow-y: auto; margin-bottom: 12px; }
+        .entry-item { background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid #64748b; transition: all 0.2s; }
+        .entry-item:hover { background: #3f4a5c; border-color: #fbbf24; }
+        .entry-week { color: #fbbf24; font-weight: bold; font-size: 14px; }
+        .entry-passage { color: #cbd5e1; font-size: 12px; margin: 4px 0; }
+        .entry-preview { color: #cbd5e1; font-size: 12px; }
+        .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚔</h1>
+            <h2>Art of War</h2>
+            <p>R.L. Wing's 52-Week Strategy Tracker</p>
+        </div>
+
+        <div class="main">
+            <div class="card">
+                <div id="passageDisplay"></div>
+                <div class="button-group">
+                    <button class="next-btn" id="nextBtn">Next Week</button>
+                    <button class="reset-btn" id="resetBtn">Reset</button>
+                </div>
+            </div>
+
+            <div class="card journal-section">
+                <h3>Journal Entry</h3>
+                <textarea id="journalText" placeholder="Write your reflections on this week's passage..."></textarea>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0;">
+                    <button class="save-btn" id="saveBtn">Save Entry</button>
+                    <button class="export-btn" id="exportBtn">Export to CSV</button>
+                </div>
+
+                <div class="manual-week">
+                    <input type="number" id="manualWeek" min="1" max="52" placeholder="Jump to week (1-52)">
+                    <button id="manualWeekBtn" style="background: #059669; color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap;">Go to Week</button>
+                </div>
+                
+                <h3>Past Entries</h3>
+                <div class="entries-list" id="entriesList"></div>
+            </div>
+        </div>
+
+        <p class="footer">Follow R.L. Wing's 52-week strategy practice. One passage per week for a full year.</p>
+    </div>
+
+    <script>
+        var passages = [
+            { week: 1, chapter: 1, title: "The Five Fundamentals of Strategy" },
+            { week: 2, chapter: 1, title: "Examining the Fundamentals" },
+            { week: 3, chapter: 1, title: "The Tao of Paradox" },
+            { week: 4, chapter: 1, title: "Foretelling Triumph" },
+            { week: 5, chapter: 2, title: "Knowing the Costs" },
+            { week: 6, chapter: 2, title: "Swift Strategies" },
+            { week: 7, chapter: 2, title: "Using the Opponent's Resources" },
+            { week: 8, chapter: 2, title: "Incorporating the Opponent's Strength" },
+            { week: 9, chapter: 3, title: "Engaging the Entire System" },
+            { week: 10, chapter: 3, title: "The Rule of Numbers" },
+            { week: 11, chapter: 3, title: "Three Errors of Leaders" },
+            { week: 12, chapter: 3, title: "The Essentials of Triumph" },
+            { week: 13, chapter: 4, title: "The Power Defense" },
+            { week: 14, chapter: 4, title: "The Triumph of No Effort" },
+            { week: 15, chapter: 4, title: "The Position of No Error" },
+            { week: 16, chapter: 4, title: "The Five Strategic Arts" },
+            { week: 17, chapter: 5, title: "The Positioned Strategy" },
+            { week: 18, chapter: 5, title: "The Power of Surprise" },
+            { week: 19, chapter: 5, title: "Moving the Opponent About" },
+            { week: 20, chapter: 5, title: "Using Others to Create Momentum" },
+            { week: 21, chapter: 6, title: "Creating Imbalance" },
+            { week: 22, chapter: 6, title: "Distorting the Opponent's Position" },
+            { week: 23, chapter: 6, title: "Adjusting the Opponent's Numbers" },
+            { week: 24, chapter: 6, title: "Reacting with Systematic Positioning" },
+            { week: 25, chapter: 7, title: "Direct and Indirect Tactics" },
+            { week: 26, chapter: 7, title: "Avoiding Competition" },
+            { week: 27, chapter: 7, title: "Flexibility and Imitation" },
+            { week: 28, chapter: 7, title: "Controlling the Variations" },
+            { week: 29, chapter: 8, title: "Situational Strategies" },
+            { week: 30, chapter: 8, title: "Combining Advantages and Disadvantages" },
+            { week: 31, chapter: 8, title: "Anticipating the Opponent" },
+            { week: 32, chapter: 8, title: "Five Weaknesses in Leaders" },
+            { week: 33, chapter: 9, title: "Using the Situation" },
+            { week: 34, chapter: 9, title: "Determining the Opponent's Strategy" },
+            { week: 35, chapter: 9, title: "Determining the Opponent's Vulnerability" },
+            { week: 36, chapter: 9, title: "The Cultivation of Allegiance" },
+            { week: 37, chapter: 10, title: "The Six Positions" },
+            { week: 38, chapter: 10, title: "The Six Strategic Mistakes" },
+            { week: 39, chapter: 10, title: "Superior Leadership" },
+            { week: 40, chapter: 10, title: "Knowing the Situation" },
+            { week: 41, chapter: 11, title: "Situational Response" },
+            { week: 42, chapter: 11, title: "The Spirit of the Corps" },
+            { week: 43, chapter: 11, title: "The Way of the Adventurer" },
+            { week: 44, chapter: 11, title: "The Strategy of the Superior Leader" },
+            { week: 45, chapter: 12, title: "The Five Fiery Attacks" },
+            { week: 46, chapter: 12, title: "The Five Fiery Variations" },
+            { week: 47, chapter: 12, title: "The Decisive Techniques" },
+            { week: 48, chapter: 12, title: "The Ultimate Restraint" },
+            { week: 49, chapter: 13, title: "Obtaining Foreknowledge" },
+            { week: 50, chapter: 13, title: "The Divine Web" },
+            { week: 51, chapter: 13, title: "The Importance of Counterintelligence" },
+            { week: 52, chapter: 13, title: "The Essence of Strategy" }
+        ];
+
+        var app = {
+            currentWeek: 1,
+            currentEditId: null,
+            entries: []
+        };
+
+        function render() {
+            var passage = passages[app.currentWeek - 1];
+            var display = '<div class="passage-display">';
+            display += '<div class="week-number">Week ' + passage.week + '</div>';
+            display += '<div class="passage-title">' + passage.title + '</div>';
+            display += '<div class="passage-chapter">Chapter ' + passage.chapter + '</div>';
+            display += '</div>';
+            document.getElementById('passageDisplay').innerHTML = display;
+
+            var listHTML = '';
+            for (var i = app.entries.length - 1; i >= 0; i--) {
+                var e = app.entries[i];
+                listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')"><div class="entry-week">Week ' + e.week + ' - ' + e.title + '</div><div class="entry-passage">Chapter ' + e.chapter + '</div><div class="entry-preview">' + e.text.substring(0, 50) + '...</div></div>';
+            }
+            document.getElementById('entriesList').innerHTML = listHTML;
+        }
+
+        function nextWeek() {
+            if (app.currentWeek < 52) {
+                app.currentWeek++;
+                app.currentEditId = null;
+                document.getElementById('journalText').value = '';
+                render();
+            }
+        }
+
+        function manualWeek() {
+            var num = parseInt(document.getElementById('manualWeek').value);
+            if (isNaN(num) || num < 1 || num > 52) {
+                alert('Enter a week number between 1 and 52');
+                return;
+            }
+            app.currentWeek = num;
+            app.currentEditId = null;
+            document.getElementById('journalText').value = '';
+            document.getElementById('manualWeek').value = '';
+            render();
+        }
+
+        function saveEntry() {
+            var passage = passages[app.currentWeek - 1];
+            var text = document.getElementById('journalText').value;
+            var now = new Date().toISOString().split('T')[0];
+
+            if (app.currentEditId !== null) {
+                app.entries[app.currentEditId].text = text;
+            } else {
+                app.entries.push({ week: passage.week, chapter: passage.chapter, title: passage.title, date: now, text: text });
+            }
+            localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
+            app.currentEditId = null;
+            document.getElementById('journalText').value = '';
+            alert('Entry saved!');
+            render();
+        }
+
+        function loadEntry(idx) {
+            app.currentEditId = idx;
+            document.getElementById('journalText').value = app.entries[idx].text;
+        }
+
+        function exportCSV() {
+            var csv = 'Date,Week,Chapter,Passage,Notes\n';
+            for (var i = 0; i < app.entries.length; i++) {
+                var e = app.entries[i];
+                var notes = e.text.replace(/"/g, '""').replace(/\n/g, ' ');
+                csv += e.date + ',' + e.week + ',' + e.chapter + ',"' + e.title + '","' + notes + '"\n';
+            }
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'art-of-war-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+        }
+
+        function init() {
+            var saved = localStorage.getItem('artOfWarEntries');
+            if (saved) app.entries = JSON.parse(saved);
+            render();
+        }
+
+        document.getElementById('nextBtn').onclick = nextWeek;
+        document.getElementById('resetBtn').onclick = function() { app.currentWeek = 1; app.currentEditId = null; document.getElementById('journalText').value = ''; render(); };
+        document.getElementById('saveBtn').onclick = saveEntry;
+        document.getElementById('exportBtn').onclick = exportCSV;
+        document.getElementById('manualWeekBtn').onclick = manualWeek;
+
+        init();
+    </script>
+</body>
+</html>
