@@ -69,6 +69,38 @@
  color: white;
  }
  
+ .date-filter-container {
+ display: flex;
+ justify-content: center;
+ gap: 8px;
+ margin-bottom: 20px;
+ flex-wrap: wrap;
+ }
+ 
+ .filter-btn {
+ background-color: white;
+ color: var(--primary);
+ padding: 8px 16px;
+ border: 2px solid var(--primary);
+ border-radius: 12px;
+ cursor: pointer;
+ font-size: 13px;
+ font-weight: 500;
+ transition: all 0.3s ease;
+ }
+ 
+ .filter-btn:hover {
+ background-color: rgba(140, 194, 238, 0.1);
+ border-color: var(--primary-dark);
+ }
+ 
+ .filter-btn.active {
+ background-color: var(--primary);
+ color: white;
+ border-color: var(--primary-dark);
+ box-shadow: 0 2px 8px rgba(140, 194, 238, 0.3);
+ }
+ 
  .section {
  display: none;
  }
@@ -711,6 +743,14 @@
  <!-- Weekly Review Section -->
  <div id="weekly" class="section">
  <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 15px;">Weekly Trading Review</h2>
+ 
+ <!-- Date Range Filter Buttons -->
+ <div class="date-filter-container">
+ <button class="filter-btn active" onclick="filterWeeklyData('last30')">Last 30 Days</button>
+ <button class="filter-btn" onclick="filterWeeklyData('thisWeek')">This Week</button>
+ <button class="filter-btn" onclick="filterWeeklyData('all')">All Time</button>
+ </div>
+ 
  <div id="weeklyTable"></div>
  </div>
 
@@ -1137,14 +1177,92 @@ function saveEntry() {
  window.URL.revokeObjectURL(url);
  }
 
+ // Global variable to track current filter
+ let currentFilter = 'last30';
+
+ // Function to filter weekly data by date range
+ function filterWeeklyData(filterType) {
+ // Update the current filter
+ currentFilter = filterType;
+ 
+ // Update button styles
+ document.querySelectorAll('.filter-btn').forEach(btn => {
+ btn.classList.remove('active');
+ });
+ event.target.classList.add('active');
+ 
+ // Re-display the data with the new filter
+ displayWeeklyData();
+ }
+ 
+ // Helper function to get date ranges
+ function getDateRange(filterType) {
+ const now = new Date();
+ let startDate, endDate;
+ 
+ switch(filterType) {
+ case 'last30':
+ // Last 30 days
+ startDate = new Date(now);
+ startDate.setDate(now.getDate() - 30);
+ endDate = now;
+ break;
+ 
+ case 'thisWeek':
+ // This week (Monday to Sunday)
+ const dayOfWeek = now.getDay();
+ const monday = new Date(now);
+ monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+ startDate = monday;
+ endDate = now;
+ break;
+ 
+ case 'lastWeek':
+ // Last week (previous Monday to Sunday)
+ const lastMonday = new Date(now);
+ const currentDay = now.getDay();
+ lastMonday.setDate(now.getDate() - (currentDay === 0 ? 6 : currentDay - 1) - 7);
+ const lastSunday = new Date(lastMonday);
+ lastSunday.setDate(lastMonday.getDate() + 6);
+ startDate = lastMonday;
+ endDate = lastSunday;
+ break;
+ 
+ case 'all':
+ // All time - no filter
+ return null;
+ 
+ default:
+ return null;
+ }
+ 
+ return { startDate, endDate };
+ }
+
+
  // Function to display weekly data in a table
  function displayWeeklyData() {
- const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
+ let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
  
  const tableContainer = document.getElementById('weeklyTable');
  
  if (entries.length === 0) {
  tableContainer.innerHTML = '<div class="no-data">No entries saved yet. Add some daily entries first!</div>';
+ return;
+ }
+ 
+ // Apply date filter
+ const dateRange = getDateRange(currentFilter);
+ if (dateRange) {
+ entries = entries.filter(entry => {
+ const entryDate = new Date(entry.date);
+ return entryDate >= dateRange.startDate && entryDate <= dateRange.endDate;
+ });
+ }
+ 
+ // Check if we have entries after filtering
+ if (entries.length === 0) {
+ tableContainer.innerHTML = '<div class="no-data">No entries found for this date range.</div>';
  return;
  }
  
