@@ -792,9 +792,12 @@
                             ${scoreEmoji ? `<span style="font-size: 16px;">${scoreEmoji}</span>` : ''}
                             ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
                         </div>
-                        <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="margin-top: 10px; font-size: 12px; padding: 4px 8px;">
-                            ${session.score !== undefined ? 'Edit' : 'Review'}
-                        </button>
+                        <div style="display: flex; gap: 5px; margin-top: 10px;">
+                            <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px;">
+                                ${session.score !== undefined ? 'Edit' : 'Review'}
+                            </button>
+                            <button onclick="deleteSession('${session.id}')" style="background-color: #ff4444; color: white; border: none; border-radius: 4px; font-size: 12px; padding: 4px 8px; cursor: pointer;">×</button>
+                        </div>
                     </div>
                 `;
             });
