@@ -789,10 +789,11 @@
                         </div>
                         <div style="color: #666; font-size: 13px; margin-bottom: 8px;">${session.duration} minute${session.duration !== 1 ? 's' : ''}</div>
                         <div style="display: flex; align-items: center; gap: 10px; margin: 8px 0;">
-                            ${scoreEmoji ? `<span style="font-size: 20px;">${scoreEmoji}</span>` : ''}
+                            ${scoreEmoji ? `<span style="font-size: 16px;">${scoreEmoji}</span>` : ''}
                             ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
                         </div>
-                        ${session.score !== undefined ? 'Edit' : 'Add Review'}
+                        <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="margin-top: 10px; font-size: 14px; padding: 6px 12px;">
+                            ${session.score !== undefined ? 'Edit' : 'Review'}
                         </button>
                     </div>
                 `;
