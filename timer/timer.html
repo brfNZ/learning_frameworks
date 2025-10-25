@@ -123,7 +123,13 @@
         #randomButton.active {
             background-color: var(--primary-red-active);
         }
-        #nameModal {
+
+        #nameModal .modal-content {
+            width: 300px;
+        }
+
+        /* General modal styles */
+        .modal {
             display: none;
             position: fixed;
             z-index: 100;
@@ -133,15 +139,37 @@
             height: 100%;
             background-color: rgba(0,0,0,0.4);
         }
-        #nameModalContent {
+
+        .modal-content {
             background-color: #fefefe;
             margin: 15% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 300px;
+            width: 400px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-height: 70vh;
+            overflow-y: auto;
         }
+
+        .modal-button {
+            padding: 8px 16px;
+            margin: 5px 5px 5px 0;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .modal-button.secondary {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .modal-button.secondary:hover {
+            background-color: #c0c0c0;
+        }
+
         #timerNameInput {
             width: 100%;
             padding: 8px;
