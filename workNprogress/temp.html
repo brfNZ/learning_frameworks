@@ -108,7 +108,7 @@
             margin-top: 5px;
             gap: 2px;
         }
-        #smallButton, #randomButton, #resetButton {
+        #smallButton, #randomButton, #resetButton #historyButton{
             font-size: 16px;
             padding: 5px 8px;
             background-color: var(--primary-cyan);
@@ -189,6 +189,7 @@
                 <button id="smallButton" onclick="toggleSize()">Toggle Size ◯</button>
                 <button id="randomButton" onclick="toggleRandomChime()">Random ♬</button>
                 <button id="resetButton" onclick="resetTimer()">Reset ⟳</button>
+                <button id="historyButton" onclick="openHistoryModal()">History 🕘</button>
             </div>
         </div>
     </div>
