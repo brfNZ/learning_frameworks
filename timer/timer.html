@@ -788,10 +788,10 @@
                             <span style="color: #999; font-size: 12px;">${dateStr}</span>
                         </div>
                         <div style="color: #666; font-size: 13px; margin-bottom: 8px;">${session.duration} minute${session.duration !== 1 ? 's' : ''}</div>
-                        ${scoreEmoji ? `<div style="font-size: 24px; margin: 5px 0;">${scoreEmoji}</div>` : ''}
+                        ${scoreEmoji ? `<div style="font-size: 20px; margin: 5px 0;">${scoreEmoji}</div>` : ''}
                         ${session.comment ? `<div style="color: #555; font-size: 13px; font-style: italic; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee;">"${session.comment}"</div>` : ''}
                         <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="margin-top: 10px; font-size: 14px; padding: 6px 12px;">
-                            ${session.score !== undefined ? 'Edit Review' : 'Add Review'}
+                            ${session.score !== undefined ? 'Edit' : 'Add Review'}
                         </button>
                     </div>
                 `;
