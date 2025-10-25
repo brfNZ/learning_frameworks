@@ -124,22 +124,7 @@
             background-color: var(--primary-red-active);
         }
 
-        #nameModal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.4);
-        }
-
-        #nameModal .modal-content {
-            width: 300px;
-        }
-
-        /* General modal styles */
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -172,6 +157,15 @@
             border-radius: 4px;
         }
 
+        .modal-button.primary {
+            background-color: var(--primary-cyan);
+            color: white;
+        }
+
+        .modal-button.primary:hover {
+            background-color: var(--primary-cyan-hover);
+        }
+
         .modal-button.secondary {
             background-color: #e0e0e0;
             color: #333;
@@ -179,6 +173,10 @@
 
         .modal-button.secondary:hover {
             background-color: #c0c0c0;
+        }
+
+        #nameModal .modal-content {
+            width: 300px;
         }
 
         #timerNameInput {
