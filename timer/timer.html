@@ -206,6 +206,17 @@
         </div>
     </div>
 
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <h3>Session History</h3>
+            <div id="historyList"></div>
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const canvas = document.getElementById('timerCanvas');
         const ctx = canvas.getContext('2d');
