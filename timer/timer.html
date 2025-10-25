@@ -303,6 +303,8 @@
         const timerNameDisplay = document.getElementById('timerNameDisplay');
         const nameModal = document.getElementById('nameModal');
         const timerNameInput = document.getElementById('timerNameInput');
+        const reviewModal = document.getElementById('reviewModal');
+        const historyModal = document.getElementById('historyModal');
 
         // Define colors to match CSS variables
         const colors = {
@@ -617,6 +619,7 @@
                         drawTimer();
                         timerSound.volume = 0.5;
                         timerSound.play().catch(error => console.error('Error playing sound:', error));
+                        addSessionToHistory();
                     }
                 }
             }, 1000);
@@ -708,6 +711,12 @@
         window.onclick = function(event) {
             if (event.target === nameModal) {
                 closeNameModal();
+            }
+            if (event.target === historyModal) {
+                closeHistoryModal();
+            }
+            if (event.target === reviewModal) {
+                closeReviewModal();
             }
         }
 
@@ -884,7 +893,7 @@
             currentSessionStartTime = null;
         }
         
-        
+
     </script>
 </body>
 </html>
