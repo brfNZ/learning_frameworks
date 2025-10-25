@@ -788,16 +788,18 @@
                             <span style="color: #999; font-size: 12px;">${dateStr}</span>
                         </div>
                         <div style="color: #666; font-size: 13px; margin-bottom: 8px;">${session.duration} minute${session.duration !== 1 ? 's' : ''}</div>
-                        <div style="display: flex; align-items: center; gap: 10px; margin: 8px 0;">
-                            ${scoreEmoji ? `<span style="font-size: 16px;">${scoreEmoji}</span>` : ''}
-                            ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                ${scoreEmoji ? `<span style="font-size: 20px;">${scoreEmoji}</span>` : ''}
+                                ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
+                            </div>
+                            <div style="display: flex; gap: 5px;">
+                                <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px;">
+                                    ${session.score !== undefined ? 'Edit' : 'Review'}
+                                </button>
+                                <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: #ff4444; color: white; font-size: 12px; padding: 4px 8px;">×</button>
+                            </div>
                         </div>
-                    <div style="display: flex; gap: 5px; margin-top: 10px; align-items: stretch;">
-                        <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px;">
-                            ${session.score !== undefined ? 'Edit' : 'Review'}
-                            <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: #ff4444; color: white; font-size: 12px; padding: 4px 8px; cursor: pointer;">×</button>
-                        </button>
-                    </div>
                     </div>
                 `;
             });
