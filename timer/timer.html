@@ -179,6 +179,16 @@
             width: 300px;
         }
 
+        .emoji-button:hover {
+            transform: scale(1.1);
+            border-color: var(--primary-cyan) !important;
+        }
+
+        .emoji-button.selected {
+            border-color: var(--primary-cyan) !important;
+            background-color: rgba(0, 153, 153, 0.1) !important;
+        }
+
         #timerNameInput {
             width: 100%;
             padding: 8px;
@@ -254,6 +264,33 @@
         </div>
     </div>
 
+    <!-- Review Modal -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content" style="width: 340px;">
+            <h3>Review Session</h3>
+            <div id="reviewSessionInfo" style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 14px;"></div>
+            
+            <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+                <button class="emoji-button" onclick="selectReviewScore(-1)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">😞</button>
+                <button class="emoji-button" onclick="selectReviewScore(0)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">😐</button>
+                <button class="emoji-button" onclick="selectReviewScore(1)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">😊</button>
+            </div>
+            
+            <div style="display: flex; justify-content: space-around; margin-bottom: 15px; font-size: 12px; color: #666;">
+                <span>Not useful</span>
+                <span>Neutral</span>
+                <span>Very useful</span>
+            </div>
+            
+            <textarea id="reviewComment" placeholder="Optional comment..." style="width: 100%; padding: 8px; border: 2px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; resize: vertical; min-height: 60px;"></textarea>
+            
+            <div style="margin-top: 15px;">
+                <button class="modal-button primary" onclick="saveReview()">Save</button>
+                <button class="modal-button secondary" onclick="closeReviewModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const canvas = document.getElementById('timerCanvas');
         const ctx = canvas.getContext('2d');
@@ -288,6 +325,10 @@
         let currentSize = 'large'; // Track size: large, medium, small
         let randomChimeSelected = false;
         let timerName = "";
+        let currentSessionStartTime = null;
+        let sessionReviews = [];
+        let selectedReviewScore = null;
+        let currentReviewSessionId = null;
         let isPulsing = false;
         let pulseStartTime = null;
         let pulseAlpha = 0.1;
@@ -551,6 +592,7 @@
             isRunning = true;
             isExpired = false;
             isPaused = false;
+            currentSessionStartTime = new Date();
 
             const startPosition = (minutes % 60) / 60;
             startAngle = (startPosition * 2 * Math.PI) - Math.PI / 2;
@@ -702,6 +744,7 @@
         updateButtonStates();
 
         // History Modal Functions
+        // History Modal Functions
         function openHistoryModal() {
             historyModal.style.display = 'block';
             displayHistory();
@@ -713,8 +756,134 @@
 
         function displayHistory() {
             const historyList = document.getElementById('historyList');
-            historyList.innerHTML = '<p style="text-align: center; color: #999;">No session history yet.</p>';
+            const sessions = getSessionHistory();
+            
+            if (sessions.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: #999;">No session history yet.</p>';
+                return;
+            }
+            
+            // Sort by newest first
+            sessions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            let html = '';
+            sessions.forEach(session => {
+                const date = new Date(session.timestamp);
+                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const scoreEmoji = session.score === 1 ? '😊' : session.score === 0 ? '😐' : session.score === -1 ? '😞' : '';
+                
+                html += `
+                    <div style="border: 1px solid #ddd; border-radius: 4px; padding: 12px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <strong>${session.name}</strong>
+                            <span style="color: #999; font-size: 12px;">${dateStr}</span>
+                        </div>
+                        <div style="color: #666; font-size: 13px; margin-bottom: 8px;">${session.duration} minute${session.duration !== 1 ? 's' : ''}</div>
+                        ${scoreEmoji ? `<div style="font-size: 24px; margin: 5px 0;">${scoreEmoji}</div>` : ''}
+                        ${session.comment ? `<div style="color: #555; font-size: 13px; font-style: italic; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee;">"${session.comment}"</div>` : ''}
+                        <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="margin-top: 10px; font-size: 14px; padding: 6px 12px;">
+                            ${session.score !== undefined ? 'Edit Review' : 'Add Review'}
+                        </button>
+                    </div>
+                `;
+            });
+            
+            historyList.innerHTML = html;
         }
+
+        // Review Modal Functions
+        function openReviewModal(sessionId) {
+            currentReviewSessionId = sessionId;
+            selectedReviewScore = null;
+            
+            // Clear previous selection
+            document.querySelectorAll('.emoji-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.getElementById('reviewComment').value = '';
+            
+            // Load session info
+            const sessions = getSessionHistory();
+            const session = sessions.find(s => s.id === sessionId);
+            if (session) {
+                document.getElementById('reviewSessionInfo').innerHTML = 
+                    `<strong>${session.name || 'Untitled Session'}</strong><br>${session.duration} minute${session.duration !== 1 ? 's' : ''}<br>${new Date(session.timestamp).toLocaleString()}`;
+                
+                // If session already has a review, load it
+                if (session.score !== undefined) {
+                    selectedReviewScore = session.score;
+                    document.getElementById('reviewComment').value = session.comment || '';
+                    // Highlight the selected emoji
+                    const buttons = document.querySelectorAll('.emoji-button');
+                    buttons.forEach((btn, index) => {
+                        const scores = [-1, 0, 1];
+                        if (scores[index] === session.score) {
+                            btn.classList.add('selected');
+                        }
+                    });
+                }
+            }
+            
+            reviewModal.style.display = 'block';
+        }
+
+        function closeReviewModal() {
+            reviewModal.style.display = 'none';
+        }
+
+        function selectReviewScore(score) {
+            selectedReviewScore = score;
+            document.querySelectorAll('.emoji-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function saveReview() {
+            if (selectedReviewScore === null) {
+                alert('Please select a rating');
+                return;
+            }
+            
+            const sessions = getSessionHistory();
+            const session = sessions.find(s => s.id === currentReviewSessionId);
+            if (session) {
+                session.score = selectedReviewScore;
+                session.comment = document.getElementById('reviewComment').value.trim();
+                saveSessionHistory(sessions);
+            }
+            
+            closeReviewModal();
+            displayHistory(); // Refresh the history list
+        }
+
+        // Helper Functions
+        function getSessionHistory() {
+            const history = localStorage.getItem('timerSessions');
+            return history ? JSON.parse(history) : [];
+        }
+
+        function saveSessionHistory(sessions) {
+            localStorage.setItem('timerSessions', JSON.stringify(sessions));
+        }
+
+        function addSessionToHistory() {
+            if (!currentSessionStartTime) return;
+            
+            const session = {
+                id: currentSessionStartTime.toISOString(),
+                timestamp: currentSessionStartTime.toISOString(),
+                name: timerName || 'Untitled Session',
+                duration: Math.round(totalTime / 60)
+            };
+            
+            const sessions = getSessionHistory();
+            sessions.push(session);
+            saveSessionHistory(sessions);
+            
+            currentSessionStartTime = null;
+        }
+        
         
     </script>
 </body>
