@@ -700,6 +700,22 @@
         updateTimerNameDisplay();
         drawTimer();
         updateButtonStates();
+
+        // History Modal Functions
+        function openHistoryModal() {
+            historyModal.style.display = 'block';
+            displayHistory();
+        }
+
+        function closeHistoryModal() {
+            historyModal.style.display = 'none';
+        }
+
+        function displayHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '<p style="text-align: center; color: #999;">No session history yet.</p>';
+        }
+        
     </script>
 </body>
 </html>
