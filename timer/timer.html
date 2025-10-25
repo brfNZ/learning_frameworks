@@ -897,7 +897,15 @@
             
             currentSessionStartTime = null;
         }
-        
+
+        function deleteSession(sessionId) {
+            if (confirm('Delete this session?')) {
+            let sessions = getSessionHistory();
+            sessions = sessions.filter(s => s.id !== sessionId);
+            saveSessionHistory(sessions);
+            displayHistory();
+            }
+        }
 
     </script>
 </body>
