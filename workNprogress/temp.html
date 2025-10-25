@@ -108,7 +108,7 @@
             margin-top: 5px;
             gap: 2px;
         }
-        #smallButton, #randomButton, #resetButton, #historyButton {
+        #smallButton, #randomButton, #resetButton {
             font-size: 16px;
             padding: 5px 8px;
             background-color: var(--primary-cyan);
@@ -117,13 +117,13 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        #smallButton:hover, #randomButton:hover, #resetButton:hover, #historyButton:hover {
+        #smallButton:hover, #randomButton:hover, #resetButton:hover {
             background-color: var(--primary-cyan-hover);
         }
         #randomButton.active {
             background-color: var(--primary-red-active);
         }
-        .modal {
+        #nameModal {
             display: none;
             position: fixed;
             z-index: 100;
@@ -133,7 +133,7 @@
             height: 100%;
             background-color: rgba(0,0,0,0.4);
         }
-        .modal-content {
+        #nameModalContent {
             background-color: #fefefe;
             margin: 15% auto;
             padding: 20px;
@@ -151,7 +151,7 @@
             font-size: 16px;
             box-sizing: border-box;
         }
-        .modal-button {
+        #saveNameButton, #cancelNameButton {
             padding: 8px 16px;
             margin: 5px 10px 5px 0;
             font-size: 16px;
@@ -159,158 +159,19 @@
             border: none;
             border-radius: 4px;
         }
-        .modal-button.primary {
+        #saveNameButton {
             background-color: var(--primary-cyan);
             color: white;
         }
-        .modal-button.primary:hover {
+        #saveNameButton:hover {
             background-color: var(--primary-cyan-hover);
         }
-        .modal-button.secondary {
+        #cancelNameButton {
             background-color: #e0e0e0;
             color: #333;
         }
-        .modal-button.secondary:hover {
+        #cancelNameButton:hover {
             background-color: #c0c0c0;
-        }
-
-        /* Review Modal Styles */
-        #reviewModal .modal-content {
-            width: 340px;
-        }
-        #reviewModal h3 {
-            margin-top: 0;
-            color: #333;
-            text-align: center;
-        }
-        .session-info {
-            background-color: #f5f5f5;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            color: #666;
-        }
-        .emoji-buttons {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-        }
-        .emoji-button {
-            font-size: 48px;
-            background: none;
-            border: 3px solid transparent;
-            border-radius: 8px;
-            cursor: pointer;
-            padding: 10px;
-            transition: all 0.2s;
-        }
-        .emoji-button:hover {
-            transform: scale(1.1);
-            border-color: var(--primary-cyan);
-        }
-        .emoji-button.selected {
-            border-color: var(--primary-cyan);
-            background-color: rgba(0, 153, 153, 0.1);
-        }
-        .score-labels {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 15px;
-            font-size: 12px;
-            color: #666;
-        }
-        #reviewComment {
-            width: 100%;
-            padding: 8px;
-            margin: 10px 0;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
-            resize: vertical;
-            min-height: 60px;
-        }
-        #reviewComment:focus {
-            border-color: var(--primary-cyan);
-            outline: none;
-        }
-
-        /* History Modal Styles */
-        #historyModal .modal-content {
-            width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .history-stats {
-            background-color: #f5f5f5;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 5px 0;
-            font-size: 14px;
-        }
-        .stat-label {
-            color: #666;
-        }
-        .stat-value {
-            font-weight: bold;
-            color: #333;
-        }
-        .history-item {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 12px;
-            margin-bottom: 10px;
-            background-color: #fff;
-        }
-        .history-item-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        .history-item-name {
-            font-weight: bold;
-            color: #333;
-        }
-        .history-item-date {
-            color: #999;
-            font-size: 12px;
-        }
-        .history-item-score {
-            font-size: 24px;
-            margin: 5px 0;
-        }
-        .history-item-duration {
-            color: #666;
-            font-size: 13px;
-            margin-bottom: 5px;
-        }
-        .history-item-comment {
-            color: #555;
-            font-size: 13px;
-            font-style: italic;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid #eee;
-        }
-        .no-history {
-            text-align: center;
-            color: #999;
-            padding: 20px;
-        }
-        .history-actions {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .history-actions button {
-            flex: 1;
         }
     </style>
 </head>
@@ -328,61 +189,18 @@
                 <button id="smallButton" onclick="toggleSize()">Toggle Size ◯</button>
                 <button id="randomButton" onclick="toggleRandomChime()">Random ♬</button>
                 <button id="resetButton" onclick="resetTimer()">Reset ⟳</button>
-                <button id="historyButton" onclick="openHistoryModal()">History 📊</button>
             </div>
         </div>
     </div>
     <audio id="timerSound" src="clear-announce-tones-2861.wav" preload="auto"></audio>
 
-    <!-- Name Modal -->
-    <div id="nameModal" class="modal">
-        <div class="modal-content">
+    <div id="nameModal">
+        <div id="nameModalContent">
             <h3>Name Your Timer</h3>
             <input type="text" id="timerNameInput" placeholder="Enter timer name" maxlength="30">
             <div>
-                <button class="modal-button primary" onclick="saveTimerName()">Save</button>
-                <button class="modal-button secondary" onclick="closeNameModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Review Modal -->
-    <div id="reviewModal" class="modal">
-        <div class="modal-content">
-            <h3>How was this session?</h3>
-            <div class="session-info">
-                <div id="reviewSessionInfo"></div>
-            </div>
-            <div class="emoji-buttons">
-                <button class="emoji-button" data-score="-1" onclick="selectScore(-1)">😞</button>
-                <button class="emoji-button" data-score="0" onclick="selectScore(0)">😐</button>
-                <button class="emoji-button" data-score="1" onclick="selectScore(1)">😊</button>
-            </div>
-            <div class="score-labels">
-                <span>Not useful</span>
-                <span>Neutral</span>
-                <span>Very useful</span>
-            </div>
-            <textarea id="reviewComment" placeholder="Optional comment..."></textarea>
-            <div>
-                <button class="modal-button primary" onclick="submitReview()">Submit</button>
-                <button class="modal-button secondary" onclick="skipReview()">Skip</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- History Modal -->
-    <div id="historyModal" class="modal">
-        <div class="modal-content">
-            <h3>Session History</h3>
-            <div class="history-actions">
-                <button class="modal-button primary" onclick="exportToCSV()">Export CSV</button>
-                <button class="modal-button secondary" onclick="clearHistory()">Clear All</button>
-            </div>
-            <div class="history-stats" id="historyStats"></div>
-            <div id="historyList"></div>
-            <div style="text-align: center; margin-top: 15px;">
-                <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
+                <button id="saveNameButton" onclick="saveTimerName()">Save</button>
+                <button id="cancelNameButton" onclick="closeNameModal()">Cancel</button>
             </div>
         </div>
     </div>
@@ -399,8 +217,6 @@
         const timerNameDisplay = document.getElementById('timerNameDisplay');
         const nameModal = document.getElementById('nameModal');
         const timerNameInput = document.getElementById('timerNameInput');
-        const reviewModal = document.getElementById('reviewModal');
-        const historyModal = document.getElementById('historyModal');
 
         // Define colors to match CSS variables
         const colors = {
@@ -420,140 +236,195 @@
         let isExpired = false;
         let isPaused = false;
         let startAngle = null;
-        let currentSize = 'large';
+        let currentSize = 'large'; // Track size: large, medium, small
         let randomChimeSelected = false;
         let timerName = "";
         let isPulsing = false;
         let pulseStartTime = null;
-        let pulseAnimationFrame = null;
         let pulseAlpha = 0.1;
-        const pulseDuration = 5000;
+        const pulseDuration = 7000;
+        let pulseAnimationFrame = null;
 
-        // Review system variables
-        let currentSessionStartTime = null;
-        let selectedScore = null;
-
-        const defaultChime = "clear-announce-tones-2861.wav";
         const chimes = [
-            "announcement-sound-2-7143.wav",
-            "clear-announce-tones-2861.wav",
-            "coins-1746.wav",
-            "definite-555.wav",
-            "game-bonus-144751.wav",
-            "jingles-8568.wav",
-            "light-hearted-2-199276.wav",
-            "music-box-3-185483.wav",
-            "success-1-6297.wav"
+            'timer sounds/game-success-alert-2039.wav',
+            'timer sounds/church-bell-indoor-628.wav',
+            'timer sounds/church-bell-loop-621.wav',
+            'timer sounds/fantasy-game-success-notification-270.wav',
+            'timer sounds/notification-alert-2314.wav',
+            'timer sounds/uplifting-flute-notification-2317.wav',
+            'timer sounds/flute-mobile-phone-notification-alert-2316.wav',
+            'timer sounds/flute-music-notification-2311.wav',
+            'timer sounds/racing-countdown-timer-1051.wav',
         ];
+        const defaultChime = 'clear-announce-tones-2861.wav';
 
-        function initializeCanvas() {
-            canvas.width = 360;
-            canvas.height = 360;
-            canvas.style.width = '360px';
-            canvas.style.height = '360px';
-            radius = 120;
-            centerX = canvas.width / 2;
-            centerY = canvas.height / 2;
-            timerContainer.style.width = '380px';
-            timerContainer.style.height = '540px';
+        // Initial setup for the default (large) timer size
+        canvas.width = 360;
+        canvas.height = 360;
+        canvas.style.width = '360px';
+        canvas.style.height = '360px';
+        centerX = canvas.width / 2;
+        centerY = canvas.height / 2;
+        timerContainer.style.width = '380px';
+        timerContainer.style.height = '500px';
+        timerNameDisplay.style.fontSize = '18px';
+
+        function updateButtonStates() {
+            if (isExpired || (!isRunning && !isPaused)) {
+                startButton.disabled = false;
+                timeInput.disabled = false;
+                smallButton.disabled = false;
+                randomButton.disabled = false;
+                resetButton.disabled = false;
+                controls.style.visibility = 'visible';
+                startButton.removeAttribute('disabled');
+                timeInput.removeAttribute('disabled');
+            } else if (isRunning && !isPaused) {
+                startButton.disabled = true;
+                timeInput.disabled = true;
+                smallButton.disabled = false;
+                randomButton.disabled = false;
+                resetButton.disabled = false;
+                controls.style.visibility = 'hidden';
+                startButton.setAttribute('disabled', 'true');
+                timeInput.setAttribute('disabled', 'true');
+            } else if (isRunning && isPaused) {
+                startButton.disabled = true;
+                timeInput.disabled = true;
+                smallButton.disabled = false;
+                randomButton.disabled = false;
+                resetButton.disabled = false;
+                controls.style.visibility = 'visible';
+                startButton.setAttribute('disabled', 'true');
+                timeInput.setAttribute('disabled', 'true');
+            }
+            randomButton.classList.toggle('active', randomChimeSelected);
         }
-
-        initializeCanvas();
 
         function drawTimer() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const scale = radius / 120;
 
             // Draw outer circle
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-            ctx.strokeStyle = '#ccc';
-            ctx.lineWidth = 8;
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 10 * scale;
             ctx.stroke();
 
-            if (isRunning || isPaused) {
-                // Calculate angle for progress
-                const progress = remainingTime / totalTime;
-                const angle = progress * 2 * Math.PI;
-
-                // Draw colored progress arc
+            // Draw start angle marker
+            if (startAngle !== null) {
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, startAngle, startAngle + angle);
-                ctx.strokeStyle = colors.primaryCyanOpaque;
-                ctx.lineWidth = 8;
+                const innerRadius = radius - 34 * scale;
+                const outerRadius = radius;
+                ctx.moveTo(centerX + innerRadius * Math.cos(startAngle), centerY + innerRadius * Math.sin(startAngle));
+                ctx.lineTo(centerX + outerRadius * Math.cos(startAngle), centerY + outerRadius * Math.sin(startAngle));
+                ctx.strokeStyle = colors.primaryCyan;
+                ctx.lineWidth = 8 * scale;
                 ctx.stroke();
+            }
 
-                // Display remaining time
-                const minutes = Math.floor(remainingTime / 60);
-                const seconds = remainingTime % 60;
-                ctx.font = 'bold 48px Arial';
-                ctx.fillStyle = '#333';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(`${minutes}:${seconds.toString().padStart(2, '0')}`, centerX, centerY);
-
-                // Show pause indicator
-                if (isPaused) {
-                    ctx.font = 'bold 20px Arial';
-                    ctx.fillStyle = '#666';
-                    ctx.fillText('PAUSED', centerX, centerY + 40);
-                }
-            } else if (isExpired) {
-                // Draw full red circle
+            // Handle timer states
+            if (isExpired) {
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                ctx.strokeStyle = colors.primaryRed;
-                ctx.lineWidth = 8;
+                ctx.fillStyle = `${colors.primaryCyanPulse}${pulseAlpha})`;
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius + 5 * scale, 0, 2 * Math.PI);
+                ctx.strokeStyle = colors.primaryRedLight;
+                ctx.lineWidth = 15 * scale;
                 ctx.stroke();
-
-                // Pulsing overlay
-                if (isPulsing) {
+                ctx.font = `bold ${24 * scale}px Arial`;
+                ctx.fillStyle = '#000';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText("TIME'S UP!", centerX, centerY);
+                ctx.strokeStyle = colors.primaryCyanOpaque;
+                ctx.lineWidth = 1.1 * scale;
+                ctx.strokeText("TIME'S UP!", centerX, centerY);
+            } else {
+                if (totalTime > 0 && remainingTime > 0) {
+                    const remainingMinutes = remainingTime / 60;
+                    const startPosition = (remainingMinutes % 60) / 60;
+                    const startAngle = (startPosition * 2 * Math.PI) - Math.PI / 2;
+                    const endAngle = -Math.PI / 2;
                     ctx.beginPath();
-                    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                    ctx.fillStyle = colors.primaryCyanPulse + pulseAlpha + ')';
+                    ctx.moveTo(centerX, centerY);
+                    ctx.arc(centerX, centerY, radius - 5 * scale, startAngle, endAngle, true); // Anti-clockwise
+                    ctx.fillStyle = isPaused ? colors.primaryRedLight : colors.primaryRed;
                     ctx.fill();
                 }
 
-                // Display "TIME'S UP"
-                ctx.font = 'bold 36px Arial';
-                ctx.fillStyle = '#333';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText("TIME'S UP", centerX, centerY);
+                if (isPaused) {
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius + 5 * scale, 0, 2 * Math.PI);
+                    ctx.strokeStyle = colors.primaryCyan;
+                    ctx.stroke();
+                    ctx.font = `bold ${24 * scale}px Arial`;
+                    ctx.fillStyle = colors.primaryCyanOpaque;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText("PAUSED", centerX, centerY);
+                }
             }
-        }
 
-        function updateButtonStates() {
-            if (isRunning || isPaused) {
-                startButton.disabled = true;
-                timeInput.disabled = true;
-                randomButton.disabled = true;
-            } else {
-                startButton.disabled = false;
-                timeInput.disabled = false;
-                randomButton.disabled = false;
+            // Draw inner/outer circles
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius + 9 * scale, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1 * scale;
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius + 13 * scale, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2 * scale;
+            ctx.stroke();
+
+            // Draw minute markers
+            for (let i = 0; i < 60; i++) {
+                const angle = (i / 60) * 2 * Math.PI - Math.PI / 2;
+                const outerRadius = radius + 5 * scale;
+                const innerRadius = i % 5 === 0 ? radius - 49 * scale : radius - 30 * scale;
+                ctx.beginPath();
+                ctx.moveTo(centerX + innerRadius * Math.cos(angle), centerY + innerRadius * Math.sin(angle));
+                ctx.lineTo(centerX + outerRadius * Math.cos(angle), centerY + outerRadius * Math.sin(angle));
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 4 * scale;
+                ctx.stroke();
+            }
+
+            // Draw minute numbers (clockwise for anti-clockwise countdown)
+            const fontSize = currentSize === 'small' ? 20 : 16; // Larger font for small size
+            ctx.font = `bold ${fontSize * scale}px Arial`;
+            ctx.fillStyle = '#000';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            for (let i = 0; i < 60; i += 5) {
+                const displayMinute = i === 0 ? 0 : i; // Numbers increase clockwise
+                const angle = (i / 60) * 2 * Math.PI - Math.PI / 2; // Clockwise positions
+                const textRadius = radius + (currentSize === 'small' ? 32 * scale : 28 * scale);
+                ctx.fillText(displayMinute.toString(), centerX + textRadius * Math.cos(angle), centerY + textRadius * Math.sin(angle) + 1 * scale);
             }
         }
 
         function toggleRandomChime() {
-            if (isRunning) return;
-
             if (randomChimeSelected) {
                 timerSound.src = defaultChime;
                 timerSound.load();
                 randomChimeSelected = false;
-                randomButton.classList.remove('active');
             } else {
                 const randomIndex = Math.floor(Math.random() * chimes.length);
                 timerSound.src = chimes[randomIndex];
                 timerSound.load();
                 randomChimeSelected = true;
-                randomButton.classList.add('active');
             }
             updateButtonStates();
         }
 
         function toggleSize() {
             if (currentSize === 'large') {
+                // Switch to medium
                 canvas.width = 300;
                 canvas.height = 300;
                 canvas.style.width = '300px';
@@ -562,10 +433,11 @@
                 centerX = canvas.width / 2;
                 centerY = canvas.height / 2;
                 timerContainer.style.width = '320px';
-                timerContainer.style.height = '500px';
+                timerContainer.style.height = '460px';
                 timerNameDisplay.style.fontSize = '14.4px';
                 currentSize = 'medium';
             } else if (currentSize === 'medium') {
+                // Switch to small
                 canvas.width = 236;
                 canvas.height = 236;
                 canvas.style.width = '236px';
@@ -574,10 +446,11 @@
                 centerX = canvas.width / 2;
                 centerY = canvas.height / 2 - 5;
                 timerContainer.style.width = '256px';
-                timerContainer.style.height = '436px';
+                timerContainer.style.height = '396px';
                 timerNameDisplay.style.fontSize = '10.8px';
                 currentSize = 'small';
             } else {
+                // Switch to large
                 canvas.width = 360;
                 canvas.height = 360;
                 canvas.style.width = '360px';
@@ -586,10 +459,25 @@
                 centerX = canvas.width / 2;
                 centerY = canvas.height / 2;
                 timerContainer.style.width = '380px';
-                timerContainer.style.height = '540px';
+                timerContainer.style.height = '500px';
                 timerNameDisplay.style.fontSize = '18px';
                 currentSize = 'large';
             }
+            drawTimer();
+        }
+
+        function resetSize() {
+            canvas.width = 360;
+            canvas.height = 360;
+            canvas.style.width = '360px';
+            canvas.style.height = '360px';
+            radius = 120;
+            centerX = canvas.width / 2;
+            centerY = canvas.height / 2;
+            timerContainer.style.width = '380px';
+            timerContainer.style.height = '500px';
+            timerNameDisplay.style.fontSize = '18px';
+            currentSize = 'large';
             drawTimer();
         }
 
@@ -614,7 +502,6 @@
             isRunning = true;
             isExpired = false;
             isPaused = false;
-            currentSessionStartTime = new Date();
 
             const startPosition = (minutes % 60) / 60;
             startAngle = (startPosition * 2 * Math.PI) - Math.PI / 2;
@@ -625,7 +512,7 @@
             timerInterval = setInterval(() => {
                 if (!isPaused) {
                     remainingTime--;
-                    drawTimer();
+                    drawTimer(); // Update every second
 
                     if (remainingTime <= 0) {
                         clearInterval(timerInterval);
@@ -639,9 +526,6 @@
                         drawTimer();
                         timerSound.volume = 0.5;
                         timerSound.play().catch(error => console.error('Error playing sound:', error));
-                        
-                        // Show review modal immediately
-                        openReviewModal();
                     }
                 }
             }, 1000);
@@ -665,12 +549,10 @@
             startAngle = null;
             totalTime = 0;
             remainingTime = 0;
-            currentSessionStartTime = null;
             if (randomChimeSelected) {
                 timerSound.src = defaultChime;
                 timerSound.load();
                 randomChimeSelected = false;
-                randomButton.classList.remove('active');
             }
             timerName = "";
             localStorage.setItem('timerName', "");
@@ -732,189 +614,10 @@
             timerNameDisplay.style.display = timerName ? 'block' : 'block';
         }
 
-        // Review Modal Functions
-        function openReviewModal() {
-            selectedScore = null;
-            document.querySelectorAll('.emoji-button').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            document.getElementById('reviewComment').value = '';
-            
-            const duration = Math.round(totalTime / 60);
-            const sessionName = timerName || 'Untitled Session';
-            document.getElementById('reviewSessionInfo').innerHTML = 
-                `<strong>${sessionName}</strong><br>${duration} minute${duration !== 1 ? 's' : ''}`;
-            
-            reviewModal.style.display = 'block';
-        }
-
-        function closeReviewModal() {
-            reviewModal.style.display = 'none';
-        }
-
-        function selectScore(score) {
-            selectedScore = score;
-            document.querySelectorAll('.emoji-button').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            event.target.classList.add('selected');
-        }
-
-        function submitReview() {
-            if (selectedScore === null) {
-                alert('Please select a rating');
-                return;
-            }
-
-            const review = {
-                timestamp: currentSessionStartTime.toISOString(),
-                name: timerName || 'Untitled Session',
-                duration: Math.round(totalTime / 60),
-                score: selectedScore,
-                comment: document.getElementById('reviewComment').value.trim()
-            };
-
-            saveReview(review);
-            closeReviewModal();
-            resetTimer();
-        }
-
-        function skipReview() {
-            closeReviewModal();
-            resetTimer();
-        }
-
-        function saveReview(review) {
-            let reviews = JSON.parse(localStorage.getItem('timerReviews') || '[]');
-            reviews.push(review);
-            localStorage.setItem('timerReviews', JSON.stringify(reviews));
-        }
-
-        // History Modal Functions
-        function openHistoryModal() {
-            const reviews = JSON.parse(localStorage.getItem('timerReviews') || '[]');
-            
-            if (reviews.length === 0) {
-                document.getElementById('historyStats').innerHTML = '';
-                document.getElementById('historyList').innerHTML = 
-                    '<div class="no-history">No session history yet. Complete a timer session to start tracking!</div>';
-            } else {
-                displayHistoryStats(reviews);
-                displayHistoryList(reviews);
-            }
-            
-            historyModal.style.display = 'block';
-        }
-
-        function closeHistoryModal() {
-            historyModal.style.display = 'none';
-        }
-
-        function displayHistoryStats(reviews) {
-            const totalSessions = reviews.length;
-            const totalMinutes = reviews.reduce((sum, r) => sum + r.duration, 0);
-            const avgScore = (reviews.reduce((sum, r) => sum + r.score, 0) / totalSessions).toFixed(2);
-            const positiveCount = reviews.filter(r => r.score === 1).length;
-            const neutralCount = reviews.filter(r => r.score === 0).length;
-            const negativeCount = reviews.filter(r => r.score === -1).length;
-
-            document.getElementById('historyStats').innerHTML = `
-                <div class="stat-row">
-                    <span class="stat-label">Total Sessions:</span>
-                    <span class="stat-value">${totalSessions}</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Total Time:</span>
-                    <span class="stat-value">${totalMinutes} minutes</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Average Score:</span>
-                    <span class="stat-value">${avgScore}</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">Ratings:</span>
-                    <span class="stat-value">😊 ${positiveCount} | 😐 ${neutralCount} | 😞 ${negativeCount}</span>
-                </div>
-            `;
-        }
-
-        function displayHistoryList(reviews) {
-            const sortedReviews = [...reviews].sort((a, b) => 
-                new Date(b.timestamp) - new Date(a.timestamp)
-            );
-
-            const scoreEmoji = { 1: '😊', 0: '😐', '-1': '😞' };
-
-            const listHtml = sortedReviews.map(review => {
-                const date = new Date(review.timestamp);
-                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                
-                return `
-                    <div class="history-item">
-                        <div class="history-item-header">
-                            <span class="history-item-name">${review.name}</span>
-                            <span class="history-item-date">${dateStr}</span>
-                        </div>
-                        <div class="history-item-score">${scoreEmoji[review.score]}</div>
-                        <div class="history-item-duration">${review.duration} minute${review.duration !== 1 ? 's' : ''}</div>
-                        ${review.comment ? `<div class="history-item-comment">"${review.comment}"</div>` : ''}
-                    </div>
-                `;
-            }).join('');
-
-            document.getElementById('historyList').innerHTML = listHtml;
-        }
-
-        function exportToCSV() {
-            const reviews = JSON.parse(localStorage.getItem('timerReviews') || '[]');
-            
-            if (reviews.length === 0) {
-                alert('No data to export');
-                return;
-            }
-
-            const csvHeaders = ['Timestamp', 'Session Name', 'Duration (minutes)', 'Score', 'Comment'];
-            const csvRows = reviews.map(review => {
-                const date = new Date(review.timestamp);
-                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-                return [
-                    dateStr,
-                    `"${review.name.replace(/"/g, '""')}"`,
-                    review.duration,
-                    review.score,
-                    `"${(review.comment || '').replace(/"/g, '""')}"`
-                ].join(',');
-            });
-
-            const csvContent = [csvHeaders.join(','), ...csvRows].join('\n');
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `timer_sessions_${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function clearHistory() {
-            if (confirm('Are you sure you want to clear all session history? This cannot be undone.')) {
-                localStorage.setItem('timerReviews', '[]');
-                closeHistoryModal();
-                openHistoryModal();
-            }
-        }
-
         window.onclick = function(event) {
             if (event.target === nameModal) {
                 closeNameModal();
             }
-            if (event.target === historyModal) {
-                closeHistoryModal();
-            }
-            // Don't close review modal on outside click
         }
 
         timerNameInput.addEventListener('keyup', function(event) {
