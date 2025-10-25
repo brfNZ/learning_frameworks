@@ -220,6 +220,27 @@
         #cancelNameButton:hover {
             background-color: #c0c0c0;
         }
+
+        @media (max-width: 600px) {
+        #timerContainer {
+            width: 100% !important;
+            max-width: 380px;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+    
+    .modal-content {
+        width: 90% !important;
+        max-width: 340px;
+        margin: 10% auto;
+    }
+    
+    #historyModal .modal-content {
+        width: 95% !important;
+    }
+}
+
+        
     </style>
 </head>
 <body>
@@ -793,7 +814,7 @@
                                 ${scoreEmoji ? `<span style="font-size: 20px;">${scoreEmoji}</span>` : ''}
                                 ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
                             </div>
-                            <div style="display: flex; gap: 5px;">
+                            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
                                 <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px;">
                                     ${session.score !== undefined ? 'Edit' : 'Review'}
                                 </button>
