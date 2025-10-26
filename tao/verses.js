@@ -335,4 +335,9 @@ var verseTexts = {
         "80": "In a little state with a small population, I would so order it,\nthat, though there were individuals with the abilities of ten or a\nhundred men, there should be no employment of them; I would make the\npeople, while looking on death as a grievous thing, yet not remove\nelsewhere (to avoid it).\nThough they had boats and carriages, they should have no occasion\nto ride in them; though they had buff coats and sharp weapons, they\nshould have no occasion to don or use them.\nI would make the people return to the use of knotted cords (instead\nof the written characters).\nThey should think their (coarse) food sweet; their (plain) clothes\nbeautiful; their (poor) dwellings places of rest; and their common\n(simple) ways sources of enjoyment.\nThere should be a neighbouring state within sight, and the voices\nof the fowls and dogs should be heard all the way from it to us, but I\nwould make the people to old age, even to death, not have any\nintercourse with it.",
         "81": "Sincere words are not fine; fine words are not sincere. Those\nwho are skilled (in the Tao) do not dispute (about it); the\ndisputatious are not skilled in it. Those who know (the Tao) are not\nextensively learned; the extensively learned do not know it.\nThe sage does not accumulate (for himself). The more that he\nexpends for others, the more does he possess of his own; the more that\nhe gives to others, the more does he have himself.\nWith all the sharpness of the Way of Heaven, it injures not; with\nall the doing in the way of the sage he does not strive."
     }
+    "Le Guin": {
+        // Add verses as you type them in
+        // 1: "your verse 1 text here",
+        // 5: "your verse 5 text here"
+    }
 };
