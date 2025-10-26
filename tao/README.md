@@ -16,3 +16,16 @@ Add 1 for verse numbering (0-80 maps to 1-81): 42 + 1 = Verse 43
 That's the calculation. 
 It's normal base-3 conversion—each position represents a power of 3, 
    you multiply the digit (0, 1, or 2) by that power, then add them all up.
+
+In the tracker code:
+Solid line (Yang) = 0
+Broken line (Yin) = 1
+Dashed line (Old Yin/changing) = 2
+
+However, in traditional I Ching:
+Yang is often represented as 3 (solid line, unbroken)
+Yin is often represented as 2 (broken line)
+Old Yang (changing) is 9
+Old Yin (changing) is 6
+
+The tracker uses 0, 1, 2 because it's simpler for base-3 calculation and maps evenly to the 81 verses.
