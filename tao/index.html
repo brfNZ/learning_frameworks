@@ -171,9 +171,9 @@
             // Render verse
             if (app.verseNumber !== null) {
                 var title = verseTitles[app.verseNumber - 1];
-                var text = verseTexts[app.currentTranslation][app.verseNumber] || 
-                          "(Translation not yet available - add more verses to verseTexts object)";
-                
+                var text = verseTexts[app.currentTranslation][app.verseNumber.toString()] || 
+                         "(Translation not yet available)";
+                    
                 var verseHTML = '<div class="verse-display" onclick="cycleTranslation()">';
                 verseHTML += '<div class="verse-number">Verse ' + app.verseNumber + '</div>';
                 verseHTML += '<div class="verse-title">' + title + '</div>';
