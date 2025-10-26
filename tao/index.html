@@ -38,7 +38,7 @@
         .export-btn:hover { background: #6d28d9; }
         textarea { width: 100%; height: 200px; padding: 12px; background: #334155; color: white; border: 1px solid #64748b; border-radius: 8px; font-family: system-ui; font-size: 14px; resize: vertical; }
         textarea::placeholder { color: #94a3b8; }
-        input[type="number"] { padding: 10px; background: #1e293b; color: white; border: 1px solid #64748b; border-radius: 6px; font-size: 14px; }
+        input[type="text"], input[type="number"] { padding: 10px; background: #1e293b; color: white; border: 1px solid #64748b; border-radius: 6px; font-size: 14px; }
         .journal-section h3 { color: white; margin-bottom: 12px; font-size: 16px; }
         .manual-entry { display: grid; grid-template-columns: 1fr auto; gap: 12px; margin-bottom: 20px; padding: 12px; background: #334155; border-radius: 8px; }
         .entries-list { max-height: 400px; overflow-y: auto; margin-bottom: 12px; }
@@ -80,7 +80,7 @@
                 </div>
 
                 <div class="manual-entry">
-                    <input type="number" id="manualVerse" min="1" max="81" placeholder="Enter verse number (1-81)">
+                    <input type="text" id="manualVerse" placeholder="Verse # (1-81) or Lines (1120)">
                     <button id="manualEntryBtn" style="background: #059669; color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap;">Manual Entry</button>
                 </div>
                 
@@ -109,9 +109,30 @@
             return '<div class="dashed-line" style="opacity:0.3"><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div></div>';
         }
 
+        function cycleLine(index, direction) {
+            if (app.lines[index] === null) {
+                app.lines[index] = 0;
+            } else {
+                if (direction === 'forward') {
+                    app.lines[index] = (app.lines[index] + 1) % 3;
+                } else {
+                    app.lines[index] = (app.lines[index] + 2) % 3; // +2 is same as -1 in mod 3
+                }
+            }
+            
+            // Recalculate verse if all lines are set
+            if (app.lines.every(function(l) { return l !== null; })) {
+                var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
+                app.verseNumber = base3 + 1;
+            }
+            render();
+        }
+
         function render() {
             var linesHTML = '';
-            for (var i = 0; i < 4; i++) linesHTML += getLineHTML(app.lines[i]);
+            for (var i = 0; i < 4; i++) {
+                linesHTML += '<div onclick="cycleLine(' + i + ', \'forward\')" oncontextmenu="cycleLine(' + i + ', \'backward\'); return false;" style="cursor: pointer; padding: 4px 0;">' + getLineHTML(app.lines[i]) + '</div>';
+            }
             document.getElementById('linesDisplay').innerHTML = linesHTML;
 
             var verseHTML = '';
@@ -178,13 +199,31 @@
         }
 
         function manualEntry() {
-            var num = parseInt(document.getElementById('manualVerse').value);
-            if (isNaN(num) || num < 1 || num > 81) {
-                alert('Enter a verse number between 1 and 81');
-                return;
+            var input = document.getElementById('manualVerse').value.trim();
+            
+            // Check if it's a 4-digit line pattern (like "1120")
+            if (input.length === 4 && /^[0-2]{4}$/.test(input)) {
+                // Parse as line pattern
+                app.lines = [
+                    parseInt(input[0]),
+                    parseInt(input[1]),
+                    parseInt(input[2]),
+                    parseInt(input[3])
+                ];
+                var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
+                app.verseNumber = base3 + 1;
+            } 
+            // Otherwise treat as verse number
+            else {
+                var num = parseInt(input);
+                if (isNaN(num) || num < 1 || num > 81) {
+                    alert('Enter verse 1-81 or 4-digit line pattern (e.g., 1120)');
+                    return;
+                }
+                app.verseNumber = num;
+                app.lines = verseToLines(num);
             }
-            app.verseNumber = num;
-            app.lines = verseToLines(num); // Calculate the lines for this verse
+            
             app.currentEditId = null;
             document.getElementById('journalText').value = '';
             document.getElementById('manualVerse').value = '';
@@ -247,7 +286,8 @@
             if (e.key === 'Enter') {
                 manualEntry();
             }
-};
+        };
+
         init();
     </script>
 </body>
