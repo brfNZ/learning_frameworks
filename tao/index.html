@@ -134,20 +134,20 @@
                 linesHTML += '<div onclick="cycleLine(' + i + ', \'forward\')" oncontextmenu="cycleLine(' + i + ', \'backward\'); return false;" style="cursor: pointer; padding: 1px 0;">' + getLineHTML(app.lines[i]) + '</div>';
             }
             document.getElementById('linesDisplay').innerHTML = linesHTML;
-            document.getElementById('lineCodesDisplay').innerHTML = debugHTML;
+            document.getElementById('lineCodesDisplay').innerHTML = lineCodesHTML;
 
             var verseHTML = '';
-            var debugHTML = '';
+            var lineCodesHTML = '';
             if (app.verseNumber !== null) {
                 var title = verseTitles[app.verseNumber - 1];
                 verseHTML = '<div class="verse-display"><div class="verse-number">Verse ' + app.verseNumber + '</div><div class="verse-title">' + title + '</div></div>';
                 
-                // Debug display showing the line values
+                // Display the line values
                 var lineStr = '';
                 for (var i = 0; i < 4; i++) {
                     lineStr += (app.lines[i] !== null ? app.lines[i] : '?');
                 }
-                debugHTML = 'Lines (top to bottom): ' + lineStr;
+                lineCodesHTML = 'Lines (top to bottom): ' + lineStr;
             } else {
                 verseHTML = '<div class="instruction">Click "Generate" to cast your divination and receive a verse for meditation</div>';
             }
