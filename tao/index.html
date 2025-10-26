@@ -137,6 +137,7 @@
             for (var i = 0; i < 4; i++) {
                 linesHTML += '<div onclick="cycleLine(' + i + ', \'forward\')" oncontextmenu="cycleLine(' + i + ', \'backward\'); return false;" style="cursor: pointer; padding: 1px 0;">' + getLineHTML(app.lines[i]) + '</div>';
             }
+            document.getElementById('linesDisplay').innerHTML = linesHTML;
 
             if (app.verseNumber !== null) {
                 var title = verseTitles[app.verseNumber - 1];
