@@ -232,6 +232,11 @@
         document.getElementById('saveBtn').onclick = saveEntry;
         document.getElementById('exportBtn').onclick = exportCSV;
         document.getElementById('manualWeekBtn').onclick = manualWeek;
+        document.getElementById('manualWeek').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                manualWeek();
+            }
+        });
 
         init();
     </script>
