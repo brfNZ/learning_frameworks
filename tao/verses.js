@@ -335,6 +335,7 @@ var verseTexts = {
         "81": "Sincere words are not fine; fine words are not sincere. Those\nwho are skilled (in the Tao) do not dispute (about it); the\ndisputatious are not skilled in it. Those who know (the Tao) are not\nextensively learned; the extensively learned do not know it.\nThe sage does not accumulate (for himself). The more that he\nexpends for others, the more does he possess of his own; the more that\nhe gives to others, the more does he have himself.\nWith all the sharpness of the Way of Heaven, it injures not; with\nall the doing in the way of the sage he does not strive."
     }
     "Le Guin": {
+        "43": "Water and stone\n\nWhat's softest in the world\nrushes and runs\nover what's hardest in the world.\n\nThe immaterial\nenters\nthe impenetrable.\n\nSo I know the good in not doing.\n\nThe wordless teaching,\nthe profit in not doing—\nnot many people understand it."
         // Add verses as you type them in
         // 1: "your verse 1 text here",
         // 5: "your verse 5 text here"
