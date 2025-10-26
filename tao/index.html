@@ -159,6 +159,24 @@
             render();
         }
 
+        function verseToLines(verseNum) {
+            // Convert verse number (1-81) back to line values (0-2)
+            var base3 = verseNum - 1; // Convert to 0-80
+            var lines = [];
+            
+            // Extract each digit in base-3
+            lines[0] = Math.floor(base3 / 27); // Top line
+            base3 = base3 % 27;
+            
+            lines[1] = Math.floor(base3 / 9); // 2nd line
+            base3 = base3 % 9;
+            
+            lines[2] = Math.floor(base3 / 3); // 3rd line
+            lines[3] = base3 % 3; // Bottom line
+            
+            return lines;
+        }
+
         function manualEntry() {
             var num = parseInt(document.getElementById('manualVerse').value);
             if (isNaN(num) || num < 1 || num > 81) {
@@ -166,6 +184,7 @@
                 return;
             }
             app.verseNumber = num;
+            app.lines = verseToLines(num); // Calculate the lines for this verse
             app.currentEditId = null;
             document.getElementById('journalText').value = '';
             document.getElementById('manualVerse').value = '';
