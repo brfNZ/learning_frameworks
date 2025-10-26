@@ -48,6 +48,7 @@
         .entry-verse { color: #fbbf24; font-weight: bold; font-size: 14px; }
         .entry-preview { color: #cbd5e1; font-size: 12px; margin-top: 4px; }
         .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; }
+        .debug { text-align: center; color: #94a3b8; font-size: 12px; margin-top: 8px; font-family: monospace; }
     </style>
 </head>
 <body>
@@ -62,6 +63,7 @@
             <div class="card">
                 <div class="lines-display" id="linesDisplay"></div>
                 <div id="verseDisplay"></div>
+                <div class="debug" id="debugDisplay"></div>
                 <div class="button-group">
                     <button class="generate-btn" id="genBtn">Generate</button>
                     <button class="reset-btn" id="resetBtn">Reset</button>
@@ -113,13 +115,22 @@
             document.getElementById('linesDisplay').innerHTML = linesHTML;
 
             var verseHTML = '';
+            var debugHTML = '';
             if (app.verseNumber !== null) {
                 var title = verseTitles[app.verseNumber - 1];
                 verseHTML = '<div class="verse-display"><div class="verse-number">Verse ' + app.verseNumber + '</div><div class="verse-title">' + title + '</div></div>';
+                
+                // Debug display showing the line values
+                var lineStr = '';
+                for (var i = 0; i < 4; i++) {
+                    lineStr += (app.lines[i] !== null ? app.lines[i] : '?');
+                }
+                debugHTML = 'Lines (top to bottom): ' + lineStr;
             } else {
                 verseHTML = '<div class="instruction">Click "Generate" to cast your divination and receive a verse for meditation</div>';
             }
             document.getElementById('verseDisplay').innerHTML = verseHTML;
+            document.getElementById('debugDisplay').innerHTML = debugHTML;
 
             var listHTML = '';
             for (var i = app.entries.length - 1; i >= 0; i--) {
@@ -130,9 +141,19 @@
         }
 
         function generate() {
-            app.lines = [Math.floor(Math.random() * 3), Math.floor(Math.random() * 3), Math.floor(Math.random() * 3), Math.floor(Math.random() * 3)];
+            // Generate 4 random lines (0=solid, 1=broken, 2=double-broken)
+            app.lines = [
+                Math.floor(Math.random() * 3), 
+                Math.floor(Math.random() * 3), 
+                Math.floor(Math.random() * 3), 
+                Math.floor(Math.random() * 3)
+            ];
+            
+            // Calculate verse number reading TOP TO BOTTOM
+            // Lines are stored in array as [0]=top, [1]=2nd, [2]=3rd, [3]=bottom
             var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
             app.verseNumber = base3 + 1;
+            
             app.currentEditId = null;
             document.getElementById('journalText').value = '';
             render();
