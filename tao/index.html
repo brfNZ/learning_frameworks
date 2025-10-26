@@ -192,8 +192,7 @@
                     if (verseCategories[cat].indexOf(app.verseNumber) !== -1) {
                         related = verseCategories[cat].filter(function(v) { return v !== app.verseNumber; });
                         document.getElementById('relatedVersesDisplay').innerHTML = 
-                                '<a href="guide/guide.html" target="_blank" style="color: #fbbf24; text-decoration: none; border-bottom: 1px dotted #fbbf24;">' + cat + '</a>: ' + related.slice(0, 6).join(', ') +
-                                (related.length > 6 ? '...' : '');
+                            '<a href="guide/guide.html" target="_blank" style="color: #fbbf24; text-decoration: none; border-bottom: 1px dotted #fbbf24;">' + cat + '</a>: ' + related.join(', ');
                         break;
                     }
                 }
