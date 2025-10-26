@@ -171,8 +171,12 @@
             // Render verse
             if (app.verseNumber !== null) {
                 var title = verseTitles[app.verseNumber - 1];
-                var text = verseTexts[app.currentTranslation][app.verseNumber.toString()] || 
-                         "(Translation not yet available)";
+                var text = verseTexts[app.currentTranslation][app.verseNumber];
+                if (!text) {
+                    // Skip to next translation if this one doesn't exist
+                    cycleTranslation();
+                    return;
+                }
                     
                 var verseHTML = '<div class="verse-display" onclick="cycleTranslation()">';
                 verseHTML += '<div class="verse-number">Verse ' + app.verseNumber + '</div>';
