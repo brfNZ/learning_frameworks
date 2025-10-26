@@ -242,7 +242,7 @@
         document.getElementById('resetBtn').onclick = function() { app.lines = [null, null, null, null]; app.verseNumber = null; app.currentEditId = null; document.getElementById('journalText').value = ''; render(); };
         document.getElementById('saveBtn').onclick = saveEntry;
         document.getElementById('exportBtn').onclick = exportCSV;
-        document.getElementById('manualEntryBtn').onclick = manualEntry;
+        document.getElementById('manualVerse').onkeypress = function(e) { if (e.key === 'Enter') { manualEntry(); } };
 
         init();
     </script>
