@@ -220,14 +220,12 @@
                 var related = verseCategories[category] || [];
                 var relatedHTML = '';
                 if (related.length > 0) {
-                    var relatedLinks = related.map(function(v) {
-                        return '<span style="cursor: pointer; text-decoration: underline;" onclick="loadVerseFromSearch(' + v + ')">' + v + '</span>';
+                    var relatedVersesOnly = related.filter(function(v) { return v !== app.verseNumber; });
+                    var relatedLinks = relatedVersesOnly.map(function(v) {
+                        return '<span style="cursor: pointer; text-decoration: underline; color: #94a3b8;" onclick="loadVerseFromSearch(' + v + ')">' + v + '</span>';
                     }).join(', ');
                     
-                    relatedHTML = '<div style="color: #94a3b8; font-size: 11px; margin-top: 8px;">' +
-                        'Category: ' + category + '<br>' +
-                        'Related verses: ' + relatedLinks +
-                        '</div>';
+                    relatedHTML = '<a href="guide/guide.html" target="_blank" style="color: #fbbf24; text-decoration: none; border-bottom: 1px dotted #fbbf24;">' + category + '</a>: ' + relatedLinks;
                 }
                 document.getElementById('relatedVersesDisplay').innerHTML = relatedHTML;
             } else {
