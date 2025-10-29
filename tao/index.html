@@ -367,9 +367,9 @@
             
             if (searchTerm === '') {
                 resultsDiv.innerHTML = '<div class="search-count">Enter a word to search</div>';
+                document.getElementById('clearSearchBtn').style.display = 'none';
                 return;
             }
-
             if (typeof verseTexts === 'undefined' || !verseTexts) {
                 resultsDiv.innerHTML = '<div class="search-count">Verses not loaded. Make sure verses.js is loaded.</div>';
                 return;
@@ -426,6 +426,7 @@
                 }
                 html += '<div class="search-count">Found ' + results.length + ' verse(s) containing "' + searchTerm + '"</div>';
                 resultsDiv.innerHTML = html;
+                document.getElementById('clearSearchBtn').style.display = 'block';
             }
         }
 
@@ -477,6 +478,7 @@
                 searchVerses();
             }
         };
+        document.getElementById('clearSearchBtn').onclick = clearSearch;
 
         init();
     </script>
