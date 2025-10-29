@@ -220,9 +220,13 @@
                 var related = verseCategories[category] || [];
                 var relatedHTML = '';
                 if (related.length > 0) {
+                    var relatedLinks = related.map(function(v) {
+                        return '<span style="cursor: pointer; text-decoration: underline;" onclick="loadVerseFromSearch(' + v + ')">' + v + '</span>';
+                    }).join(', ');
+                    
                     relatedHTML = '<div style="color: #94a3b8; font-size: 11px; margin-top: 8px;">' +
                         'Category: ' + category + '<br>' +
-                        'Related verses: ' + related.join(', ') +
+                        'Related verses: ' + relatedLinks +
                         '</div>';
                 }
                 document.getElementById('relatedVersesDisplay').innerHTML = relatedHTML;
