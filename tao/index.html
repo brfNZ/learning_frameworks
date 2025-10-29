@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -372,8 +372,10 @@
                 return;
             }
 
-            if (!window.verses) {
-                resultsDiv.innerHTML = '<div class="search-count">Verses not loaded</div>';
+            if (typeof verseTexts === 'undefined' || !verseTexts) {
+                resultsDiv.innerHTML = '<div class="search-count">Verses not loaded. Make sure verses.js is loaded.</div>';
+                console.log('verseTexts type:', typeof verseTexts);
+                console.log('verseTexts value:', verseTexts);
                 return;
             }
 
@@ -381,12 +383,11 @@
             
             // Search through all verses and all translations
             for (var verseNum = 1; verseNum <= 81; verseNum++) {
-                var translations = window.verses[verseNum];
-                if (!translations) continue;
-                
                 // Check each translation
-                for (var trans in translations) {
-                    var text = translations[trans].toLowerCase();
+                for (var trans in verseTexts) {
+                    if (!verseTexts[trans][verseNum]) continue;
+                    
+                    var text = verseTexts[trans][verseNum].toLowerCase();
                     if (text.indexOf(searchTerm) !== -1) {
                         // Found a match - extract snippet with context
                         var index = text.indexOf(searchTerm);
