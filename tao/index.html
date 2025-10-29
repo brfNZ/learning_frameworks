@@ -197,7 +197,9 @@
                 if (typeof verseTexts !== 'undefined' && verseTexts[app.currentTranslation] && verseTexts[app.currentTranslation][app.verseNumber]) {
                     verseText = verseTexts[app.currentTranslation][app.verseNumber];
                 } else {
-                    verseText = 'Translation not available';
+                    // Skip to next translation if this one doesn't exist
+                    cycleTranslation();
+                    return;
                 }
 
                 var category = '';
