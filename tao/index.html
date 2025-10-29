@@ -52,6 +52,20 @@
         .entry-preview { color: #cbd5e1; font-size: 12px; margin-top: 4px; }
         .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; }
         .line-codes { text-align: center; color: #94a3b8; font-size: 12px; margin-bottom: 10px; font-family: monospace; }
+        
+        /* Search Styles */
+        .search-section { margin-bottom: 20px; }
+        .search-box { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 12px; background: #334155; border-radius: 8px; }
+        .search-btn { background: #0284c7; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; }
+        .search-btn:hover { background: #0369a1; }
+        .search-results { max-height: 300px; overflow-y: auto; margin-top: 12px; }
+        .search-result-item { background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid #64748b; transition: all 0.2s; }
+        .search-result-item:hover { background: #3f4a5c; border-color: #0284c7; }
+        .search-result-verse { color: #0284c7; font-weight: bold; font-size: 14px; margin-bottom: 4px; }
+        .search-result-title { color: #fbbf24; font-size: 13px; margin-bottom: 4px; }
+        .search-result-snippet { color: #cbd5e1; font-size: 12px; line-height: 1.4; }
+        .search-highlight { background: #fbbf24; color: #1e293b; padding: 2px 4px; border-radius: 2px; font-weight: bold; }
+        .search-count { color: #94a3b8; font-size: 12px; margin-top: 8px; text-align: center; }
     </style>
 </head>
 <body>
@@ -77,6 +91,16 @@
             </div>
 
             <div class="card journal-section">
+                <!-- Search Section -->
+                <div class="search-section">
+                    <h3>Search Verses</h3>
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Search for a word in verses...">
+                        <button class="search-btn" id="searchBtn">Search</button>
+                    </div>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+
                 <h3>Journal Entry</h3>
                 <textarea id="journalText" placeholder="Write your reflections here..."></textarea>
                 
@@ -141,73 +165,93 @@
             if (app.lines.every(function(l) { return l !== null; })) {
                 var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
                 app.verseNumber = base3 + 1;
+            } else {
+                app.verseNumber = null;
             }
-            render();
-        }
-
-        function cycleTranslation() {
-            var currentIndex = app.translationOrder.indexOf(app.currentTranslation);
-            var nextIndex = (currentIndex + 1) % app.translationOrder.length;
-            app.currentTranslation = app.translationOrder[nextIndex];
             render();
         }
 
         function render() {
-            // Render lines
             var linesHTML = '';
             for (var i = 0; i < 4; i++) {
-                linesHTML += '<div onclick="cycleLine(' + i + ', \'forward\')" oncontextmenu="cycleLine(' + i + ', \'backward\'); return false;" style="cursor: pointer; padding: 1px 0;">' + getLineHTML(app.lines[i]) + '</div>';
+                var lineType = app.lines[i];
+                if (lineType === null) {
+                    linesHTML = getLineHTML(3) + linesHTML;
+                } else {
+                    linesHTML = getLineHTML(lineType) + linesHTML;
+                }
             }
             document.getElementById('linesDisplay').innerHTML = linesHTML;
-
-            // Render line codes
+            
+            var lineCodesHTML = '';
             if (app.lines.every(function(l) { return l !== null; })) {
-                var codes = app.lines.map(function(l) { return l.toString(); }).join('');
-                document.getElementById('lineCodesDisplay').innerHTML = 'Lines: ' + codes;
-            } else {
-                document.getElementById('lineCodesDisplay').innerHTML = '';
+                lineCodesHTML = 'Lines: ' + app.lines.join('');
             }
+            document.getElementById('lineCodesDisplay').innerHTML = lineCodesHTML;
 
-            // Render verse
             if (app.verseNumber !== null) {
-                var title = verseTitles[app.verseNumber - 1];
-                var text = verseTexts[app.currentTranslation][app.verseNumber];
-                if (!text) {
-                    // Skip to next translation if this one doesn't exist
-                    cycleTranslation();
-                    return;
+                var verseIdx = app.verseNumber - 1;
+                var title = verseTitles[verseIdx];
+                
+                var translations = window.verses && window.verses[app.verseNumber];
+                var verseText = '';
+                
+                if (translations && translations[app.currentTranslation]) {
+                    verseText = translations[app.currentTranslation];
+                } else {
+                    verseText = 'Translation not available';
                 }
-                    
-                var verseHTML = '<div class="verse-display" onclick="cycleTranslation()">';
-                verseHTML += '<div class="verse-number">Verse ' + app.verseNumber + '</div>';
-                verseHTML += '<div class="verse-title">' + title + '</div>';
-                verseHTML += '<div class="verse-author">' + app.currentTranslation + '</div>';
-                verseHTML += '<div class="verse-text">' + text + '</div>';
-                verseHTML += '</div>';
-                document.getElementById('verseDisplay').innerHTML = verseHTML;
 
-                // Show related verses
-                var related = [];
+                var category = '';
                 for (var cat in verseCategories) {
                     if (verseCategories[cat].indexOf(app.verseNumber) !== -1) {
-                        related = verseCategories[cat].filter(function(v) { return v !== app.verseNumber; });
-                        document.getElementById('relatedVersesDisplay').innerHTML = 
-                            '<a href="guide/guide.html" target="_blank" style="color: #fbbf24; text-decoration: none; border-bottom: 1px dotted #fbbf24;">' + cat + '</a>: ' + related.join(', ');
+                        category = cat;
                         break;
                     }
                 }
+
+                var verseHTML = '<div class="verse-display" onclick="cycleTranslation()">' +
+                    '<div class="verse-number">Verse ' + app.verseNumber + '</div>' +
+                    '<div class="verse-title">' + title + '</div>' +
+                    '<div class="verse-author">Translation: ' + app.currentTranslation + '</div>' +
+                    '<div class="verse-text">' + verseText + '</div>' +
+                    '</div>';
+                
+                document.getElementById('verseDisplay').innerHTML = verseHTML;
+
+                var related = verseCategories[category] || [];
+                var relatedHTML = '';
+                if (related.length > 0) {
+                    relatedHTML = '<div style="color: #94a3b8; font-size: 11px; margin-top: 8px;">' +
+                        'Category: ' + category + '<br>' +
+                        'Related verses: ' + related.join(', ') +
+                        '</div>';
+                }
+                document.getElementById('relatedVersesDisplay').innerHTML = relatedHTML;
             } else {
-                document.getElementById('verseDisplay').innerHTML = '<div class="instruction">Click "Generate" to cast your divination and receive a verse for meditation</div>';
+                document.getElementById('verseDisplay').innerHTML = '';
                 document.getElementById('relatedVersesDisplay').innerHTML = '';
             }
 
-            // Render entries
             var listHTML = '';
             for (var i = app.entries.length - 1; i >= 0; i--) {
                 var e = app.entries[i];
-                listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')"><div class="entry-date">' + e.date + '</div><div class="entry-verse">Verse ' + e.verse + ' - ' + e.title + '</div><div class="entry-preview">' + e.text.substring(0, 50) + '...</div></div>';
+                var preview = e.text.substring(0, 60);
+                if (e.text.length > 60) preview += '...';
+                listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
+                    '<div class="entry-date">' + e.date + '</div>' +
+                    '<div class="entry-verse">Verse ' + e.verse + ': ' + e.title + '</div>' +
+                    '<div class="entry-preview">' + preview + '</div>' +
+                    '</div>';
             }
             document.getElementById('entriesList').innerHTML = listHTML;
+        }
+
+        function cycleTranslation() {
+            var idx = app.translationOrder.indexOf(app.currentTranslation);
+            idx = (idx + 1) % app.translationOrder.length;
+            app.currentTranslation = app.translationOrder[idx];
+            render();
         }
 
         function generate() {
@@ -320,6 +364,87 @@
             a.click();
         }
 
+        // SEARCH FUNCTION
+        function searchVerses() {
+            var searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            var resultsDiv = document.getElementById('searchResults');
+            
+            if (searchTerm === '') {
+                resultsDiv.innerHTML = '<div class="search-count">Enter a word to search</div>';
+                return;
+            }
+
+            if (!window.verses) {
+                resultsDiv.innerHTML = '<div class="search-count">Verses not loaded</div>';
+                return;
+            }
+
+            var results = [];
+            
+            // Search through all verses and all translations
+            for (var verseNum = 1; verseNum <= 81; verseNum++) {
+                var translations = window.verses[verseNum];
+                if (!translations) continue;
+                
+                // Check each translation
+                for (var trans in translations) {
+                    var text = translations[trans].toLowerCase();
+                    if (text.indexOf(searchTerm) !== -1) {
+                        // Found a match - extract snippet with context
+                        var index = text.indexOf(searchTerm);
+                        var start = Math.max(0, index - 50);
+                        var end = Math.min(text.length, index + searchTerm.length + 50);
+                        var snippet = text.substring(start, end);
+                        
+                        if (start > 0) snippet = '...' + snippet;
+                        if (end < text.length) snippet = snippet + '...';
+                        
+                        // Highlight the search term
+                        var regex = new RegExp('(' + searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                        snippet = snippet.replace(regex, '<span class="search-highlight">$1</span>');
+                        
+                        results.push({
+                            verse: verseNum,
+                            title: verseTitles[verseNum - 1],
+                            translation: trans,
+                            snippet: snippet
+                        });
+                        
+                        // Only show one result per verse (first matching translation)
+                        break;
+                    }
+                }
+            }
+
+            // Display results
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<div class="search-count">No verses found containing "' + searchTerm + '"</div>';
+            } else {
+                var html = '';
+                for (var i = 0; i < results.length; i++) {
+                    var r = results[i];
+                    html += '<div class="search-result-item" onclick="loadVerseFromSearch(' + r.verse + ')">' +
+                        '<div class="search-result-verse">Verse ' + r.verse + '</div>' +
+                        '<div class="search-result-title">' + r.title + '</div>' +
+                        '<div class="search-result-snippet">' + r.snippet + '</div>' +
+                        '</div>';
+                }
+                html += '<div class="search-count">Found ' + results.length + ' verse(s) containing "' + searchTerm + '"</div>';
+                resultsDiv.innerHTML = html;
+            }
+        }
+
+        function loadVerseFromSearch(verseNum) {
+            app.verseNumber = verseNum;
+            app.lines = verseToLines(verseNum);
+            app.currentEditId = null;
+            document.getElementById('journalText').value = '';
+            render();
+            
+            // Scroll to the verse display
+            document.getElementById('verseDisplay').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
         function init() {
             var saved = localStorage.getItem('taoEntries');
             if (saved) app.entries = JSON.parse(saved);
@@ -331,7 +456,7 @@
             app.lines = [null, null, null, null]; 
             app.verseNumber = null; 
             app.currentEditId = null; 
-            app.currentTranslation = "Wing";
+            app.currentTranslation = "Lau";
             document.getElementById('journalText').value = ''; 
             render(); 
         };
@@ -341,6 +466,14 @@
         document.getElementById('manualVerse').onkeypress = function(e) {
             if (e.key === 'Enter') {
                 manualEntry();
+            }
+        };
+
+        // Search functionality
+        document.getElementById('searchBtn').onclick = searchVerses;
+        document.getElementById('searchInput').onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                searchVerses();
             }
         };
 
