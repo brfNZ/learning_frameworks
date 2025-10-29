@@ -171,15 +171,10 @@
             render();
         }
 
-        function render() {
+       function render() {
             var linesHTML = '';
             for (var i = 0; i < 4; i++) {
-                var lineType = app.lines[i];
-                if (lineType === null) {
-                    linesHTML = getLineHTML(3) + linesHTML;
-                } else {
-                    linesHTML = getLineHTML(lineType) + linesHTML;
-                }
+                linesHTML += '<div onclick="cycleLine(' + i + ', \'forward\')" oncontextmenu="cycleLine(' + i + ', \'backward\'); return false;" style="cursor: pointer; padding: 1px 0;">' + getLineHTML(app.lines[i]) + '</div>';
             }
             document.getElementById('linesDisplay').innerHTML = linesHTML;
             
