@@ -97,9 +97,8 @@
                     <div class="search-box">
                         <input type="text" id="searchInput" placeholder="Search for a word in verses...">
                         <button class="search-btn" id="searchBtn">Search</button>
+                        <button id="clearSearchBtn" style="display: none; background: #64748b; color: white; padding: 10px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 18px; font-weight: bold;">×</button>
                     </div>
-                    <div class="search-results" id="searchResults"></div>
-                </div>
 
                 <h3>Journal Entry</h3>
                 <textarea id="journalText" placeholder="Write your reflections here..."></textarea>
@@ -439,6 +438,12 @@
             
             // Scroll to the verse display
             document.getElementById('verseDisplay').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('clearSearchBtn').style.display = 'none';
         }
 
         function init() {
