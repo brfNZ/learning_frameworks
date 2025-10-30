@@ -1,32 +1,26 @@
 // Le Guin Translation
 var versesLeGuin = {
-    "23": `Nothing and not
+    "1": `Sun Tzǔ said: The art of war is of vital importance to the State.
+    
+It is a matter of life and death, a road either to safety or to ruin. Hence it is a subject of
+inquiry which can on no account be neglected.
 
-Nature doesn't make long speeches.
-A whirlwind doesn't last all morning.
-A cloudburst doesn't last all day.
-Who makes the wind and rain?
-Heaven and earth do.
-If heaven and earth don't go on and on,
-certainly people don't need to.
+The art of war, then, is governed by five constant factors, to be taken into account in one’s
+deliberations, when seeking to determine the conditions obtaining in the field.
 
-The people who work with Tao
-are Tao people,
-they belong to the Way.
-People who work with power
-belong to power.
-People who work with loss
-belong to what's lost.
+These are: (1) The Moral Law; (2) Heaven; (3) Earth; (4) The Commander; (5) Method and
+discipline.
 
-Give yourself to the Way
-and you'll be at home on the Way.
-Give yourself to power
-and you'll be at home in power.
-Give yourself to loss
-and when you're lost you'll be at home.
+The Moral Law causes the people to be in complete accord with their ruler, so that they will
+follow him regardless of their lives, undismayed by any danger.
 
-To give no trust
-is to get no trust.`,
+Heaven signifies night and day, cold and heat, times and seasons.
+
+Earth comprises distances, great and small; danger and security; open ground and narrow
+passes; the chances of life and death.
+
+The Commander stands for the virtues of wisdom, sincerity, benevolence, courage and
+strictness.`,
     
     "29": `Not doing
 
