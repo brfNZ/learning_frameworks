@@ -1,4 +1,4 @@
-// Le Guin Translation
+// Lionel Giles Translation
 var versesLeGuin = {
     "1": `Sun Tzǔ said: The art of war is of vital importance to the State.
     
