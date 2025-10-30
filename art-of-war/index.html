@@ -195,6 +195,12 @@
                     '</div>';
             }
             document.getElementById('entriesList').innerHTML = listHTML;
+            
+            // Save current position to localStorage
+            localStorage.setItem('artOfWarPosition', JSON.stringify({
+                week: app.currentWeek,
+                translation: app.currentTranslation
+            }));
         }
                 
         // LEARNING NOTE: Move to the next week
