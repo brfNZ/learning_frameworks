@@ -27,6 +27,7 @@ and when you're lost you'll be at home.
 
 To give no trust
 is to get no trust.`,
+    
     "29": `Not doing
 
 Those who think to win the world
@@ -48,6 +49,7 @@ from the extremes, excess, extravagance.
 ---
 
 Lecture: For Lao Tzu, "moderation in all things" isn't just a bit of safe, practical advice. To lose the sense of the sacredness of the world is a mortal loss. To injure our world by excesses of greed and ingenuity is to endanger our own sacredness.`,
+    
     "43": `Water and stone
 
 What's softest in the world
