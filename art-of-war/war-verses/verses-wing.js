@@ -1,6 +1,6 @@
 // R.L Wing Translation
 var versesWing = {
-    "1": `THE FIVE FUNDAMENTALS OF STRATEGY
+    "1-1": `THE FIVE FUNDAMENTALS OF STRATEGY
 Sun Tzu said:
 
 Strategy is the great Work of the organization.
@@ -38,9 +38,10 @@ The word View can also be translated as "master" or "sovereign," and refers to
 the mind, vision, or principle behind events.
 Modem Chinese sometimes use this ideogram to refer to Jesus.`,
     
-    "29": ``,
+    "1-2": ``,
     
-    "43": ``,
+    "1-3": ``,
+    "1-4": ``,
 };
 
 
