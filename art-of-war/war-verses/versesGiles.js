@@ -1,5 +1,5 @@
 // Lionel Giles Translation
-var versesLeGuin = {
+var versesGiles = {
     "1": `Sun Tzǔ said: The art of war is of vital importance to the State.
     
 It is a matter of life and death, a road either to safety or to ruin. Hence it is a subject of
