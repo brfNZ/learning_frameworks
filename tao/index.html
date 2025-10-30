@@ -219,6 +219,9 @@
                     '</div>';
                 
                 document.getElementById('verseDisplay').innerHTML = verseHTML;
+                
+                // Save this as the last viewed verse
+                saveLastVerse(app.verseNumber);
 
                 var related = verseCategories[category] || [];
                 var relatedHTML = '';
@@ -454,9 +457,43 @@
             document.getElementById('clearSearchBtn').style.display = 'none';
         }
 
+        // LAST VERSE MEMORY - Save to localStorage and URL
+        function saveLastVerse(verseNum) {
+            localStorage.setItem('taoLastVerse', verseNum);
+            updateURL(verseNum);
+        }
+
+        function loadLastVerse() {
+            // Check URL parameter first
+            var urlParams = new URLSearchParams(window.location.search);
+            var verseFromURL = urlParams.get('verse');
+            
+            if (verseFromURL) {
+                return parseInt(verseFromURL);
+            }
+            
+            // Otherwise check localStorage
+            var saved = localStorage.getItem('taoLastVerse');
+            return saved ? parseInt(saved) : null;
+        }
+
+        function updateURL(verseNum) {
+            // Update URL without reloading page
+            var newURL = window.location.pathname + '?verse=' + verseNum;
+            window.history.replaceState({}, '', newURL);
+        }
+
         function init() {
             var saved = localStorage.getItem('taoEntries');
             if (saved) app.entries = JSON.parse(saved);
+            
+            // Load last verse if available
+            var lastVerse = loadLastVerse();
+            if (lastVerse && lastVerse >= 1 && lastVerse <= 81) {
+                app.verseNumber = lastVerse;
+                app.lines = verseToLines(lastVerse);
+            }
+            
             render();
         }
 
