@@ -129,62 +129,64 @@
 
         // LEARNING NOTE: This is the main function that updates what you see on screen
         function render() {
-            // STEP 1: Get information about the current week
+            // STEP 1: Get information about the current chapter/part
             var weekInfo = getWeekInfo(app.currentWeek, app.currentTranslation);
             var weekTitle = getWeekTitle(app.currentWeek, app.currentTranslation);
             
-            // STEP 2: Build the top display (week number + title + chapter)
-            var display = '<div class="passage-display">';
-            display += '<div class="week-number">Week ' + app.currentWeek + '</div>';
-            display += '<div class="passage-title">' + weekTitle + '</div>';
-            display += '<div class="passage-chapter">Chapter ' + weekInfo.chapter + '</div>';
-            
-            // STEP 3: Add contextual indicator for Wing (shows "Week X of 4")
-            if (weekInfo.section !== null) {
-                display += '<div class="context-indicator">Week ' + weekInfo.section + ' of 4</div>';
-            }
-            
-            display += '</div>';
-            document.getElementById('passageDisplay').innerHTML = display;
-
-            // STEP 4: Display the verse text
-            // Build the key to look up the verse (e.g., "1" for Giles or "1-2" for Wing)
+            // STEP 2: Build the verse key to look up the text
             var verseKey = weekInfo.chapter.toString();
             if (weekInfo.section !== null) {
-                verseKey += '-' + weekInfo.section;  // For Wing: "1-2" means Chapter 1, Section 2
+                verseKey += '-' + weekInfo.section;
             }
             
-            // Check if we have verse text for this translation and key
+            // STEP 3: Get chapter title for this translation
+            var chapterTitle;
+            if (app.currentTranslation === "Wing") {
+                chapterTitle = chapterTitlesWing[weekInfo.chapter - 1];
+            } else {
+                chapterTitle = chapterTitlesGiles[weekInfo.chapter - 1];
+            }
+            
+            // STEP 4: Build the combined display
+            var display = '<div class="verse-display" onclick="cycleTranslation()">';
+            
+            // Translation label
+            display += '<div class="verse-author">Translation: ' + app.currentTranslation + '</div>';
+            
+            // Chapter number
+            display += '<div style="color: #cbd5e1; font-size: 16px; margin-top: 12px;">Chapter ' + weekInfo.chapter + '</div>';
+            
+            // Chapter title
+            display += '<div style="color: #fbbf24; font-size: 28px; font-weight: bold; margin-top: 4px;">' + chapterTitle + '</div>';
+            
+            // For Wing: show Part number and Part title
+            if (weekInfo.section !== null) {
+                display += '<div style="color: #cbd5e1; font-size: 16px; margin-top: 8px;">Part ' + weekInfo.section + '</div>';
+                display += '<div style="color: #fbbf24; font-size: 24px; font-weight: bold; margin-top: 4px;">' + weekTitle + '</div>';
+            }
+            
+            // Separator line
+            display += '<div style="border-top: 1px solid #64748b; margin: 20px 0;"></div>';
+            
+            // STEP 5: Add the verse text if available
             if (typeof verseTexts !== 'undefined' && 
                 verseTexts[app.currentTranslation] && 
                 verseTexts[app.currentTranslation][verseKey]) {
                 
                 var verseText = verseTexts[app.currentTranslation][verseKey];
-                
-                // Get the chapter title for this translation
-                var chapterTitle;
-                if (app.currentTranslation === "Wing") {
-                    chapterTitle = chapterTitlesWing[weekInfo.chapter - 1];  // Arrays are 0-indexed
-                } else {
-                    chapterTitle = chapterTitlesGiles[weekInfo.chapter - 1];
-                }
-                
-                // Build the verse display HTML
-                var verseHTML = '<div class="verse-display" onclick="cycleTranslation()">' +
-                    '<div class="verse-author">Translation: ' + app.currentTranslation + '</div>' +
-                    '<div style="color: #fbbf24; font-size: 18px; font-weight: bold; margin-bottom: 12px;">Chapter ' + weekInfo.chapter + ': ' + chapterTitle + '</div>' +
-                    '<div class="verse-text">' + verseText + '</div>' +
-                    '</div>';
-                
-                document.getElementById('verseDisplay').innerHTML = verseHTML;
+                display += '<div class="verse-text">' + verseText + '</div>';
             } else {
-                // No verse text available yet
-                document.getElementById('verseDisplay').innerHTML = '';
+                display += '<div class="verse-text" style="color: #94a3b8; font-style: italic;">Verse text not yet added</div>';
             }
-
-            // STEP 5: Display the list of saved journal entries
+            
+            display += '</div>';
+            
+            // Update the combined display
+            document.getElementById('combinedDisplay').innerHTML = display;
+        
+            // STEP 6: Display the list of saved journal entries
             var listHTML = '';
-            for (var i = app.entries.length - 1; i >= 0; i--) {  // Loop backwards to show newest first
+            for (var i = app.entries.length - 1; i >= 0; i--) {
                 var e = app.entries[i];
                 listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
                     '<div class="entry-week">Week ' + e.week + ' - ' + e.title + '</div>' +
@@ -194,7 +196,7 @@
             }
             document.getElementById('entriesList').innerHTML = listHTML;
         }
-
+                
         // LEARNING NOTE: Move to the next week
         function nextWeek() {
             if (app.currentWeek < 52) {
