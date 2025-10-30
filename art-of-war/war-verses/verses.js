@@ -22,6 +22,23 @@ var chapterTitlesGiles = [
     "The Use of Spies"
 ];
 
+// Wing chapter titles (13 chapters - these appear in the verse display box)
+var chapterTitlesWing = [
+    "The Calculations",           // Chapter 1
+    "The Challenge",              // Chapter 2
+    "The Plan of Attack",         // Chapter 3
+    "Positioning",                // Chapter 4
+    "Directing",                  // Chapter 5
+    "Illusion and Reality",       // Chapter 6
+    "Engaging the Force",         // Chapter 7
+    "The Nine Variations",        // Chapter 8
+    "Moving the Force",           // Chapter 9
+    "Situational Positioning",    // Chapter 10
+    "The Nine Situations",        // Chapter 11
+    "The Fiery Attack",           // Chapter 12
+    "The Use Of Intelligence"     // Chapter 13
+];
+
 // Wing week titles (52 weeks total: 13 chapters × 4 weeks each)
 var wingWeekTitles = [
     // Chapter 1 - 4 weeks
