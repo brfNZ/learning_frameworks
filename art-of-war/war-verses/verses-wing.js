@@ -60,7 +60,7 @@ If leaders who do not heed my Calculations are employed,
 They are certain to be defeated.
 Remove them.
 
-___________
+___________________________________________
 The term Nature comes from the Chinese wordjen, which can also be translated as "heaven."
 It refers to the actions and realm of the physical laws.
 The rerm Situation comes from the Chinese word ti, which is also translated as "earth," "region," or "place."
@@ -110,7 +110,7 @@ How much more so with no computation at all!
 By observing only this,
 I can see triumph or defeat.
 
-_____________
+___________________________________________
 The term headquarters comes from the Chinese word miao, which can also be translated as
 "temple"'or "imperial court," and refers to the central place of ruling.`,
     
