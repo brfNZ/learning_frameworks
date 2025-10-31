@@ -361,15 +361,15 @@
         };
         document.getElementById('saveBtn').onclick = saveEntry;
         document.getElementById('exportBtn').onclick = exportCSV;
-        document.getElementById('manualWeekBtn').onclick = manualWeek;
+        document.getElementById('manualChapterBtn').onclick = manualChapter;
         
         // Allow pressing Enter in the week number input to jump to that week
-        document.getElementById('manualWeek').addEventListener('keypress', function(e) {
+        document.getElementById('manualChapter').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                manualWeek();
+                manualChapter();
             }
         });
-
+        
         // Start the app!
         init();
     </script>
