@@ -331,14 +331,13 @@
 
         // LEARNING NOTE: Export all entries to a CSV file
         function exportCSV() {
-            var csv = 'Date,Week,Chapter,Passage,Notes\n';
+            var csv = 'Date,Translation,Chapter,Part,Title,Notes\n';
             for (var i = 0; i < app.entries.length; i++) {
                 var e = app.entries[i];
-                var notes = e.text.replace(/"/g, '""').replace(/\n/g, ' ');  // Escape quotes and remove line breaks
-                csv += e.date + ',' + e.week + ',' + e.chapter + ',"' + e.title + '","' + notes + '"\n';
+                var notes = e.text.replace(/"/g, '""').replace(/\n/g, ' ');
+                var part = e.section || '';  // Empty for Giles
+                csv += e.date + ',' + e.translation + ',' + e.chapter + ',' + part + ',"' + e.title + '","' + notes + '"\n';
             }
-            
-            // Create a downloadable file
             var blob = new Blob([csv], { type: 'text/csv' });
             var url = URL.createObjectURL(blob);
             var a = document.createElement('a');
