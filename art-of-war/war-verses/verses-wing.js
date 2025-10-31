@@ -37,7 +37,28 @@ The word View can also be translated as "master" or "sovereign," and refers to
 the mind, vision, or principle behind events.
 Modem Chinese sometimes use this ideogram to refer to Jesus.`,
 
-    "1-2": ``,
+    "1-2": `When Calculating the Fundamentals,
+Examine each one carefully.
+Tell me:
+Which View possesses the Tao?
+Which Leader possesses competence?
+Which can affect Nature and the Situation?
+Which Art inspires a following?
+Which Strategy has numerous strengths?
+Which corps is highly trained?
+Which has enlightened rewards and penalties?
+It is through these that I know triumph or defeat.
+If leaders who heed my Calculations are employed,
+They are certain to triumph.
+Retain them.
+If leaders who do not heed my Calculations are employed,
+They are certain to be defeated.
+Remove them.
+The rerm.Nature comes from the Chinese wordjen, which can also be translated as "heaven."
+It refers to the actions and realm of the physical laws.
+The rerm Situation comes from the Chinese word ti, which is also translated as "earth," "region," or "place."
+It refers to the terrain where the laws of nature are manifest.`,
+    
     "1-3": ``,
     "1-4": ``,
     
