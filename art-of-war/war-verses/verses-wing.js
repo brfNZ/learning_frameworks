@@ -111,7 +111,7 @@ By observing only this,
 I can see triumph or defeat.
 
 _____________
-The term headquarters comes from the Chinese word miao, which can also be translate.d as
+The term headquarters comes from the Chinese word miao, which can also be translated as
 "temple"'or "imperial court," and refers to the central place of ruling.`,
     
     "2-1": ``,
