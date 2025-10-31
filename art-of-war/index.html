@@ -60,6 +60,7 @@
         .entry-date { color: #94a3b8; font-size: 11px; margin-bottom: 6px; }        
         .entry-title { color: #fbbf24; font-size: 14px; font-weight: bold; }
         .entry-preview { color: #e2e8f0; font-size: 11px; }        
+        .entry-separator { color: #94a3b8; font-weight: normal; }
         .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; }
     </style>
 </head>
@@ -205,6 +206,7 @@
                 '<div class="entry-date">' + formattedDate + '</div>' +
                 '<div class="entry-header">' +
                     '<span class="entry-chapter-ref">' + chapterRef + '</span>' +
+                    '<span class="entry-separator"> - </span>' +
                     '<span class="entry-title">' + e.title + '</span>' +
                 '</div>' +
                 '<div class="entry-preview">' + e.text.substring(0, 60) + '...</div>' +
