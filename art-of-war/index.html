@@ -288,13 +288,14 @@
             if (app.currentEditId !== null) {
                 app.entries[app.currentEditId].text = text;
             } else {
-                app.entries.push({ 
-                    week: app.currentWeek, 
-                    chapter: weekInfo.chapter, 
-                    title: weekTitle, 
-                    date: now, 
-                    text: text 
-                });
+              app.entries.push({ 
+                chapter: weekInfo.chapter,
+                section: weekInfo.section,  // Will be null for Giles
+                translation: app.currentTranslation,
+                title: weekTitle, 
+                date: now, 
+                text: text 
+            });
             }
             
             // Save to browser's localStorage so entries persist between sessions
