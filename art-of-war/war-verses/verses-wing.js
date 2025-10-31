@@ -39,18 +39,23 @@ Modem Chinese sometimes use this ideogram to refer to Jesus.`,
 
     "1-2": `When Calculating the Fundamentals,
 Examine each one carefully.
+
 Tell me:
 Which View possesses the Tao?
 Which Leader possesses competence?
 Which can affect Nature and the Situation?
+
 Which Art inspires a following?
 Which Strategy has numerous strengths?
 Which corps is highly trained?
 Which has enlightened rewards and penalties?
+
 It is through these that I know triumph or defeat.
+
 If leaders who heed my Calculations are employed,
 They are certain to triumph.
 Retain them.
+
 If leaders who do not heed my Calculations are employed,
 They are certain to be defeated.
 Remove them.
@@ -63,22 +68,28 @@ It refers to the terrain where the laws of nature are manifest.`,
     
     "1-3": `Heed me by Calculating the advantages
 And reinforce them by Directing outwardly.
+
 Those who Direct, follow the advantages and adjust their formula.
 Those who Strategize, use the Tao of Paradox.
+
 Thus, when able, they appear unable.
 When employed, they appear useless.
 When close, they appear distant.
 When distant, they appear close.
+
 They lure through advantages,
 And take control through confusion.
+
 When complete, they appear to prepare.
 When forceful, they appear evasive.
 When angry, they appear to submit.
 When proud, they appear to be humble.
 When comfortable, they appear to toil.
-When attached, they appear separated
+When attached, they appear separated.
+
 They attack when the opponent is unprepared
 And appear where least expected.
+
 This is the Strategist's way of triumph.
 It must not be discussed beforehand.`,
     
@@ -86,13 +97,16 @@ It must not be discussed beforehand.`,
 Compute at their headquarters
 A great number of factors
 Prior to a challenge.
+
 Those who are defeated,
 Compute at their headquarters
 A small number of factors
 Prior to a challenge.
+
 Much computation brings triumph.
 Little computation brings defeat.
 How much more so with no computation at all!
+
 By observing only this,
 I can see triumph or defeat.
 
