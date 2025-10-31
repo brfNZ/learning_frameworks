@@ -188,14 +188,23 @@
             var listHTML = '';
             for (var i = app.entries.length - 1; i >= 0; i--) {
                 var e = app.entries[i];
+                
+                // Build chapter reference
+                var chapterRef = 'Ch ' + e.chapter;
+                if (e.section) {
+                    chapterRef += ', Pt ' + e.section;
+                }
+                chapterRef += ' (' + e.translation + ')';
+                
                 listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
-                    '<div class="entry-week">Week ' + e.week + ' - ' + e.title + '</div>' +
-                    '<div class="entry-passage">Chapter ' + e.chapter + '</div>' +
-                    '<div class="entry-preview">' + e.text.substring(0, 50) + '...</div>' +
+                    '<div class="entry-chapter-ref">' + chapterRef + '</div>' +
+                    '<div class="entry-date">' + e.date + '</div>' +
+                    '<div class="entry-title">' + e.title + '</div>' +
+                    '<div class="entry-preview">' + e.text.substring(0, 60) + '...</div>' +
                     '</div>';
             }
             document.getElementById('entriesList').innerHTML = listHTML;
-            
+                        
             // Save current position to localStorage
             localStorage.setItem('artOfWarPosition', JSON.stringify({
                 week: app.currentWeek,
