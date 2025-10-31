@@ -54,13 +54,51 @@ Retain them.
 If leaders who do not heed my Calculations are employed,
 They are certain to be defeated.
 Remove them.
-The rerm.Nature comes from the Chinese wordjen, which can also be translated as "heaven."
+
+___________
+The term Nature comes from the Chinese wordjen, which can also be translated as "heaven."
 It refers to the actions and realm of the physical laws.
 The rerm Situation comes from the Chinese word ti, which is also translated as "earth," "region," or "place."
 It refers to the terrain where the laws of nature are manifest.`,
     
-    "1-3": ``,
-    "1-4": ``,
+    "1-3": `Heed me by Calculating the advantages
+And reinforce them by Directing outwardly.
+Those who Direct, follow the advantages and adjust their formula.
+Those who Strategize, use the Tao of Paradox.
+Thus, when able, they appear unable.
+When employed, they appear useless.
+When close, they appear distant.
+When distant, they appear close.
+They lure through advantages,
+And take control through confusion.
+When complete, they appear to prepare.
+When forceful, they appear evasive.
+When angry, they appear to submit.
+When proud, they appear to be humble.
+When comfortable, they appear to toil.
+When attached, they appear separated
+They attack when the opponent is unprepared
+And appear where least expected.
+This is the Strategist's way of triumph.
+It must not be discussed beforehand.`,
+    
+    "1-4": `Those who triumph,
+Compute at their headquarters
+A great number of factors
+Prior to a challenge.
+Those who are defeated,
+Compute at their headquarters
+A small number of factors
+Prior to a challenge.
+Much computation brings triumph.
+Little computation brings defeat.
+How much more so with no computation at all!
+By observing only this,
+I can see triumph or defeat.
+
+_____________
+The term headquarters comes from the Chinese word miao, which can also be translate.d as
+"temple"'or "imperial court," and refers to the central place of ruling.`,
     
     "2-1": ``,
     "2-2": ``,
