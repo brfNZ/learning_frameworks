@@ -56,9 +56,9 @@
         .entry-header { display: flex; gap: 8px; align-items: baseline; margin-bottom: 2px; }
         .entry-item { background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid #64748b; transition: all 0.2s; }
         .entry-item:hover { background: #3f4a5c; border-color: #fbbf24; }
-        .entry-chapter-ref { color: #fbbf24; font-size: 14px; font-weight: bold; }
+        .entry-chapter-ref { color: #fbbf24; font-size: 13px; font-weight: bold; }
         .entry-date { color: #94a3b8; font-size: 11px; margin-bottom: 6px; }        
-        .entry-title { color: #fbbf24; font-size: 14px; font-weight: bold; }
+        .entry-title { color: #fbbf24; font-size: 13px; font-weight: bold; }
         .entry-preview { color: #e2e8f0; font-size: 11px; }        
         .entry-separator { color: #94a3b8; font-weight: normal; }
         .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; }
@@ -192,12 +192,12 @@
                 var e = app.entries[i];
                 
                 // Build chapter reference
-                var chapterRef = 'Ch ' + e.chapter;
-                if (e.section) {
-                    chapterRef += ', Pt ' + e.section;
-                }
-                chapterRef += ' (' + e.translation + ')';
-                
+            var chapterRef = 'Ch ' + e.chapter;
+            if (e.section) {
+                chapterRef += '.' + e.section;
+            }
+            chapterRef += ' (' + (e.translation === 'Wing' ? 'W' : 'G') + ')';
+                            
             // Format date as day-month-year
             var dateParts = e.date.split('-');
             var formattedDate = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
