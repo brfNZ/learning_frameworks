@@ -201,7 +201,16 @@
                 week: app.currentWeek,
                 translation: app.currentTranslation
             }));
-        }
+
+            // Update URL without reloading page
+            var weekInfo = getWeekInfo(app.currentWeek, app.currentTranslation);
+            var chapterParam = weekInfo.chapter.toString();
+            if (weekInfo.section !== null) {
+                chapterParam += '-' + weekInfo.section;
+            }
+            var newUrl = window.location.pathname + '?ch=' + chapterParam + '&tr=' + app.currentTranslation;
+            window.history.replaceState({}, '', newUrl);
+                    }
                 
         // LEARNING NOTE: Move to the next week
         function nextWeek() {
