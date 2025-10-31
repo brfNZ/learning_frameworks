@@ -57,8 +57,7 @@
         .entry-item { background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid #64748b; transition: all 0.2s; }
         .entry-item:hover { background: #3f4a5c; border-color: #fbbf24; }
         .entry-chapter-ref { color: #fbbf24; font-size: 13px; font-weight: 500; }
-        .entry-date { color: #64748b; font-size: 11px; margin: 2px 0 8px 0; }
-        .entry-title { color: #fbbf24; font-size: 14px; margin-bottom: 6px; }
+        .entry-date { color: #94a3b8; font-size: 11px; margin-bottom: 6px; }        .entry-title { color: #fbbf24; font-size: 14px; margin-bottom: 6px; }
         .entry-preview { color: #e2e8f0; font-size: 11px; }        
         .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; }
     </style>
@@ -197,14 +196,18 @@
                 }
                 chapterRef += ' (' + e.translation + ')';
                 
-                listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
-                    '<div class="entry-header">' +
-                        '<span class="entry-chapter-ref">' + chapterRef + '</span>' +
-                        '<span class="entry-title">' + e.title + '</span>' +
-                    '</div>' +
-                    '<div class="entry-date">' + e.date + '</div>' +
-                    '<div class="entry-preview">' + e.text.substring(0, 60) + '...</div>' +
-                    '</div>';
+            // Format date as day-month-year
+            var dateParts = e.date.split('-');
+            var formattedDate = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+
+            listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
+                '<div class="entry-date">' + formattedDate + '</div>' +
+                '<div class="entry-header">' +
+                    '<span class="entry-chapter-ref">' + chapterRef + '</span>' +
+                    '<span class="entry-title">' + e.title + '</span>' +
+                '</div>' +
+                '<div class="entry-preview">' + e.text.substring(0, 60) + '...</div>' +
+                '</div>';
             }
             document.getElementById('entriesList').innerHTML = listHTML;
                         
