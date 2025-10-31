@@ -73,10 +73,10 @@
         <div class="main">
             <div class="card">
                 <div id="combinedDisplay"></div>
-                <div class="button-group">
-                    <button class="next-btn" id="nextBtn">Next</button>
-                    <button class="reset-btn" id="resetBtn">Reset</button>
-                </div>
+                    <div class="button-group">
+                        <button class="reset-btn" id="prevBtn">Previous</button>
+                        <button class="next-btn" id="nextBtn">Next</button>
+                    </div>
             </div>
             
             <div class="card journal-section">
@@ -213,13 +213,23 @@
                     }
                 
         // LEARNING NOTE: Move to the next week
-        function nextWeek() {
+        function nextChapter() {
             if (app.currentWeek < 52) {
                 app.currentWeek++;
                 app.currentEditId = null;  // Clear any editing state
                 document.getElementById('journalText').value = '';  // Clear the text box
                 render();
             }
+
+        function previousChapter() {
+            if (app.currentWeek > 1) {
+                app.currentWeek--;
+                app.currentEditId = null;
+                document.getElementById('journalText').value = '';
+                render();
+            }
+        }
+        
         }
 
         // LEARNING NOTE: Jump to a specific chapter number
@@ -352,13 +362,8 @@
         }
 
         // LEARNING NOTE: Connect button clicks to functions
-        document.getElementById('nextBtn').onclick = nextWeek;
-        document.getElementById('resetBtn').onclick = function() { 
-            app.currentWeek = 1; 
-            app.currentEditId = null; 
-            document.getElementById('journalText').value = ''; 
-            render(); 
-        };
+        document.getElementById('prevBtn').onclick = previousChapter;
+        document.getElementById('nextBtn').onclick = nextChapter;
         document.getElementById('saveBtn').onclick = saveEntry;
         document.getElementById('exportBtn').onclick = exportCSV;
         document.getElementById('manualChapterBtn').onclick = manualChapter;
