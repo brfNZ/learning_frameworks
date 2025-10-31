@@ -56,6 +56,7 @@
         .entry-header { display: flex; gap: 8px; align-items: baseline; margin-bottom: 2px; }
         .entry-item { background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid #64748b; transition: all 0.2s; }
         .entry-item:hover { background: #3f4a5c; border-color: #fbbf24; }
+        .entry-chapter-title { color: #cbd5e1; font-size: 12px; margin-top: 2px; margin-bottom: 4px; }
         .entry-chapter-ref { color: #fbbf24; font-size: 13px; font-weight: bold; }
         .entry-date { color: #94a3b8; font-size: 11px; margin-bottom: 4px; }        
         .entry-title { color: #fbbf24; font-size: 13px; font-weight: bold; }
@@ -198,9 +199,16 @@
             }
             chapterRef += ' (' + (e.translation === 'Wing' ? 'W' : 'G') + ')';
                             
-            // Format date as day-month-year
+           // Format date as day-month-year
             var dateParts = e.date.split('-');
             var formattedDate = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+
+            // Get chapter title for Wing entries
+            var chapterTitleLine = '';
+            if (e.translation === 'Wing' && e.section) {
+                var chapterTitle = chapterTitlesWing[e.chapter - 1];
+                chapterTitleLine = '<div class="entry-chapter-title">' + chapterTitle + '</div>';
+            }
 
             listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
                 '<div class="entry-date">' + formattedDate + '</div>' +
@@ -209,6 +217,7 @@
                     '<span class="entry-separator"> - </span>' +
                     '<span class="entry-title">' + e.title + '</span>' +
                 '</div>' +
+                chapterTitleLine +
                 '<div class="entry-preview">' + e.text.substring(0, 60) + '...</div>' +
                 '</div>';
             }
