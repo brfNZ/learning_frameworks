@@ -58,7 +58,8 @@
         .entry-chapter-ref { color: #94a3b8; font-size: 13px; font-weight: 500; }
         .entry-date { color: #64748b; font-size: 11px; margin: 2px 0 8px 0; }
         .entry-title { color: #fbbf24; font-size: 14px; margin-bottom: 6px; }
-        .entry-preview { color: #e2e8f0; font-size: 11px; font-style: italic; }        .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; }
+        .entry-preview { color: #e2e8f0; font-size: 11px; }        
+        .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; }
     </style>
 </head>
 <body>
@@ -196,9 +197,11 @@
                 chapterRef += ' (' + e.translation + ')';
                 
                 listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
-                    '<div class="entry-chapter-ref">' + chapterRef + '</div>' +
+                    '<div class="entry-header">' +
+                        '<span class="entry-chapter-ref">' + chapterRef + '</span>' +
+                        '<span class="entry-title">' + e.title + '</span>' +
+                    '</div>' +
                     '<div class="entry-date">' + e.date + '</div>' +
-                    '<div class="entry-title">' + e.title + '</div>' +
                     '<div class="entry-preview">' + e.text.substring(0, 60) + '...</div>' +
                     '</div>';
             }
