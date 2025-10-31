@@ -61,9 +61,9 @@ They are certain to be defeated.
 Remove them.
 
 ___________________________________________
-The term Nature comes from the Chinese wordjen, which can also be translated as "heaven."
+The term Nature comes from the Chinese word jen, which can also be translated as "heaven."
 It refers to the actions and realm of the physical laws.
-The rerm Situation comes from the Chinese word ti, which is also translated as "earth," "region," or "place."
+The term Situation comes from the Chinese word ti, which is also translated as "earth," "region," or "place."
 It refers to the terrain where the laws of nature are manifest.`,
     
     "1-3": `Heed me by Calculating the advantages
