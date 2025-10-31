@@ -1,7 +1,6 @@
 // R.L Wing Translation
 var versesWing = {
-    "1-1": `THE FIVE FUNDAMENTALS OF STRATEGY
-Sun Tzu said:
+    "1-1": `Sun Tzu said:
 
 Strategy is the great Work of the organization.
 In Situations of life or death, it is the Tao of survival or extinction.
