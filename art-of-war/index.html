@@ -280,9 +280,43 @@
         }
 
         // LEARNING NOTE: Initialize the app when page loads
-        function init() {
+          function init() {
+            // Load saved journal entries
             var saved = localStorage.getItem('artOfWarEntries');
-            if (saved) app.entries = JSON.parse(saved);  // Load saved entries from localStorage
+            if (saved) app.entries = JSON.parse(saved);
+            
+            // Check URL parameters first (higher priority)
+            var urlParams = new URLSearchParams(window.location.search);
+            var urlChapter = urlParams.get('ch');
+            var urlTranslation = urlParams.get('tr');
+            
+            if (urlChapter) {
+                // URL has chapter parameter - use it
+                // Parse "2-3" format or just "2"
+                var parts = urlChapter.split('-');
+                var chapter = parseInt(parts[0]);
+                var section = parts[1] ? parseInt(parts[1]) : 1;
+                
+                // Convert chapter-section to week number
+                if (urlTranslation === 'Wing' || section > 1) {
+                    app.currentWeek = (chapter - 1) * 4 + section;
+                } else {
+                    app.currentWeek = chapter;
+                }
+                
+                if (urlTranslation) {
+                    app.currentTranslation = urlTranslation;
+                }
+            } else {
+                // No URL parameters - check localStorage
+                var savedPosition = localStorage.getItem('artOfWarPosition');
+                if (savedPosition) {
+                    var pos = JSON.parse(savedPosition);
+                    app.currentWeek = pos.week;
+                    app.currentTranslation = pos.translation;
+                }
+            }
+            
             render();
         }
 
