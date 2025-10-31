@@ -41,83 +41,83 @@ var chapterTitlesWing = [
 
 // Wing week titles (52 weeks total: 13 chapters × 4 weeks each)
 var wingWeekTitles = [
-    // Chapter 1 - 4 weeks
-    "The Five Fundamentals of Strategy",  // Week 1
-    "Examining the Fundamentals",         // Week 2
-    "The Tao of Paradox",                 // Week 3
-    "Foretelling Triumph",                // Week 4
+    // Chapter 1 - The Calculations (4 weeks)
+    "The Five Fundamentals of Strategy",        // Week 1
+    "Examining the Fundamentals",               // Week 2
+    "The Tao of Paradox",                       // Week 3
+    "Foretelling Triumph",                      // Week 4
     
-    // Chapter 2 - 4 weeks
-    "[Ch 2, Week 1 title]",               // Week 5
-    "[Ch 2, Week 2 title]",               // Week 6
-    "[Ch 2, Week 3 title]",               // Week 7
-    "[Ch 2, Week 4 title]",               // Week 8
+    // Chapter 2 - The Challenge (4 weeks)
+    "Knowing the Costs",                        // Week 5
+    "Swift Strategies",                         // Week 6
+    "Using the Opponent's Resources",           // Week 7
+    "Incorporating the Opponent's Strength",    // Week 8
     
-    // Chapter 3 - 4 weeks
-    "[Ch 3, Week 1 title]",               // Week 9
-    "[Ch 3, Week 2 title]",               // Week 10
-    "[Ch 3, Week 3 title]",               // Week 11
-    "[Ch 3, Week 4 title]",               // Week 12
+    // Chapter 3 - The Plan of Attack (4 weeks)
+    "Engaging the Entire System",               // Week 9
+    "The Rule of Numbers",                      // Week 10
+    "Three Errors of Leaders",                  // Week 11
+    "The Essentials of Triumph",                // Week 12
     
-    // Chapter 4 - 4 weeks
-    "[Ch 4, Week 1 title]",               // Week 13
-    "[Ch 4, Week 2 title]",               // Week 14
-    "[Ch 4, Week 3 title]",               // Week 15
-    "[Ch 4, Week 4 title]",               // Week 16
+    // Chapter 4 - Positioning (4 weeks)
+    "The Power Defense",                        // Week 13
+    "The Triumph of No Effort",                 // Week 14
+    "The Position of No Error",                 // Week 15
+    "The Five Strategic Arts",                  // Week 16
     
-    // Chapter 5 - 4 weeks
-    "[Ch 5, Week 1 title]",               // Week 17
-    "[Ch 5, Week 2 title]",               // Week 18
-    "[Ch 5, Week 3 title]",               // Week 19
-    "[Ch 5, Week 4 title]",               // Week 20
+    // Chapter 5 - Directing (4 weeks)
+    "The Positioned Strategy",                  // Week 17
+    "The Power of Surprise",                    // Week 18
+    "Moving the Opponent About",                // Week 19
+    "Using Others to Create Momentum",          // Week 20
     
-    // Chapter 6 - 4 weeks
-    "[Ch 6, Week 1 title]",               // Week 21
-    "[Ch 6, Week 2 title]",               // Week 22
-    "[Ch 6, Week 3 title]",               // Week 23
-    "[Ch 6, Week 4 title]",               // Week 24
+    // Chapter 6 - Illusion and Reality (4 weeks)
+    "Creating Imbalance",                       // Week 21
+    "Distorting the Opponent's Position",       // Week 22
+    "Adjusting the Opponent's Numbers",         // Week 23
+    "Reacting with Systematic Positioning",     // Week 24
     
-    // Chapter 7 - 4 weeks
-    "[Ch 7, Week 1 title]",               // Week 25
-    "[Ch 7, Week 2 title]",               // Week 26
-    "[Ch 7, Week 3 title]",               // Week 27
-    "[Ch 7, Week 4 title]",               // Week 28
+    // Chapter 7 - Engaging the Force (4 weeks)
+    "Direct and Indirect Tactics",              // Week 25
+    "Avoiding Competition",                     // Week 26
+    "Flexibility and Imitation",                // Week 27
+    "Controlling the Variations",               // Week 28
     
-    // Chapter 8 - 4 weeks
-    "[Ch 8, Week 1 title]",               // Week 29
-    "[Ch 8, Week 2 title]",               // Week 30
-    "[Ch 8, Week 3 title]",               // Week 31
-    "[Ch 8, Week 4 title]",               // Week 32
+    // Chapter 8 - The Nine Variations (4 weeks)
+    "Situational Strategies",                   // Week 29
+    "Combining Advantages and Disadvantages",   // Week 30
+    "Anticipating the Opponent",                // Week 31
+    "Five Weaknesses in Leaders",               // Week 32
     
-    // Chapter 9 - 4 weeks
-    "[Ch 9, Week 1 title]",               // Week 33
-    "[Ch 9, Week 2 title]",               // Week 34
-    "[Ch 9, Week 3 title]",               // Week 35
-    "[Ch 9, Week 4 title]",               // Week 36
+    // Chapter 9 - Moving the Force (4 weeks)
+    "Using the Situation",                      // Week 33
+    "Determining the Opponent's Strategy",      // Week 34
+    "Determining the Opponent's Vulnerability", // Week 35
+    "The Cultivation of Allegiance",            // Week 36
     
-    // Chapter 10 - 4 weeks
-    "[Ch 10, Week 1 title]",              // Week 37
-    "[Ch 10, Week 2 title]",              // Week 38
-    "[Ch 10, Week 3 title]",              // Week 39
-    "[Ch 10, Week 4 title]",              // Week 40
+    // Chapter 10 - Situational Positioning (4 weeks)
+    "The Six Positions",                        // Week 37
+    "The Six Strategic Mistakes",               // Week 38
+    "Superior Leadership",                      // Week 39
+    "Knowing the Situation",                    // Week 40
     
-    // Chapter 11 - 4 weeks
-    "[Ch 11, Week 1 title]",              // Week 41
-    "[Ch 11, Week 2 title]",              // Week 42
-    "[Ch 11, Week 3 title]",              // Week 43
-    "[Ch 11, Week 4 title]",              // Week 44
+    // Chapter 11 - The Nine Situations (4 weeks)
+    "Situational Response",                     // Week 41
+    "The Spirit of the Corps",                  // Week 42
+    "The Way of the Adventurer",                // Week 43
+    "The Strategy of the Superior Leader",      // Week 44
     
-    // Chapter 12 - 4 weeks
-    "[Ch 12, Week 1 title]",              // Week 45
-    "[Ch 12, Week 2 title]",              // Week 46
-    "[Ch 12, Week 3 title]",              // Week 47
-    "[Ch 12, Week 4 title]",              // Week 48
+    // Chapter 12 - The Fiery Attack (4 weeks)
+    "The Five Fiery Attacks",                   // Week 45
+    "The Five Fiery Variations",                // Week 46
+    "The Decisive Techniques",                  // Week 47
+    "The Ultimate Restraint",                   // Week 48
     
-    // Chapter 13 - 4 weeks
-    "[Ch 13, Week 1 title]",              // Week 49
-    "[Ch 13, Week 2 title]",              // Week 50
-    "[Ch 13, Week 3 title]",              // Week 51
-    "[Ch 13, Week 4 title]",              // Week 52
+    // Chapter 13 - The Use of Intelligence (4 weeks)
+    "Obtaining Foreknowledge",                  // Week 49
+    "The Divine Web",                           // Week 50
+    "The Importance of Counterintelligence",    // Week 51
+    "The Essence of Strategy",                  // Week 52
 ];
 
 // Wing week mapping (week number to chapter/section)
