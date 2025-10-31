@@ -222,20 +222,42 @@
             }
         }
 
-        // LEARNING NOTE: Jump to a specific week number
-        function manualWeek() {
-            var num = parseInt(document.getElementById('manualWeek').value);
-            if (isNaN(num) || num < 1 || num > 52) {
-                alert('Enter a week number between 1 and 52');
+        // LEARNING NOTE: Jump to a specific chapter number
+        function manualChapter() {
+            var input = document.getElementById('manualChapter').value.trim();
+            
+            // Parse input: "2" or "2-3"
+            var parts = input.split('-');
+            var chapter = parseInt(parts[0]);
+            var section = parts[1] ? parseInt(parts[1]) : 1;
+            
+            // Validate chapter number (1-13)
+            if (isNaN(chapter) || chapter < 1 || chapter > 13) {
+                alert('Enter a chapter number between 1 and 13 (e.g., 5 or 5-2)');
                 return;
             }
-            app.currentWeek = num;
+            
+            // Validate section number if provided (1-4)
+            if (parts[1] && (isNaN(section) || section < 1 || section > 4)) {
+                alert('Part number must be between 1 and 4 (e.g., 2-3)');
+                return;
+            }
+            
+            // Convert chapter-section to week number
+            // For Wing (or when section specified): week = (chapter-1)*4 + section
+            // For Giles (when no section): week = chapter
+            if (section > 1 || app.currentTranslation === 'Wing') {
+                app.currentWeek = (chapter - 1) * 4 + section;
+            } else {
+                app.currentWeek = chapter;
+            }
+            
             app.currentEditId = null;
             document.getElementById('journalText').value = '';
-            document.getElementById('manualWeek').value = '';
+            document.getElementById('manualChapter').value = '';
             render();
         }
-
+                
         // LEARNING NOTE: Save a journal entry
         function saveEntry() {
             var weekInfo = getWeekInfo(app.currentWeek, app.currentTranslation);
