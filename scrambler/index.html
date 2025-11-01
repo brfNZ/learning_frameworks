@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Scrambler - Enhanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #0f172a;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .enhanced-badge {
+            text-align: center;
+            color: #10b981;
+            margin-bottom: 24px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            color: #e2e8f0;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        textarea::placeholder {
+            color: #64748b;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7c3aed;
+            transform: translateY(-1px);
+        }
+
+        .btn-clear {
+            background: #64748b;
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-clear:hover {
+            background: #475569;
+        }
+
+        .output-box {
+            background: #0f172a;
+            padding: 16px;
+            border-radius: 8px;
+            min-height: 100px;
+            word-wrap: break-word;
+            font-size: 15px;
+            line-height: 1.6;
+            border: 1px solid #475569;
+            color: #cbd5e1;
+        }
+
+        .info-box {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            border: 1px solid #334155;
+            margin-bottom: 16px;
+        }
+
+        .info-box h3 {
+            color: #3b82f6;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+
+        .info-box ul li {
+            margin-bottom: 8px;
+        }
+
+        .info-box strong {
+            color: #cbd5e1;
+        }
+
+        .advanced-toggle {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .advanced-toggle button {
+            background: transparent;
+            color: #64748b;
+            border: 1px solid #334155;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+        }
+
+        .advanced-toggle button:hover {
+            background: #1e293b;
+            color: #94a3b8;
+            border-color: #475569;
+        }
+
+        .advanced-settings {
+            display: none;
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 16px;
+            border: 1px solid #334155;
+        }
+
+        .advanced-settings.show {
+            display: block;
+        }
+
+        .advanced-settings h3 {
+            color: #cbd5e1;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .setting-group {
+            margin-bottom: 24px;
+        }
+
+        .setting-group label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .setting-value {
+            color: #3b82f6;
+            font-weight: 700;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #334155;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: none;
+        }
+
+        .setting-description {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 6px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 14px 22px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s;
+            pointer-events: none;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification.error {
+            background: #ef4444;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification">Copied to clipboard!</div>
+    
+    <div class="container">
+        <h1>🔀 Text Scrambler</h1>
+        <p class="subtitle">Enhanced encryption with multi-layer security</p>
+        <p class="enhanced-badge">✨ Salt + Key Stretching + Multi-Pass XOR ✨</p>
+
+        <div class="card">
+            <label for="inputText">Enter Your Text:</label>
+            <textarea id="inputText" placeholder="Type or paste your text here..."></textarea>
+        </div>
+
+        <div class="card">
+            <label for="secretKey">Secret Key (optional):</label>
+            <textarea id="secretKey" placeholder="Enter a secret key for encryption..." style="min-height: 60px;"></textarea>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" onclick="scrambleText()">🔒 Scramble</button>
+            <button class="btn-secondary" onclick="unscrambleText()">🔓 Unscramble</button>
+            <button class="btn-clear" onclick="clearAll()">Clear All</button>
+        </div>
+
+        <div class="card">
+            <label>Output:</label>
+            <div class="output-box" id="output">Your scrambled or unscrambled text will appear here...</div>
+        </div>
+
+        <div class="info-box">
+            <h3>🛡️ Security Features</h3>
+            <ul>
+                <li><strong>Salt:</strong> Each encryption is unique</li>
+                <li><strong>Key Stretching:</strong> Weak keys strengthened to 32+ characters</li>
+                <li><strong>Multi-Pass XOR:</strong> Triple-layer encryption</li>
+                <li><strong>Auto-Copy:</strong> Output automatically copied to clipboard</li>
+            </ul>
+        </div>
+
+        <div class="advanced-toggle">
+            <button onclick="toggleAdvanced()">⚙️ Advanced Settings</button>
+        </div>
+
+        <div class="advanced-settings" id="advancedSettings">
+            <h3>⚙️ Advanced Configuration</h3>
+            
+            <div class="setting-group">
+                <label>
+                    <span>Salt Length:</span>
+                    <span class="setting-value"><span id="saltValue">8</span> characters</span>
+                </label>
+                <input type="range" id="saltLength" min="4" max="16" value="8" oninput="updateSaltValue()">
+                <div class="setting-description">Random data added before encryption. Longer = more unique.</div>
+            </div>
+
+            <div class="setting-group">
+                <label>
+                    <span>Encryption Passes:</span>
+                    <span class="setting-value"><span id="passValue">3</span> passes</span>
+                </label>
+                <input type="range" id="passCount" min="1" max="5" value="3" oninput="updatePassValue()">
+                <div class="setting-description">Number of XOR encryption layers. More passes = stronger security.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== SETTINGS =====
+        let settings = {
+            saltLength: 8,
+            passCount: 3
+        };
+
+        function toggleAdvanced() {
+            document.getElementById('advancedSettings').classList.toggle('show');
+        }
+
+        function updateSaltValue() {
+            const value = document.getElementById('saltLength').value;
+            document.getElementById('saltValue').textContent = value;
+            settings.saltLength = parseInt(value);
+        }
+
+        function updatePassValue() {
+            const value = document.getElementById('passCount').value;
+            document.getElementById('passValue').textContent = value;
+            settings.passCount = parseInt(value);
+        }
+
+        // ===== ENHANCED ENCRYPTION FUNCTIONS =====
+
+        function generateSalt(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let salt = '';
+            for (let i = 0; i < length; i++) {
+                salt += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return salt;
+        }
+
+        function stretchKey(key, targetLength = 32) {
+            if (!key) return key;
+            
+            let result = key;
+            
+            for (let round = 0; round < 3; round++) {
+                let temp = result;
+                
+                while (temp.length < targetLength) {
+                    temp += result;
+                }
+                
+                result = '';
+                for (let i = 0; i < temp.length; i++) {
+                    const mixed = temp.charCodeAt(i % temp.length) ^ (i + round);
+                    result += String.fromCharCode((mixed % 94) + 33);
+                }
+                
+                result = result.substring(0, targetLength);
+            }
+            
+            return result;
+        }
+
+        function enhancedXOREncrypt(text, key, saltLength, passCount) {
+            if (!key) return text;
+            
+            const salt = generateSalt(saltLength);
+            const saltedText = salt + '|' + text;
+            
+            const stretchedKey = stretchKey(key, Math.max(32, saltedText.length));
+            
+            let result = saltedText;
+            
+            for (let pass = 0; pass < passCount; pass++) {
+                let temp = '';
+                
+                for (let i = 0; i < result.length; i++) {
+                    const keyIndex = (i + pass * 7) % stretchedKey.length;
+                    const variedKeyChar = stretchedKey.charCodeAt(keyIndex) + pass;
+                    
+                    temp += String.fromCharCode(
+                        result.charCodeAt(i) ^ variedKeyChar ^ pass
+                    );
+                }
+                
+                result = temp;
+            }
+            
+            return result;
+        }
+
+        function enhancedXORDecrypt(encrypted, key, passCount) {
+            if (!key) return encrypted;
+            
+            const stretchedKey = stretchKey(key, Math.max(32, encrypted.length));
+            
+            let result = encrypted;
+            
+            for (let pass = passCount - 1; pass >= 0; pass--) {
+                let temp = '';
+                
+                for (let i = 0; i < result.length; i++) {
+                    const keyIndex = (i + pass * 7) % stretchedKey.length;
+                    const variedKeyChar = stretchedKey.charCodeAt(keyIndex) + pass;
+                    
+                    temp += String.fromCharCode(
+                        result.charCodeAt(i) ^ variedKeyChar ^ pass
+                    );
+                }
+                
+                result = temp;
+            }
+            
+            const separatorIndex = result.indexOf('|');
+            if (separatorIndex !== -1) {
+                return result.substring(separatorIndex + 1);
+            }
+            
+            return result;
+        }
+
+        // ===== AUTO-COPY FUNCTION =====
+
+        function autoCopy(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('📋 Copied to clipboard!', true);
+            }).catch(() => {
+                showNotification('❌ Failed to copy', false);
+            });
+        }
+
+        // ===== MAIN FUNCTIONS =====
+
+        function scrambleText() {
+            const inputText = document.getElementById('inputText').value;
+            const secretKey = document.getElementById('secretKey').value;
+            const outputBox = document.getElementById('output');
+
+            if (!inputText.trim()) {
+                outputBox.textContent = '⚠️ Please enter some text to scramble!';
+                outputBox.style.color = '#ef4444';
+                return;
+            }
+
+            try {
+                let processed = inputText;
+                
+                if (secretKey) {
+                    processed = enhancedXOREncrypt(inputText, secretKey, settings.saltLength, settings.passCount);
+                }
+                
+                const scrambled = btoa(unescape(encodeURIComponent(processed)));
+                
+                outputBox.textContent = scrambled;
+                outputBox.style.color = '#cbd5e1';
+                
+                autoCopy(scrambled);
+            } catch (error) {
+                outputBox.textContent = '❌ Error scrambling text. Please try again.';
+                outputBox.style.color = '#ef4444';
+            }
+        }
+
+        function unscrambleText() {
+            const inputText = document.getElementById('inputText').value;
+            const secretKey = document.getElementById('secretKey').value;
+            const outputBox = document.getElementById('output');
+
+            if (!inputText.trim()) {
+                outputBox.textContent = '⚠️ Please enter scrambled text to unscramble!';
+                outputBox.style.color = '#ef4444';
+                return;
+            }
+
+            try {
+                let unscrambled = decodeURIComponent(escape(atob(inputText)));
+                
+                if (secretKey) {
+                    unscrambled = enhancedXORDecrypt(unscrambled, secretKey, settings.passCount);
+                }
+                
+                outputBox.textContent = unscrambled;
+                outputBox.style.color = '#cbd5e1';
+                
+                autoCopy(unscrambled);
+            } catch (error) {
+                outputBox.textContent = '❌ Error unscrambling text. Make sure you entered the correct scrambled text and secret key.';
+                outputBox.style.color = '#ef4444';
+            }
+        }
+
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('secretKey').value = '';
+            document.getElementById('output').textContent = 'Your scrambled or unscrambled text will appear here...';
+            document.getElementById('output').style.color = '#94a3b8';
+        }
+
+        function showNotification(message, success) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification' + (success ? '' : ' error');
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+
+        // Keyboard shortcut
+        document.getElementById('inputText').addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                scrambleText();
+            }
+        });
+    </script>
+</body>
+</html>
