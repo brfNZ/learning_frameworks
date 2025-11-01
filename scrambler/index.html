@@ -735,11 +735,36 @@
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = htmlContent;
                     
-                    // Remove style and script tags before extracting text
+                    // Remove style and script tags
                     const styleTags = tempDiv.querySelectorAll('style');
                     styleTags.forEach(tag => tag.remove());
                     const scriptTags = tempDiv.querySelectorAll('script');
                     scriptTags.forEach(tag => tag.remove());
+                    
+                    // Process ordered lists to add numbers
+                    const orderedLists = tempDiv.querySelectorAll('ol');
+                    orderedLists.forEach(ol => {
+                        const listItems = ol.querySelectorAll('li');
+                        listItems.forEach((li, index) => {
+                            // Add the number before the list item content
+                            const number = (index + 1) + '. ';
+                            li.innerHTML = number + li.innerHTML;
+                        });
+                    });
+                    
+                    // Preserve line breaks by replacing HTML breaks with newlines
+                    // Replace <br> tags with newlines
+                    tempDiv.innerHTML = tempDiv.innerHTML.replace(/<br\s*\/?>/gi, '\n');
+                    // Replace closing p tags with double newlines
+                    tempDiv.innerHTML = tempDiv.innerHTML.replace(/<\/p>/gi, '\n\n');
+                    // Replace closing div tags with newlines
+                    tempDiv.innerHTML = tempDiv.innerHTML.replace(/<\/div>/gi, '\n');
+                    // Replace closing list items with newlines
+                    tempDiv.innerHTML = tempDiv.innerHTML.replace(/<\/li>/gi, '\n');
+                    // Replace closing headings with double newlines
+                    tempDiv.innerHTML = tempDiv.innerHTML.replace(/<\/h[1-6]>/gi, '\n\n');
+                    // Replace closing blockquotes with newlines
+                    tempDiv.innerHTML = tempDiv.innerHTML.replace(/<\/blockquote>/gi, '\n');
                     
                     const plainText = tempDiv.textContent || tempDiv.innerText;
                     
@@ -809,26 +834,62 @@
                 return;
             }
 
-            // Create a ClipboardItem with both HTML and plain text
             const plainText = document.getElementById('output').textContent;
             
-            const type = 'text/html';
-            const blob = new Blob([decryptedHTML], { type });
-            const data = [new ClipboardItem({
-                'text/html': blob,
-                'text/plain': new Blob([plainText], { type: 'text/plain' })
-            })];
+            // Try multiple formats for maximum compatibility
+            try {
+                // Method 1: Use ClipboardItem with HTML
+                const htmlBlob = new Blob([decryptedHTML], { type: 'text/html' });
+                const textBlob = new Blob([plainText], { type: 'text/plain' });
+                
+                const item = new ClipboardItem({
+                    'text/html': htmlBlob,
+                    'text/plain': textBlob
+                });
 
-            navigator.clipboard.write(data).then(() => {
+                navigator.clipboard.write([item]).then(() => {
+                    showNotification('✨ Formatted text copied!', true);
+                }).catch(err => {
+                    // Fallback: Try just HTML
+                    copyHTMLFallback(decryptedHTML, plainText);
+                });
+            } catch (err) {
+                // Fallback for older browsers
+                copyHTMLFallback(decryptedHTML, plainText);
+            }
+        }
+
+        function copyHTMLFallback(html, plainText) {
+            // Create a temporary element with the HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            tempDiv.style.position = 'absolute';
+            tempDiv.style.left = '-9999px';
+            document.body.appendChild(tempDiv);
+            
+            // Select the content
+            const range = document.createRange();
+            range.selectNodeContents(tempDiv);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            
+            // Try to copy
+            try {
+                document.execCommand('copy');
                 showNotification('✨ Formatted text copied!', true);
-            }).catch(() => {
-                // Fallback: just copy plain text
+            } catch (err) {
+                // Last resort: just copy plain text
                 navigator.clipboard.writeText(plainText).then(() => {
-                    showNotification('📋 Text copied (formatting not supported)', true);
+                    showNotification('📋 Plain text copied (formatting not supported)', true);
                 }).catch(() => {
                     showNotification('❌ Failed to copy', false);
                 });
-            });
+            }
+            
+            // Clean up
+            selection.removeAllRanges();
+            document.body.removeChild(tempDiv);
         }
 
         function showNotification(message, success) {
