@@ -257,8 +257,8 @@ e<!DOCTYPE html>
                 
         // LEARNING NOTE: Move to the next week
         function nextChapter() {
-            if (app.currentWeek < 52) {
-                app.currentWeek++;
+            if (app.currentPosition < 52) {
+                app.currentPosition++;
                 app.currentEditId = null;  // Clear any editing state
                 document.getElementById('journalText').value = '';  // Clear the text box
                 render();
@@ -266,8 +266,8 @@ e<!DOCTYPE html>
         }
 
         function previousChapter() {
-            if (app.currentWeek > 1) {
-                app.currentWeek--;
+            if (app.currentPosition > 1) {
+                app.currentPosition--;
                 app.currentEditId = null;
                 document.getElementById('journalText').value = '';
                 render();
