@@ -361,11 +361,22 @@
 
             <div class="setting-group">
                 <label>
-                    <span>XOR Encryption Passes:</span>
+                    <span>Encryption Passes:</span>
                     <span class="setting-value"><span id="passValue">3</span> passes</span>
                 </label>
                 <input type="range" id="passCount" min="3" max="5" value="3" oninput="updatePassValue()">
                 <div class="setting-description">Number of XOR encryption layers. More passes = stronger security.</div>
+            </div>
+
+            <div class="setting-group">
+                <label style="cursor: pointer;">
+                    <span>Position Shuffle:</span>
+                    <span class="setting-value">
+                        <input type="checkbox" id="shuffleToggle" onchange="updateShuffleValue()" style="width: auto; height: auto; cursor: pointer;">
+                        <span id="shuffleValue">Off</span>
+                    </span>
+                </label>
+                <div class="setting-description">Rearranges character positions after encryption for extra confusion.</div>
             </div>
         </div>
     </div>
@@ -374,7 +385,8 @@
         // ===== SETTINGS =====
         let settings = {
             saltLength: 8,
-            passCount: 3
+            passCount: 3,
+            shuffle: false
         };
 
         function toggleAdvanced() {
@@ -393,6 +405,12 @@
             settings.passCount = parseInt(value);
         }
 
+        function updateShuffleValue() {
+            const checked = document.getElementById('shuffleToggle').checked;
+            document.getElementById('shuffleValue').textContent = checked ? 'On' : 'Off';
+            settings.shuffle = checked;
+        }
+
         // ===== ENHANCED ENCRYPTION FUNCTIONS =====
 
         function generateSalt(length) {
@@ -402,6 +420,40 @@
                 salt += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             return salt;
+        }
+
+        function alternatePositionShuffle(text) {
+            let even = '';
+            let odd = '';
+            
+            for (let i = 0; i < text.length; i++) {
+                if (i % 2 === 0) {
+                    even += text[i];
+                } else {
+                    odd += text[i];
+                }
+            }
+            
+            return even + odd;
+        }
+
+        function alternatePositionUnshuffle(shuffled) {
+            const length = shuffled.length;
+            const evenCount = Math.ceil(length / 2);
+            
+            const evenChars = shuffled.substring(0, evenCount);
+            const oddChars = shuffled.substring(evenCount);
+            
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                if (i % 2 === 0) {
+                    result += evenChars[Math.floor(i / 2)];
+                } else {
+                    result += oddChars[Math.floor(i / 2)];
+                }
+            }
+            
+            return result;
         }
 
         function stretchKey(key, targetLength = 32) {
@@ -428,7 +480,7 @@
             return result;
         }
 
-        function enhancedXOREncrypt(text, key, saltLength, passCount) {
+        function enhancedXOREncrypt(text, key, saltLength, passCount, useShuffle) {
             if (!key) return text;
             
             const salt = generateSalt(saltLength);
@@ -453,15 +505,25 @@
                 result = temp;
             }
             
+            // Apply shuffle if enabled
+            if (useShuffle) {
+                result = alternatePositionShuffle(result);
+            }
+            
             return result;
         }
 
-        function enhancedXORDecrypt(encrypted, key, passCount) {
+        function enhancedXORDecrypt(encrypted, key, passCount, useShuffle) {
             if (!key) return encrypted;
             
-            const stretchedKey = stretchKey(key, Math.max(32, encrypted.length));
-            
             let result = encrypted;
+            
+            // Undo shuffle if enabled
+            if (useShuffle) {
+                result = alternatePositionUnshuffle(result);
+            }
+            
+            const stretchedKey = stretchKey(key, Math.max(32, result.length));
             
             for (let pass = passCount - 1; pass >= 0; pass--) {
                 let temp = '';
@@ -513,7 +575,7 @@
                 let processed = inputText;
                 
                 if (secretKey) {
-                    processed = enhancedXOREncrypt(inputText, secretKey, settings.saltLength, settings.passCount);
+                    processed = enhancedXOREncrypt(inputText, secretKey, settings.saltLength, settings.passCount, settings.shuffle);
                 }
                 
                 const scrambled = btoa(unescape(encodeURIComponent(processed)));
@@ -543,7 +605,7 @@
                 let unscrambled = decodeURIComponent(escape(atob(inputText)));
                 
                 if (secretKey) {
-                    unscrambled = enhancedXORDecrypt(unscrambled, secretKey, settings.passCount);
+                    unscrambled = enhancedXORDecrypt(unscrambled, secretKey, settings.passCount, settings.shuffle);
                 }
                 
                 outputBox.textContent = unscrambled;
