@@ -63,6 +63,33 @@
             font-size: 0.95rem;
         }
 
+        .label-with-clear {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .label-with-clear label {
+            margin-bottom: 0;
+        }
+
+        .btn-clear-input {
+            background: transparent;
+            color: #64748b;
+            border: 1px solid #475569;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-clear-input:hover {
+            background: #475569;
+            color: #e2e8f0;
+        }
+
         textarea {
             width: 100%;
             padding: 12px;
@@ -91,6 +118,13 @@
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-bottom: 20px;
+        }
+
+        .button-group-copy {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
         }
 
         button {
@@ -131,6 +165,26 @@
 
         .btn-clear:hover {
             background: #475569;
+        }
+
+        .btn-copy {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-copy-html {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .btn-copy-html:hover {
+            background: #7c3aed;
+            transform: translateY(-1px);
         }
 
         .output-box {
@@ -315,8 +369,15 @@
         <p class="enhanced-badge">✨ Salt + Key Stretching + Multi-Pass XOR ✨</p>
 
         <div class="card">
-            <label for="inputText">Enter Your Text:</label>
-            <textarea id="inputText" placeholder="Type or paste your text here..."></textarea>
+            <div class="label-with-clear">
+                <label for="inputText">Enter Your Text:</label>
+                <button class="btn-clear-input" onclick="clearInputText()">Clear</button>
+            </div>
+            <textarea id="inputText" placeholder="Type or paste your text here (formatting will be preserved)..."></textarea>
+            <input type="hidden" id="htmlContent" value="">
+            <div id="formatIndicator" style="display: none; margin-top: 8px; color: #10b981; font-size: 0.85rem;">
+                ✓ Formatted text detected
+            </div>
         </div>
 
         <div class="card">
@@ -333,6 +394,10 @@
         <div class="card">
             <label>Output:</label>
             <div class="output-box" id="output">Your scrambled or unscrambled text will appear here...</div>
+            <div class="button-group-copy">
+                <button class="btn-copy" onclick="copyOutputPlain()">📋 Copy as Plain Text</button>
+                <button class="btn-copy-html" onclick="copyOutputFormatted()" id="copyFormattedBtn" style="display: none;">✨ Copy with Formatting</button>
+            </div>
         </div>
 
         <div class="info-box">
@@ -341,7 +406,8 @@
                 <li><strong>Salt:</strong> Each encryption is unique</li>
                 <li><strong>Key Stretching:</strong> Weak keys strengthened to 32+ characters</li>
                 <li><strong>Multi-Pass XOR:</strong> Triple-layer encryption</li>
-                <li><strong>Auto-Copy:</strong> Output automatically copied to clipboard</li>
+                <li><strong>Position Shuffle:</strong> Optional character position scrambling</li>
+                <li><strong>Formatting Preservation:</strong> Copy formatted text from apps like Apple Notes - formatting is preserved through encryption!</li>
             </ul>
         </div>
 
@@ -389,6 +455,8 @@
             shuffle: false
         };
 
+        let decryptedHTML = ''; // Store decrypted HTML for copying
+
         function toggleAdvanced() {
             document.getElementById('advancedSettings').classList.toggle('show');
         }
@@ -410,6 +478,42 @@
             document.getElementById('shuffleValue').textContent = checked ? 'On' : 'Off';
             settings.shuffle = checked;
         }
+
+        // ===== HTML CLIPBOARD HANDLING =====
+
+        // Listen for paste events to capture HTML
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputText = document.getElementById('inputText');
+            
+            inputText.addEventListener('paste', function(e) {
+                e.preventDefault();
+                
+                // Try to get HTML from clipboard
+                const html = e.clipboardData.getData('text/html');
+                const plainText = e.clipboardData.getData('text/plain');
+                
+                if (html && html.trim()) {
+                    // Store HTML in hidden field
+                    document.getElementById('htmlContent').value = html;
+                    // Show plain text in textarea
+                    inputText.value = plainText;
+                    // Show indicator
+                    document.getElementById('formatIndicator').style.display = 'block';
+                } else {
+                    // No HTML, just plain text
+                    document.getElementById('htmlContent').value = '';
+                    inputText.value = plainText;
+                    document.getElementById('formatIndicator').style.display = 'none';
+                }
+            });
+
+            // Clear indicator when typing
+            inputText.addEventListener('input', function() {
+                if (!document.getElementById('htmlContent').value) {
+                    document.getElementById('formatIndicator').style.display = 'none';
+                }
+            });
+        });
 
         // ===== ENHANCED ENCRYPTION FUNCTIONS =====
 
@@ -551,10 +655,8 @@
         // ===== AUTO-COPY FUNCTION =====
 
         function autoCopy(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showNotification('📋 Copied to clipboard!', true);
-            }).catch(() => {
-                showNotification('❌ Failed to copy', false);
+            navigator.clipboard.writeText(text).catch(() => {
+                // Silent fail - we have manual copy buttons
             });
         }
 
@@ -562,6 +664,7 @@
 
         function scrambleText() {
             const inputText = document.getElementById('inputText').value;
+            const htmlContent = document.getElementById('htmlContent').value;
             const secretKey = document.getElementById('secretKey').value;
             const outputBox = document.getElementById('output');
 
@@ -572,10 +675,19 @@
             }
 
             try {
-                let processed = inputText;
+                let textToEncrypt = inputText;
+                let isHTML = false;
+
+                // If HTML content exists, encrypt that instead
+                if (htmlContent && htmlContent.trim()) {
+                    textToEncrypt = '<!--HTML-->' + htmlContent; // Mark as HTML
+                    isHTML = true;
+                }
+                
+                let processed = textToEncrypt;
                 
                 if (secretKey) {
-                    processed = enhancedXOREncrypt(inputText, secretKey, settings.saltLength, settings.passCount, settings.shuffle);
+                    processed = enhancedXOREncrypt(textToEncrypt, secretKey, settings.saltLength, settings.passCount, settings.shuffle);
                 }
                 
                 const scrambled = btoa(unescape(encodeURIComponent(processed)));
@@ -584,6 +696,12 @@
                 outputBox.style.color = '#cbd5e1';
                 
                 autoCopy(scrambled);
+
+                if (isHTML) {
+                    showNotification('📋 Formatted text encrypted and copied!', true);
+                } else {
+                    showNotification('📋 Copied to clipboard!', true);
+                }
             } catch (error) {
                 outputBox.textContent = '❌ Error scrambling text. Please try again.';
                 outputBox.style.color = '#ef4444';
@@ -607,22 +725,110 @@
                 if (secretKey) {
                     unscrambled = enhancedXORDecrypt(unscrambled, secretKey, settings.passCount, settings.shuffle);
                 }
-                
-                outputBox.textContent = unscrambled;
-                outputBox.style.color = '#cbd5e1';
-                
-                autoCopy(unscrambled);
+
+                // Check if this was HTML content
+                if (unscrambled.startsWith('<!--HTML-->')) {
+                    const htmlContent = unscrambled.substring(11); // Remove marker
+                    decryptedHTML = htmlContent; // Store for copying
+                    
+                    // Create a temp element to extract plain text from HTML
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = htmlContent;
+                    
+                    // Remove style and script tags before extracting text
+                    const styleTags = tempDiv.querySelectorAll('style');
+                    styleTags.forEach(tag => tag.remove());
+                    const scriptTags = tempDiv.querySelectorAll('script');
+                    scriptTags.forEach(tag => tag.remove());
+                    
+                    const plainText = tempDiv.textContent || tempDiv.innerText;
+                    
+                    outputBox.textContent = plainText;
+                    outputBox.style.color = '#cbd5e1';
+                    
+                    // Show the "Copy with Formatting" button
+                    document.getElementById('copyFormattedBtn').style.display = 'block';
+                    
+                    autoCopy(plainText);
+                    showNotification('📋 Formatted text decrypted!', true);
+                } else {
+                    decryptedHTML = ''; // No HTML
+                    outputBox.textContent = unscrambled;
+                    outputBox.style.color = '#cbd5e1';
+                    
+                    // Hide the "Copy with Formatting" button
+                    document.getElementById('copyFormattedBtn').style.display = 'none';
+                    
+                    autoCopy(unscrambled);
+                    showNotification('📋 Copied to clipboard!', true);
+                }
             } catch (error) {
                 outputBox.textContent = '❌ Error unscrambling text. Make sure you entered the correct scrambled text and secret key.';
                 outputBox.style.color = '#ef4444';
+                document.getElementById('copyFormattedBtn').style.display = 'none';
             }
         }
 
         function clearAll() {
             document.getElementById('inputText').value = '';
             document.getElementById('secretKey').value = '';
+            document.getElementById('htmlContent').value = '';
             document.getElementById('output').textContent = 'Your scrambled or unscrambled text will appear here...';
             document.getElementById('output').style.color = '#94a3b8';
+            document.getElementById('formatIndicator').style.display = 'none';
+            document.getElementById('copyFormattedBtn').style.display = 'none';
+            decryptedHTML = '';
+        }
+
+        function clearInputText() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('htmlContent').value = '';
+            document.getElementById('formatIndicator').style.display = 'none';
+        }
+
+        function copyOutputPlain() {
+            const outputBox = document.getElementById('output');
+            const text = outputBox.textContent;
+
+            if (text === 'Your scrambled or unscrambled text will appear here...' || 
+                text.includes('⚠️') || text.includes('❌')) {
+                showNotification('Nothing to copy!', false);
+                return;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('📋 Plain text copied!', true);
+            }).catch(() => {
+                showNotification('❌ Failed to copy', false);
+            });
+        }
+
+        function copyOutputFormatted() {
+            if (!decryptedHTML) {
+                showNotification('No formatted text available!', false);
+                return;
+            }
+
+            // Create a ClipboardItem with both HTML and plain text
+            const plainText = document.getElementById('output').textContent;
+            
+            const type = 'text/html';
+            const blob = new Blob([decryptedHTML], { type });
+            const data = [new ClipboardItem({
+                'text/html': blob,
+                'text/plain': new Blob([plainText], { type: 'text/plain' })
+            })];
+
+            navigator.clipboard.write(data).then(() => {
+                showNotification('✨ Formatted text copied!', true);
+            }).catch(() => {
+                // Fallback: just copy plain text
+                navigator.clipboard.writeText(plainText).then(() => {
+                    showNotification('📋 Text copied (formatting not supported)', true);
+                }).catch(() => {
+                    showNotification('❌ Failed to copy', false);
+                });
+            });
         }
 
         function showNotification(message, success) {
