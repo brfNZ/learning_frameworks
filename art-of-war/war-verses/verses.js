@@ -177,20 +177,19 @@ var wingWeekMap = {
 };
 
 // Helper function to get week info
-function getWeekInfo(weekNumber, translation) {
+function getPositionInfo(position, translation) {
     if (translation === "Wing") {
-        return wingWeekMap[weekNumber];
+        return wingWeekMap[position];
     } else {
-        // For Giles: week = chapter
-        return { chapter: weekNumber, section: null };
+        // For Giles: position = chapter
+        return { chapter: position, section: null };
     }
 }
-
 // Helper to get title
-function getWeekTitle(weekNumber, translation) {
+function getPositionTitle(position, translation) {
     if (translation === "Wing") {
-        return wingWeekTitles[weekNumber - 1]; // Array is 0-indexed
+        return wingWeekTitles[position - 1];
     } else {
-        return chapterTitlesGiles[weekNumber - 1];
+        return chapterTitlesGiles[position - 1];
     }
 }
