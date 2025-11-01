@@ -364,7 +364,7 @@
                     <span>Encryption Passes:</span>
                     <span class="setting-value"><span id="passValue">3</span> passes</span>
                 </label>
-                <input type="range" id="passCount" min="1" max="5" value="3" oninput="updatePassValue()">
+                <input type="range" id="passCount" min="3" max="5" value="3" oninput="updatePassValue()">
                 <div class="setting-description">Number of XOR encryption layers. More passes = stronger security.</div>
             </div>
         </div>
@@ -573,6 +573,14 @@
                 notification.classList.remove('show');
             }, 2000);
         }
+
+        // Initialize slider positions on load
+        window.addEventListener('load', () => {
+            document.getElementById('saltLength').value = 8;
+            document.getElementById('passCount').value = 3;
+            updateSaltValue();
+            updatePassValue();
+        });
 
         // Keyboard shortcut
         document.getElementById('inputText').addEventListener('keydown', (e) => {
