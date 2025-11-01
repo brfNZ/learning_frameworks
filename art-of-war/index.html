@@ -136,7 +136,7 @@ e<!DOCTYPE html>
             var nextIndex = (currentIndex + 1) % translations.length;
             
             // Get current chapter info before switching
-            var currentInfo = getWeekInfo(app.currentPosition, app.currentTranslation);
+            var currentInfo = getPositionInfo(app.currentPosition, app.currentTranslation);
             var currentChapter = currentInfo.chapter;
             
             // Switch translation
@@ -157,8 +157,8 @@ e<!DOCTYPE html>
         // LEARNING NOTE: This is the main function that updates what you see on screen
         function render() {
             // STEP 1: Get information about the current chapter/part
-            var weekInfo = getWeekInfo(app.currentPosition, app.currentTranslation);
-            var weekTitle = getWeekTitle(app.currentPosition, app.currentTranslation);
+            var weekInfo = getPositionInfo(app.currentPosition, app.currentTranslation);
+            var weekTitle = getPositionTitle(app.currentPosition, app.currentTranslation);
             
             // STEP 2: Build the verse key to look up the text
             var verseKey = weekInfo.chapter.toString();
@@ -263,7 +263,7 @@ e<!DOCTYPE html>
             }));
 
             // Update URL without reloading page
-            var weekInfo = getWeekInfo(app.currentWeek, app.currentTranslation);
+            var weekInfo = getPositionInfo(app.currentWeek, app.currentTranslation);
             var chapterParam = weekInfo.chapter.toString();
             if (weekInfo.section !== null) {
                 chapterParam += '-' + weekInfo.section;
@@ -329,8 +329,8 @@ e<!DOCTYPE html>
                 
         // LEARNING NOTE: Save a journal entry
         function saveEntry() {
-            var weekInfo = getWeekInfo(app.currentWeek, app.currentTranslation);
-            var weekTitle = getWeekTitle(app.currentWeek, app.currentTranslation);
+            var weekInfo = getPositionInfo(app.currentWeek, app.currentTranslation);
+            var weekTitle = getPositionTitle(app.currentWeek, app.currentTranslation);
             var text = document.getElementById('journalText').value;
             var now = new Date().toISOString().split('T')[0];  // Get today's date in YYYY-MM-DD format
 
