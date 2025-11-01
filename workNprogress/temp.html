@@ -3,347 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tao Te Ching - Journal & Divination</title>
+    <title>Text Scrambler - Enhanced</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: linear-gradient(to bottom right, #1e293b, #334155, #0f172a); min-height: 100vh; font-family: system-ui, -apple-system, sans-serif; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .header { text-align: center; margin-bottom: 40px; }
-        .header h1 { font-size: 60px; margin-bottom: 10px; }
-        .header h2 { font-size: 36px; font-weight: bold; color: white; margin-bottom: 8px; }
-        .header p { color: #cbd5e1; }
-        .main { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 1000px) { .main { grid-template-columns: 1fr; } }
-        .card { background: #475569; border-radius: 12px; padding: 30px; box-shadow: 0 20px 25px rgba(0,0,0,0.3); border: 1px solid #64748b; }
-        .lines-display { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; gap: 4px; }
-        .line-segment { background-color: white; height: 8px; display: inline-block; }
-        .solid { width: 80px; }
-        .broken-line { display: flex; gap: 16px; justify-content: center; }
-        .broken-segment { width: 32px; }
-        .dashed-line { display: flex; gap: 10px; justify-content: center; }
-        .dashed-segment { width: 20px; }
-        .verse-display { text-align: center; padding: 20px; background: #334155; border-radius: 8px; margin-top: 10px; margin-bottom: 20px; cursor: pointer; transition: all 0.2s; }
-        .verse-display:hover { background: #3f4a5c; }
-        .verse-number { font-size: 18px; margin-bottom: 8px; color: white; }
-        .verse-title { color: #fbbf24; font-size: 24px; font-weight: bold; }
-        .verse-author { color: #94a3b8; font-size: 11px; font-style: italic; margin-top: 6px; margin-bottom: 12px; }
-        .verse-text { color: #e2e8f0; font-size: 13px; line-height: 1.6; white-space: pre-line; max-height: 400px; overflow-y: auto; text-align: left; margin-top: 12px; }
-        .instruction { text-align: center; padding: 20px; background: #334155; border-radius: 8px; margin-bottom: 20px; color: #cbd5e1; font-size: 14px; }
-        .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
-        button { font-weight: bold; padding: 12px 16px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
-        .generate-btn { background: #b45309; color: white; flex: 1; }
-        .generate-btn:hover { background: #92400e; }
-        .reset-btn { background: #64748b; color: white; flex: 1; }
-        .reset-btn:hover { background: #475569; }
-        .save-btn { background: #059669; color: white; width: 100%; }
-        .save-btn:hover { background: #047857; }
-        .export-btn { background: #7c3aed; color: white; width: 100%; }
-        .export-btn:hover { background: #6d28d9; }
-        textarea { width: 100%; height: 200px; padding: 12px; background: #334155; color: white; border: 1px solid #64748b; border-radius: 8px; font-family: system-ui; font-size: 14px; resize: vertical; }
-        textarea::placeholder { color: #94a3b8; }
-        input[type="text"], input[type="number"] { padding: 10px; background: #1e293b; color: white; border: 1px solid #64748b; border-radius: 6px; font-size: 14px; }
-        .journal-section h3 { color: white; margin-bottom: 12px; font-size: 16px; }
-        .manual-entry { display: grid; grid-template-columns: 1fr auto; gap: 12px; margin-bottom: 20px; padding: 12px; background: #334155; border-radius: 8px; }
-        .entries-list { max-height: 400px; overflow-y: auto; margin-bottom: 12px; }
-        .entry-item { background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid #64748b; transition: all 0.2s; }
-        .entry-item:hover { background: #3f4a5c; border-color: #fbbf24; }
-        .entry-date { color: #cbd5e1; font-size: 12px; }
-        .entry-verse { color: #fbbf24; font-weight: bold; font-size: 14px; }
-        .entry-preview { color: #cbd5e1; font-size: 12px; margin-top: 4px; }
-        .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; }
-        .line-codes { text-align: center; color: #94a3b8; font-size: 12px; margin-bottom: 10px; font-family: monospace; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #0f172a;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .enhanced-badge {
+            text-align: center;
+            color: #10b981;
+            margin-bottom: 24px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            color: #e2e8f0;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        textarea::placeholder {
+            color: #64748b;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7c3aed;
+            transform: translateY(-1px);
+        }
+
+        .btn-clear {
+            background: #64748b;
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-clear:hover {
+            background: #475569;
+        }
+
+        .output-box {
+            background: #0f172a;
+            padding: 16px;
+            border-radius: 8px;
+            min-height: 100px;
+            word-wrap: break-word;
+            font-size: 15px;
+            line-height: 1.6;
+            border: 1px solid #475569;
+            color: #cbd5e1;
+        }
+
+        .info-box {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            border: 1px solid #334155;
+        }
+
+        .info-box h3 {
+            color: #3b82f6;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+
+        .info-box ul li {
+            margin-bottom: 8px;
+        }
+
+        .info-box strong {
+            color: #cbd5e1;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 14px 22px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s;
+            pointer-events: none;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification.error {
+            background: #ef4444;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="notification" id="notification">Copied to clipboard!</div>
+    
     <div class="container">
-        <div class="header">
-            <h1>☯</h1>
-            <h2>Tao Te Ching</h2>
-            <p>Journal & I Ching Divination</p>
+        <h1>🔀 Text Scrambler</h1>
+        <p class="subtitle">Enhanced encryption with multi-layer security</p>
+        <p class="enhanced-badge">✨ Salt + Key Stretching + Multi-Pass XOR ✨</p>
+
+        <div class="card">
+            <label for="inputText">Enter Your Text:</label>
+            <textarea id="inputText" placeholder="Type or paste your text here..."></textarea>
         </div>
 
-        <div class="main">
-            <div class="card">
-                <div class="lines-display" id="linesDisplay"></div>
-                <div class="line-codes" id="lineCodesDisplay"></div>
-               
-                <div class="button-group">
-                    <button class="generate-btn" id="genBtn">Generate</button>
-                    <button class="reset-btn" id="resetBtn">Reset</button>
-                </div>
-                <div id="verseDisplay"></div>
-                <div class="line-codes" id="relatedVersesDisplay"></div>
-
-            </div>
-
-            <div class="card journal-section">
-                <h3>Journal Entry</h3>
-                <textarea id="journalText" placeholder="Write your reflections here..."></textarea>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0;">
-                    <button class="save-btn" id="saveBtn">Save Entry</button>
-                    <button class="export-btn" id="exportBtn">Export to CSV</button>
-                </div>
-
-                <div class="manual-entry">
-                    <input type="text" id="manualVerse" placeholder="Verse # (1-81) or Lines (1120)">
-                    <button id="manualEntryBtn" style="background: #059669; color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap;">Manual Entry</button>
-                </div>
-                
-                <h3>Past Entries</h3>
-                <div class="entries-list" id="entriesList"></div>
-            </div>
+        <div class="card">
+            <label for="secretKey">Secret Key (optional):</label>
+            <textarea id="secretKey" placeholder="Enter a secret key for encryption..." style="min-height: 60px;"></textarea>
         </div>
 
-        <p class="footer">Click the verse text to cycle through different translations</p>
+        <div class="button-group">
+            <button class="btn-primary" onclick="scrambleText()">🔒 Scramble</button>
+            <button class="btn-secondary" onclick="unscrambleText()">🔓 Unscramble</button>
+            <button class="btn-clear" onclick="clearAll()">Clear All</button>
+        </div>
+
+        <div class="card">
+            <label>Output:</label>
+            <div class="output-box" id="output">Your scrambled or unscrambled text will appear here...</div>
+        </div>
+
+        <div class="info-box">
+            <h3>🛡️ Security Features</h3>
+            <ul>
+                <li><strong>Salt:</strong> Each encryption is unique</li>
+                <li><strong>Key Stretching:</strong> Weak keys strengthened to 32+ characters</li>
+                <li><strong>Multi-Pass XOR:</strong> Triple-layer encryption</li>
+                <li><strong>Auto-Copy:</strong> Output automatically copied to clipboard</li>
+            </ul>
+        </div>
     </div>
 
-    <script src="verses.js"></script>
     <script>
-        var verseTitles = ["The Beginning of Power", "Using Polarity", "Keeping Peace", "The Nature of the Tao", "Holding to the Center", "Perceiving the Subtle", "The Power of Selflessness", "Noncompetitive Values", "Transcending Decline", "Inner Harmony", "Using What Is Not", "Controlling the Senses", "Expanding Identification", "The Essence of Tao", "The Power in Subtle Force", "Knowing the Absolute", "The Way of Subtle Influence", "Losing the Instincts", "Return to Simplicity", "Developing Independence", "Knowing the Collective Origin", "Following the Pattern", "The Steady Force of Attitude", "Nature rarely speaks", "The Tao of Greatness", "The Gravity of Power", "The Skillful Exchange of Information", "Uniting the Forces", "The Way of Noninterference", "Leading the Leader", "The Use of Force", "The Limits of Specialization", "Self-Mastery", "The Evolving Tao", "Sensing the Insensible", "Concealing the Advantage", "The Power in Desirelessness", "Power Without Motive", "Oneness in Leadership", "The Way", "Mastering the Paradox", "Knowing Polarity", "Subtle Powers", "The Power in Needing Less", "Using Emptiness", "Knowing Enough", "Cultivating Inner-Knowledge", "The Art of Nonaction", "Opening the Mind", "The Art of Survival", "The Power of Impartial Support", "Returning to Insight", "The Undivided Path", "Establishing a Universal View", "The Power in Not Contending", "Gaining Oneness", "The Power in Effortlessness", "Cultivating the Center", "The Way of Moderation", "Holding the Position", "The Power in Modesty", "The Tao in Leaders", "The Path of Least Resistance", "The Power at the Beginning", "The Danger in Cleverness", "The Power in Staying Low", "The Power in Compassion", "Nonaggressive Strength", "Neutralizing Escalation", "Knowing the Tao", "Knowing the Disease", "The Appropriate Perspective", "Nature's Way", "Unnatural Authority", "Self-Destructive Leadership", "The Power in Flexibility", "Directing the Power", "Accepting the Blame", "The Power In Not Taking Advantage", "Fulfilling Independence", "The Evolved Way"];
-        
-        var verseCategories = {
-            "Power in Nature": [4, 6, 11, 14, 21, 25, 34, 40, 41, 42, 51, 73],
-            "Power in Leadership": [3, 17, 19, 26, 28, 37, 39, 57, 58, 60, 62, 65, 66, 67, 68, 72],
-            "Power in Awareness": [5, 8, 12, 13, 16, 18, 35, 38, 45, 50, 52, 54, 56, 71],
-            "Power in Organizations": [24, 27, 30, 31, 36, 46, 53, 59, 61, 69, 78, 80],
-            "Power in Projection": [1, 2, 9, 10, 15, 20, 22, 23, 33, 44, 49, 70, 76, 77, 79, 81],
-            "Power in Noninterference": [7, 29, 32, 43, 47, 48, 55, 63, 64, 74, 75]
-        };
+        // ===== ENHANCED ENCRYPTION FUNCTIONS =====
 
-        var app = {
-            lines: [null, null, null, null],
-            verseNumber: null,
-            currentEditId: null,
-            entries: [],
-            currentTranslation: "Wing",
-            translationOrder: ["Wing", "Mitchell"]
-        };
-
-        function getLineHTML(type) {
-            if (type === 0) return '<div class="line-segment solid"></div>';
-            if (type === 1) return '<div class="broken-line"><div class="line-segment broken-segment"></div><div class="line-segment broken-segment"></div></div>';
-            if (type === 2) return '<div class="dashed-line"><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div></div>';
-            return '<div class="dashed-line" style="opacity:0.3"><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div></div>';
+        function generateSalt(length = 8) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let salt = '';
+            for (let i = 0; i < length; i++) {
+                salt += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return salt;
         }
 
-        function cycleLine(index, direction) {
-            if (app.lines[index] === null) {
-                app.lines[index] = 0;
-            } else {
-                if (direction === 'forward') {
-                    app.lines[index] = (app.lines[index] + 1) % 3;
-                } else {
-                    app.lines[index] = (app.lines[index] + 2) % 3;
-                }
-            }
+        function stretchKey(key, targetLength = 32) {
+            if (!key) return key;
             
-            if (app.lines.every(function(l) { return l !== null; })) {
-                var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
-                app.verseNumber = base3 + 1;
-            }
-            render();
-        }
-
-        function cycleTranslation() {
-            var currentIndex = app.translationOrder.indexOf(app.currentTranslation);
-            var nextIndex = (currentIndex + 1) % app.translationOrder.length;
-            app.currentTranslation = app.translationOrder[nextIndex];
-            render();
-        }
-
-        function render() {
-            // Render lines
-            var linesHTML = '';
-            for (var i = 0; i < 4; i++) {
-                linesHTML += '<div onclick="cycleLine(' + i + ', \'forward\')" oncontextmenu="cycleLine(' + i + ', \'backward\'); return false;" style="cursor: pointer; padding: 1px 0;">' + getLineHTML(app.lines[i]) + '</div>';
-            }
-            document.getElementById('linesDisplay').innerHTML = linesHTML;
-
-            // Render line codes
-            if (app.lines.every(function(l) { return l !== null; })) {
-                var codes = app.lines.map(function(l) { return l.toString(); }).join('');
-                document.getElementById('lineCodesDisplay').innerHTML = 'Lines: ' + codes;
-            } else {
-                document.getElementById('lineCodesDisplay').innerHTML = '';
-            }
-
-            // Render verse
-            if (app.verseNumber !== null) {
-                var title = verseTitles[app.verseNumber - 1];
-                var text = verseTexts[app.currentTranslation][app.verseNumber] || 
-                          "(Translation not yet available - add more verses to verseTexts object)";
+            let result = key;
+            
+            for (let round = 0; round < 3; round++) {
+                let temp = result;
                 
-                var verseHTML = '<div class="verse-display" onclick="cycleTranslation()">';
-                verseHTML += '<div class="verse-number">Verse ' + app.verseNumber + '</div>';
-                verseHTML += '<div class="verse-title">' + title + '</div>';
-                verseHTML += '<div class="verse-author">' + app.currentTranslation + '</div>';
-                verseHTML += '<div class="verse-text">' + text + '</div>';
-                verseHTML += '</div>';
-                document.getElementById('verseDisplay').innerHTML = verseHTML;
-
-                // Show related verses
-                var related = [];
-                for (var cat in verseCategories) {
-                    if (verseCategories[cat].indexOf(app.verseNumber) !== -1) {
-                        related = verseCategories[cat].filter(function(v) { return v !== app.verseNumber; });
-                        document.getElementById('relatedVersesDisplay').innerHTML = 
-                                '<a href="guide/guide.html" target="_blank" style="color: #fbbf24; text-decoration: none; border-bottom: 1px dotted #fbbf24;">' + cat + '</a>: ' + related.slice(0, 6).join(', ') +
-                                (related.length > 6 ? '...' : '');
-                        break;
-                    }
+                while (temp.length < targetLength) {
+                    temp += result;
                 }
-            } else {
-                document.getElementById('verseDisplay').innerHTML = '<div class="instruction">Click "Generate" to cast your divination and receive a verse for meditation</div>';
-                document.getElementById('relatedVersesDisplay').innerHTML = '';
-            }
-
-            // Render entries
-            var listHTML = '';
-            for (var i = app.entries.length - 1; i >= 0; i--) {
-                var e = app.entries[i];
-                listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')"><div class="entry-date">' + e.date + '</div><div class="entry-verse">Verse ' + e.verse + ' - ' + e.title + '</div><div class="entry-preview">' + e.text.substring(0, 50) + '...</div></div>';
-            }
-            document.getElementById('entriesList').innerHTML = listHTML;
-        }
-
-        function generate() {
-            app.lines = [
-                Math.floor(Math.random() * 3), 
-                Math.floor(Math.random() * 3), 
-                Math.floor(Math.random() * 3), 
-                Math.floor(Math.random() * 3)
-            ];
-            
-            var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
-            app.verseNumber = base3 + 1;
-            
-            app.currentEditId = null;
-            app.currentTranslation = "Wing"; // Reset to Wing on new generation
-            document.getElementById('journalText').value = '';
-            render();
-        }
-
-        function verseToLines(verseNum) {
-            var base3 = verseNum - 1;
-            var lines = [];
-            
-            lines[0] = Math.floor(base3 / 27);
-            base3 = base3 % 27;
-            
-            lines[1] = Math.floor(base3 / 9);
-            base3 = base3 % 9;
-            
-            lines[2] = Math.floor(base3 / 3);
-            lines[3] = base3 % 3;
-            
-            return lines;
-        }
-
-        function manualEntry() {
-            var input = document.getElementById('manualVerse').value.trim();
-            
-            if (input.length === 4 && /^[0-2]{4}$/.test(input)) {
-                app.lines = [
-                    parseInt(input[0]),
-                    parseInt(input[1]),
-                    parseInt(input[2]),
-                    parseInt(input[3])
-                ];
-                var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
-                app.verseNumber = base3 + 1;
-            } 
-            else {
-                var num = parseInt(input);
-                if (isNaN(num) || num < 1 || num > 81) {
-                    alert('Enter verse 1-81 or 4-digit line pattern (e.g., 1120)');
-                    return;
+                
+                result = '';
+                for (let i = 0; i < temp.length; i++) {
+                    const mixed = temp.charCodeAt(i % temp.length) ^ (i + round);
+                    result += String.fromCharCode((mixed % 94) + 33);
                 }
-                app.verseNumber = num;
-                app.lines = verseToLines(num);
+                
+                result = result.substring(0, targetLength);
             }
             
-            app.currentEditId = null;
-            app.currentTranslation = "Wing"; // Reset to Wing on manual entry
-            document.getElementById('journalText').value = '';
-            document.getElementById('manualVerse').value = '';
-            render();
+            return result;
         }
 
-        function saveEntry() {
-            if (app.verseNumber === null) {
-                alert('Generate or select a verse first');
+        function enhancedXOREncrypt(text, key) {
+            if (!key) return text;
+            
+            const salt = generateSalt(8);
+            const saltedText = salt + '|' + text;
+            
+            const stretchedKey = stretchKey(key, Math.max(32, saltedText.length));
+            
+            let result = saltedText;
+            const passes = 3;
+            
+            for (let pass = 0; pass < passes; pass++) {
+                let temp = '';
+                
+                for (let i = 0; i < result.length; i++) {
+                    const keyIndex = (i + pass * 7) % stretchedKey.length;
+                    const variedKeyChar = stretchedKey.charCodeAt(keyIndex) + pass;
+                    
+                    temp += String.fromCharCode(
+                        result.charCodeAt(i) ^ variedKeyChar ^ pass
+                    );
+                }
+                
+                result = temp;
+            }
+            
+            return result;
+        }
+
+        function enhancedXORDecrypt(encrypted, key) {
+            if (!key) return encrypted;
+            
+            const stretchedKey = stretchKey(key, Math.max(32, encrypted.length));
+            
+            let result = encrypted;
+            const passes = 3;
+            
+            for (let pass = passes - 1; pass >= 0; pass--) {
+                let temp = '';
+                
+                for (let i = 0; i < result.length; i++) {
+                    const keyIndex = (i + pass * 7) % stretchedKey.length;
+                    const variedKeyChar = stretchedKey.charCodeAt(keyIndex) + pass;
+                    
+                    temp += String.fromCharCode(
+                        result.charCodeAt(i) ^ variedKeyChar ^ pass
+                    );
+                }
+                
+                result = temp;
+            }
+            
+            const separatorIndex = result.indexOf('|');
+            if (separatorIndex !== -1) {
+                return result.substring(separatorIndex + 1);
+            }
+            
+            return result;
+        }
+
+        // ===== AUTO-COPY FUNCTION =====
+
+        function autoCopy(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('📋 Copied to clipboard!', true);
+            }).catch(() => {
+                showNotification('❌ Failed to copy', false);
+            });
+        }
+
+        // ===== MAIN FUNCTIONS =====
+
+        function scrambleText() {
+            const inputText = document.getElementById('inputText').value;
+            const secretKey = document.getElementById('secretKey').value;
+            const outputBox = document.getElementById('output');
+
+            if (!inputText.trim()) {
+                outputBox.textContent = '⚠️ Please enter some text to scramble!';
+                outputBox.style.color = '#ef4444';
                 return;
             }
-            var text = document.getElementById('journalText').value;
-            var now = new Date().toISOString().split('T')[0];
-            var title = verseTitles[app.verseNumber - 1];
 
-            if (app.currentEditId !== null) {
-                app.entries[app.currentEditId].text = text;
-            } else {
-                app.entries.push({ date: now, verse: app.verseNumber, title: title, text: text, translation: app.currentTranslation });
+            try {
+                let processed = inputText;
+                
+                if (secretKey) {
+                    processed = enhancedXOREncrypt(inputText, secretKey);
+                }
+                
+                const scrambled = btoa(unescape(encodeURIComponent(processed)));
+                
+                outputBox.textContent = scrambled;
+                outputBox.style.color = '#cbd5e1';
+                
+                // Auto-copy
+                autoCopy(scrambled);
+            } catch (error) {
+                outputBox.textContent = '❌ Error scrambling text. Please try again.';
+                outputBox.style.color = '#ef4444';
             }
-            localStorage.setItem('taoEntries', JSON.stringify(app.entries));
-            app.currentEditId = null;
-            document.getElementById('journalText').value = '';
-            alert('Entry saved!');
-            render();
         }
 
-        function loadEntry(idx) {
-            app.currentEditId = idx;
-            var entry = app.entries[idx];
-            document.getElementById('journalText').value = entry.text;
-            app.verseNumber = entry.verse;
-            app.lines = verseToLines(entry.verse);
-            if (entry.translation) {
-                app.currentTranslation = entry.translation;
+        function unscrambleText() {
+            const inputText = document.getElementById('inputText').value;
+            const secretKey = document.getElementById('secretKey').value;
+            const outputBox = document.getElementById('output');
+
+            if (!inputText.trim()) {
+                outputBox.textContent = '⚠️ Please enter scrambled text to unscramble!';
+                outputBox.style.color = '#ef4444';
+                return;
             }
-            render();
+
+            try {
+                let unscrambled = decodeURIComponent(escape(atob(inputText)));
+                
+                if (secretKey) {
+                    unscrambled = enhancedXORDecrypt(unscrambled, secretKey);
+                }
+                
+                outputBox.textContent = unscrambled;
+                outputBox.style.color = '#cbd5e1';
+                
+                // Auto-copy
+                autoCopy(unscrambled);
+            } catch (error) {
+                outputBox.textContent = '❌ Error unscrambling text. Make sure you entered the correct scrambled text and secret key.';
+                outputBox.style.color = '#ef4444';
+            }
         }
 
-        function exportCSV() {
-            var csv = 'Date,Verse,Title,Translation,Notes\n';
-            for (var i = 0; i < app.entries.length; i++) {
-                var e = app.entries[i];
-                var notes = e.text.replace(/"/g, '""').replace(/\n/g, ' ');
-                var trans = e.translation || 'Wing';
-                csv += e.date + ',' + e.verse + ',"' + e.title + '","' + trans + '","' + notes + '"\n';
-            }
-            var blob = new Blob([csv], { type: 'text/csv' });
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = 'tao-journal-' + new Date().toISOString().split('T')[0] + '.csv';
-            a.click();
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('secretKey').value = '';
+            document.getElementById('output').textContent = 'Your scrambled or unscrambled text will appear here...';
+            document.getElementById('output').style.color = '#94a3b8';
         }
 
-        function init() {
-            var saved = localStorage.getItem('taoEntries');
-            if (saved) app.entries = JSON.parse(saved);
-            render();
+        function showNotification(message, success) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification' + (success ? '' : ' error');
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
         }
 
-        document.getElementById('genBtn').onclick = generate;
-        document.getElementById('resetBtn').onclick = function() { 
-            app.lines = [null, null, null, null]; 
-            app.verseNumber = null; 
-            app.currentEditId = null; 
-            app.currentTranslation = "Wing";
-            document.getElementById('journalText').value = ''; 
-            render(); 
-        };
-        document.getElementById('saveBtn').onclick = saveEntry;
-        document.getElementById('exportBtn').onclick = exportCSV;
-        document.getElementById('manualEntryBtn').onclick = manualEntry;
-        document.getElementById('manualVerse').onkeypress = function(e) {
-            if (e.key === 'Enter') {
-                manualEntry();
+        // Keyboard shortcut
+        document.getElementById('inputText').addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                scrambleText();
             }
-        };
-
-        init();
+        });
     </script>
 </body>
 </html>
