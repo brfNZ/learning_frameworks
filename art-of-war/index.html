@@ -37,7 +37,15 @@ e<!DOCTYPE html>
         .verse-display { padding: 20px; background: #1e293b; border-radius: 8px; margin-top: 15px; cursor: pointer; transition: all 0.2s; }
         .verse-display:hover { background: #2d3748; }
         .verse-author { color: #94a3b8; font-size: 11px; font-style: italic; margin-bottom: 12px; }
-        .verse-text { color: #94a3b8; font-size: 14px; line-height: 1.7; white-space: pre-line; max-height: 400px; overflow-y: auto; text-align: left; }        .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
+        .verse-text-wing { text-align: center; }
+        .verse-text { color: #94a3b8; font-size: 14px; line-height: 1.7; white-space: pre-line; max-height: 400px; overflow-y: auto; text-align: left; }   
+        .verse-footnote { 
+            font-size: 11px; 
+            font-style: italic; 
+            color: #64748b; 
+            margin-top: 16px;
+        }     
+        .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
         button { font-weight: bold; padding: 12px 16px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
         .next-btn { background: #b45309; color: white; flex: 1; }
         .next-btn:hover { background: #92400e; }
@@ -193,7 +201,16 @@ e<!DOCTYPE html>
                 verseTexts[app.currentTranslation][verseKey]) {
                 
                 var verseText = verseTexts[app.currentTranslation][verseKey];
-                display += '<div class="verse-text">' + verseText + '</div>';
+                
+                // Style footnotes differently (text after underscores)
+                if (verseText.includes('___')) {
+                    var parts = verseText.split('___');
+                    verseText = parts[0] + '<div class="verse-footnote">___' + parts.slice(1).join('___') + '</div>';
+                }
+                
+                // Add Wing-specific centering class
+                var textClass = app.currentTranslation === 'Wing' ? 'verse-text verse-text-wing' : 'verse-text';
+                display += '<div class="' + textClass + '">' + verseText + '</div>';
             } else {
                 display += '<div class="verse-text" style="color: #94a3b8; font-style: italic;">Verse text not yet added</div>';
             }
