@@ -123,18 +123,34 @@
         // LEARNING NOTE: This function switches between available translations
         // It cycles through: Giles → Wing → back to Giles
         function cycleTranslation() {
-            var translations = Object.keys(verseTexts);           // Get all available translations ["Giles", "Wing"]
-            var currentIndex = translations.indexOf(app.currentTranslation);  // Find which one we're on
-            var nextIndex = (currentIndex + 1) % translations.length;         // Calculate next (% wraps around)
-            app.currentTranslation = translations[nextIndex];     // Update to next translation
-            render();                                              // Re-draw the screen
+            var translations = Object.keys(verseTexts);
+            var currentIndex = translations.indexOf(app.currentTranslation);
+            var nextIndex = (currentIndex + 1) % translations.length;
+            
+            // Get current chapter info before switching
+            var currentInfo = getWeekInfo(app.currentPosition, app.currentTranslation);
+            var currentChapter = currentInfo.chapter;
+            
+            // Switch translation
+            app.currentTranslation = translations[nextIndex];
+            
+            // Adjust position to match the same chapter in the new translation
+            if (app.currentTranslation === "Wing") {
+                // Switching to Wing: go to Part 1 of the same chapter
+                app.currentPosition = (currentChapter - 1) * 4 + 1;
+            } else {
+                // Switching to Giles: go to the same chapter number
+                app.currentPosition = currentChapter;
+            }
+            
+            render();
         }
 
         // LEARNING NOTE: This is the main function that updates what you see on screen
         function render() {
             // STEP 1: Get information about the current chapter/part
-            var weekInfo = getWeekInfo(app.currentWeek, app.currentTranslation);
-            var weekTitle = getWeekTitle(app.currentWeek, app.currentTranslation);
+            var weekInfo = getWeekInfo(app.currentPosition, app.currentTranslation);
+            var weekTitle = getWeekTitle(app.currentPosition, app.currentTranslation);
             
             // STEP 2: Build the verse key to look up the text
             var verseKey = weekInfo.chapter.toString();
@@ -225,7 +241,7 @@
                         
             // Save current position to localStorage
             localStorage.setItem('artOfWarPosition', JSON.stringify({
-                week: app.currentWeek,
+                week: app.currentPosition,
                 translation: app.currentTranslation
             }));
 
