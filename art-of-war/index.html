@@ -557,7 +557,7 @@ input[type="text"] {
             }));
 
             // Update URL without reloading page
-            var weekInfo = getPositionInfo(app.currentWeek, app.currentTranslation);
+            var weekInfo = getPositionInfo(app.currentPosition, app.currentTranslation);
             var chapterParam = weekInfo.chapter.toString();
             if (weekInfo.section !== null) {
                 chapterParam += '-' + weekInfo.section;
@@ -607,14 +607,14 @@ input[type="text"] {
             }
 
             // If section is specified and we're in Giles, switch to Wing
-            if (section > 1 && app.currentTranslation === 'Giles') {
+            if (parts[1] && app.currentTranslation === 'Giles') {
                 app.currentTranslation = 'Wing';
             }
             
             // Convert chapter-section to week number
             // For Wing (or when section specified): week = (chapter-1)*4 + section
             // For Giles (when no section): week = chapter
-            if (section > 1 || app.currentTranslation === 'Wing') {
+            if (parts[1] || app.currentTranslation === 'Wing') {
                 app.currentPosition = (chapter - 1) * 4 + section;
             } else {
                 app.currentPosition = chapter;
