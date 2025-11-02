@@ -124,9 +124,11 @@ e<!DOCTYPE html>
                 <h3>Journal Entry</h3>
                 <textarea id="journalText" placeholder="Write your reflections on this week's passage..."></textarea>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; margin: 12px 0;">
+             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 12px 0;">
+                <button class="save-btn" id="saveBtn">Save Entry</button>
                 <button class="export-btn" id="exportBtn">Export to CSV</button>
-                </div>
+                <button class="theme-toggle-btn" id="themeToggleBtn">☀️</button>
+            </div>
 
                 <div class="manual-week">
                     <input type="text" id="manualChapter" placeholder="Jump to Ch. (e.g.1 or 2-3)">
