@@ -145,6 +145,30 @@ body {
 }
 .verse-display:hover { background: var(--color-bg-hover); }
 
+/* Base styles for chapter/part labels (dark mode defaults) */
+.chapter-number {
+    color: #cbd5e1;
+    font-size: 16px;
+    margin-top: 12px;
+}
+.chapter-title {
+    color: #fbbf24;
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 4px;
+}
+.part-number {
+    color: #cbd5e1;
+    font-size: 16px;
+    margin-top: 8px;
+}
+.part-title {
+    color: #fbbf24;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
 .verse-author {
     color: var(--color-text-muted);
     font-size: 11px;
@@ -312,19 +336,19 @@ input[type="text"] {
 [data-theme="light"] .entry-date,
 [data-theme="light"] .footer { color: var(--color-text-dim); }
 
-/* LIGHT MODE: High contrast for Chapter & Part numbers */
-[data-theme="light"] .verse-display > div:nth-child(2),
-[data-theme="light"] .verse-display > div:nth-child(4) {
-    color: #1e293b !important;
+/* LIGHT MODE: High contrast for chapter/part labels */
+[data-theme="light"] .chapter-number,
+[data-theme="light"] .part-number {
+    color: #1e293b;
     font-weight: 600;
 }
-[data-theme="light"] .verse-display > div:nth-child(4) {
-    color: #475569 !important;
+
+[data-theme="light"] .part-number {
+    color: #475569;
 }
 
-/* LIGHT MODE: Make "The Calculations" readable */
-[data-theme="light"] .verse-display > div:nth-child(3) {
-    color: #b45309 !important;
+[data-theme="light"] .chapter-title {
+    color: #b45309;
     font-weight: 700;
 }
 
@@ -457,15 +481,14 @@ input[type="text"] {
             display += '<div class="verse-author">Translation: ' + app.currentTranslation + '</div>';
             
             // Chapter number
-            display += '<div style="color: #cbd5e1; font-size: 16px; margin-top: 12px;">Chapter ' + weekInfo.chapter + '</div>';
-            
+            display += '<div class="chapter-number">Chapter ' + weekInfo.chapter + '</div>';            
             // Chapter title
-            display += '<div style="color: #fbbf24; font-size: 28px; font-weight: bold; margin-top: 4px;">' + chapterTitle + '</div>';
+            display += '<div class="chapter-title">' + chapterTitle + '</div>';
             
             // For Wing: show Part number and Part title
             if (weekInfo.section !== null) {
-                display += '<div style="color: #cbd5e1; font-size: 16px; margin-top: 8px;">Part ' + weekInfo.section + '</div>';
-                display += '<div style="color: #fbbf24; font-size: 24px; font-weight: bold; margin-top: 4px;">' + weekTitle + '</div>';
+                display += '<div class="part-number">Part ' + weekInfo.section + '</div>';
+                display += '<div class="part-title">' + weekTitle + '</div>';
             }
             
             // Separator line
