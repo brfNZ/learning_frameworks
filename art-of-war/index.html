@@ -459,9 +459,9 @@ e<!DOCTYPE html>
             // For Wing (or when section specified): week = (chapter-1)*4 + section
             // For Giles (when no section): week = chapter
             if (section > 1 || app.currentTranslation === 'Wing') {
-                app.currentWeek = (chapter - 1) * 4 + section;
+                app.currentPosition = (chapter - 1) * 4 + section;
             } else {
-                app.currentWeek = chapter;
+                app.currentPosition = chapter;
             }
             
             app.currentEditId = null;
@@ -472,8 +472,8 @@ e<!DOCTYPE html>
                 
         // LEARNING NOTE: Save a journal entry
         function saveEntry() {
-            var weekInfo = getPositionInfo(app.currentWeek, app.currentTranslation);
-            var weekTitle = getPositionTitle(app.currentWeek, app.currentTranslation);
+            var weekInfo = getPositionInfo(app.currentPosition, app.currentTranslation);
+            var weekTitle = getPositionTitle(app.currentPosition, app.currentTranslation);
             var text = document.getElementById('journalText').value;
             var now = new Date().toISOString().split('T')[0];  // Get today's date in YYYY-MM-DD format
 
