@@ -355,7 +355,10 @@ input[type="text"] {
     font-weight: 700;
 }
 
+        .part-title { color: #fbbf24 !important; }
+        
     </style>
+<base target="_blank">
 </head>
 <body>
     <div class="container">
@@ -504,7 +507,7 @@ input[type="text"] {
                 verseTexts[app.currentTranslation][verseKey]) {
                 
                 var verseText = verseTexts[app.currentTranslation][verseKey];
-            
+                
                 // Style footnotes differently (text after underscores)
                 if (verseText.includes('___')) {
                     var parts = verseText.split('___');
@@ -554,8 +557,8 @@ input[type="text"] {
                     '<span class="entry-title">' + e.title + '</span>' +
                 '</div>' +
                 chapterTitleLine +
-                '<div class="entry-preview">' + e.text.substring(0, 60) + '...</div>'
-
+                '<div class="entry-preview">' + e.text.substring(0, 60) + '...</div>' +
+                '</div>';
             }
             document.getElementById('entriesList').innerHTML = listHTML;
                         
