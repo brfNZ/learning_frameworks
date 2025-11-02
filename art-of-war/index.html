@@ -354,9 +354,10 @@ input[type="text"] {
     color: var(--color-accent-dark);
     font-weight: 700;
 }
-
-        .part-title { color: #fbbf24 !important; }
-        
+.preview-title {
+  color: var(--color-accent);   /* identical orange */
+  font-weight: 600;
+}
     </style>
 </head>
 <body>
@@ -556,8 +557,10 @@ input[type="text"] {
                     '<span class="entry-title">' + e.title + '</span>' +
                 '</div>' +
                 chapterTitleLine +
-                '<div class="entry-preview">' + e.text.substring(0, 60) + '...</div>' +
-                '</div>';
+               '<div class="entry-preview">' +
+                '<span class="preview-title">' + e.text.split('\n')[0] + '</span>' +
+                e.text.substring(e.text.indexOf('\n') + 1, 60) +
+                '</div>'
             }
             document.getElementById('entriesList').innerHTML = listHTML;
                         
