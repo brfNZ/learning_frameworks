@@ -159,6 +159,26 @@ e<!DOCTYPE html>
             entries: []                  // Array of saved journal entries
         };
 
+        // THEME TOGGLE: Dark/Light mode
+        var currentTheme = localStorage.getItem('artOfWarTheme') || 'dark';
+        
+        function setTheme(theme) {
+            currentTheme = theme;
+            localStorage.setItem('artOfWarTheme', theme);
+            document.documentElement.setAttribute('data-theme', theme);
+            updateThemeButton();
+            applyThemeStyles();
+        }
+        
+        function updateThemeButton() {
+            var btn = document.getElementById('themeToggleBtn');
+            btn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        }
+        
+        function toggleTheme() {
+            setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        }
+        
         // LEARNING NOTE: This function switches between available translations
         // It cycles through: Giles → Wing → back to Giles
         function cycleTranslation() {
