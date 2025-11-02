@@ -454,6 +454,11 @@ e<!DOCTYPE html>
                 alert('Part number must be between 1 and 4 (e.g., 2-3)');
                 return;
             }
+
+            // If section is specified and we're in Giles, switch to Wing
+            if (section > 1 && app.currentTranslation === 'Giles') {
+                app.currentTranslation = 'Wing';
+            }
             
             // Convert chapter-section to week number
             // For Wing (or when section specified): week = (chapter-1)*4 + section
