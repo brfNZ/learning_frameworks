@@ -180,11 +180,6 @@ body {
     margin-top: 16px;
 }
 
-.accent {
-    color: var(--color-accent);   /* orange in both themes */
-    font-weight: 600;
-}
-
 /* ---------- TITLE STYLES (CHAPTER & PART) ---------- */
 .chapter-number,
 .part-number {
@@ -511,9 +506,7 @@ input[type="text"] {
                 verseTexts[app.currentTranslation][verseKey]) {
                 
                 var verseText = verseTexts[app.currentTranslation][verseKey];
-                // highlight the first line if it is the chapter title
-                verseText = verseText.replace(/^(.+)$/m, '<span class="accent">$1</span>');
-                
+            
                 // Style footnotes differently (text after underscores)
                 if (verseText.includes('___')) {
                     var parts = verseText.split('___');
