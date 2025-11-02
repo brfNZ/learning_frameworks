@@ -306,6 +306,40 @@ input[type="text"] {
     border-color: var(--border-color-hover);
 }
 
+/* Delete button - only visible on hover */
+.entry-item {
+    position: relative;  /* Add this to existing .entry-item */
+}
+
+.delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    color: #ef4444;
+    border: none;
+    width: 20px;
+    height: 20px;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.entry-item:hover .delete-btn {
+    opacity: 0.7;
+}
+
+.delete-btn:hover {
+    opacity: 1 !important;
+    transform: scale(1.2);
+}
+
 .entry-chapter-title { color: var(--color-accent); font-size: 12px; font-weight: bold; margin: 2px 0 4px; }
 .entry-chapter-ref { color: var(--color-accent); font-size: 13px; font-weight: bold; }
 .entry-date { color: var(--color-text-muted); font-size: 11px; margin-bottom: 4px; }
@@ -422,6 +456,11 @@ input[type="text"] {
             setTheme(currentTheme === 'dark' ? 'light' : 'dark');
         }
         
+        function formatDate(dateString) {
+            var dateParts = dateString.split('-');
+            return dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+        }
+
         // LEARNING NOTE: This function switches between available translations
         // It cycles through: Giles → Wing → back to Giles
         function cycleTranslation() {
@@ -520,33 +559,32 @@ input[type="text"] {
                 var e = app.entries[i];
                 
                 // Build chapter reference
-            var chapterRef = 'Ch ' + e.chapter;
-            if (e.section) {
-                chapterRef += '.' + e.section;
-            }
-            chapterRef += ' (' + (e.translation === 'Wing' ? 'W' : 'G') + ')';
-                            
-           // Format date as day-month-year
-            var dateParts = e.date.split('-');
-            var formattedDate = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+                var chapterRef = 'Ch ' + e.chapter;
+                if (e.section) {
+                    chapterRef += '.' + e.section;
+                }
+                chapterRef += ' (' + (e.translation === 'Wing' ? 'W' : 'G') + ')';
+                                
+                var formattedDate = formatDate(e.date);
 
-            // Get chapter title for Wing entries
-            var chapterTitleLine = '';
-            if (e.translation === 'Wing' && e.section) {
-                var chapterTitle = chapterTitlesWing[e.chapter - 1];
-                chapterTitleLine = '<div class="entry-chapter-title">' + chapterTitle + '</div>';
-            }
+                // Get chapter title for Wing entries
+                var chapterTitleLine = '';
+                if (e.translation === 'Wing' && e.section) {
+                    var chapterTitle = chapterTitlesWing[e.chapter - 1];
+                    chapterTitleLine = '<div class="entry-chapter-title">' + chapterTitle + '</div>';
+                }
 
-            listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
-                '<div class="entry-date">' + formattedDate + '</div>' +
-                '<div class="entry-header">' +
-                    '<span class="entry-chapter-ref">' + chapterRef + '</span>' +
-                    '<span class="entry-separator"> - </span>' +
-                    '<span class="entry-title">' + e.title + '</span>' +
-                '</div>' +
-                chapterTitleLine +
-                '<div class="entry-preview">' + e.text.substring(0, 60) + '...</div>' +
-                '</div>';
+                listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
+                    '<button class="delete-btn" onclick="event.stopPropagation(); deleteEntry(' + i + ')" title="Delete entry">×</button>' +
+                    '<div class="entry-date">' + formattedDate + '</div>' +
+                    '<div class="entry-header">' +
+                        '<span class="entry-chapter-ref">' + chapterRef + '</span>' +
+                        '<span class="entry-separator"> - </span>' +
+                        '<span class="entry-title">' + e.title + '</span>' +
+                    '</div>' +
+                    chapterTitleLine +
+                    '<div class="entry-preview">' + e.text.substring(0, 60) + '...</div>' +
+                    '</div>';
             }
             document.getElementById('entriesList').innerHTML = listHTML;
                         
@@ -654,6 +692,24 @@ input[type="text"] {
             alert('Entry saved!');
             render();
         }
+
+    function deleteEntry(index) {
+        const entry = app.entries[index];
+        const entryDate = formatDate(entry.date);
+        const entryTitle = entry.title || `Chapter ${entry.chapter}`;
+        
+        // Single confirmation
+        if (!confirm(`Delete this entry?\n\n${entryTitle}\n${entryDate}\n\nThis action cannot be undone.`)) {
+            return;
+        }
+        
+        // Delete the entry
+        app.entries.splice(index, 1);
+        localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
+        
+        // Re-render to update the display
+        render();
+    }
 
         // LEARNING NOTE: Load an existing journal entry for editing
         function loadEntry(idx) {
