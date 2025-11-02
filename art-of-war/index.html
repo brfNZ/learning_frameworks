@@ -557,9 +557,9 @@ input[type="text"] {
                     '<span class="entry-title">' + e.title + '</span>' +
                 '</div>' +
                 chapterTitleLine +
-               '<div class="entry-preview">' +
-                '<span class="preview-title">' + e.text.split('\n')[0] + '</span>' +
-                e.text.substring(e.text.indexOf('\n') + 1, 60) +
+                '<div class="entry-preview">' +
+                    '<span class="preview-title">' + e.text.slice(0, 40).trim() + '</span>' +
+                e.text.slice(40, 100) +
                 '</div>'
             }
             document.getElementById('entriesList').innerHTML = listHTML;
