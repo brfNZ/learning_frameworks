@@ -155,7 +155,10 @@ body {
     overflow-y: auto;
     text-align: left;
 }
-
+.verse-text-missing {
+    color: var(--color-text-muted);
+    font-style: italic;
+}
 /* Scrollbars */
 .verse-text::-webkit-scrollbar { width: 8px; }
 .verse-text::-webkit-scrollbar-track {
@@ -480,7 +483,6 @@ input[type="text"] {
             if (weekInfo.section !== null) {
                 display += '<div class="part-number">Part ' + weekInfo.section + '</div>';
                 var partTitle = getPositionTitle(app.currentPosition, app.currentTranslation);
-                var partTitle = getPositionTitle(app.currentPosition, app.currentTranslation);
                 display += '<div class="part-title">' + partTitle + '</div>';
             
             // Separator line
@@ -503,7 +505,7 @@ input[type="text"] {
                 var textClass = app.currentTranslation === 'Wing' ? 'verse-text verse-text-wing' : 'verse-text';
                 display += '<div class="' + textClass + '">' + verseText + '</div>';
             } else {
-                display += '<div class="verse-text" style="color: #94a3b8; font-style: italic;">Verse text not yet added</div>';
+                display += '<div class="verse-text verse-text-missing">Verse text not yet added</div>';
             }
             
             display += '</div>';
