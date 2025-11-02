@@ -187,18 +187,26 @@ body {
     font-size: 16px;
     margin-top: 12px;
 }
-.chapter-title,
-.part-title {
-    color: var(--color-accent);
-    font-weight: bold;
-}
+
 .chapter-title {
+    color: var(--color-accent) !important;
     font-size: 28px;
+    font-weight: bold;
     margin-top: 4px;
 }
+
 .part-title {
+    color: var(--color-accent) !important;
     font-size: 24px;
+    font-weight: bold;
     margin-top: 4px;
+}
+
+/* LIGHT MODE OVERRIDE */
+[data-theme="light"] .chapter-title,
+[data-theme="light"] .part-title {
+    color: #d97706 !important;
+    font-weight: 700;
 }
 
 /* ---------- BUTTONS ---------- */
