@@ -23,8 +23,8 @@
     --color-text-muted: #94a3b8;
     --color-text-dim: #64748b;
 
-    --color-accent: #fbbf24;
-    --color-accent-dark: #d97706;
+    --color-accent: #fbbf24;         /* Orange in dark */
+    --color-accent-dark: #b45309;    /* Deep amber in light */
     --color-btn-primary: #b45309;
     --color-btn-primary-hover: #92400e;
     --color-btn-success: #059669;
@@ -53,18 +53,12 @@
     --color-bg-light: #f8fafc;
 
     --color-text-primary: #1e293b;
-    --color-text-secondary: #1e293b;
-    --color-text-muted: #000;
+    --color-text-secondary: #475569;
+    --color-text-muted: #64748b;
     --color-text-dim: #94a3b8;
 
     --color-accent: #d97706;
     --color-accent-dark: #b45309;
-    --color-btn-primary: #b45309;
-    --color-btn-primary-hover: #92400e;
-    --color-btn-success: #059669;
-    --color-btn-success-hover: #047857;
-    --color-btn-purple: #7c3aed;
-    --color-btn-purple-hover: #6d28d9;
 
     --border-color: #cbd5e1;
     --border-color-hover: #fbbf24;
@@ -75,7 +69,7 @@
 }
 
 /* ========================================
-   GLOBAL STYLES (USING VARIABLES)
+   GLOBAL STYLES
    ======================================== */
 * {
     margin: 0;
@@ -145,30 +139,6 @@ body {
 }
 .verse-display:hover { background: var(--color-bg-hover); }
 
-/* Base styles for chapter/part labels (dark mode defaults) */
-.chapter-number {
-    color: #cbd5e1;
-    font-size: 16px;
-    margin-top: 12px;
-}
-.chapter-title {
-    color: #fbbf24;
-    font-size: 28px;
-    font-weight: bold;
-    margin-top: 4px;
-}
-.part-number {
-    color: #cbd5e1;
-    font-size: 16px;
-    margin-top: 8px;
-}
-.part-title {
-    color: var(--color-accent);
-    font-size: 24px;
-    font-weight: bold;
-    margin-top: 4px;
-}
-
 .verse-author {
     color: var(--color-text-muted);
     font-size: 11px;
@@ -205,6 +175,27 @@ body {
     font-style: italic;
     color: var(--color-text-dim);
     margin-top: 16px;
+}
+
+/* ---------- TITLE STYLES (CHAPTER & PART) ---------- */
+.chapter-number,
+.part-number {
+    color: #cbd5e1;
+    font-size: 16px;
+    margin-top: 12px;
+}
+.chapter-title,
+.part-title {
+    color: var(--color-accent);
+    font-weight: bold;
+}
+.chapter-title {
+    font-size: 28px;
+    margin-top: 4px;
+}
+.part-title {
+    font-size: 24px;
+    margin-top: 4px;
 }
 
 /* ---------- BUTTONS ---------- */
@@ -342,21 +333,16 @@ input[type="text"] {
     color: #1e293b;
     font-weight: 600;
 }
-
 [data-theme="light"] .part-number {
     color: #475569;
 }
-css
 
-/* LIGHT MODE: High-contrast titles */
+/* LIGHT MODE: Titles (Chapter & Part) */
 [data-theme="light"] .chapter-title,
 [data-theme="light"] .part-title {
     color: var(--color-accent-dark);
     font-weight: 700;
 }
-
-
-
     </style>
 </head>
 <body>
