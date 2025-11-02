@@ -484,6 +484,7 @@ input[type="text"] {
                 display += '<div class="part-number">Part ' + weekInfo.section + '</div>';
                 var partTitle = getPositionTitle(app.currentPosition, app.currentTranslation);
                 display += '<div class="part-title">' + partTitle + '</div>';
+            }
             
             // Separator line
             display += '<div style="border-top: 1px solid #64748b; margin: 20px 0;"></div>';
@@ -697,9 +698,9 @@ input[type="text"] {
                 
                 // Convert chapter-section to week number
                 if (urlTranslation === 'Wing' || section > 1) {
-                    app.currentWeek = (chapter - 1) * 4 + section;
+                    app.currentPosition = (chapter - 1) * 4 + section;
                 } else {
-                    app.currentWeek = chapter;
+                    app.currentPosition = chapter;
                 }
                 
                 if (urlTranslation) {
