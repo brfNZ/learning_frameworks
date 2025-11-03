@@ -698,8 +698,13 @@ input[type="text"] {
         const entryDate = formatDate(entry.date);
         const entryTitle = entry.title || `Chapter ${entry.chapter}`;
         
-        // Single confirmation
+        // First confirmation
         if (!confirm(`Delete this entry?\n\n${entryTitle}\n${entryDate}\n\nThis action cannot be undone.`)) {
+            return;
+        }
+
+        // Second confirmation for extra safety
+        if (!confirm('Are you absolutely sure you want to delete this entry? This is your final confirmation.')) {
             return;
         }
         
