@@ -661,6 +661,10 @@ textarea::placeholder{color:#94a3b8}
         toggleBtn.innerHTML = '🌓';
         toggleBtn.onclick = toggleTheme;
         document.body.appendChild(toggleBtn);
+
+        // force light for 5 seconds so you *see* the change
+document.documentElement.setAttribute('data-theme','light');
+setTimeout(()=> document.documentElement.removeAttribute('data-theme'), 5000);
             
     </script>
 
