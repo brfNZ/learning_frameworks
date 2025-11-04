@@ -5,67 +5,178 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tao Te Ching - Journal & Divination</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: linear-gradient(to bottom right, #1e293b, #334155, #0f172a); min-height: 100vh; font-family: system-ui, -apple-system, sans-serif; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .header { text-align: center; margin-bottom: 40px; }
-        .header h1 { font-size: 60px; margin-bottom: 10px; }
-        .header h2 { font-size: 36px; font-weight: bold; color: white; margin-bottom: 8px; }
-        .header p { color: #cbd5e1; }
-        .main { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 1000px) { .main { grid-template-columns: 1fr; } }
-        .card { background: #475569; border-radius: 12px; padding: 30px; box-shadow: 0 20px 25px rgba(0,0,0,0.3); border: 1px solid #64748b; }
-        .lines-display { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; gap: 4px; }
-        .line-segment { background-color: white; height: 6px; display: inline-block; }
-        .solid { width: 80px; }
-        .broken-line { display: flex; gap: 16px; justify-content: center; }
-        .broken-segment { width: 32px; }
-        .dashed-line { display: flex; gap: 10px; justify-content: center; }
-        .dashed-segment { width: 20px; }
-        .verse-display { text-align: center; padding: 20px; background: #334155; border-radius: 8px; margin-top: 10px; margin-bottom: 20px; cursor: pointer; transition: all 0.2s; }
-        .verse-display:hover { background: #3f4a5c; }
-        .verse-number { font-size: 18px; margin-bottom: 8px; color: white; }
-        .verse-title { color: #fbbf24; font-size: 24px; font-weight: bold; }
-        .verse-author { color: #94a3b8; font-size: 11px; font-style: italic; margin-top: 6px; margin-bottom: 12px; }
-        .verse-text { color: #e2e8f0; font-size: 13px; line-height: 1.6; white-space: pre-line; max-height: 400px; overflow-y: auto; text-align: left; margin-top: 12px; }
-        .instruction { text-align: center; padding: 20px; background: #334155; border-radius: 8px; margin-bottom: 20px; color: #cbd5e1; font-size: 14px; }
-        .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
-        button { font-weight: bold; padding: 12px 16px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
-        .generate-btn { background: #b45309; color: white; flex: 1; }
-        .generate-btn:hover { background: #92400e; }
-        .reset-btn { background: #64748b; color: white; flex: 1; }
-        .reset-btn:hover { background: #475569; }
-        .save-btn { background: #059669; color: white; width: 100%; }
-        .save-btn:hover { background: #047857; }
-        .export-btn { background: #7c3aed; color: white; width: 100%; }
-        .export-btn:hover { background: #6d28d9; }
-        textarea { width: 100%; height: 200px; padding: 12px; background: #334155; color: white; border: 1px solid #64748b; border-radius: 8px; font-family: system-ui; font-size: 14px; resize: vertical; }
-        textarea::placeholder { color: #94a3b8; }
-        input[type="text"], input[type="number"] { padding: 10px; background: #1e293b; color: white; border: 1px solid #64748b; border-radius: 6px; font-size: 14px; }
-        .journal-section h3 { color: white; margin-bottom: 12px; font-size: 16px; }
-        .manual-entry { display: grid; grid-template-columns: 1fr auto; gap: 12px; margin-bottom: 20px; padding: 12px; background: #334155; border-radius: 8px; }
-        .entries-list { max-height: 400px; overflow-y: auto; margin-bottom: 12px; }
-        .entry-item { background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid #64748b; transition: all 0.2s; }
-        .entry-item:hover { background: #3f4a5c; border-color: #fbbf24; }
-        .entry-date { color: #cbd5e1; font-size: 12px; }
-        .entry-verse { color: #fbbf24; font-weight: bold; font-size: 14px; }
-        .entry-preview { color: #cbd5e1; font-size: 12px; margin-top: 4px; }
-        .footer { text-align: center; color: #64748b; font-size: 12px; margin-top: 30px; }
-        .line-codes { text-align: center; color: #94a3b8; font-size: 12px; margin-bottom: 10px; font-family: monospace; }
-        
-        /* Search Styles */
-        .search-section { margin-bottom: 20px; }
-        .search-box { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 12px; background: #334155; border-radius: 8px; }
-        .search-btn { background: #0284c7; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap; }
-        .search-btn:hover { background: #0369a1; }
-        .search-results { max-height: 300px; overflow-y: auto; margin-top: 12px; }
-        .search-result-item { background: #334155; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; border: 1px solid #64748b; transition: all 0.2s; }
-        .search-result-item:hover { background: #3f4a5c; border-color: #0284c7; }
-        .search-result-verse { color: #0284c7; font-weight: bold; font-size: 14px; margin-bottom: 4px; }
-        .search-result-title { color: #fbbf24; font-size: 13px; margin-bottom: 4px; }
-        .search-result-snippet { color: #cbd5e1; font-size: 12px; line-height: 1.4; }
-        .search-highlight { background: #fbbf24; color: #1e293b; padding: 2px 4px; border-radius: 2px; font-weight: bold; }
-        .search-count { color: #94a3b8; font-size: 12px; margin-top: 8px; text-align: center; }
+  
+/* ---------- 0. VARIABLES ---------- */
+:root {
+  /* colour */
+  --bg: #f8fafc;               /* slate-50  */
+  --surface: #ffffff;
+  --border: #cbd5e1;
+  --text1: #0f172a;
+  --text2: #475569;
+  --accent: #f59e0b;           /* amber-500 */
+  --accent-text: #78350f;
+
+  /* spacing (4-px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* type scale */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-2xl: 32px;
+  --text-3xl: 48px;
+}
+
+/* Dark override */
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --border: #334155;
+  --text1: #f8fafc;
+  --text2: #94a3b8;
+  --accent: #fbbf24;
+  --accent-text: #f8fafc;
+}
+
+/* ---------- 1. RESET ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text1);
+  line-height: 1.5;
+  min-height: 100vh;
+  padding: var(--space-6);
+}
+
+/* ---------- 2. LAYOUT ---------- */
+.container { max-width: 900px; margin-inline: auto; }
+.main { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+@media (max-width: 1000px) { .main { grid-template-columns: 1fr; } }
+
+/* ---------- 3. ATOMS ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-4);
+  border: none;
+  border-radius: 8px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-primary   { background: var(--accent); color: var(--accent-text); }
+.btn-primary:hover { background: #f97316; }   /* amber-600 */
+.btn-secondary { background: var(--border); color: var(--text1); }
+.btn-secondary:hover { opacity: .9; }
+
+.input {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: var(--text-sm);
+  background: var(--surface);
+  color: var(--text1);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 160px;
+}
+
+/* ---------- 4. COMPONENTS ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--space-6);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,.1);
+}
+
+.header { text-align: center; margin-bottom: var(--space-10); }
+.header h1 { font-size: var(--text-3xl); }
+.header h2 { font-size: var(--text-2xl); color: var(--text1); }
+.header p  { color: var(--text2); }
+
+.lines-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.line-segment {
+  height: 6px;
+  background: var(--text1);
+}
+.solid { width: 80px; }
+.broken-line, .dashed-line { display: flex; gap: var(--space-4); }
+.broken-segment { width: 32px; }
+.dashed-segment { width: 20px; }
+
+.verse-display {
+  cursor: pointer;
+  padding: var(--space-5);
+  background: var(--bg);
+  border-radius: 8px;
+  text-align: center;
+  transition: background .2s;
+}
+.verse-display:hover { background: var(--border); }
+
+.verse-number { font-size: var(--text-sm); color: var(--text2); }
+.verse-title  { font-size: var(--text-xl); color: var(--accent); margin: var(--space-1) 0; }
+.verse-author { font-size: var(--text-xs); color: var(--text2); }
+.verse-text   {
+  font-size: var(--text-sm);
+  white-space: pre-line;
+  max-height: 40vh;
+  overflow-y: auto;
+  text-align: left;
+  margin-top: var(--space-3);
+}
+
+.entries-list { max-height: 40vh; overflow-y: auto; }
+.entry-item {
+  padding: var(--space-3);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: var(--space-2);
+  cursor: pointer;
+}
+.entry-item:hover { border-color: var(--accent); }
+
+/* ---------- 5. THEME TOGGLE ---------- */
+.theme-toggle {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 20px;
+}
+
     </style>
 </head>
 <body>
@@ -525,6 +636,29 @@
         document.getElementById('clearSearchBtn').onclick = clearSearch;
 
         init();
+
+        /* ---------- THEME TOGGLE ---------- */
+        const STORAGE_KEY = 'tao-theme';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const defaultTheme = localStorage.getItem(STORAGE_KEY) ?? (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', defaultTheme);
+
+        function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem(STORAGE_KEY, next);
+        }
+
+        /* inject button */
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'theme-toggle';
+        toggleBtn.setAttribute('aria-label', 'Toggle dark/light mode');
+        toggleBtn.innerHTML = '🌓';
+        toggleBtn.onclick = toggleTheme;
+        document.body.appendChild(toggleBtn);
+            
     </script>
+
 </body>
 </html>
