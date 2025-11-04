@@ -640,10 +640,20 @@
         document.body.appendChild(toggleBtn);
 
         function deleteEntry(idx) {
-            if (!confirm('Delete this journal entry?')) return;
+            const entry = app.entries[idx];
+            const entryDate = entry.date;
+            const entryTitle = `Verse ${entry.verse}: ${entry.title}`;
+
+            /* 1st confirmation */
+            if (!confirm(`Delete this entry?\n\n${entryTitle}\n${entryDate}`)) return;
+
+            /* 2nd confirmation */
+            if (!confirm('Are you absolutely sure? This is your final confirmation.')) return;
+
+            /* really delete */
             app.entries.splice(idx, 1);
             localStorage.setItem('taoEntries', JSON.stringify(app.entries));
-            render();          // repaint the list
+            render();          // repaint list
         }
 
     </script>
