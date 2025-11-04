@@ -6,180 +6,118 @@
     <title>Tao Te Ching - Journal & Divination</title>
     <style>
         
-/* ---------- 0.  VARIABLES  (kept for toggle) ---------- */
-:root{
-  /* dark theme == original exact colours */
-  --bg: linear-gradient(to bottom right, #1e293b, #334155, #0f172a);
-  --surface: #475569;
-  --border: #64748b;
-  --text1: #ffffff;
-  --text2: #cbd5e1;
-  --accent: #fbbf24;
-  --accent-dark: #b45309;
-  --radius: 12px;
-  --shadow: 0 20px 25px rgba(0,0,0,.3);
-}
+    /* ---------- 0.  TOKEN MAP  ---------- */
+    :root {
+    /* =====  DARK  (default)  ===== */
+    --bg: linear-gradient(to bottom right, #1e293b, #334155, #0f172a);
+    --surface: #475569;
+    --card: #334155;
+    --border: #64748b;
+    --text1: #ffffff;
+    --text2: #cbd5e1;
+    --text3: #94a3b8;
+    --accent: #fbbf24;
+    --accent-dark: #b45309;
+    --radius: 12px;
+    --shadow: 0 20px 25px rgba(0,0,0,.3);
+    }
 
-/* ----------  LIGHT THEME  ---------- */
-[data-theme="light"] {
-  /* page background */
-  --bg: linear-gradient(to bottom right, #f0f4f8, #e2e8f0, #cbd5e1);
+    [data-theme="light"] {
+    /* =====  LIGHT  ===== */
+    --bg: linear-gradient(to bottom right, #f0f4f8, #e2e8f0, #cbd5e1);
+    --surface: #ffffff;
+    --card: #f8fafc;
+    --border: #d1d5db;
+    --text1: #111827;
+    --text2: #4b5563;
+    --text3: #6b7280;
+    --accent: #f59e0b;
+    --accent-dark: #d97706;
+    --shadow: 0 8px 20px -4px rgba(0,0,0,.08);
+    }
 
-  /* surfaces */
-  --surface: #ffffff;
-  --card: #f8fafc;
+    /* ---------- 1.  RESET  ---------- */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{
+    background: var(--bg);
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, sans-serif;
+    padding: 20px;
+    color: var(--text1);
+    }
 
-  /* borders & dividers */
-  --border: #d1d5db;          /* cool grey-300 */
+    /* ---------- 2.  LAYOUT  ---------- */
+    .container{max-width:900px;margin:0 auto}
+    .main{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media (max-width:1000px){.main{grid-template-columns:1fr}}
 
-  /* text hierarchy */
-  --text1: #111827;           /* grey-900  - almost black */
-  --text2: #4b5563;           /* grey-600  - softer body text */
-  --text3: #6b7280;           /* grey-500  - muted labels */
+    /* ---------- 3.  ATOMS  ---------- */
+    button{font-weight:bold;padding:12px 16px;border:none;border-radius:8px;font-size:14px;cursor:pointer;transition:background .2s}
+    .generate-btn{flex:1;background:var(--accent-dark);color:var(--text1)}
+    .generate-btn:hover{background:#92400e}
+    .reset-btn{flex:1;background:var(--border);color:var(--text1)}
+    .reset-btn:hover{background:#475569}
+    .save-btn{width:100%;background:#059669;color:var(--text1)}
+    .save-btn:hover{background:#047857}
+    .export-btn{width:100%;background:#7c3aed;color:var(--text1)}
+    .export-btn:hover{background:#6d28d9}
+    .search-btn{background:#0284c7;color:var(--text1);padding:10px 20px}
+    .search-btn:hover{background:#0369a1}
 
-  /* accent (same amber family, lighter) */
-  --accent: #f59e0b;          /* amber-500 */
-  --accent-dark: #d97706;     /* amber-600 */
+    input[type="text"], input[type="number"]{padding:10px;background:var(--card);color:var(--text1);border:1px solid var(--border);border-radius:6px;font-size:14px}
+    textarea{width:100%;height:200px;padding:12px;background:var(--card);color:var(--text1);border:1px solid var(--border);border-radius:8px;font-family:system-ui;font-size:14px;resize:vertical}
+    textarea::placeholder{color:var(--text3)}
 
-  /* interactive states */
-  --hover-bg: #fef3c7;        /* amber-50  - soft yellow hover */
-  --active-bg: #fde68a;       /* amber-100 - pressed */
-}
+    /* ---------- 4.  COMPONENTS  ---------- */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow)}
+    .header{text-align:center;margin-bottom:40px}
+    .header h1{font-size:60px;margin-bottom:10px}
+    .header h2{font-size:36px;font-weight:bold;color:var(--text1);margin-bottom:8px}
+    .header p{color:var(--text2)}
 
-/* ---------- 1.  RESET  ---------- */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{
-  background: var(--bg);
-  min-height: 100vh;
-  font-family: system-ui, -apple-system, sans-serif;
-  padding: 20px;
-  color: var(--text1);
-}
+    .lines-display{display:flex;flex-direction:column;align-items:center;margin-bottom:15px;gap:4px}
+    .line-segment{background:var(--text1);height:6px;display:inline-block}
+    .solid{width:80px}
+    .broken-line{display:flex;gap:16px;justify-content:center}
+    .broken-segment{width:32px}
+    .dashed-line{display:flex;gap:10px;justify-content:center}
+    .dashed-segment{width:20px}
 
-/* ---------- 2.  LAYOUT  ---------- */
-.container{max-width:900px;margin:0 auto}
-.main{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-@media (max-width:1000px){.main{grid-template-columns:1fr}}
+    .verse-display{text-align:center;padding:20px;background:var(--card);border-radius:8px;margin-top:10px;margin-bottom:20px;cursor:pointer;transition:background .2s}
+    .verse-display:hover{background:rgba(255,255,255,.08)}
+    .verse-number{font-size:18px;margin-bottom:8px;color:var(--text1)}
+    .verse-title{color:var(--accent);font-size:24px;font-weight:bold}
+    .verse-author{color:var(--text3);font-size:11px;font-style:italic;margin:6px 0 12px}
+    .verse-text{color:var(--text2);font-size:13px;line-height:1.6;white-space:pre-line;max-height:400px;overflow-y:auto;text-align:left;margin-top:12px}
 
-/* ---------- 3.  ATOMS  ---------- */
-button{
-  font-weight: bold;
-  padding: 12px 16px;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background .2s;
-}
+    .instruction{text-align:center;padding:20px;background:var(--card);border-radius:8px;margin-bottom:20px;color:var(--text2);font-size:14px}
+    .button-group{display:flex;gap:12px;margin-bottom:20px}
 
-/* originals */
-.generate-btn{flex:1;background:#b45309;color:#fff}
-.generate-btn:hover{background:#92400e}
-.reset-btn{flex:1;background:#64748b;color:#fff}
-.reset-btn:hover{background:#475569}
-.save-btn{width:100%;background:#059669;color:#fff}
-.save-btn:hover{background:#047857}
-.export-btn{width:100%;background:#7c3aed;color:#fff}
-.export-btn:hover{background:#6d28d9}
-.search-btn{background:#0284c7;color:#fff;padding:10px 20px}
-.search-btn:hover{background:#0369a1}
+    .manual-entry{display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:20px;padding:12px;background:var(--card);border-radius:8px}
+    .entries-list{max-height:400px;overflow-y:auto;margin-bottom:12px}
+    .entry-item{background:var(--card);padding:12px;border-radius:8px;margin-bottom:8px;cursor:pointer;border:1px solid var(--border);transition:all .2s}
+    .entry-item:hover{background:rgba(255,255,255,.05);border-color:var(--accent)}
+    .entry-date{color:var(--text3);font-size:12px}
+    .entry-verse{color:var(--accent);font-weight:bold;font-size:14px}
+    .entry-preview{color:var(--text2);font-size:12px;margin-top:4px}
 
-input[type="text"], input[type="number"]{
-  padding: 10px;
-  background: #1e293b;
-  color: #fff;
-  border: 1px solid #64748b;
-  border-radius: 6px;
-  font-size: 14px;
-}
-textarea{
-  width: 100%;
-  height: 200px;
-  padding: 12px;
-  background: #334155;
-  color: #fff;
-  border: 1px solid #64748b;
-  border-radius: 8px;
-  font-family: system-ui;
-  font-size: 14px;
-  resize: vertical;
-}
-textarea::placeholder{color:#94a3b8}
+    .footer{text-align:center;color:var(--text3);font-size:12px;margin-top:30px}
+    .line-codes{text-align:center;color:var(--text3);font-size:12px;margin-bottom:10px;font-family:monospace}
 
-/* ---------- 4.  COMPONENTS  ---------- */
-.card{
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 30px;
-  box-shadow: var(--shadow);
-}
+    /* ---------- 5.  SEARCH  ---------- */
+    .search-section{margin-bottom:20px}
+    .search-box{display:grid;grid-template-columns:1fr auto;gap:12px;padding:12px;background:var(--card);border-radius:8px}
+    .search-results{max-height:300px;overflow-y:auto;margin-top:12px}
+    .search-result-item{background:var(--card);padding:12px;border-radius:8px;margin-bottom:8px;cursor:pointer;border:1px solid var(--border);transition:all .2s}
+    .search-result-item:hover{background:rgba(255,255,255,.05);border-color:#0284c7}
+    .search-result-verse{color:#0284c7;font-weight:bold;font-size:14px;margin-bottom:4px}
+    .search-result-title{color:var(--accent);font-size:13px;margin-bottom:4px}
+    .search-result-snippet{color:var(--text2);font-size:12px;line-height:1.4}
+    .search-highlight{background:var(--accent);color:var(--surface);padding:2px 4px;border-radius:2px;font-weight:bold}
+    .search-count{color:var(--text3);font-size:12px;margin-top:8px;text-align:center}
 
-.header{text-align:center;margin-bottom:40px}
-.header h1{font-size:60px;margin-bottom:10px}
-.header h2{font-size:36px;font-weight:bold;color:#fff;margin-bottom:8px}
-.header p{color:#cbd5e1}
-
-.lines-display{display:flex;flex-direction:column;align-items:center;margin-bottom:15px;gap:4px}
-.line-segment{background:#fff;height:6px;display:inline-block}
-.solid{width:80px}
-.broken-line{display:flex;gap:16px;justify-content:center}
-.broken-segment{width:32px}
-.dashed-line{display:flex;gap:10px;justify-content:center}
-.dashed-segment{width:20px}
-
-.verse-display{
-  text-align:center;padding:20px;background:#334155;border-radius:8px;
-  margin-top:10px;margin-bottom:20px;cursor:pointer;transition:background .2s;
-}
-.verse-display:hover{background:#3f4a5c}
-.verse-number{font-size:18px;margin-bottom:8px;color:#fff}
-.verse-title{color:#fbbf24;font-size:24px;font-weight:bold}
-.verse-author{color:#94a3b8;font-size:11px;font-style:italic;margin:6px 0 12px}
-.verse-text{color:#e2e8f0;font-size:13px;line-height:1.6;white-space:pre-line;max-height:400px;overflow-y:auto;text-align:left;margin-top:12px}
-
-.instruction{text-align:center;padding:20px;background:#334155;border-radius:8px;margin-bottom:20px;color:#cbd5e1;font-size:14px}
-.button-group{display:flex;gap:12px;margin-bottom:20px}
-
-.manual-entry{display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:20px;padding:12px;background:#334155;border-radius:8px}
-.entries-list{max-height:400px;overflow-y:auto;margin-bottom:12px}
-.entry-item{background:#334155;padding:12px;border-radius:8px;margin-bottom:8px;cursor:pointer;border:1px solid #64748b;transition:all .2s}
-.entry-item:hover{background:#3f4a5c;border-color:#fbbf24}
-.entry-date{color:#cbd5e1;font-size:12px}
-.entry-verse{color:#fbbf24;font-weight:bold;font-size:14px}
-.entry-preview{color:#cbd5e1;font-size:12px;margin-top:4px}
-
-.footer{text-align:center;color:#64748b;font-size:12px;margin-top:30px}
-.line-codes{text-align:center;color:#94a3b8;font-size:12px;margin-bottom:10px;font-family:monospace}
-
-/* ---------- 5.  SEARCH  ---------- */
-.search-section{margin-bottom:20px}
-.search-box{display:grid;grid-template-columns:1fr auto;gap:12px;padding:12px;background:#334155;border-radius:8px}
-.search-results{max-height:300px;overflow-y:auto;margin-top:12px}
-.search-result-item{background:#334155;padding:12px;border-radius:8px;margin-bottom:8px;cursor:pointer;border:1px solid #64748b;transition:all .2s}
-.search-result-item:hover{background:#3f4a5c;border-color:#0284c7}
-.search-result-verse{color:#0284c7;font-weight:bold;font-size:14px;margin-bottom:4px}
-.search-result-title{color:#fbbf24;font-size:13px;margin-bottom:4px}
-.search-result-snippet{color:#cbd5e1;font-size:12px;line-height:1.4}
-.search-highlight{background:#fbbf24;color:#1e293b;padding:2px 4px;border-radius:2px;font-weight:bold}
-.search-count{color:#94a3b8;font-size:12px;margin-top:8px;text-align:center}
-
-/* ---------- 6.  THEME TOGGLE  ---------- */
-.theme-toggle{
-  position:fixed;
-  top:20px;
-  right:20px;
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  background:#334155;
-  border:1px solid #64748b;
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-  font-size:20px;
-  color:#fbbf24;
-}
+    /* ---------- 6.  THEME TOGGLE  ---------- */
+    .theme-toggle{position:fixed;top:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;font-size:20px;color:var(--accent)}
 
     </style>
 </head>
@@ -661,10 +599,6 @@ textarea::placeholder{color:#94a3b8}
         toggleBtn.innerHTML = '🌓';
         toggleBtn.onclick = toggleTheme;
         document.body.appendChild(toggleBtn);
-
-        // force light for 5 seconds so you *see* the change
-document.documentElement.setAttribute('data-theme','light');
-setTimeout(()=> document.documentElement.removeAttribute('data-theme'), 5000);
             
     </script>
 
