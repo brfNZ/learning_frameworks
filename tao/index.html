@@ -5,176 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tao Te Ching - Journal & Divination</title>
     <style>
-  
-/* ---------- 0. VARIABLES ---------- */
-:root {
-  /* colour */
-  --bg: #f8fafc;               /* slate-50  */
+        
+  /* ===== 0. VARIABLES (ORIGINAL PALETTE) ===== */
+:root{
+  /* dark theme == your original colours */
+  --bg: linear-gradient(to bottom right, #1e293b, #334155, #0f172a);
+  --surface: #475569;
+  --border: #64748b;
+  --text1: #f8fafc;      /* almost white */
+  --text2: #cbd5e1;      /* original muted text */
+  --accent: #fbbf24;     /* amber-400 */
+  --accent-text: #0f172a;
+}
+
+/* light theme is still available if user toggles */
+[data-theme="light"]{
+  --bg: #f8fafc;
   --surface: #ffffff;
   --border: #cbd5e1;
   --text1: #0f172a;
   --text2: #475569;
-  --accent: #f59e0b;           /* amber-500 */
-  --accent-text: #78350f;
-
-  /* spacing (4-px grid) */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-
-  /* type scale */
-  --text-xs: 12px;
-  --text-sm: 14px;
-  --text-base: 16px;
-  --text-lg: 18px;
-  --text-xl: 24px;
-  --text-2xl: 32px;
-  --text-3xl: 48px;
+  --accent: #f59e0b;
+  --accent-text: #fff;
 }
 
-/* Dark override */
-[data-theme="dark"] {
-  --bg: #0f172a;
-  --surface: #1e293b;
-  --border: #334155;
-  --text1: #f8fafc;
-  --text2: #94a3b8;
-  --accent: #fbbf24;
-  --accent-text: #f8fafc;
+/* ===== 1. RESET ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text1);
+  line-height:1.5;
+  min-height:100vh;
+  padding:20px;                 /* original page padding */
 }
 
-/* ---------- 1. RESET ---------- */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text1);
-  line-height: 1.5;
-  min-height: 100vh;
-  padding: var(--space-6);
+/* ===== 2. LAYOUT (unchanged) ===== */
+.container{max-width:900px;margin:0 auto}
+.main{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:1000px){.main{grid-template-columns:1fr}}
+
+/* ===== 3. ATOMS (same names, original colours) ===== */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:12px 16px;border:none;border-radius:8px;
+  font-size:14px;font-weight:600;cursor:pointer;transition:background .2s;
+}
+.generate-btn, .save-btn, .export-btn, .search-btn, .manualEntryBtn{
+  background:var(--accent);
+  color:var(--accent-text);
+}
+.generate-btn:hover, .save-btn:hover, .export-btn:hover,
+.search-btn:hover, .manualEntryBtn:hover{filter:brightness(1.1)}
+.reset-btn{background:#64748b;color:#fff}
+.reset-btn:hover{background:#475569}
+
+.input, .textarea{
+  width:100%;padding:10px 12px;border:1px solid var(--border);
+  border-radius:6px;font-size:14px;
+  background:#1e293b;color:#fff;
+}
+.textarea{resize:vertical;min-height:200px}
+
+/* ===== 4. COMPONENTS (original skin) ===== */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:30px;
+  box-shadow:0 20px 25px rgba(0,0,0,.3);
 }
 
-/* ---------- 2. LAYOUT ---------- */
-.container { max-width: 900px; margin-inline: auto; }
-.main { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
-@media (max-width: 1000px) { .main { grid-template-columns: 1fr; } }
+.header{text-align:center;margin-bottom:40px}
+.header h1{font-size:60px}
+.header h2{font-size:36px;color:var(--text1)}
+.header p{color:var(--text2)}
 
-/* ---------- 3. ATOMS ---------- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-3) var(--space-4);
-  border: none;
-  border-radius: 8px;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: background .2s;
+.lines-display{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:15px}
+.line-segment{height:6px;background:#fff}
+.solid{width:80px}
+.broken-line, .dashed-line{display:flex;gap:16px;justify-content:center}
+.broken-segment{width:32px}
+.dashed-segment{width:20px}
+
+.verse-display{
+  text-align:center;padding:20px;background:#334155;border-radius:8px;
+  margin:10px 0 20px;cursor:pointer;transition:background .2s;
 }
-.btn-primary   { background: var(--accent); color: var(--accent-text); }
-.btn-primary:hover { background: #f97316; }   /* amber-600 */
-.btn-secondary { background: var(--border); color: var(--text1); }
-.btn-secondary:hover { opacity: .9; }
+.verse-display:hover{background:#3f4a5c}
+.verse-number{font-size:18px;color:var(--text1);margin-bottom:8px}
+.verse-title{color:var(--accent);font-size:24px;font-weight:bold}
+.verse-author{color:#94a3b8;font-size:11px;margin:6px 0 12px}
+.verse-text{color:#e2e8f0;font-size:13px;line-height:1.6;white-space:pre-line;max-height:400px;overflow-y:auto;text-align:left;margin-top:12px}
 
-.input {
-  width: 100%;
-  padding: var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: var(--text-sm);
-  background: var(--surface);
-  color: var(--text1);
+.entries-list{max-height:400px;overflow-y:auto}
+.entry-item{
+  background:#334155;padding:12px;border-radius:8px;margin-bottom:8px;
+  cursor:pointer;border:1px solid var(--border);transition:all .2s;
 }
+.entry-item:hover{background:#3f4a5c;border-color:var(--accent)}
+.entry-date{color:#cbd5e1;font-size:12px}
+.entry-verse{color:var(--accent);font-weight:bold;font-size:14px}
+.entry-preview{color:#cbd5e1;font-size:12px;margin-top:4px}
 
-.textarea {
-  resize: vertical;
-  min-height: 160px;
-}
-
-/* ---------- 4. COMPONENTS ---------- */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: var(--space-6);
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,.1);
-}
-
-.header { text-align: center; margin-bottom: var(--space-10); }
-.header h1 { font-size: var(--text-3xl); }
-.header h2 { font-size: var(--text-2xl); color: var(--text1); }
-.header p  { color: var(--text2); }
-
-.lines-display {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-  margin-bottom: var(--space-4);
-}
-
-.line-segment {
-  height: 6px;
-  background: var(--text1);
-}
-.solid { width: 80px; }
-.broken-line, .dashed-line { display: flex; gap: var(--space-4); }
-.broken-segment { width: 32px; }
-.dashed-segment { width: 20px; }
-
-.verse-display {
-  cursor: pointer;
-  padding: var(--space-5);
-  background: var(--bg);
-  border-radius: 8px;
-  text-align: center;
-  transition: background .2s;
-}
-.verse-display:hover { background: var(--border); }
-
-.verse-number { font-size: var(--text-sm); color: var(--text2); }
-.verse-title  { font-size: var(--text-xl); color: var(--accent); margin: var(--space-1) 0; }
-.verse-author { font-size: var(--text-xs); color: var(--text2); }
-.verse-text   {
-  font-size: var(--text-sm);
-  white-space: pre-line;
-  max-height: 40vh;
-  overflow-y: auto;
-  text-align: left;
-  margin-top: var(--space-3);
-}
-
-.entries-list { max-height: 40vh; overflow-y: auto; }
-.entry-item {
-  padding: var(--space-3);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  margin-bottom: var(--space-2);
-  cursor: pointer;
-}
-.entry-item:hover { border-color: var(--accent); }
-
-/* ---------- 5. THEME TOGGLE ---------- */
-.theme-toggle {
-  position: fixed;
-  top: var(--space-4);
-  right: var(--space-4);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  font-size: 20px;
+/* ===== 5. THEME TOGGLE (same button, now visible) ===== */
+.theme-toggle{
+  position:fixed;top:20px;right:20px;width:44px;height:44px;
+  border-radius:50%;background:var(--surface);border:1px solid var(--border);
+  display:grid;place-items:center;cursor:pointer;font-size:20px;
 }
 
     </style>
