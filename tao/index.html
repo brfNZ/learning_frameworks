@@ -62,6 +62,17 @@
         padding: 0;
         line-height: 1;
     }
+
+    /* make it appear on hover */
+    .entry-item:hover .del-btn {
+        opacity: .6;
+    }
+    .del-btn:hover {
+        opacity: 1;
+        transform: scale(1.2);
+        border-color: var(--accent);
+        color: var(--accent);
+    }
     
     /* ---------- 1.  RESET  ---------- */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
