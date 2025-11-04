@@ -30,6 +30,32 @@
   --accent-dark: #d97706;
 }
 
+/* ----------  LIGHT THEME  ---------- */
+[data-theme="light"] {
+  /* page background */
+  --bg: linear-gradient(to bottom right, #f0f4f8, #e2e8f0, #cbd5e1);
+
+  /* surfaces */
+  --surface: #ffffff;
+  --card: #f8fafc;
+
+  /* borders & dividers */
+  --border: #d1d5db;          /* cool grey-300 */
+
+  /* text hierarchy */
+  --text1: #111827;           /* grey-900  - almost black */
+  --text2: #4b5563;           /* grey-600  - softer body text */
+  --text3: #6b7280;           /* grey-500  - muted labels */
+
+  /* accent (same amber family, lighter) */
+  --accent: #f59e0b;          /* amber-500 */
+  --accent-dark: #d97706;     /* amber-600 */
+
+  /* interactive states */
+  --hover-bg: #fef3c7;        /* amber-50  - soft yellow hover */
+  --active-bg: #fde68a;       /* amber-100 - pressed */
+}
+
 /* ---------- 1.  RESET  ---------- */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{
