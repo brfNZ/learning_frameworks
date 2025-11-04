@@ -41,39 +41,27 @@
         position: relative;          /* anchor for absolute child */
     }
 
+    /* ===== centred × inside entry card ===== */
     .del-btn {
         position: absolute;
         top: 8px;
         right: 8px;
         width: 20px;
         height: 20px;
-        border: 1px solid var(--border);   /* uses your token */
-        background: var(--surface);         /* your card colour */
-        color: var(--text2);                /* muted text */
-        border-radius: 50%;                 /* circle */
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text2);
+        border-radius: 50%;
         font-size: 14px;
-        line-height: 1;
         cursor: pointer;
-        opacity: 0;                         /* hidden by default */
+        opacity: 0;
         transition: opacity .2s, transform .2s;
-        display: grid;
-        place-items: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 0;
-        +   display: grid;
-        +   place-items: center;   /* centres horizontally & vertically */
-}
+        line-height: 1;
     }
-
-    .entry-item:hover .del-btn {
-        opacity: .6;                        /* ghost in */
-    }
-
-    .del-btn:hover {
-        opacity: 1;                         /* full on hover */
-        transform: scale(1.15);
-        border-color: var(--accent);        /* amber ring */
-        color: var(--accent);
-}
     
     /* ---------- 1.  RESET  ---------- */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -156,23 +144,23 @@
     .search-count{color:var(--text3);font-size:12px;margin-top:8px;text-align:center}
 
     /* ---------- 6.  THEME TOGGLE  ---------- */
+    /* ===== centred sun / moon inside top-right circle ===== */
     .theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--card);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    font-size: 20px;
-    color: var(--accent);
-
-    /* centre the glyph inside the circle */
-    display: grid;
-    place-items: center;
-}
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--card);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        font-size: 20px;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
     </style>
 </head>
