@@ -36,6 +36,42 @@
     --shadow: 0 8px 20px -4px rgba(0,0,0,.08);
     }
 
+    /* ===== DELETE BUTTON ===== */
+    .entry-item {
+        position: relative;          /* anchor for absolute child */
+    }
+
+    .del-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 20px;
+        height: 20px;
+        border: 1px solid var(--border);   /* uses your token */
+        background: var(--surface);         /* your card colour */
+        color: var(--text2);                /* muted text */
+        border-radius: 50%;                 /* circle */
+        font-size: 14px;
+        line-height: 1;
+        cursor: pointer;
+        opacity: 0;                         /* hidden by default */
+        transition: opacity .2s, transform .2s;
+        display: grid;
+        place-items: center;
+        padding: 0;
+    }
+
+    .entry-item:hover .del-btn {
+        opacity: .6;                        /* ghost in */
+    }
+
+    .del-btn:hover {
+        opacity: 1;                         /* full on hover */
+        transform: scale(1.15);
+        border-color: var(--accent);        /* amber ring */
+        color: var(--accent);
+}
+    
     /* ---------- 1.  RESET  ---------- */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{
@@ -296,8 +332,11 @@
             for (var i = app.entries.length - 1; i >= 0; i--) {
                 var e = app.entries[i];
                 var preview = e.text.substring(0, 60);
-                if (e.text.length > 60) preview += '...';
-                listHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
+                if (e.text.length > 60) preview += '…';
+
+                listHTML +=
+                    '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
+                    '<button class="del-btn" onclick="event.stopPropagation(); deleteEntry(' + i + ')" title="Delete entry">×</button>' +
                     '<div class="entry-date">' + e.date + '</div>' +
                     '<div class="entry-verse">Verse ' + e.verse + ': ' + e.title + '</div>' +
                     '<div class="entry-preview">' + preview + '</div>' +
@@ -599,7 +638,14 @@
         toggleBtn.innerHTML = '🌓';
         toggleBtn.onclick = toggleTheme;
         document.body.appendChild(toggleBtn);
-            
+
+        function deleteEntry(idx) {
+            if (!confirm('Delete this journal entry?')) return;
+            app.entries.splice(idx, 1);
+            localStorage.setItem('taoEntries', JSON.stringify(app.entries));
+            render();          // repaint the list
+        }
+
     </script>
 
 </body>
