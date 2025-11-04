@@ -59,6 +59,9 @@
         display: grid;
         place-items: center;
         padding: 0;
+        +   display: grid;
+        +   place-items: center;   /* centres horizontally & vertically */
+}
     }
 
     .entry-item:hover .del-btn {
@@ -153,7 +156,23 @@
     .search-count{color:var(--text3);font-size:12px;margin-top:8px;text-align:center}
 
     /* ---------- 6.  THEME TOGGLE  ---------- */
-    .theme-toggle{position:fixed;top:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;font-size:20px;color:var(--accent)}
+    .theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--accent);
+
+    /* centre the glyph inside the circle */
+    display: grid;
+    place-items: center;
+}
 
     </style>
 </head>
