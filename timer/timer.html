@@ -1009,7 +1009,7 @@
             ['last', 'this'].forEach(week => {
                 for (let i = 0; i < 7; i++) {
                 const cell = document.getElementById((week === 'last' ? 'L' : 'T') + i);
-                cell.textContent = '|'.repeat(counts[week][i]); // Removed Math.min(..., 5)
+                cell.textContent = counts[week][i] > 6 ? '6+' : '|'.repeat(counts[week][i]);  // 7+ sessions shown as 6+
                 cell.style.opacity = counts[week][i] ? '1' : '.25';
                 }
             });
