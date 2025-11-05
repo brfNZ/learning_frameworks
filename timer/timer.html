@@ -1015,6 +1015,74 @@
             });
         }
 
+        /* ---------- CSV EXPORT (heat-map first) ---------- */
+        function exportHistoryCSV() {
+        const sessions = getSessionHistory();
+        if (sessions.length === 0) {
+            alert('No sessions to export');
+            return;
+        }
+
+        /* ---- build NZ-week buckets ---- */
+        const nzOffset = 13; // NZDT
+        const now = new Date();
+        const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset * 60) * 60000);
+        nzToday.setHours(0, 0, 0, 0);
+        const dayOfWeek = nzToday.getDay();
+        const daysSinceMonday = (dayOfWeek + 6) % 7;
+        const thisMon = new Date(nzToday);
+        thisMon.setDate(nzToday.getDate() - daysSinceMonday);
+        const lastMon = new Date(thisMon);
+        lastMon.setDate(thisMon.getDate() - 7);
+
+        const thisWeek = [0, 0, 0, 0, 0, 0, 0];
+        const lastWeek = [0, 0, 0, 0, 0, 0, 0];
+        sessions.forEach(s => {
+            const pieces = s.timestamp.split(/[-T:.Z]/);
+            const nzSession = new Date(+pieces[0], pieces[1] - 1, +pieces[2], +pieces[3], +pieces[4], +pieces[5]);
+            const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
+            const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
+            if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
+            else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
+        });
+
+        /* ---- CSV: heat-map first ---- */
+        const rows = [
+            ['HEAT-MAP'],
+            ['Week', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+            ['This', ...thisWeek],
+            ['Last', ...lastWeek],
+            [], [], // blank spacer
+            ['SESSIONS'],
+            ['Session ID', 'Date', 'Time', 'Name', 'Duration (min)', 'Score', 'Comment']
+        ];
+
+        sessions.forEach(s => {
+            const d = new Date(s.timestamp);
+            rows.push([
+            s.id,
+            d.toLocaleDateString(),
+            d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            JSON.stringify(s.name || 'Untitled'),
+            s.duration,
+            s.score === undefined ? '' : s.score,
+            JSON.stringify((s.comment || '').replace(/\n/g, ' '))
+            ]);
+        });
+
+        /* ---- download ---- */
+        const csv = rows.map(r => r.join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `timer-sessions-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        }
+
     </script>
 </body>
 </html>
