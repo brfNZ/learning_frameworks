@@ -1015,82 +1015,82 @@
             });
         }
 
-        /* ---------- CSV EXPORT (newest first, correct NZ heat-map) ---------- */
-function exportHistoryCSV() {
-    const sessions = getSessionHistory();
-    if (sessions.length === 0) {
-        alert('No sessions to export');
-        return;
+    /* ---------- CSV EXPORT (newest first, correct NZ heat-map) ---------- */
+    function exportHistoryCSV() {
+        const sessions = getSessionHistory();
+        if (sessions.length === 0) {
+            alert('No sessions to export');
+            return;
+        }
+
+        // NZ time offset (NZDT = UTC+13 in November)
+        const nzOffset = 13;
+        const now = new Date();
+        const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset * 60) * 60000);
+        nzToday.setHours(0, 0, 0, 0);
+        const dayOfWeek = nzToday.getDay();
+        const daysSinceMonday = (dayOfWeek + 6) % 7;
+        const thisMon = new Date(nzToday);
+        thisMon.setDate(nzToday.getDate() - daysSinceMonday);
+        const lastMon = new Date(thisMon);
+        lastMon.setDate(thisMon.getDate() - 7);
+
+        const thisWeek = [0, 0, 0, 0, 0, 0, 0];
+        const lastWeek = [0, 0, 0, 0, 0, 0, 0];
+
+        const rows = [
+            ['HEAT-MAP'],
+            ['Week', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+            ['This'],
+            ['Last'],
+            [''], // separator
+            ['Date (NZ)', 'Time (NZ)', 'Name', 'Minutes', 'Score', 'Comment']
+        ];
+
+        sessions
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+            .forEach(s => {
+                // Parse stored UTC timestamp
+                const pieces = s.timestamp.split(/[-T:.Z]/);
+                const utcDate = new Date(+pieces[0], pieces[1]-1, +pieces[2], +pieces[3], +pieces[4], +pieces[5]);
+
+                // Convert to NZ time
+                const nzDate = new Date(utcDate.getTime() + (nzOffset * 60 * 60 * 1000));
+                const dateNZ = nzDate.toLocaleDateString('en-NZ'); // e.g., 6/11/2025
+                const timeNZ = nzDate.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit' }); // e.g., 03:45 PM
+
+                // Heat map bucket (same logic as renderWeekChart)
+                const dayDiffThis = Math.floor((nzDate - thisMon) / 86400000);
+                const dayDiffLast = Math.floor((nzDate - lastMon) / 86400000);
+                if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
+                else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
+
+                // Add row
+                const scoreText = s.score === 1 ? 'Happy' : s.score === 0 ? 'Neutral' : s.score === -1 ? 'Sad' : '';
+                rows.push([
+                    dateNZ,
+                    timeNZ,
+                    s.name || 'Untitled Session',
+                    s.duration,
+                    scoreText,
+                    (s.comment || '').replace(/\n/g, ' ').replace(/"/g, '""')
+                ]);
+            });
+
+        // Inject heat map counts
+        rows[2] = ['This', ...thisWeek];
+        rows[3] = ['Last', ...lastWeek];
+
+        // Generate CSV
+        const csv = rows.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `timer-sessions-${nzToday.toISOString().slice(0,10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
     }
-
-    // NZ time offset (NZDT = UTC+13 in November)
-    const nzOffset = 13;
-    const now = new Date();
-    const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset * 60) * 60000);
-    nzToday.setHours(0, 0, 0, 0);
-    const dayOfWeek = nzToday.getDay();
-    const daysSinceMonday = (dayOfWeek + 6) % 7;
-    const thisMon = new Date(nzToday);
-    thisMon.setDate(nzToday.getDate() - daysSinceMonday);
-    const lastMon = new Date(thisMon);
-    lastMon.setDate(thisMon.getDate() - 7);
-
-    const thisWeek = [0, 0, 0, 0, 0, 0, 0];
-    const lastWeek = [0, 0, 0, 0, 0, 0, 0];
-
-    const rows = [
-        ['HEAT-MAP'],
-        ['Week', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-        ['This'],
-        ['Last'],
-        [], // separator
-        ['Date (NZ)', 'Time (NZ)', 'Name', 'Minutes', 'Score', 'Comment']
-    ];
-
-    sessions
-        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-        .forEach(s => {
-            // Parse stored UTC timestamp
-            const pieces = s.timestamp.split(/[-T:.Z]/);
-            const utcDate = new Date(+pieces[0], pieces[1]-1, +pieces[2], +pieces[3], +pieces[4], +pieces[5]);
-
-            // Convert to NZ time
-            const nzDate = new Date(utcDate.getTime() + (nzOffset * 60 * 60 * 1000));
-            const dateNZ = nzDate.toLocaleDateString('en-NZ'); // e.g., 6/11/2025
-            const timeNZ = nzDate.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit' }); // e.g., 03:45 PM
-
-            // Heat map bucket (same logic as renderWeekChart)
-            const dayDiffThis = Math.floor((nzDate - thisMon) / 86400000);
-            const dayDiffLast = Math.floor((nzDate - lastMon) / 86400000);
-            if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
-            else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
-
-            // Add row
-            const scoreText = s.score === 1 ? 'Happy' : s.score === 0 ? 'Neutral' : s.score === -1 ? 'Sad' : '';
-            rows.push([
-                dateNZ,
-                timeNZ,
-                s.name || 'Untitled Session',
-                s.duration,
-                scoreText,
-                (s.comment || '').replace(/\n/g, ' ').replace(/"/g, '""')
-            ]);
-        });
-
-    // Inject heat map counts
-    rows[2] = ['This', ...thisWeek];
-    rows[3] = ['Last', ...lastWeek];
-
-    // Generate CSV
-    const csv = rows.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `timer-sessions-${nzToday.toISOString().slice(0,10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-}
 
     </script>
 </body>
