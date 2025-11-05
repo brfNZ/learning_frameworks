@@ -278,6 +278,9 @@
     <div id="historyModal" class="modal">
         <div class="modal-content">
             <h3>Session History</h3>
+            <div style="text-align:right;margin-bottom:8px">
+                <button class="modal-button primary" onclick="exportHistoryCSV()">Export CSV</button>
+            </div>
 
             <!-- 7-day mini-chart -->
             <div id="weekChart" style="margin-bottom:15px;font-size:13px;color:#575757;">
@@ -954,23 +957,24 @@
         function renderWeekChart() {
         const sessions = getSessionHistory();
         const today = new Date();
-        const dayMap = [0, 0, 0, 0, 0, 0, 0]; // Mon … Sun
+        const dayOfWeek = today.getDay();          // Sun=0 … Sat=6
+        const daysSinceMonday = (dayOfWeek + 6) % 7; // how many days back to Mon
+        const monday = new Date(today);
+        monday.setDate(today.getDate() - daysSinceMonday); // 00:00 on Monday
+
+        const counts = [0, 0, 0, 0, 0, 0, 0]; // index 0 = Monday … 6 = Sunday
 
         sessions.forEach(s => {
             const d = new Date(s.timestamp);
-            const dayDiff = Math.floor((today - d) / 86400000); // whole days ago
-            if (dayDiff >= 0 && dayDiff < 7) {
-            const dayIdx = (d.getDay() + 6) % 7; // Sun=6 → 6; shift so Mon=0
-            dayMap[dayIdx] += 1;
-            }
+            const dayDiff = Math.floor((d - monday) / 86400000); // whole days since Monday
+            if (dayDiff >= 0 && dayDiff < 7) counts[dayDiff]++;
         });
 
-        // fill the ticks
+        // write ticks
         for (let i = 0; i < 7; i++) {
             const cell = document.getElementById('d' + i);
-            cell.textContent = '✓'.repeat(Math.min(dayMap[i], 5)); // cap at 5 symbols
-            if (dayMap[i] === 0) cell.style.opacity = '.25';
-            else cell.style.opacity = '1';
+            cell.textContent = '✓'.repeat(Math.min(counts[i], 5));
+            cell.style.opacity = counts[i] ? '1' : '.25';
         }
         }
 
