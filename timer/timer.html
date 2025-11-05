@@ -274,74 +274,75 @@
         </div>
     </div>
 
-    <!-- History Modal -->
-    <div id="historyModal" class="modal">
-        <div class="modal-content">
+   <!-- =====  History Modal  ===== -->
+<div id="historyModal" class="modal">
+  <div class="modal-content">
 
-            <!-- header -->
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <button onclick="closeHistoryModal()" title="Close" style="background:none;border:none;font-size:20px;cursor:pointer;color:#777">×</button>
-            <h3 style="margin:0;flex:1;text-align:center">Session History</h3>
-            <a href="#" onclick="exportHistoryCSV();return false;" style="font-size:12px;color:var(--primary-cyan);text-decoration:none;white-space:nowrap">Export CSV</a>
-            </div>
+    <!-- header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <button onclick="closeHistoryModal()" title="Close" style="background:none;border:none;font-size:20px;cursor:pointer;color:#777">×</button>
+      <h3 style="margin:0;flex:1;text-align:center">Session History</h3>
+      <a href="#" onclick="exportHistoryCSV();return false;" style="font-size:12px;color:var(--primary-cyan);text-decoration:none;white-space:nowrap">Export CSV</a>
+    </div>
 
-            <!-- 2-week grey-bar heat-map (THIS week TOP, LAST week BOTTOM) -->
-            <div id="weekChart" style="margin:8px auto 12px;width:320px">
-            <div id="rowThis" style="display:flex;gap:2px;height:3px"></div>
-            <div id="rowLast" style="display:flex;gap:2px;height:3px;margin-top:2px"></div>
-            </div>
+    <!-- 2-week grey-bar heat-map (THIS week TOP, LAST week BOTTOM) -->
+    <div id="weekChart" style="margin:8px auto 12px;width:320px">
+      <div id="rowThis" style="display:flex;gap:2px;height:3px"></div>
+      <div id="rowLast" style="display:flex;gap:2px;height:3px;margin-top:2px"></div>
+    </div>
 
-            <!-- session list -->
-            <div id="historyList"></div>
+    <!-- session list -->
+    <div id="historyList"></div>
 
-            <!-- close button -->
-            <div style="text-align:center;margin-top:15px">
-            <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
-            </div>
+    <!-- close button -->
+    <div style="text-align:center;margin-top:15px">
+      <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
+    </div>
 
-        </div> <!-- .modal-content ends here -->
-        </div>
+  </div> <!-- .modal-content ends here -->
+</div>
 
-    <script>
-    /* ---------- 14-day grey-bar heat-map ---------- */
-    function renderWeekChart() {
-    const sessions = getSessionHistory();
-    const nzOffset = 13; // NZDT Nov 2025
-    const now = new Date();
-    const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset*60)*60000);
-    nzToday.setHours(0,0,0,0);
-    const dayOfWeek = nzToday.getDay();
-    const daysSinceMonday = (dayOfWeek + 6) % 7;
-    const thisMon = new Date(nzToday);
-    thisMon.setDate(nzToday.getDate() - daysSinceMonday);
-    const lastMon = new Date(thisMon);
-    lastMon.setDate(thisMon.getDate() - 7);
+<script>
+/* ---------- 14-day grey-bar heat-map ---------- */
+function renderWeekChart() {
+  const sessions = getSessionHistory();
+  const nzOffset = 13; // NZDT Nov 2025
+  const now = new Date();
+  const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset*60)*60000);
+  nzToday.setHours(0,0,0,0);
+  const dayOfWeek = nzToday.getDay();
+  const daysSinceMonday = (dayOfWeek + 6) % 7;
+  const thisMon = new Date(nzToday);
+  thisMon.setDate(nzToday.getDate() - daysSinceMonday);
+  const lastMon = new Date(thisMon);
+  lastMon.setDate(thisMon.getDate() - 7);
 
-    const thisWeek = [0,0,0,0,0,0,0];
-    const lastWeek = [0,0,0,0,0,0,0];
+  const thisWeek = [0,0,0,0,0,0,0];
+  const lastWeek = [0,0,0,0,0,0,0];
 
-    sessions.forEach(s => {
-        const pieces = s.timestamp.split(/[-T:.Z]/);
-        const nzSession = new Date(+pieces[0],pieces[1]-1,+pieces[2],+pieces[3],+pieces[4],+pieces[5]);
-        const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
-        const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
-        if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
-        else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
-    });
+  sessions.forEach(s => {
+    const pieces = s.timestamp.split(/[-T:.Z]/);
+    const nzSession = new Date(+pieces[0],pieces[1]-1,+pieces[2],+pieces[3],+pieces[4],+pieces[5]);
+    const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
+    const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
+    if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
+    else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
+  });
 
-    const bar = n =>
-        `<div style="flex:1;background:#aaa;height:1px;margin-top:1px;opacity:${n?0.8:0.2}"></div>`;
-    document.getElementById('rowThis').innerHTML = thisWeek.map(bar).join('');
-    document.getElementById('rowLast').innerHTML = lastWeek.map(bar).join('');
-    }
+  const bar = n =>
+    `<div style="flex:1;background:#aaa;height:1px;margin-top:1px;opacity:${n?0.8:0.2}"></div>`;
+  document.getElementById('rowThis').innerHTML = thisWeek.map(bar).join('');
+  document.getElementById('rowLast').innerHTML = lastWeek.map(bar).join('');
+}
 
-    /* make sure the modal calls it */
-    const originalOpenHistoryModal = openHistoryModal;
-    function openHistoryModal() {
-    originalOpenHistoryModal();
-    renderWeekChart();
-    }
-    </script>
+/*  make sure the modal calls it  */
+function openHistoryModal() {
+  historyModal.style.display = 'block';
+  displayHistory();
+  renderWeekChart();   // ← heat-map drawn now
+}
+</script>
+<!-- =====  end History block  ===== -->
 
     <!-- Review Modal -->
     <div id="reviewModal" class="modal">
