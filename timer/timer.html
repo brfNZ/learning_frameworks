@@ -254,17 +254,18 @@
                 <button id="startButton" onclick="startTimer()">Start</button>
             </div>
             <div id="sizeButtonContainer">
-                <button id="smallButton" onclick="toggleSize()">Toggle Size ◯</button>
-                <button id="randomButton" onclick="toggleRandomChime()">Random ♬</button>
-                <button id="resetButton" onclick="resetTimer()">Reset ⟳</button>
-                <button id="historyButton" onclick="openHistoryModal()">History ⌕</button>
+                <button id="smallButton" onclick="toggleSize()">Toggle Size Circle</button>
+                <button id="randomButton" onclick="toggleRandomChime()">Random Music</button>
+                <button id="resetButton" onclick="resetTimer()">Reset Refresh</button>
+                <button id="historyButton" onclick="openHistoryModal()">History Search</button>
             </div>
         </div>
     </div>
     <audio id="timerSound" src="timer-sounds/clear-announce-tones-2861.wav" preload="auto"></audio>
 
+    <!-- Name Modal -->
     <div id="nameModal" class="modal">
-        <div class="modal-content">>
+        <div class="modal-content">
             <h3>Name Your Timer</h3>
             <input type="text" id="timerNameInput" placeholder="Enter timer name" maxlength="30">
             <div>
@@ -274,75 +275,28 @@
         </div>
     </div>
 
-   <!-- =====  History Modal  ===== -->
-<div id="historyModal" class="modal">
-  <div class="modal-content">
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                <button onclick="closeHistoryModal()" title="Close" style="background:none;border:none;font-size:20px;cursor:pointer;color:#777">×</button>
+                <h3 style="margin:0;flex:1;text-align:center">Session History</h3>
+                <a href="#" onclick="exportHistoryCSV();return false;" style="font-size:12px;color:var(--primary-cyan);text-decoration:none;white-space:nowrap">Export CSV</a>
+            </div>
 
-    <!-- header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <button onclick="closeHistoryModal()" title="Close" style="background:none;border:none;font-size:20px;cursor:pointer;color:#777">×</button>
-      <h3 style="margin:0;flex:1;text-align:center">Session History</h3>
-      <a href="#" onclick="exportHistoryCSV();return false;" style="font-size:12px;color:var(--primary-cyan);text-decoration:none;white-space:nowrap">Export CSV</a>
+            <!-- Heat Map -->
+            <div id="weekChart" style="margin:8px auto 12px;width:320px;min-height:12px">
+                <div id="rowThis" style="display:flex;gap:2px;height:3px"></div>
+                <div id="rowLast" style="display:flex;gap:2px;height:3px;margin-top:2px"></div>
+            </div>
+
+            <div id="historyList"></div>
+
+            <div style="text-align:center;margin-top:15px">
+                <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
+            </div>
+        </div>
     </div>
-
-    <!-- 2-week grey-bar heat-map (THIS week TOP, LAST week BOTTOM) -->
-    <div id="weekChart" style="margin:8px auto 12px;width:320px">
-      <div id="rowThis" style="display:flex;gap:2px;height:3px"></div>
-      <div id="rowLast" style="display:flex;gap:2px;height:3px;margin-top:2px"></div>
-    </div>
-
-    <!-- session list -->
-    <div id="historyList"></div>
-
-    <!-- close button -->
-    <div style="text-align:center;margin-top:15px">
-      <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
-    </div>
-
-  </div> <!-- .modal-content ends here -->
-</div>
-
-<script>
-/* ---------- 14-day grey-bar heat-map ---------- */
-function renderWeekChart() {
-  const sessions = getSessionHistory();
-  const nzOffset = 13; // NZDT Nov 2025
-  const now = new Date();
-  const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset*60)*60000);
-  nzToday.setHours(0,0,0,0);
-  const dayOfWeek = nzToday.getDay();
-  const daysSinceMonday = (dayOfWeek + 6) % 7;
-  const thisMon = new Date(nzToday);
-  thisMon.setDate(nzToday.getDate() - daysSinceMonday);
-  const lastMon = new Date(thisMon);
-  lastMon.setDate(thisMon.getDate() - 7);
-
-  const thisWeek = [0,0,0,0,0,0,0];
-  const lastWeek = [0,0,0,0,0,0,0];
-
-  sessions.forEach(s => {
-    const pieces = s.timestamp.split(/[-T:.Z]/);
-    const nzSession = new Date(+pieces[0],pieces[1]-1,+pieces[2],+pieces[3],+pieces[4],+pieces[5]);
-    const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
-    const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
-    if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
-    else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
-  });
-
-  const bar = n =>
-    `<div style="flex:1;background:#aaa;height:1px;margin-top:1px;opacity:${n?0.8:0.2}"></div>`;
-  document.getElementById('rowThis').innerHTML = thisWeek.map(bar).join('');
-  document.getElementById('rowLast').innerHTML = lastWeek.map(bar).join('');
-}
-
-/*  make sure the modal calls it  */
-function openHistoryModal() {
-  historyModal.style.display = 'block';
-  displayHistory();
-  renderWeekChart();   // ← heat-map drawn now
-}
-</script>
-<!-- =====  end History block  ===== -->
 
     <!-- Review Modal -->
     <div id="reviewModal" class="modal">
@@ -351,9 +305,9 @@ function openHistoryModal() {
             <div id="reviewSessionInfo" style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 14px;"></div>
             
             <div style="display: flex; justify-content: space-around; margin: 20px 0;">
-                <button class="emoji-button" onclick="selectReviewScore(-1)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">😞</button>
-                <button class="emoji-button" onclick="selectReviewScore(0)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">😐</button>
-                <button class="emoji-button" onclick="selectReviewScore(1)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">😊</button>
+                <button class="emoji-button" onclick="selectReviewScore(-1)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">Sad</button>
+                <button class="emoji-button" onclick="selectReviewScore(0)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">Neutral</button>
+                <button class="emoji-button" onclick="selectReviewScore(1)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">Happy</button>
             </div>
             
             <div style="display: flex; justify-content: space-around; margin-bottom: 15px; font-size: 12px; color: #666;">
@@ -371,6 +325,7 @@ function openHistoryModal() {
         </div>
     </div>
 
+    <!-- Main Script -->
     <script>
         const canvas = document.getElementById('timerCanvas');
         const ctx = canvas.getContext('2d');
@@ -386,7 +341,6 @@ function openHistoryModal() {
         const reviewModal = document.getElementById('reviewModal');
         const historyModal = document.getElementById('historyModal');
 
-        // Define colors to match CSS variables
         const colors = {
             primaryCyan: 'rgba(0, 153, 153, 0.5)',
             primaryCyanOpaque: 'rgba(0, 153, 153, 0.8)',
@@ -404,11 +358,10 @@ function openHistoryModal() {
         let isExpired = false;
         let isPaused = false;
         let startAngle = null;
-        let currentSize = 'large'; // Track size: large, medium, small
+        let currentSize = 'large';
         let randomChimeSelected = false;
         let timerName = "";
         let currentSessionStartTime = null;
-        let sessionReviews = [];
         let selectedReviewScore = null;
         let currentReviewSessionId = null;
         let isPulsing = false;
@@ -430,7 +383,6 @@ function openHistoryModal() {
         ];
         const defaultChime = 'timer-sounds/clear-announce-tones-2861.wav';
 
-        // Initial setup for the default (large) timer size
         canvas.width = 360;
         canvas.height = 360;
         canvas.style.width = '360px';
@@ -445,30 +397,15 @@ function openHistoryModal() {
             if (isExpired || (!isRunning && !isPaused)) {
                 startButton.disabled = false;
                 timeInput.disabled = false;
-                smallButton.disabled = false;
-                randomButton.disabled = false;
-                resetButton.disabled = false;
                 controls.style.visibility = 'visible';
-                startButton.removeAttribute('disabled');
-                timeInput.removeAttribute('disabled');
             } else if (isRunning && !isPaused) {
                 startButton.disabled = true;
                 timeInput.disabled = true;
-                smallButton.disabled = false;
-                randomButton.disabled = false;
-                resetButton.disabled = false;
                 controls.style.visibility = 'hidden';
-                startButton.setAttribute('disabled', 'true');
-                timeInput.setAttribute('disabled', 'true');
             } else if (isRunning && isPaused) {
                 startButton.disabled = true;
                 timeInput.disabled = true;
-                smallButton.disabled = false;
-                randomButton.disabled = false;
-                resetButton.disabled = false;
                 controls.style.visibility = 'visible';
-                startButton.setAttribute('disabled', 'true');
-                timeInput.setAttribute('disabled', 'true');
             }
             randomButton.classList.toggle('active', randomChimeSelected);
         }
@@ -477,14 +414,12 @@ function openHistoryModal() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const scale = radius / 120;
 
-            // Draw outer circle
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
             ctx.strokeStyle = '#000';
             ctx.lineWidth = 10 * scale;
             ctx.stroke();
 
-            // Draw start angle marker
             if (startAngle !== null) {
                 ctx.beginPath();
                 const innerRadius = radius - 34 * scale;
@@ -496,7 +431,6 @@ function openHistoryModal() {
                 ctx.stroke();
             }
 
-            // Handle timer states
             if (isExpired) {
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
@@ -523,7 +457,7 @@ function openHistoryModal() {
                     const endAngle = -Math.PI / 2;
                     ctx.beginPath();
                     ctx.moveTo(centerX, centerY);
-                    ctx.arc(centerX, centerY, radius - 5 * scale, startAngle, endAngle, true); // Anti-clockwise
+                    ctx.arc(centerX, centerY, radius - 5 * scale, startAngle, endAngle, true);
                     ctx.fillStyle = isPaused ? colors.primaryRedLight : colors.primaryRed;
                     ctx.fill();
                 }
@@ -541,7 +475,6 @@ function openHistoryModal() {
                 }
             }
 
-            // Draw inner/outer circles
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius + 9 * scale, 0, 2 * Math.PI);
             ctx.strokeStyle = '#000';
@@ -553,7 +486,6 @@ function openHistoryModal() {
             ctx.lineWidth = 2 * scale;
             ctx.stroke();
 
-            // Draw minute markers
             for (let i = 0; i < 60; i++) {
                 const angle = (i / 60) * 2 * Math.PI - Math.PI / 2;
                 const outerRadius = radius + 5 * scale;
@@ -566,15 +498,14 @@ function openHistoryModal() {
                 ctx.stroke();
             }
 
-            // Draw minute numbers (clockwise for anti-clockwise countdown)
-            const fontSize = currentSize === 'small' ? 20 : 16; // Larger font for small size
+            const fontSize = currentSize === 'small' ? 20 : 16;
             ctx.font = `bold ${fontSize * scale}px Arial`;
             ctx.fillStyle = '#000';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             for (let i = 0; i < 60; i += 5) {
-                const displayMinute = i === 0 ? 0 : i; // Numbers increase clockwise
-                const angle = (i / 60) * 2 * Math.PI - Math.PI / 2; // Clockwise positions
+                const displayMinute = i === 0 ? 0 : i;
+                const angle = (i / 60) * 2 * Math.PI - Math.PI / 2;
                 const textRadius = radius + (currentSize === 'small' ? 32 * scale : 28 * scale);
                 ctx.fillText(displayMinute.toString(), centerX + textRadius * Math.cos(angle), centerY + textRadius * Math.sin(angle) + 1 * scale);
             }
@@ -596,7 +527,6 @@ function openHistoryModal() {
 
         function toggleSize() {
             if (currentSize === 'large') {
-                // Switch to medium
                 canvas.width = 300;
                 canvas.height = 300;
                 canvas.style.width = '300px';
@@ -609,7 +539,6 @@ function openHistoryModal() {
                 timerNameDisplay.style.fontSize = '14.4px';
                 currentSize = 'medium';
             } else if (currentSize === 'medium') {
-                // Switch to small
                 canvas.width = 236;
                 canvas.height = 236;
                 canvas.style.width = '236px';
@@ -622,7 +551,6 @@ function openHistoryModal() {
                 timerNameDisplay.style.fontSize = '10.8px';
                 currentSize = 'small';
             } else {
-                // Switch to large
                 canvas.width = 360;
                 canvas.height = 360;
                 canvas.style.width = '360px';
@@ -638,35 +566,14 @@ function openHistoryModal() {
             drawTimer();
         }
 
-        function resetSize() {
-            canvas.width = 360;
-            canvas.height = 360;
-            canvas.style.width = '360px';
-            canvas.style.height = '360px';
-            radius = 120;
-            centerX = canvas.width / 2;
-            centerY = canvas.height / 2;
-            timerContainer.style.width = '380px';
-            timerContainer.style.height = '500px';
-            timerNameDisplay.style.fontSize = '18px';
-            currentSize = 'large';
-            drawTimer();
-        }
-
         function startTimer() {
             if (timerInterval) clearInterval(timerInterval);
             if (isRunning) return;
 
-            const input = document.getElementById('timeInput').value;
-            const minutes = parseInt(input) || 0;
+            const minutes = parseInt(timeInput.value) || 0;
             if (minutes <= 0) {
                 alert('Please enter a valid number of minutes');
                 return;
-            }
-
-            if (!randomChimeSelected && timerSound.src !== defaultChime) {
-                timerSound.src = defaultChime;
-                timerSound.load();
             }
 
             totalTime = minutes * 60;
@@ -685,20 +592,19 @@ function openHistoryModal() {
             timerInterval = setInterval(() => {
                 if (!isPaused) {
                     remainingTime--;
-                    drawTimer(); // Update every second
+                    drawTimer();
 
                     if (remainingTime <= 0) {
                         clearInterval(timerInterval);
                         isRunning = false;
                         isExpired = true;
-                        isPaused = false;
                         isPulsing = true;
                         pulseStartTime = Date.now();
                         pulseAnimationFrame = requestAnimationFrame(pulseOverlay);
                         updateButtonStates();
                         drawTimer();
                         timerSound.volume = 0.5;
-                        timerSound.play().catch(error => console.error('Error playing sound:', error));
+                        timerSound.play().catch(() => {});
                         addSessionToHistory();
                     }
                 }
@@ -706,20 +612,14 @@ function openHistoryModal() {
         }
 
         function resetTimer() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-            if (pulseAnimationFrame) {
-                cancelAnimationFrame(pulseAnimationFrame);
-                pulseAnimationFrame = null;
-            }
+            clearInterval(timerInterval);
+            cancelAnimationFrame(pulseAnimationFrame);
+            timerInterval = null;
+            pulseAnimationFrame = null;
             isRunning = false;
             isExpired = false;
             isPaused = false;
             isPulsing = false;
-            pulseStartTime = null;
-            pulseAlpha = 0.1;
             startAngle = null;
             totalTime = 0;
             remainingTime = 0;
@@ -737,17 +637,12 @@ function openHistoryModal() {
 
         function pulseOverlay() {
             if (!isPulsing) return;
-
             const elapsed = Date.now() - pulseStartTime;
             if (elapsed >= pulseDuration) {
                 isPulsing = false;
-                pulseStartTime = null;
-                pulseAlpha = 0.1;
-                pulseAnimationFrame = null;
                 drawTimer();
                 return;
             }
-
             const frequency = (2 * Math.PI) / 1000;
             pulseAlpha = 0.15 + 0.15 * Math.sin(frequency * elapsed);
             drawTimer();
@@ -755,12 +650,8 @@ function openHistoryModal() {
         }
 
         function togglePauseResume() {
-            if (isExpired) {
-                resetTimer();
-                return;
-            }
+            if (isExpired) { resetTimer(); return; }
             if (!isRunning) return;
-
             isPaused = !isPaused;
             updateButtonStates();
             drawTimer();
@@ -785,30 +676,18 @@ function openHistoryModal() {
 
         function updateTimerNameDisplay() {
             timerNameDisplay.textContent = timerName || '';
-            timerNameDisplay.style.display = timerName ? 'block' : 'block';
         }
 
         window.onclick = function(event) {
-            if (event.target === nameModal) {
-                closeNameModal();
-            }
-            if (event.target === historyModal) {
-                closeHistoryModal();
-            }
-            if (event.target === reviewModal) {
-                closeReviewModal();
-            }
-        }
+            if (event.target === nameModal) closeNameModal();
+            if (event.target === historyModal) closeHistoryModal();
+            if (event.target === reviewModal) closeReviewModal();
+        };
 
-        timerNameInput.addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                saveTimerName();
-            }
-        });
+        timerNameInput.addEventListener('keyup', e => { if (e.key === 'Enter') saveTimerName(); });
 
         let doubleClickTimer = null;
-
-        function handleTimerClick(event) {
+        canvas.addEventListener('click', function(e) {
             if (doubleClickTimer === null) {
                 doubleClickTimer = setTimeout(() => {
                     togglePauseResume();
@@ -818,142 +697,16 @@ function openHistoryModal() {
                 clearTimeout(doubleClickTimer);
                 doubleClickTimer = null;
                 openNameModal();
-                event.preventDefault();
             }
-        }
-
-        canvas.addEventListener('click', handleTimerClick);
+        });
 
         const savedName = localStorage.getItem('timerName');
-        if (savedName) {
-            timerName = savedName;
-        }
+        if (savedName) timerName = savedName;
         updateTimerNameDisplay();
         drawTimer();
         updateButtonStates();
 
-        // History Modal Functions
-        function openHistoryModal() {
-            historyModal.style.display = 'block';
-            displayHistory();
-            renderWeekChart();
-        }
-
-        function closeHistoryModal() {
-            historyModal.style.display = 'none';
-        }
-
-        function displayHistory() {
-            const historyList = document.getElementById('historyList');
-            const sessions = getSessionHistory();
-            
-            if (sessions.length === 0) {
-                historyList.innerHTML = '<p style="text-align: center; color: #999;">No session history yet.</p>';
-                return;
-            }
-            
-            // Sort by newest first
-            sessions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-            
-            let html = '';
-            sessions.forEach(session => {
-                const date = new Date(session.timestamp);
-                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                const scoreEmoji = session.score === 1 ? '😊' : session.score === 0 ? '😐' : session.score === -1 ? '😞' : '';
-                
-                html += `
-                    <div style="border: 1px solid #ddd; border-radius: 4px; padding: 12px; margin-bottom: 10px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <strong style="color: #575757; font-size: 14px;">${session.name}</strong>
-                            <span style="color: #999; font-size: 12px;">${dateStr}</span>
-                        </div>
-                        <div style="color: #666; font-size: 13px; margin-bottom: 8px;">${session.duration} minute${session.duration !== 1 ? 's' : ''}</div>
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                ${scoreEmoji ? `<span style="font-size: 20px;">${scoreEmoji}</span>` : ''}
-                                ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
-                            </div>
-                            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                                <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px;">
-                                    ${session.score !== undefined ? 'Edit' : 'Review'}
-                                </button>
-                                <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: #ff4444; color: white; font-size: 12px; padding: 4px 8px;">×</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            historyList.innerHTML = html;
-        }
-
-        // Review Modal Functions
-        function openReviewModal(sessionId) {
-            currentReviewSessionId = sessionId;
-            selectedReviewScore = null;
-            
-            // Clear previous selection
-            document.querySelectorAll('.emoji-button').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            document.getElementById('reviewComment').value = '';
-            
-            // Load session info
-            const sessions = getSessionHistory();
-            const session = sessions.find(s => s.id === sessionId);
-            if (session) {
-                document.getElementById('reviewSessionInfo').innerHTML = 
-                    `<strong>${session.name || 'Untitled Session'}</strong><br>${session.duration} minute${session.duration !== 1 ? 's' : ''}<br>${new Date(session.timestamp).toLocaleString()}`;
-                
-                // If session already has a review, load it
-                if (session.score !== undefined) {
-                    selectedReviewScore = session.score;
-                    document.getElementById('reviewComment').value = session.comment || '';
-                    // Highlight the selected emoji
-                    const buttons = document.querySelectorAll('.emoji-button');
-                    buttons.forEach((btn, index) => {
-                        const scores = [-1, 0, 1];
-                        if (scores[index] === session.score) {
-                            btn.classList.add('selected');
-                        }
-                    });
-                }
-            }
-            
-            reviewModal.style.display = 'block';
-        }
-
-        function closeReviewModal() {
-            reviewModal.style.display = 'none';
-        }
-
-        function selectReviewScore(score) {
-            selectedReviewScore = score;
-            document.querySelectorAll('.emoji-button').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            event.target.classList.add('selected');
-        }
-
-        function saveReview() {
-            if (selectedReviewScore === null) {
-                alert('Please select a rating');
-                return;
-            }
-            
-            const sessions = getSessionHistory();
-            const session = sessions.find(s => s.id === currentReviewSessionId);
-            if (session) {
-                session.score = selectedReviewScore;
-                session.comment = document.getElementById('reviewComment').value.trim();
-                saveSessionHistory(sessions);
-            }
-            
-            closeReviewModal();
-            displayHistory(); // Refresh the history list
-        }
-
-        // Helper Functions
+        // History Functions
         function getSessionHistory() {
             const history = localStorage.getItem('timerSessions');
             return history ? JSON.parse(history) : [];
@@ -965,39 +718,112 @@ function openHistoryModal() {
 
         function addSessionToHistory() {
             if (!currentSessionStartTime) return;
-            
             const session = {
                 id: currentSessionStartTime.toISOString(),
                 timestamp: currentSessionStartTime.toISOString(),
                 name: timerName || 'Untitled Session',
                 duration: Math.round(totalTime / 60)
             };
-            
             const sessions = getSessionHistory();
             sessions.push(session);
             saveSessionHistory(sessions);
-            
             currentSessionStartTime = null;
         }
 
-        function deleteSession(sessionId) {
+        function displayHistory() {
+            const historyList = document.getElementById('historyList');
+            const sessions = getSessionHistory();
+            if (sessions.length === 0) {
+                historyList.innerHTML = '<p style="text-align:center;color:#999">No session history yet.</p>';
+                return;
+            }
+            sessions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            let html = '';
+            sessions.forEach(s => {
+                const date = new Date(s.timestamp);
+                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+                const emoji = s.score === 1 ? 'Happy' : s.score === 0 ? 'Neutral' : s.score === -1 ? 'Sad' : '';
+                html += `
+                    <div style="border:1px solid #ddd;border-radius:4px;padding:12px;margin-bottom:10px;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                            <strong style="color:#575757;font-size:14px;">${s.name}</strong>
+                            <span style="color:#999;font-size:12px;">${dateStr}</span>
+                        </div>
+                        <div style="color:#666;font-size:13px;margin-bottom:8px;">${s.duration} minute${s.duration !== 1 ? 's' : ''}</div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <div style="display:flex;gap:10px;">
+                                ${emoji ? `<span style="font-size:20px;">${emoji}</span>` : ''}
+                                ${s.comment ? `<span style="color:#555;font-size:13px;font-style:italic;">"${s.comment}"</span>` : ''}
+                            </div>
+                            <div style="display:flex;gap:5px;">
+                                <button class="modal-button primary" onclick="openReviewModal('${s.id}')" style="font-size:12px;padding:4px 8px;">
+                                    ${s.score !== undefined ? 'Edit' : 'Review'}
+                                </button>
+                                <button class="modal-button" onclick="deleteSession('${s.id}')" style="background:#ff4444;color:white;font-size:12px;padding:4px 8px;">×</button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            historyList.innerHTML = html;
+        }
+
+        function deleteSession(id) {
             if (confirm('Delete this session?')) {
-            let sessions = getSessionHistory();
-            sessions = sessions.filter(s => s.id !== sessionId);
-            saveSessionHistory(sessions);
-            displayHistory();
+                let sessions = getSessionHistory();
+                sessions = sessions.filter(s => s.id !== id);
+                saveSessionHistory(sessions);
+                displayHistory();
             }
         }
 
-        /* ---------- 14-day grey-bar heat-map ---------- */
+        // Review Modal
+        function openReviewModal(id) {
+            currentReviewSessionId = id;
+            selectedReviewScore = null;
+            document.querySelectorAll('.emoji-button').forEach(b => b.classList.remove('selected'));
+            document.getElementById('reviewComment').value = '';
+            const session = getSessionHistory().find(s => s.id === id);
+            if (session) {
+                document.getElementById('reviewSessionInfo').innerHTML = `<strong>${session.name}</strong><br>${session.duration} minute${session.duration !== 1 ? 's' : ''}<br>${new Date(session.timestamp).toLocaleString()}`;
+                if (session.score !== undefined) {
+                    selectedReviewScore = session.score;
+                    document.getElementById('reviewComment').value = session.comment || '';
+                    document.querySelectorAll('.emoji-button').forEach((b, i) => {
+                        if ([-1, 0, 1][i] === session.score) b.classList.add('selected');
+                    });
+                }
+            }
+            reviewModal.style.display = 'block';
+        }
+
+        function closeReviewModal() { reviewModal.style.display = 'none'; }
+
+        function selectReviewScore(score) {
+            selectedReviewScore = score;
+            document.querySelectorAll('.emoji-button').forEach(b => b.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        function saveReview() {
+            if (selectedReviewScore === null) { alert('Please select a rating'); return; }
+            const sessions = getSessionHistory();
+            const session = sessions.find(s => s.id === currentReviewSessionId);
+            if (session) {
+                session.score = selectedReviewScore;
+                session.comment = document.getElementById('reviewComment').value.trim();
+                saveSessionHistory(sessions);
+            }
+            closeReviewModal();
+            displayHistory();
+        }
+
+        // FIXED HEAT MAP SCRIPT
         function renderWeekChart() {
             const sessions = getSessionHistory();
-
-            /* ---- NZ midnight (UTC+13) ---- */
             const nzOffset = 13;
             const now = new Date();
-            const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset*60)*60000);
-            nzToday.setHours(0,0,0,0);
+            const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset * 60) * 60000);
+            nzToday.setHours(0, 0, 0, 0);
             const dayOfWeek = nzToday.getDay();
             const daysSinceMonday = (dayOfWeek + 6) % 7;
             const thisMon = new Date(nzToday);
@@ -1010,20 +836,48 @@ function openHistoryModal() {
 
             sessions.forEach(s => {
                 const pieces = s.timestamp.split(/[-T:.Z]/);
-                const nzSession = new Date(+pieces[0],pieces[1]-1,+pieces[2],+pieces[3],+pieces[4],+pieces[5]);
+                const nzSession = new Date(+pieces[0], pieces[1]-1, +pieces[2], +pieces[3], +pieces[4], +pieces[5]);
                 const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
                 const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
                 if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
                 else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
             });
 
-            /* ---- grey bars ---- */
-            const bar = n =>
-                `<div style="flex:1;background:#aaa;height:1px;margin-top:1px;opacity:${n?0.8:0.2}"></div>`;
-            document.getElementById('rowThis').innerHTML = thisWeek.map(bar).join('');
-            document.getElementById('rowLast').innerHTML = lastWeek.map(bar).join('');
+            const bar = n => `<div style="flex:1;background:#aaa;height:1px;margin-top:1px;opacity:${n?0.8:0.2}"></div>`;
+            const rowThis = document.getElementById('rowThis');
+            const rowLast = document.getElementById('rowLast');
+            if (rowThis) rowThis.innerHTML = thisWeek.map(bar).join('');
+            if (rowLast) rowLast.innerHTML = lastWeek.map(bar).join('');
         }
 
+        function openHistoryModal() {
+            const modal = document.getElementById('historyModal');
+            if (modal) modal.style.display = 'block';
+            displayHistory();
+            renderWeekChart();
+        }
+
+        function closeHistoryModal() {
+            const modal = document.getElementById('historyModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function exportHistoryCSV() {
+            const sessions = getSessionHistory();
+            if (sessions.length === 0) { alert('No history to export'); return; }
+            let csv = 'Date,Name,Duration (min),Score,Comment\n';
+            sessions.forEach(s => {
+                const date = new Date(s.timestamp).toLocaleString();
+                const score = s.score === 1 ? 'Happy' : s.score === 0 ? 'Neutral' : s.score === -1 ? 'Sad' : '';
+                csv += `"${date}","${s.name}",${s.duration},${score},"${(s.comment||'').replace(/"/g,'""')}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'timer-history.csv';
+            a.click();
+        }
     </script>
 </body>
 </html>
