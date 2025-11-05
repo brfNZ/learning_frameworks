@@ -321,9 +321,9 @@
         </div>
     </div>
 
-    <!-- MAIN SCRIPT (ONLY ONE VERSION) -->
+    <!-- MAIN SCRIPT -->
     <script>
-        // === Elements ===
+        // Elements
         const canvas = document.getElementById('timerCanvas');
         const ctx = canvas.getContext('2d');
         const timerContainer = document.getElementById('timerContainer');
@@ -337,15 +337,7 @@
         const reviewModal = document.getElementById('reviewModal');
         const historyModal = document.getElementById('historyModal');
 
-        // === Colors & State ===
-        const colors = {
-            primaryCyan: 'rgba(0, 153, 153, 0.5)',
-            primaryCyanOpaque: 'rgba(0, 153, 153, 0.8)',
-            primaryCyanPulse: 'rgba(0, 153, 153, ',
-            primaryRed: 'rgba(237, 77, 102, 0.8)',
-            primaryRedLight: 'rgba(237, 77, 102, 0.4)',
-        };
-
+        // State
         let radius = 120, centerX, centerY;
         let totalTime = 0, remainingTime = 0;
         let timerInterval = null, isRunning = false, isExpired = false, isPaused = false;
@@ -368,14 +360,14 @@
         ];
         const defaultChime = 'timer-sounds/clear-announce-tones-2861.wav';
 
-        // === Canvas Init ===
+        // Canvas Init
         canvas.width = 360; canvas.height = 360;
         canvas.style.width = '360px'; canvas.style.height = '360px';
         centerX = canvas.width / 2; centerY = canvas.height / 2;
         timerContainer.style.width = '380px'; timerContainer.style.height = '500px';
         timerNameDisplay.style.fontSize = '18px';
 
-        // === Button States ===
+        // Button States
         function updateButtonStates() {
             startButton.disabled = isRunning && !isPaused;
             timeInput.disabled = isRunning;
@@ -383,60 +375,53 @@
             randomButton.classList.toggle('active', randomChimeSelected);
         }
 
-        // === Draw Timer ===
+        // Draw Timer
         function drawTimer() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const scale = radius / 120;
 
-            // Outer circle
             ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 10 * scale; ctx.stroke();
 
-            // Start marker
             if (startAngle !== null) {
                 ctx.beginPath();
                 const inner = radius - 34 * scale, outer = radius;
                 ctx.moveTo(centerX + inner * Math.cos(startAngle), centerY + inner * Math.sin(startAngle));
                 ctx.lineTo(centerX + outer * Math.cos(startAngle), centerY + outer * Math.sin(startAngle));
-                ctx.strokeStyle = colors.primaryCyan; ctx.lineWidth = 8 * scale; ctx.stroke();
+                ctx.strokeStyle = '#009999'; ctx.lineWidth = 8 * scale; ctx.stroke();
             }
 
-            // Expired
             if (isExpired) {
                 ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                ctx.fillStyle = `${colors.primaryCyanPulse}${pulseAlpha})`; ctx.fill();
+                ctx.fillStyle = `rgba(0, 153, 153, ${pulseAlpha})`; ctx.fill();
                 ctx.beginPath(); ctx.arc(centerX, centerY, radius + 5 * scale, 0, 2 * Math.PI);
-                ctx.strokeStyle = colors.primaryRedLight; ctx.lineWidth = 15 * scale; ctx.stroke();
+                ctx.strokeStyle = '#ed4d66'; ctx.lineWidth = 15 * scale; ctx.stroke();
                 ctx.font = `bold ${24 * scale}px Arial`; ctx.fillStyle = '#000';
                 ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                 ctx.fillText("TIME'S UP!", centerX, centerY);
-                ctx.strokeStyle = colors.primaryCyanOpaque; ctx.lineWidth = 1.1 * scale;
-                ctx.strokeText("TIME'S UP!", centerX, centerY);
             } else {
                 if (totalTime > 0 && remainingTime > 0) {
                     const pos = (remainingTime / 60 % 60) / 60;
                     const angle = pos * 2 * Math.PI - Math.PI / 2;
                     ctx.beginPath(); ctx.moveTo(centerX, centerY);
                     ctx.arc(centerX, centerY, radius - 5 * scale, angle, -Math.PI / 2, true);
-                    ctx.fillStyle = isPaused ? colors.primaryRedLight : colors.primaryRed;
+                    ctx.fillStyle = isPaused ? '#ed4d66' : '#ed4d66';
                     ctx.fill();
                 }
                 if (isPaused) {
                     ctx.beginPath(); ctx.arc(centerX, centerY, radius + 5 * scale, 0, 2 * Math.PI);
-                    ctx.strokeStyle = colors.primaryCyan; ctx.stroke();
-                    ctx.font = `bold ${24 * scale}px Arial`; ctx.fillStyle = colors.primaryCyanOpaque;
+                    ctx.strokeStyle = '#009999'; ctx.stroke();
+                    ctx.font = `bold ${24 * scale}px Arial`; ctx.fillStyle = '#009999';
                     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                     ctx.fillText("PAUSED", centerX, centerY);
                 }
             }
 
-            // Inner circles
             ctx.beginPath(); ctx.arc(centerX, centerY, radius + 9 * scale, 0, 2 * Math.PI);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 1 * scale; ctx.stroke();
             ctx.beginPath(); ctx.arc(centerX, centerY, radius + 13 * scale, 0, 2 * Math.PI);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2 * scale; ctx.stroke();
 
-            // Minute markers
             for (let i = 0; i < 60; i++) {
                 const angle = i / 60 * 2 * Math.PI - Math.PI / 2;
                 const inner = i % 5 === 0 ? radius - 49 * scale : radius - 30 * scale;
@@ -446,7 +431,6 @@
                 ctx.strokeStyle = '#000'; ctx.lineWidth = 4 * scale; ctx.stroke();
             }
 
-            // Numbers
             const fontSize = currentSize === 'small' ? 20 : 16;
             ctx.font = `bold ${fontSize * scale}px Arial`;
             ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -457,7 +441,7 @@
             }
         }
 
-        // === Timer Controls ===
+        // Timer Functions
         function toggleRandomChime() {
             randomChimeSelected = !randomChimeSelected;
             timerSound.src = randomChimeSelected ? chimes[Math.floor(Math.random() * chimes.length)] : defaultChime;
@@ -481,7 +465,7 @@
                 timerContainer.style.width = '380px'; timerContainer.style.height = '500px';
                 timerNameDisplay.style.fontSize = '18px';
             }
-            canvas.style.width = canvas.width + 'px'; canvas.style.height = canvas.height + 'px';
+            canvas.style.width = canvas.width + 'px'; canvas.style.height = canvas.height + Duplex;
             centerX = canvas.width / 2;
             drawTimer();
         }
@@ -533,17 +517,17 @@
             updateButtonStates(); drawTimer();
         }
 
-        // === Name Modal ===
+        // Name Modal
         function openNameModal() { nameModal.style.display = 'block'; timerNameInput.value = timerName; timerNameInput.focus(); }
         function closeNameModal() { nameModal.style.display = 'none'; }
         function saveTimerName() { timerName = timerNameInput.value.trim(); updateTimerNameDisplay(); closeNameModal(); localStorage.setItem('timerName', timerName); }
         function updateTimerNameDisplay() { timerNameDisplay.textContent = timerName || ''; }
 
-        // === Click Outside ===
+        // Click Outside
         window.onclick = e => { if (e.target.classList.contains('modal')) e.target.style.display = 'none'; };
         timerNameInput.addEventListener('keyup', e => { if (e.key === 'Enter') saveTimerName(); });
 
-        // === Double Click Canvas ===
+        // Double Click
         let clickTimer = null;
         canvas.addEventListener('click', () => {
             if (clickTimer === null) {
@@ -553,12 +537,12 @@
             }
         });
 
-        // === Init ===
+        // Init
         const savedName = localStorage.getItem('timerName');
         if (savedName) timerName = savedName;
         updateTimerNameDisplay(); drawTimer(); updateButtonStates();
 
-        // === History & Heat Map ===
+        // History
         function getSessionHistory() { return JSON.parse(localStorage.getItem('timerSessions') || '[]'); }
         function saveSessionHistory(s) { localStorage.setItem('timerSessions', JSON.stringify(s)); }
 
@@ -600,7 +584,7 @@
 
         function deleteSession(id) { if (confirm('Delete?')) { saveSessionHistory(getSessionHistory().filter(s => s.id !== id)); displayHistory(); } }
 
-        // === Review Modal ===
+        // Review Modal
         let currentReviewSessionId = null, selectedReviewScore = null;
         function openReviewModal(id) {
             currentReviewSessionId = id; selectedReviewScore = null;
@@ -630,7 +614,7 @@
             closeReviewModal(); displayHistory();
         }
 
-        // === HEAT MAP (FIXED & WORKING) ===
+        // HEAT MAP
         function renderWeekChart() {
             const sessions = getSessionHistory();
             const now = new Date();
@@ -655,11 +639,11 @@
             const r2 = document.getElementById('rowLast'); if (r2) r2.innerHTML = lastWeek.map(bar).join('');
         }
 
-        // === MODAL CONTROL (ONLY ONE VERSION) ===
+        // MODAL CONTROL
         function openHistoryModal() {
             historyModal.style.display = 'block';
             displayHistory();
-            renderWeekChart();  // HEAT MAP SHOWS NOW
+            renderWeekChart();
         }
 
         function closeHistoryModal() {
