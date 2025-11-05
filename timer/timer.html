@@ -981,39 +981,43 @@
         }
 
         /* ---------- 14-day chart ---------- */
-        function renderWeekChart() {
-            const sessions = getSessionHistory();
-            const today = new Date();
-            const dayOfWeek = today.getDay();                // Sun=0
-            const daysSinceMonday = (dayOfWeek + 6) % 7;
-            const thisMon = new Date(today);
-            thisMon.setDate(today.getDate() - daysSinceMonday);
-            const lastMon = new Date(thisMon);
-            lastMon.setDate(thisMon.getDate() - 7);
+       function renderWeekChart() {
+    const sessions = getSessionHistory();
+    const nzOffset = 13; // NZDT
+    const now = new Date();
+    const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset * 60) * 60000);
+    nzToday.setHours(0, 0, 0, 0);
+    const dayOfWeek = nzToday.getDay();
+    const daysSinceMonday = (dayOfWeek + 6) % 7;
+    const thisMon = new Date(nzToday);
+    thisMon.setDate(nzToday.getDate() - daysSinceMonday);
+    const lastMon = new Date(thisMon);
+    lastMon.setDate(thisMon.getDate() - 7);
 
-            const counts = {
-                last: [0, 0, 0, 0, 0, 0, 0], // index 0 = Monday … 6 = Sunday
-                this: [0, 0, 0, 0, 0, 0, 0]
-            };
+    const counts = {
+        last: [0, 0, 0, 0, 0, 0, 0],
+        this: [0, 0, 0, 0, 0, 0, 0]
+    };
 
-            sessions.forEach(s => {
-                const d = new Date(s.timestamp);
-                const dayDiffThis = Math.floor((d - thisMon) / 86400000);
-                const dayDiffLast = Math.floor((d - lastMon) / 86400000);
+    sessions.forEach(s => {
+        const pieces = s.timestamp.split(/[-T:.Z]/);
+        const utcDate = new Date(+pieces[0], pieces[1]-1, +pieces[2], +pieces[3], +pieces[4], +pieces[5]);
+        const nzSession = new Date(utcDate.getTime() + (nzOffset * 60 * 60 * 1000)); // SAME AS CSV
+        const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
+        const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
+        if (dayDiffThis >= 0 && dayDiffThis < 7) counts.this[dayDiffThis]++;
+        else if (dayDiffLast >= 0 && dayDiffLast < 7) counts.last[dayDiffLast]++;
+    });
 
-                if (dayDiffThis >= 0 && dayDiffThis < 7) counts.this[dayDiffThis]++;
-                else if (dayDiffLast >= 0 && dayDiffLast < 7) counts.last[dayDiffLast]++;
-            });
-
-            // render
-            ['last', 'this'].forEach(week => {
-                for (let i = 0; i < 7; i++) {
-                const cell = document.getElementById((week === 'last' ? 'L' : 'T') + i);
-                cell.textContent = counts[week][i] > 6 ? '6+' : '|'.repeat(counts[week][i]);  // 7+ sessions shown as 6+
-                cell.style.opacity = counts[week][i] ? '1' : '.25';
-                }
-            });
+    ['last', 'this'].forEach(week => {
+        for (let i = 0; i < 7; i++) {
+            const cell = document.getElementById((week === 'last' ? 'L' : 'T') + i);
+            const count = counts[week][i];
+            cell.textContent = count > 6 ? '6+' : '|'.repeat(count);
+            cell.style.opacity = count ? '1' : '.25';
         }
+    });
+}
 
     /* ---------- CSV EXPORT (newest first, correct NZ heat-map) ---------- */
     function exportHistoryCSV() {
