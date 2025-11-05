@@ -1050,12 +1050,13 @@ function exportHistoryCSV() {
     .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // newest first
     .forEach(s => {
       /* 3.  read UTC string AS NZ time (same as modal)  */
-      const pieces = s.timestamp.split(/[-T:.Z]/);
-      const nzSession = new Date(+pieces[0], pieces[1] - 1, +pieces[2], +pieces[3], +pieces[4], +pieces[5]);
-      const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
-      const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
-      if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
-      else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
+      /* ---- bucket fill (NZ calendar) ---- */
+const pieces = s.timestamp.split(/[-T:.Z]/);
+const nzSession = new Date(+pieces[0], pieces[1] - 1, +pieces[2], +pieces[3], +pieces[4], +pieces[5]);
+const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
+const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
+if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
+else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
 
       /* 4.  pretty date/time (same format as modal)  */
       const d = new Date(s.timestamp);
