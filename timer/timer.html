@@ -289,34 +289,10 @@
                 style="font-size:12px;color:var(--primary-cyan);text-decoration:none;white-space:nowrap">Export CSV</a>
             </div>
 
-            <!-- 2-week mini-chart – THIS week on TOP -->
-            <div id="weekChart" style="margin-bottom:15px;font-size:13px;color:#575757;">
-            <!-- THIS WEEK -->
-            <div class="weekRow">
-                <span class="weekLabel">This week</span>
-                <div class="flexRow">
-                <div class="dayCol"><div class="dayLabel">M</div><div class="dayTicks" id="T0"></div></div>
-                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="T1"></div></div>
-                <div class="dayCol"><div class="dayLabel">W</div><div class="dayTicks" id="T2"></div></div>
-                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="T3"></div></div>
-                <div class="dayCol"><div class="dayLabel">F</div><div class="dayTicks" id="T4"></div></div>
-                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="T5"></div></div>
-                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="T6"></div></div>
-                </div>
-            </div>
-
-            <!-- LAST WEEK -->
-            <div class="weekRow">
-                <span class="weekLabel">Last week</span>
-                <div class="flexRow">
-                <div class="dayCol"><div class="dayLabel">M</div><div class="dayTicks" id="L0"></div></div>
-                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="L1"></div></div>
-                <div class="dayCol"><div class="dayLabel">W</div><div class="dayTicks" id="L2"></div></div>
-                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="L3"></div></div>
-                <div class="dayCol"><div class="dayLabel">F</div><div class="dayTicks" id="L4"></div></div>
-                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="L5"></div></div>
-                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="L6"></div></div>
-                </div>
+            <!-- 2-week grey-bar strip – THIS week TOP, LAST week BOTTOM -->
+            <div id="weekChart" style="margin:8px auto 12px;width:320px">
+                <div id="rowThis" style="display:flex;gap:2px;height:3px"></div>
+                <div id="rowLast" style="display:flex;gap:2px;height:3px;margin-top:2px"></div>
             </div>
             </div>
 
@@ -983,53 +959,39 @@
         }
 
         /* ---------- 14-day chart ---------- */
-    function renderWeekChart() {
-        const sessions = getSessionHistory();
+        function renderWeekChart() {
+            const sessions = getSessionHistory();
 
-        /* 1.  TODAY in NZ calendar ------------------------------------------ */
-        const now = new Date();
-        const nzOffset = 13;                                // NZDT Nov 2025
-        const nzToday = new Date(now.getTime() +
-                            (now.getTimezoneOffset() + nzOffset*60)*60000);
-        nzToday.setHours(0,0,0,0);
+            /* ---- NZ midnight (UTC+13) ---- */
+            const nzOffset = 13;
+            const now = new Date();
+            const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset*60)*60000);
+            nzToday.setHours(0,0,0,0);
+            const dayOfWeek = nzToday.getDay();
+            const daysSinceMonday = (dayOfWeek + 6) % 7;
+            const thisMon = new Date(nzToday);
+            thisMon.setDate(nzToday.getDate() - daysSinceMonday);
+            const lastMon = new Date(thisMon);
+            lastMon.setDate(thisMon.getDate() - 7);
 
-        /* 2.  Monday of THIS week (NZ) -------------------------------------- */
-        const dayOfWeek = nzToday.getDay();                 // Sun = 0
-        const daysSinceMonday = (dayOfWeek + 6) % 7;
-        const thisMon = new Date(nzToday);
-        thisMon.setDate(nzToday.getDate() - daysSinceMonday);
+            const thisWeek = [0,0,0,0,0,0,0];
+            const lastWeek = [0,0,0,0,0,0,0];
 
-        const lastMon = new Date(thisMon);
-        lastMon.setDate(thisMon.getDate() - 7);
+            sessions.forEach(s => {
+                const pieces = s.timestamp.split(/[-T:.Z]/);
+                const nzSession = new Date(+pieces[0],pieces[1]-1,+pieces[2],+pieces[3],+pieces[4],+pieces[5]);
+                const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
+                const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
+                if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
+                else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
+            });
 
-        /* 3.  bucket sessions by NZ day ------------------------------------- */
-        const counts = { this:[0,0,0,0,0,0,0], last:[0,0,0,0,0,0,0] };
-
-        sessions.forEach(s => {
-            /* *****  CRITICAL FIX  ***** */
-            // UTC string "2025-11-05T09:04:00.000Z"  ->  treat it as NZ-time
-            const pieces = s.timestamp.split(/[-T:.Z]/);
-            const nzSession = new Date(
-            +pieces[0], pieces[1]-1, +pieces[2],
-            +pieces[3], +pieces[4], +pieces[5]
-            ); // local Date **in the NZ calendar**
-
-            const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
-            const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
-
-            if (dayDiffThis >= 0 && dayDiffThis < 7) counts.this[dayDiffThis]++;
-            else if (dayDiffLast >= 0 && dayDiffLast < 7) counts.last[dayDiffLast]++;
-        });
-
-        /* 4.  render -------------------------------------------------------- */
-        ['this','last'].forEach(wk => {
-            for (let i = 0; i < 7; i++){
-            const cell = document.getElementById((wk==='this'?'T':'L')+i);
-            cell.textContent = '✓'.repeat(Math.min(counts[wk][i],5));
-            cell.style.opacity = counts[wk][i] ? '1' : '.25';
-            }
-        });
-    }
+            /* ---- grey bars ---- */
+            const bar = n =>
+                `<div style="flex:1;background:#aaa;height:1px;margin-top:1px;opacity:${n?0.8:0.2}"></div>`;
+            document.getElementById('rowThis').innerHTML = thisWeek.map(bar).join('');
+            document.getElementById('rowLast').innerHTML = lastWeek.map(bar).join('');
+        }
 
     </script>
 </body>
