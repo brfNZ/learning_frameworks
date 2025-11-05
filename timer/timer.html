@@ -277,39 +277,31 @@
     <!-- History Modal -->
     <div id="historyModal" class="modal">
         <div class="modal-content">
-            <h3>Session History</h3>
 
+            <!-- header row -->
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
             <button onclick="closeHistoryModal()" title="Close"
                     style="background:none;border:none;font-size:20px;cursor:pointer;color:#777">×</button>
-            </div>
-        </div>  
             <h3 style="margin:0;flex:1;text-align:center">Session History</h3>
-
             <a href="#" onclick="exportHistoryCSV();return false;"
                 style="font-size:12px;color:var(--primary-cyan);text-decoration:none;white-space:nowrap">Export CSV</a>
             </div>
 
             <!-- 2-week grey-bar strip – THIS week TOP, LAST week BOTTOM -->
             <div id="weekChart" style="margin:8px auto 12px;width:320px">
-                <div id="rowThis" style="display:flex;gap:2px;height:3px"></div>
-                <div id="rowLast" style="display:flex;gap:2px;height:3px;margin-top:2px"></div>
+            <div id="rowThis" style="display:flex;gap:2px;height:3px"></div>
+            <div id="rowLast" style="display:flex;gap:2px;height:3px;margin-top:2px"></div>
             </div>
 
-            <style>
-            .weekRow{display:flex;align-items:center;margin-bottom:4px}
-            .weekLabel{width:70px;font-size:12px;color:#777}
-            .flexRow{display:flex;justify-content:space-between;flex:1;max-width:280px}
-            .dayCol{text-align:center;flex:1}
-            .dayLabel{margin-bottom:2px;font-weight:bold;font-size:11px}
-            .dayTicks{min-height:18px;font-size:16px;color:var(--primary-cyan)}
-            </style>
-          
+            <!-- session list -->
             <div id="historyList"></div>
-            <div style="text-align: center; margin-top: 15px;">
-                <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
+
+            <!-- close button -->
+            <div style="text-align:center;margin-top:15px">
+            <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
             </div>
-        </div>
+
+        </div> 
     </div>
 
     <!-- Review Modal -->
