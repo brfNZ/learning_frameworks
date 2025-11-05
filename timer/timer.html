@@ -282,22 +282,43 @@
                 <button class="modal-button primary" onclick="exportHistoryCSV()">Export CSV</button>
             </div>
 
-            <!-- 7-day mini-chart -->
+            <!-- 2-week mini-chart -->
             <div id="weekChart" style="margin-bottom:15px;font-size:13px;color:#575757;">
-            <div style="display:flex;justify-content:space-between;max-width:340px;margin:0 auto;">
-                <div class="dayCol"><div class="dayLabel">Mo</div><div class="dayTicks" id="d0"></div></div>
-                <div class="dayCol"><div class="dayLabel">Tu</div><div class="dayTicks" id="d1"></div></div>
-                <div class="dayCol"><div class="dayLabel">We</div><div class="dayTicks" id="d2"></div></div>
-                <div class="dayCol"><div class="dayLabel">Th</div><div class="dayTicks" id="d3"></div></div>
-                <div class="dayCol"><div class="dayLabel">Fr</div><div class="dayTicks" id="d4"></div></div>
-                <div class="dayCol"><div class="dayLabel">Sa</div><div class="dayTicks" id="d5"></div></div>
-                <div class="dayCol"><div class="dayLabel">Su</div><div class="dayTicks" id="d6"></div></div>
+            <!-- LAST WEEK -->
+            <div class="weekRow">
+                <span class="weekLabel">Last week</span>
+                <div class="flexRow">
+                <div class="dayCol"><div class="dayLabel">M</div><div class="dayTicks" id="L0"></div></div>
+                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="L1"></div></div>
+                <div class="dayCol"><div class="dayLabel">W</div><div class="dayTicks" id="L2"></div></div>
+                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="L3"></div></div>
+                <div class="dayCol"><div class="dayLabel">F</div><div class="dayTicks" id="L4"></div></div>
+                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="L5"></div></div>
+                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="L6"></div></div>
+                </div>
+            </div>
+            <!-- THIS WEEK -->
+            <div class="weekRow">
+                <span class="weekLabel">This week</span>
+                <div class="flexRow">
+                <div class="dayCol"><div class="dayLabel">M</div><div class="dayTicks" id="T0"></div></div>
+                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="T1"></div></div>
+                <div class="dayCol"><div class="dayLabel">W</div><div class="dayTicks" id="T2"></div></div>
+                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="T3"></div></div>
+                <div class="dayCol"><div class="dayLabel">F</div><div class="dayTicks" id="T4"></div></div>
+                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="T5"></div></div>
+                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="T6"></div></div>
+                </div>
             </div>
             </div>
+
             <style>
+            .weekRow{display:flex;align-items:center;margin-bottom:4px}
+            .weekLabel{width:70px;font-size:12px;color:#777}
+            .flexRow{display:flex;justify-content:space-between;flex:1;max-width:280px}
             .dayCol{text-align:center;flex:1}
-            .dayLabel{margin-bottom:4px;font-weight:bold}
-            .dayTicks{min-height:20px;font-size:18px;color:var(--primary-cyan)}
+            .dayLabel{margin-bottom:2px;font-weight:bold;font-size:11px}
+            .dayTicks{min-height:18px;font-size:16px;color:var(--primary-cyan)}
             </style>
 
             <div id="historyList"></div>
@@ -953,29 +974,39 @@
             }
         }
 
-        /* ---------- 7-day chart ---------- */
+        /* ---------- 14-day chart ---------- */
         function renderWeekChart() {
-        const sessions = getSessionHistory();
-        const today = new Date();
-        const dayOfWeek = today.getDay();          // Sun=0 … Sat=6
-        const daysSinceMonday = (dayOfWeek + 6) % 7; // how many days back to Mon
-        const monday = new Date(today);
-        monday.setDate(today.getDate() - daysSinceMonday); // 00:00 on Monday
+            const sessions = getSessionHistory();
+            const today = new Date();
+            const dayOfWeek = today.getDay();                // Sun=0
+            const daysSinceMonday = (dayOfWeek + 6) % 7;
+            const thisMon = new Date(today);
+            thisMon.setDate(today.getDate() - daysSinceMonday);
+            const lastMon = new Date(thisMon);
+            lastMon.setDate(thisMon.getDate() - 7);
 
-        const counts = [0, 0, 0, 0, 0, 0, 0]; // index 0 = Monday … 6 = Sunday
+            const counts = {
+                last: [0, 0, 0, 0, 0, 0, 0], // index 0 = Monday … 6 = Sunday
+                this: [0, 0, 0, 0, 0, 0, 0]
+            };
 
-        sessions.forEach(s => {
-            const d = new Date(s.timestamp);
-            const dayDiff = Math.floor((d - monday) / 86400000); // whole days since Monday
-            if (dayDiff >= 0 && dayDiff < 7) counts[dayDiff]++;
-        });
+            sessions.forEach(s => {
+                const d = new Date(s.timestamp);
+                const dayDiffThis = Math.floor((d - thisMon) / 86400000);
+                const dayDiffLast = Math.floor((d - lastMon) / 86400000);
 
-        // write ticks
-        for (let i = 0; i < 7; i++) {
-            const cell = document.getElementById('d' + i);
-            cell.textContent = '✓'.repeat(Math.min(counts[i], 5));
-            cell.style.opacity = counts[i] ? '1' : '.25';
-        }
+                if (dayDiffThis >= 0 && dayDiffThis < 7) counts.this[dayDiffThis]++;
+                else if (dayDiffLast >= 0 && dayDiffLast < 7) counts.last[dayDiffLast]++;
+            });
+
+            // render
+            ['last', 'this'].forEach(week => {
+                for (let i = 0; i < 7; i++) {
+                const cell = document.getElementById((week === 'last' ? 'L' : 'T') + i);
+                cell.textContent = 'x'.repeat(Math.min(counts[week][i], 5));
+                cell.style.opacity = counts[week][i] ? '1' : '.25';
+                }
+            });
         }
 
     </script>
