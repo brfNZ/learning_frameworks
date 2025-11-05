@@ -1011,7 +1011,7 @@
             ['last', 'this'].forEach(week => {
                 for (let i = 0; i < 7; i++) {
                 const cell = document.getElementById((week === 'last' ? 'L' : 'T') + i);
-                cell.textContent = '✓'.repeat(Math.min(counts[week][i], 5));
+                cell.textContent = '+'.repeat(Math.min(counts[week][i], 5));
                 cell.style.opacity = counts[week][i] ? '1' : '.25';
                 }
             });
