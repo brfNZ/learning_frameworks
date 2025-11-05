@@ -1038,20 +1038,18 @@
             const thisWeek = [0, 0, 0, 0, 0, 0, 0];
             const lastWeek = [0, 0, 0, 0, 0, 0, 0];
 
-            /* 2.  build rows: NEWEST → OLDEST  */
+            /* 2.  sort NEWEST → OLDEST  */
             const rows = [
                 ['HEAT-MAP'],
                 ['Week', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-                ['This', ...thisWeek],
-                ['Last', ...lastWeek],
-                [], [], // blank spacer
-                ['SESSIONS (newest first)'],
-                ['Date', 'Time', 'Name', 'Duration (min)', 'Score', 'Comment']
+                ['This'],
+                ['Last']
             ];
 
             sessions
                 .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // newest first
                 .forEach(s => {
+                /*  bucket fill  */
                 const pieces = s.timestamp.split(/[-T:.Z]/);
                 const nzSession = new Date(+pieces[0], pieces[1] - 1, +pieces[2], +pieces[3], +pieces[4], +pieces[5]);
                 const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
@@ -1059,7 +1057,7 @@
                 if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
                 else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
 
-                // pretty date/time (same format as modal)
+                /*  pretty date/time (same format as modal)  */
                 const d = new Date(s.timestamp);
                 rows.push([
                     d.toLocaleDateString(), // 4-11-2025
@@ -1071,7 +1069,11 @@
                 ]);
                 });
 
-            /* 3.  download  */
+            /* 3.  inject heat-map counts  */
+            rows[2] = ['This', ...thisWeek];
+            rows[3] = ['Last', ...lastWeek];
+
+            /* 4.  download  */
             const csv = rows.map(r => r.join(',')).join('\n');
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
