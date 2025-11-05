@@ -285,10 +285,15 @@
             </div>
 
             <!-- Heat Map -->
-            <div id="weekChart" style="margin:8px auto 12px;width:320px;min-height:12px">
-                <div id="rowThis" style="display:flex;gap:2px;height:3px"></div>
-                <div id="rowLast" style="display:flex;gap:2px;height:3px;margin-top:2px"></div>
+            <div id="weekChart" style="margin:15px auto 20px;width:320px;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:#999;margin-bottom:5px;">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
             </div>
+            <div style="font-size:11px;color:#666;margin-bottom:3px;">This week</div>
+            <div id="rowThis" style="display:flex;gap:2px;height:8px;margin-bottom:5px;"></div>
+            <div style="font-size:11px;color:#666;margin-bottom:3px;">Last week</div>
+            <div id="rowLast" style="display:flex;gap:2px;height:8px;"></div>
+        </div>
 
             <div id="historyList"></div>
 
