@@ -823,7 +823,6 @@
         updateButtonStates();
 
         // History Modal Functions
-        // History Modal Functions
         function openHistoryModal() {
             historyModal.style.display = 'block';
             displayHistory();
@@ -977,6 +976,7 @@
             sessions = sessions.filter(s => s.id !== sessionId);
             saveSessionHistory(sessions);
             displayHistory();
+            renderWeekChart(); // Refresh heat map immediately
             }
         }
 
