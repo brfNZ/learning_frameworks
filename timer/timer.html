@@ -124,6 +124,7 @@
             background-color: var(--primary-red-active);
         }
 
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -197,7 +198,6 @@
             font-size: 16px;
             box-sizing: border-box;
         }
-
         #saveNameButton, #cancelNameButton {
             padding: 8px 16px;
             margin: 5px 10px 5px 0;
@@ -206,41 +206,41 @@
             border: none;
             border-radius: 4px;
         }
-
         #saveNameButton {
             background-color: var(--primary-cyan);
             color: white;
         }
-
         #saveNameButton:hover {
             background-color: var(--primary-cyan-hover);
         }
-
         #cancelNameButton {
             background-color: #e0e0e0;
             color: #333;
         }
-
         #cancelNameButton:hover {
             background-color: #c0c0c0;
         }
 
         @media (max-width: 600px) {
-            #timerContainer {
-                width: 100% !important;
-                max-width: 380px;
-                padding: 0 10px;
-                box-sizing: border-box;
-            }
-            .modal-content {
-                width: 90% !important;
-                max-width: 340px;
-                margin: 10% auto;
-            }
-            #historyModal .modal-content {
-                width: 95% !important;
-            }
+        #timerContainer {
+            width: 100% !important;
+            max-width: 380px;
+            padding: 0 10px;
+            box-sizing: border-box;
         }
+    
+    .modal-content {
+        width: 90% !important;
+        max-width: 340px;
+        margin: 10% auto;
+    }
+    
+    #historyModal .modal-content {
+        width: 95% !important;
+    }
+}
+
+        
     </style>
 </head>
 <body>
@@ -254,18 +254,17 @@
                 <button id="startButton" onclick="startTimer()">Start</button>
             </div>
             <div id="sizeButtonContainer">
-                <button id="smallButton" onclick="toggleSize()">Toggle Size Circle</button>
-                <button id="randomButton" onclick="toggleRandomChime()">Random Music</button>
-                <button id="resetButton" onclick="resetTimer()">Reset Refresh</button>
-                <button id="historyButton" onclick="openHistoryModal()">History Search</button>
+                <button id="smallButton" onclick="toggleSize()">Toggle Size ◯</button>
+                <button id="randomButton" onclick="toggleRandomChime()">Random ♬</button>
+                <button id="resetButton" onclick="resetTimer()">Reset ⟳</button>
+                <button id="historyButton" onclick="openHistoryModal()">History ⌕</button>
             </div>
         </div>
     </div>
     <audio id="timerSound" src="timer-sounds/clear-announce-tones-2861.wav" preload="auto"></audio>
 
-    <!-- Name Modal -->
     <div id="nameModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content">>
             <h3>Name Your Timer</h3>
             <input type="text" id="timerNameInput" placeholder="Enter timer name" maxlength="30">
             <div>
@@ -278,26 +277,60 @@
     <!-- History Modal -->
     <div id="historyModal" class="modal">
         <div class="modal-content">
+            <h3>Session History</h3>
+
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-                <button onclick="closeHistoryModal()" title="Close" style="background:none;border:none;font-size:20px;cursor:pointer;color:#777">×</button>
-                <h3 style="margin:0;flex:1;text-align:center">Session History</h3>
-                <a href="#" onclick="exportHistoryCSV();return false;" style="font-size:12px;color:var(--primary-cyan);text-decoration:none;white-space:nowrap">Export CSV</a>
+            <button onclick="closeHistoryModal()" title="Close"
+                    style="background:none;border:none;font-size:20px;cursor:pointer;color:#777">×</button>
+
+            <h3 style="margin:0;flex:1;text-align:center">Session History</h3>
+
+            <a href="#" onclick="exportHistoryCSV();return false;"
+                style="font-size:12px;color:var(--primary-cyan);text-decoration:none;white-space:nowrap">Export CSV</a>
             </div>
 
-            <!-- Heat Map -->
-            <div id="weekChart" style="margin:15px auto 20px;width:320px;">
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:#999;margin-bottom:5px;">
-                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            <!-- 2-week mini-chart – THIS week on TOP -->
+            <div id="weekChart" style="margin-bottom:15px;font-size:13px;color:#575757;">
+            <!-- THIS WEEK -->
+            <div class="weekRow">
+                <span class="weekLabel">This week</span>
+                <div class="flexRow">
+                <div class="dayCol"><div class="dayLabel">M</div><div class="dayTicks" id="T0"></div></div>
+                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="T1"></div></div>
+                <div class="dayCol"><div class="dayLabel">W</div><div class="dayTicks" id="T2"></div></div>
+                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="T3"></div></div>
+                <div class="dayCol"><div class="dayLabel">F</div><div class="dayTicks" id="T4"></div></div>
+                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="T5"></div></div>
+                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="T6"></div></div>
+                </div>
             </div>
-            <div style="font-size:11px;color:#666;margin-bottom:3px;">This week</div>
-            <div id="rowThis" style="display:flex;gap:2px;height:8px;margin-bottom:5px;"></div>
-            <div style="font-size:11px;color:#666;margin-bottom:3px;">Last week</div>
-            <div id="rowLast" style="display:flex;gap:2px;height:8px;"></div>
-        </div>
 
+            <!-- LAST WEEK -->
+            <div class="weekRow">
+                <span class="weekLabel">Last week</span>
+                <div class="flexRow">
+                <div class="dayCol"><div class="dayLabel">M</div><div class="dayTicks" id="L0"></div></div>
+                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="L1"></div></div>
+                <div class="dayCol"><div class="dayLabel">W</div><div class="dayTicks" id="L2"></div></div>
+                <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="L3"></div></div>
+                <div class="dayCol"><div class="dayLabel">F</div><div class="dayTicks" id="L4"></div></div>
+                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="L5"></div></div>
+                <div class="dayCol"><div class="dayLabel">S</div><div class="dayTicks" id="L6"></div></div>
+                </div>
+            </div>
+            </div>
+
+            <style>
+            .weekRow{display:flex;align-items:center;margin-bottom:4px}
+            .weekLabel{width:70px;font-size:12px;color:#777}
+            .flexRow{display:flex;justify-content:space-between;flex:1;max-width:280px}
+            .dayCol{text-align:center;flex:1}
+            .dayLabel{margin-bottom:2px;font-weight:bold;font-size:11px}
+            .dayTicks{min-height:18px;font-size:16px;color:var(--primary-cyan)}
+            </style>
+          
             <div id="historyList"></div>
-
-            <div style="text-align:center;margin-top:15px">
+            <div style="text-align: center; margin-top: 15px;">
                 <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
             </div>
         </div>
@@ -308,17 +341,21 @@
         <div class="modal-content" style="width: 340px;">
             <h3>Review Session</h3>
             <div id="reviewSessionInfo" style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 14px;"></div>
+            
             <div style="display: flex; justify-content: space-around; margin: 20px 0;">
-                <button class="emoji-button" onclick="selectReviewScore(-1)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">Sad</button>
-                <button class="emoji-button" onclick="selectReviewScore(0)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">Neutral</button>
-                <button class="emoji-button" onclick="selectReviewScore(1)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">Happy</button>
+                <button class="emoji-button" onclick="selectReviewScore(-1)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">😞</button>
+                <button class="emoji-button" onclick="selectReviewScore(0)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">😐</button>
+                <button class="emoji-button" onclick="selectReviewScore(1)" style="font-size: 48px; background: none; border: 3px solid transparent; border-radius: 8px; cursor: pointer; padding: 10px;">😊</button>
             </div>
+            
             <div style="display: flex; justify-content: space-around; margin-bottom: 15px; font-size: 12px; color: #666;">
                 <span>Not useful</span>
                 <span>Neutral</span>
                 <span>Very useful</span>
             </div>
+            
             <textarea id="reviewComment" placeholder="Optional comment..." style="width: 100%; padding: 8px; border: 2px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; resize: vertical; min-height: 60px;"></textarea>
+            
             <div style="margin-top: 15px;">
                 <button class="modal-button primary" onclick="saveReview()">Save</button>
                 <button class="modal-button secondary" onclick="closeReviewModal()">Cancel</button>
@@ -326,11 +363,10 @@
         </div>
     </div>
 
-    <!-- MAIN SCRIPT (ONLY ONE VERSION) -->
     <script>
-        // === Elements ===
         const canvas = document.getElementById('timerCanvas');
         const ctx = canvas.getContext('2d');
+        const controls = document.getElementById('controls');
         const timerContainer = document.getElementById('timerContainer');
         const timerSound = document.getElementById('timerSound');
         const randomButton = document.getElementById('randomButton');
@@ -342,7 +378,7 @@
         const reviewModal = document.getElementById('reviewModal');
         const historyModal = document.getElementById('historyModal');
 
-        // === Colors & State ===
+        // Define colors to match CSS variables
         const colors = {
             primaryCyan: 'rgba(0, 153, 153, 0.5)',
             primaryCyanOpaque: 'rgba(0, 153, 153, 0.8)',
@@ -351,12 +387,25 @@
             primaryRedLight: 'rgba(237, 77, 102, 0.4)',
         };
 
-        let radius = 120, centerX, centerY;
-        let totalTime = 0, remainingTime = 0;
-        let timerInterval = null, isRunning = false, isExpired = false, isPaused = false;
-        let startAngle = null, currentSize = 'large', randomChimeSelected = false;
-        let timerName = "", currentSessionStartTime = null;
-        let isPulsing = false, pulseStartTime = null, pulseAlpha = 0.1;
+        let radius = 120;
+        let centerX, centerY;
+        let totalTime = 0;
+        let remainingTime = 0;
+        let timerInterval = null;
+        let isRunning = false;
+        let isExpired = false;
+        let isPaused = false;
+        let startAngle = null;
+        let currentSize = 'large'; // Track size: large, medium, small
+        let randomChimeSelected = false;
+        let timerName = "";
+        let currentSessionStartTime = null;
+        let sessionReviews = [];
+        let selectedReviewScore = null;
+        let currentReviewSessionId = null;
+        let isPulsing = false;
+        let pulseStartTime = null;
+        let pulseAlpha = 0.1;
         const pulseDuration = 7000;
         let pulseAnimationFrame = null;
 
@@ -373,318 +422,601 @@
         ];
         const defaultChime = 'timer-sounds/clear-announce-tones-2861.wav';
 
-        // === Canvas Init ===
-        canvas.width = 360; canvas.height = 360;
-        canvas.style.width = '360px'; canvas.style.height = '360px';
-        centerX = canvas.width / 2; centerY = canvas.height / 2;
-        timerContainer.style.width = '380px'; timerContainer.style.height = '500px';
+        // Initial setup for the default (large) timer size
+        canvas.width = 360;
+        canvas.height = 360;
+        canvas.style.width = '360px';
+        canvas.style.height = '360px';
+        centerX = canvas.width / 2;
+        centerY = canvas.height / 2;
+        timerContainer.style.width = '380px';
+        timerContainer.style.height = '500px';
         timerNameDisplay.style.fontSize = '18px';
 
-        // === Button States ===
         function updateButtonStates() {
-            startButton.disabled = isRunning && !isPaused;
-            timeInput.disabled = isRunning;
-            document.getElementById('controls').style.visibility = isRunning && !isPaused ? 'hidden' : 'visible';
+            if (isExpired || (!isRunning && !isPaused)) {
+                startButton.disabled = false;
+                timeInput.disabled = false;
+                smallButton.disabled = false;
+                randomButton.disabled = false;
+                resetButton.disabled = false;
+                controls.style.visibility = 'visible';
+                startButton.removeAttribute('disabled');
+                timeInput.removeAttribute('disabled');
+            } else if (isRunning && !isPaused) {
+                startButton.disabled = true;
+                timeInput.disabled = true;
+                smallButton.disabled = false;
+                randomButton.disabled = false;
+                resetButton.disabled = false;
+                controls.style.visibility = 'hidden';
+                startButton.setAttribute('disabled', 'true');
+                timeInput.setAttribute('disabled', 'true');
+            } else if (isRunning && isPaused) {
+                startButton.disabled = true;
+                timeInput.disabled = true;
+                smallButton.disabled = false;
+                randomButton.disabled = false;
+                resetButton.disabled = false;
+                controls.style.visibility = 'visible';
+                startButton.setAttribute('disabled', 'true');
+                timeInput.setAttribute('disabled', 'true');
+            }
             randomButton.classList.toggle('active', randomChimeSelected);
         }
 
-        // === Draw Timer ===
         function drawTimer() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const scale = radius / 120;
 
-            // Outer circle
-            ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-            ctx.strokeStyle = '#000'; ctx.lineWidth = 10 * scale; ctx.stroke();
+            // Draw outer circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 10 * scale;
+            ctx.stroke();
 
-            // Start marker
+            // Draw start angle marker
             if (startAngle !== null) {
                 ctx.beginPath();
-                const inner = radius - 34 * scale, outer = radius;
-                ctx.moveTo(centerX + inner * Math.cos(startAngle), centerY + inner * Math.sin(startAngle));
-                ctx.lineTo(centerX + outer * Math.cos(startAngle), centerY + outer * Math.sin(startAngle));
-                ctx.strokeStyle = colors.primaryCyan; ctx.lineWidth = 8 * scale; ctx.stroke();
+                const innerRadius = radius - 34 * scale;
+                const outerRadius = radius;
+                ctx.moveTo(centerX + innerRadius * Math.cos(startAngle), centerY + innerRadius * Math.sin(startAngle));
+                ctx.lineTo(centerX + outerRadius * Math.cos(startAngle), centerY + outerRadius * Math.sin(startAngle));
+                ctx.strokeStyle = colors.primaryCyan;
+                ctx.lineWidth = 8 * scale;
+                ctx.stroke();
             }
 
-            // Expired
+            // Handle timer states
             if (isExpired) {
-                ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                ctx.fillStyle = `${colors.primaryCyanPulse}${pulseAlpha})`; ctx.fill();
-                ctx.beginPath(); ctx.arc(centerX, centerY, radius + 5 * scale, 0, 2 * Math.PI);
-                ctx.strokeStyle = colors.primaryRedLight; ctx.lineWidth = 15 * scale; ctx.stroke();
-                ctx.font = `bold ${24 * scale}px Arial`; ctx.fillStyle = '#000';
-                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = `${colors.primaryCyanPulse}${pulseAlpha})`;
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius + 5 * scale, 0, 2 * Math.PI);
+                ctx.strokeStyle = colors.primaryRedLight;
+                ctx.lineWidth = 15 * scale;
+                ctx.stroke();
+                ctx.font = `bold ${24 * scale}px Arial`;
+                ctx.fillStyle = '#000';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
                 ctx.fillText("TIME'S UP!", centerX, centerY);
-                ctx.strokeStyle = colors.primaryCyanOpaque; ctx.lineWidth = 1.1 * scale;
+                ctx.strokeStyle = colors.primaryCyanOpaque;
+                ctx.lineWidth = 1.1 * scale;
                 ctx.strokeText("TIME'S UP!", centerX, centerY);
             } else {
                 if (totalTime > 0 && remainingTime > 0) {
-                    const pos = (remainingTime / 60 % 60) / 60;
-                    const angle = pos * 2 * Math.PI - Math.PI / 2;
-                    ctx.beginPath(); ctx.moveTo(centerX, centerY);
-                    ctx.arc(centerX, centerY, radius - 5 * scale, angle, -Math.PI / 2, true);
+                    const remainingMinutes = remainingTime / 60;
+                    const startPosition = (remainingMinutes % 60) / 60;
+                    const startAngle = (startPosition * 2 * Math.PI) - Math.PI / 2;
+                    const endAngle = -Math.PI / 2;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.arc(centerX, centerY, radius - 5 * scale, startAngle, endAngle, true); // Anti-clockwise
                     ctx.fillStyle = isPaused ? colors.primaryRedLight : colors.primaryRed;
                     ctx.fill();
                 }
+
                 if (isPaused) {
-                    ctx.beginPath(); ctx.arc(centerX, centerY, radius + 5 * scale, 0, 2 * Math.PI);
-                    ctx.strokeStyle = colors.primaryCyan; ctx.stroke();
-                    ctx.font = `bold ${24 * scale}px Arial`; ctx.fillStyle = colors.primaryCyanOpaque;
-                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius + 5 * scale, 0, 2 * Math.PI);
+                    ctx.strokeStyle = colors.primaryCyan;
+                    ctx.stroke();
+                    ctx.font = `bold ${24 * scale}px Arial`;
+                    ctx.fillStyle = colors.primaryCyanOpaque;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
                     ctx.fillText("PAUSED", centerX, centerY);
                 }
             }
 
-            // Inner circles
-            ctx.beginPath(); ctx.arc(centerX, centerY, radius + 9 * scale, 0, 2 * Math.PI);
-            ctx.strokeStyle = '#000'; ctx.lineWidth = 1 * scale; ctx.stroke();
-            ctx.beginPath(); ctx.arc(centerX, centerY, radius + 13 * scale, 0, 2 * Math.PI);
-            ctx.strokeStyle = '#000'; ctx.lineWidth = 2 * scale; ctx.stroke();
+            // Draw inner/outer circles
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius + 9 * scale, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1 * scale;
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius + 13 * scale, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2 * scale;
+            ctx.stroke();
 
-            // Minute markers
+            // Draw minute markers
             for (let i = 0; i < 60; i++) {
-                const angle = i / 60 * 2 * Math.PI - Math.PI / 2;
-                const inner = i % 5 === 0 ? radius - 49 * scale : radius - 30 * scale;
+                const angle = (i / 60) * 2 * Math.PI - Math.PI / 2;
+                const outerRadius = radius + 5 * scale;
+                const innerRadius = i % 5 === 0 ? radius - 49 * scale : radius - 30 * scale;
                 ctx.beginPath();
-                ctx.moveTo(centerX + inner * Math.cos(angle), centerY + inner * Math.sin(angle));
-                ctx.lineTo(centerX + (radius + 5 * scale) * Math.cos(angle), centerY + (radius + 5 * scale) * Math.sin(angle));
-                ctx.strokeStyle = '#000'; ctx.lineWidth = 4 * scale; ctx.stroke();
+                ctx.moveTo(centerX + innerRadius * Math.cos(angle), centerY + innerRadius * Math.sin(angle));
+                ctx.lineTo(centerX + outerRadius * Math.cos(angle), centerY + outerRadius * Math.sin(angle));
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 4 * scale;
+                ctx.stroke();
             }
 
-            // Numbers
-            const fontSize = currentSize === 'small' ? 20 : 16;
+            // Draw minute numbers (clockwise for anti-clockwise countdown)
+            const fontSize = currentSize === 'small' ? 20 : 16; // Larger font for small size
             ctx.font = `bold ${fontSize * scale}px Arial`;
-            ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#000';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
             for (let i = 0; i < 60; i += 5) {
-                const angle = i / 60 * 2 * Math.PI - Math.PI / 2;
-                const textRadius = radius + (currentSize === 'small' ? 32 : 28) * scale;
-                ctx.fillText(i === 0 ? '0' : i, centerX + textRadius * Math.cos(angle), centerY + textRadius * Math.sin(angle) + scale);
+                const displayMinute = i === 0 ? 0 : i; // Numbers increase clockwise
+                const angle = (i / 60) * 2 * Math.PI - Math.PI / 2; // Clockwise positions
+                const textRadius = radius + (currentSize === 'small' ? 32 * scale : 28 * scale);
+                ctx.fillText(displayMinute.toString(), centerX + textRadius * Math.cos(angle), centerY + textRadius * Math.sin(angle) + 1 * scale);
             }
         }
 
-        // === Timer Controls ===
         function toggleRandomChime() {
-            randomChimeSelected = !randomChimeSelected;
-            timerSound.src = randomChimeSelected ? chimes[Math.floor(Math.random() * chimes.length)] : defaultChime;
-            timerSound.load();
+            if (randomChimeSelected) {
+                timerSound.src = defaultChime;
+                timerSound.load();
+                randomChimeSelected = false;
+            } else {
+                const randomIndex = Math.floor(Math.random() * chimes.length);
+                timerSound.src = chimes[randomIndex];
+                timerSound.load();
+                randomChimeSelected = true;
+            }
             updateButtonStates();
         }
 
         function toggleSize() {
             if (currentSize === 'large') {
-                canvas.width = 300; canvas.height = 300; radius = 100; currentSize = 'medium';
-                timerContainer.style.width = '320px'; timerContainer.style.height = '460px';
-                timerNameDisplay.style.fontSize = '14.4px';
-            } else if (currentSize === 'medium') {
-                canvas.width = 236; canvas.height = 236; radius = 72; currentSize = 'small';
-                centerY = canvas.height / 2 - 5;
-                timerContainer.style.width = '256px'; timerContainer.style.height = '396px';
-                timerNameDisplay.style.fontSize = '10.8px';
-            } else {
-                canvas.width = 360; canvas.height = 360; radius = 120; currentSize = 'large';
+                // Switch to medium
+                canvas.width = 300;
+                canvas.height = 300;
+                canvas.style.width = '300px';
+                canvas.style.height = '300px';
+                radius = 100;
+                centerX = canvas.width / 2;
                 centerY = canvas.height / 2;
-                timerContainer.style.width = '380px'; timerContainer.style.height = '500px';
+                timerContainer.style.width = '320px';
+                timerContainer.style.height = '460px';
+                timerNameDisplay.style.fontSize = '14.4px';
+                currentSize = 'medium';
+            } else if (currentSize === 'medium') {
+                // Switch to small
+                canvas.width = 236;
+                canvas.height = 236;
+                canvas.style.width = '236px';
+                canvas.style.height = '236px';
+                radius = 72;
+                centerX = canvas.width / 2;
+                centerY = canvas.height / 2 - 5;
+                timerContainer.style.width = '256px';
+                timerContainer.style.height = '396px';
+                timerNameDisplay.style.fontSize = '10.8px';
+                currentSize = 'small';
+            } else {
+                // Switch to large
+                canvas.width = 360;
+                canvas.height = 360;
+                canvas.style.width = '360px';
+                canvas.style.height = '360px';
+                radius = 120;
+                centerX = canvas.width / 2;
+                centerY = canvas.height / 2;
+                timerContainer.style.width = '380px';
+                timerContainer.style.height = '500px';
                 timerNameDisplay.style.fontSize = '18px';
+                currentSize = 'large';
             }
-            canvas.style.width = canvas.width + 'px'; canvas.style.height = canvas.height + 'px';
+            drawTimer();
+        }
+
+        function resetSize() {
+            canvas.width = 360;
+            canvas.height = 360;
+            canvas.style.width = '360px';
+            canvas.style.height = '360px';
+            radius = 120;
             centerX = canvas.width / 2;
+            centerY = canvas.height / 2;
+            timerContainer.style.width = '380px';
+            timerContainer.style.height = '500px';
+            timerNameDisplay.style.fontSize = '18px';
+            currentSize = 'large';
             drawTimer();
         }
 
         function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
             if (isRunning) return;
-            const minutes = parseInt(timeInput.value) || 0;
-            if (minutes <= 0) return alert('Enter valid minutes');
-            totalTime = minutes * 60; remainingTime = totalTime;
-            isRunning = true; isExpired = false; isPaused = false;
+
+            const input = document.getElementById('timeInput').value;
+            const minutes = parseInt(input) || 0;
+            if (minutes <= 0) {
+                alert('Please enter a valid number of minutes');
+                return;
+            }
+
+            if (!randomChimeSelected && timerSound.src !== defaultChime) {
+                timerSound.src = defaultChime;
+                timerSound.load();
+            }
+
+            totalTime = minutes * 60;
+            remainingTime = totalTime;
+            isRunning = true;
+            isExpired = false;
+            isPaused = false;
             currentSessionStartTime = new Date();
-            startAngle = ((minutes % 60) / 60) * 2 * Math.PI - Math.PI / 2;
-            updateButtonStates(); drawTimer();
+
+            const startPosition = (minutes % 60) / 60;
+            startAngle = (startPosition * 2 * Math.PI) - Math.PI / 2;
+
+            updateButtonStates();
+            drawTimer();
 
             timerInterval = setInterval(() => {
-                if (!isPaused && --remainingTime <= 0) {
-                    clearInterval(timerInterval); isRunning = false; isExpired = true;
-                    isPulsing = true; pulseStartTime = Date.now();
-                    pulseAnimationFrame = requestAnimationFrame(pulseOverlay);
-                    timerSound.play().catch(() => {});
-                    addSessionToHistory();
+                if (!isPaused) {
+                    remainingTime--;
+                    drawTimer(); // Update every second
+
+                    if (remainingTime <= 0) {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        isExpired = true;
+                        isPaused = false;
+                        isPulsing = true;
+                        pulseStartTime = Date.now();
+                        pulseAnimationFrame = requestAnimationFrame(pulseOverlay);
+                        updateButtonStates();
+                        drawTimer();
+                        timerSound.volume = 0.5;
+                        timerSound.play().catch(error => console.error('Error playing sound:', error));
+                        addSessionToHistory();
+                    }
                 }
-                drawTimer();
             }, 1000);
         }
 
         function resetTimer() {
-            clearInterval(timerInterval); cancelAnimationFrame(pulseAnimationFrame);
-            isRunning = isExpired = isPaused = isPulsing = false;
-            totalTime = remainingTime = 0; startAngle = null;
-            timerSound.src = defaultChime; randomChimeSelected = false;
-            timerName = ""; localStorage.setItem('timerName', '');
-            updateTimerNameDisplay(); updateButtonStates(); drawTimer();
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            if (pulseAnimationFrame) {
+                cancelAnimationFrame(pulseAnimationFrame);
+                pulseAnimationFrame = null;
+            }
+            isRunning = false;
+            isExpired = false;
+            isPaused = false;
+            isPulsing = false;
+            pulseStartTime = null;
+            pulseAlpha = 0.1;
+            startAngle = null;
+            totalTime = 0;
+            remainingTime = 0;
+            if (randomChimeSelected) {
+                timerSound.src = defaultChime;
+                timerSound.load();
+                randomChimeSelected = false;
+            }
+            timerName = "";
+            localStorage.setItem('timerName', "");
+            updateTimerNameDisplay();
+            updateButtonStates();
+            drawTimer();
         }
 
         function pulseOverlay() {
             if (!isPulsing) return;
+
             const elapsed = Date.now() - pulseStartTime;
-            if (elapsed >= pulseDuration) { isPulsing = false; drawTimer(); return; }
-            pulseAlpha = 0.15 + 0.15 * Math.sin((2 * Math.PI * elapsed) / 1000);
+            if (elapsed >= pulseDuration) {
+                isPulsing = false;
+                pulseStartTime = null;
+                pulseAlpha = 0.1;
+                pulseAnimationFrame = null;
+                drawTimer();
+                return;
+            }
+
+            const frequency = (2 * Math.PI) / 1000;
+            pulseAlpha = 0.15 + 0.15 * Math.sin(frequency * elapsed);
             drawTimer();
             pulseAnimationFrame = requestAnimationFrame(pulseOverlay);
         }
 
         function togglePauseResume() {
-            if (isExpired) { resetTimer(); return; }
+            if (isExpired) {
+                resetTimer();
+                return;
+            }
             if (!isRunning) return;
+
             isPaused = !isPaused;
-            updateButtonStates(); drawTimer();
+            updateButtonStates();
+            drawTimer();
         }
 
-        // === Name Modal ===
-        function openNameModal() { nameModal.style.display = 'block'; timerNameInput.value = timerName; timerNameInput.focus(); }
-        function closeNameModal() { nameModal.style.display = 'none'; }
-        function saveTimerName() { timerName = timerNameInput.value.trim(); updateTimerNameDisplay(); closeNameModal(); localStorage.setItem('timerName', timerName); }
-        function updateTimerNameDisplay() { timerNameDisplay.textContent = timerName || ''; }
+        function openNameModal() {
+            nameModal.style.display = 'block';
+            timerNameInput.value = timerName;
+            timerNameInput.focus();
+        }
 
-        // === Click Outside ===
-        window.onclick = e => { if (e.target.classList.contains('modal')) e.target.style.display = 'none'; };
-        timerNameInput.addEventListener('keyup', e => { if (e.key === 'Enter') saveTimerName(); });
+        function closeNameModal() {
+            nameModal.style.display = 'none';
+        }
 
-        // === Double Click Canvas ===
-        let clickTimer = null;
-        canvas.addEventListener('click', () => {
-            if (clickTimer === null) {
-                clickTimer = setTimeout(() => { togglePauseResume(); clickTimer = null; }, 300);
-            } else {
-                clearTimeout(clickTimer); clickTimer = null; openNameModal();
+        function saveTimerName() {
+            timerName = timerNameInput.value.trim();
+            updateTimerNameDisplay();
+            closeNameModal();
+            localStorage.setItem('timerName', timerName);
+        }
+
+        function updateTimerNameDisplay() {
+            timerNameDisplay.textContent = timerName || '';
+            timerNameDisplay.style.display = timerName ? 'block' : 'block';
+        }
+
+        window.onclick = function(event) {
+            if (event.target === nameModal) {
+                closeNameModal();
+            }
+            if (event.target === historyModal) {
+                closeHistoryModal();
+            }
+            if (event.target === reviewModal) {
+                closeReviewModal();
+            }
+        }
+
+        timerNameInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                saveTimerName();
             }
         });
 
-        // === Init ===
-        const savedName = localStorage.getItem('timerName');
-        if (savedName) timerName = savedName;
-        updateTimerNameDisplay(); drawTimer(); updateButtonStates();
+        let doubleClickTimer = null;
 
-        // === History & Heat Map ===
-        function getSessionHistory() { return JSON.parse(localStorage.getItem('timerSessions') || '[]'); }
-        function saveSessionHistory(s) { localStorage.setItem('timerSessions', JSON.stringify(s)); }
-
-        function addSessionToHistory() {
-            if (!currentSessionStartTime) return;
-            const s = { id: currentSessionStartTime.toISOString(), timestamp: currentSessionStartTime.toISOString(), name: timerName || 'Untitled', duration: Math.round(totalTime / 60) };
-            const list = getSessionHistory(); list.push(s); saveSessionHistory(list);
-            currentSessionStartTime = null;
-        }
-
-        function displayHistory() {
-            const list = document.getElementById('historyList');
-            const sessions = getSessionHistory();
-            if (!sessions.length) return list.innerHTML = '<p style="text-align:center;color:#999">No history yet.</p>';
-            sessions.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-            list.innerHTML = sessions.map(s => {
-                const d = new Date(s.timestamp);
-                const dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-                const emoji = s.score === 1 ? 'Happy' : s.score === 0 ? 'Neutral' : s.score === -1 ? 'Sad' : '';
-                return `<div style="border:1px solid #ddd;border-radius:4px;padding:12px;margin-bottom:10px;">
-                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-                        <strong style="color:#575757;font-size:14px;">${s.name}</strong>
-                        <span style="color:#999;font-size:12px;">${dateStr}</span>
-                    </div>
-                    <div style="color:#666;font-size:13px;margin-bottom:8px;">${s.duration} minute${s.duration>1?'s':''}</div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <div style="display:flex;gap:10px;">
-                            ${emoji ? `<span style="font-size:20px;">${emoji}</span>` : ''}
-                            ${s.comment ? `<span style="color:#555;font-size:13px;font-style:italic;">"${s.comment}"</span>` : ''}
-                        </div>
-                        <div style="display:flex;gap:5px;">
-                            <button class="modal-button primary" onclick="openReviewModal('${s.id}')" style="font-size:12px;padding:4px 8px;">${s.score!==undefined?'Edit':'Review'}</button>
-                            <button class="modal-button" onclick="deleteSession('${s.id}')" style="background:#ff4444;color:white;font-size:12px;padding:4px 8px;">×</button>
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        function deleteSession(id) { if (confirm('Delete?')) { saveSessionHistory(getSessionHistory().filter(s => s.id !== id)); displayHistory(); } }
-
-        // === Review Modal ===
-        let currentReviewSessionId = null, selectedReviewScore = null;
-        function openReviewModal(id) {
-            currentReviewSessionId = id; selectedReviewScore = null;
-            document.querySelectorAll('.emoji-button').forEach(b => b.classList.remove('selected'));
-            document.getElementById('reviewComment').value = '';
-            const s = getSessionHistory().find(x => x.id === id);
-            if (s) {
-                document.getElementById('reviewSessionInfo').innerHTML = `<strong>${s.name}</strong><br>${s.duration} min<br>${new Date(s.timestamp).toLocaleString()}`;
-                if (s.score !== undefined) {
-                    selectedReviewScore = s.score;
-                    document.getElementById('reviewComment').value = s.comment || '';
-                    document.querySelectorAll('.emoji-button')[s.score + 1].classList.add('selected');
-                }
+        function handleTimerClick(event) {
+            if (doubleClickTimer === null) {
+                doubleClickTimer = setTimeout(() => {
+                    togglePauseResume();
+                    doubleClickTimer = null;
+                }, 300);
+            } else {
+                clearTimeout(doubleClickTimer);
+                doubleClickTimer = null;
+                openNameModal();
+                event.preventDefault();
             }
-            reviewModal.style.display = 'block';
-        }
-        function closeReviewModal() { reviewModal.style.display = 'none'; }
-        function selectReviewScore(n) {
-            selectedReviewScore = n;
-            document.querySelectorAll('.emoji-button').forEach(b => b.classList.remove('selected'));
-            event.target.classList.add('selected');
-        }
-        function saveReview() {
-            if (selectedReviewScore === null) return alert('Pick a rating');
-            const s = getSessionHistory().find(x => x.id === currentReviewSessionId);
-            if (s) { s.score = selectedReviewScore; s.comment = document.getElementById('reviewComment').value.trim(); saveSessionHistory(getSessionHistory()); }
-            closeReviewModal(); displayHistory();
         }
 
-        // === HEAT MAP (FIXED & WORKING) ===
-        function renderWeekChart() {
-            const sessions = getSessionHistory();
-            const now = new Date();
-            const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + 13*60)*60000);
-            nzToday.setHours(0,0,0,0);
-            const day = nzToday.getDay();
-            const thisMon = new Date(nzToday); thisMon.setDate(nzToday.getDate() - (day + 6) % 7);
-            const lastMon = new Date(thisMon); lastMon.setDate(thisMon.getDate() - 7);
+        canvas.addEventListener('click', handleTimerClick);
 
-            const thisWeek = [0,0,0,0,0,0,0], lastWeek = [0,0,0,0,0,0,0];
-            sessions.forEach(s => {
-                const [y,m,d,h,mi] = s.timestamp.split(/[-T:.]/).map(Number);
-                const sess = new Date(y, m-1, d, h, mi);
-                const diffThis = Math.floor((sess - thisMon) / 86400000);
-                const diffLast = Math.floor((sess - lastMon) / 86400000);
-                if (diffThis >= 0 && diffThis < 7) thisWeek[diffThis]++;
-                else if (diffLast >= 0 && diffLast < 7) lastWeek[diffLast]++;
-            });
-    
-            // FIXED: Make bars more visible with better height and color
-            const bar = n => `<div style="flex:1;background:${n ? '#009999' : '#e0e0e0'};height:8px;border-radius:2px;opacity:${n ? Math.min(1, 0.3 + n * 0.2) : 0.3}"></div>`;
-            const r1 = document.getElementById('rowThis'); 
-            if (r1) r1.innerHTML = thisWeek.map(bar).join('');
-            const r2 = document.getElementById('rowLast'); 
-            if (r2) r2.innerHTML = lastWeek.map(bar).join('');
+        const savedName = localStorage.getItem('timerName');
+        if (savedName) {
+            timerName = savedName;
         }
+        updateTimerNameDisplay();
+        drawTimer();
+        updateButtonStates();
 
-        // === MODAL CONTROL (ONLY ONE VERSION) ===
+        // History Modal Functions
+        // History Modal Functions
         function openHistoryModal() {
             historyModal.style.display = 'block';
             displayHistory();
-            renderWeekChart();  // HEAT MAP SHOWS NOW
+            renderWeekChart();
         }
 
         function closeHistoryModal() {
             historyModal.style.display = 'none';
         }
 
-        function exportHistoryCSV() {
-            const s = getSessionHistory();
-            if (!s.length) return alert('No data');
-            let csv = 'Date,Name,Duration,Score,Comment\n';
-            s.forEach(x => {
-                const score = x.score === 1 ? 'Happy' : x.score === 0 ? 'Neutral' : x.score === -1 ? 'Sad' : '';
-                csv += `"${new Date(x.timestamp).toLocaleString()}","${x.name}",${x.duration},${score},"${(x.comment||'').replace(/"/g,'""')}"\n`;
+        function displayHistory() {
+            const historyList = document.getElementById('historyList');
+            const sessions = getSessionHistory();
+            
+            if (sessions.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: #999;">No session history yet.</p>';
+                return;
+            }
+            
+            // Sort by newest first
+            sessions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            let html = '';
+            sessions.forEach(session => {
+                const date = new Date(session.timestamp);
+                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const scoreEmoji = session.score === 1 ? '😊' : session.score === 0 ? '😐' : session.score === -1 ? '😞' : '';
+                
+                html += `
+                    <div style="border: 1px solid #ddd; border-radius: 4px; padding: 12px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <strong style="color: #575757; font-size: 14px;">${session.name}</strong>
+                            <span style="color: #999; font-size: 12px;">${dateStr}</span>
+                        </div>
+                        <div style="color: #666; font-size: 13px; margin-bottom: 8px;">${session.duration} minute${session.duration !== 1 ? 's' : ''}</div>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                ${scoreEmoji ? `<span style="font-size: 20px;">${scoreEmoji}</span>` : ''}
+                                ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
+                            </div>
+                            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px;">
+                                    ${session.score !== undefined ? 'Edit' : 'Review'}
+                                </button>
+                                <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: #ff4444; color: white; font-size: 12px; padding: 4px 8px;">×</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
             });
-            const blob = new Blob([csv], {type: 'text/csv'});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'history.csv'; a.click();
+            
+            historyList.innerHTML = html;
         }
+
+        // Review Modal Functions
+        function openReviewModal(sessionId) {
+            currentReviewSessionId = sessionId;
+            selectedReviewScore = null;
+            
+            // Clear previous selection
+            document.querySelectorAll('.emoji-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.getElementById('reviewComment').value = '';
+            
+            // Load session info
+            const sessions = getSessionHistory();
+            const session = sessions.find(s => s.id === sessionId);
+            if (session) {
+                document.getElementById('reviewSessionInfo').innerHTML = 
+                    `<strong>${session.name || 'Untitled Session'}</strong><br>${session.duration} minute${session.duration !== 1 ? 's' : ''}<br>${new Date(session.timestamp).toLocaleString()}`;
+                
+                // If session already has a review, load it
+                if (session.score !== undefined) {
+                    selectedReviewScore = session.score;
+                    document.getElementById('reviewComment').value = session.comment || '';
+                    // Highlight the selected emoji
+                    const buttons = document.querySelectorAll('.emoji-button');
+                    buttons.forEach((btn, index) => {
+                        const scores = [-1, 0, 1];
+                        if (scores[index] === session.score) {
+                            btn.classList.add('selected');
+                        }
+                    });
+                }
+            }
+            
+            reviewModal.style.display = 'block';
+        }
+
+        function closeReviewModal() {
+            reviewModal.style.display = 'none';
+        }
+
+        function selectReviewScore(score) {
+            selectedReviewScore = score;
+            document.querySelectorAll('.emoji-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function saveReview() {
+            if (selectedReviewScore === null) {
+                alert('Please select a rating');
+                return;
+            }
+            
+            const sessions = getSessionHistory();
+            const session = sessions.find(s => s.id === currentReviewSessionId);
+            if (session) {
+                session.score = selectedReviewScore;
+                session.comment = document.getElementById('reviewComment').value.trim();
+                saveSessionHistory(sessions);
+            }
+            
+            closeReviewModal();
+            displayHistory(); // Refresh the history list
+        }
+
+        // Helper Functions
+        function getSessionHistory() {
+            const history = localStorage.getItem('timerSessions');
+            return history ? JSON.parse(history) : [];
+        }
+
+        function saveSessionHistory(sessions) {
+            localStorage.setItem('timerSessions', JSON.stringify(sessions));
+        }
+
+        function addSessionToHistory() {
+            if (!currentSessionStartTime) return;
+            
+            const session = {
+                id: currentSessionStartTime.toISOString(),
+                timestamp: currentSessionStartTime.toISOString(),
+                name: timerName || 'Untitled Session',
+                duration: Math.round(totalTime / 60)
+            };
+            
+            const sessions = getSessionHistory();
+            sessions.push(session);
+            saveSessionHistory(sessions);
+            
+            currentSessionStartTime = null;
+        }
+
+        function deleteSession(sessionId) {
+            if (confirm('Delete this session?')) {
+            let sessions = getSessionHistory();
+            sessions = sessions.filter(s => s.id !== sessionId);
+            saveSessionHistory(sessions);
+            displayHistory();
+            }
+        }
+
+        /* ---------- 14-day chart ---------- */
+        function renderWeekChart() {
+            const sessions = getSessionHistory();
+            const today = new Date();
+            const dayOfWeek = today.getDay();                // Sun=0
+            const daysSinceMonday = (dayOfWeek + 6) % 7;
+            const thisMon = new Date(today);
+            thisMon.setDate(today.getDate() - daysSinceMonday);
+            const lastMon = new Date(thisMon);
+            lastMon.setDate(thisMon.getDate() - 7);
+
+            const counts = {
+                last: [0, 0, 0, 0, 0, 0, 0], // index 0 = Monday … 6 = Sunday
+                this: [0, 0, 0, 0, 0, 0, 0]
+            };
+
+            sessions.forEach(s => {
+                const d = new Date(s.timestamp);
+                const dayDiffThis = Math.floor((d - thisMon) / 86400000);
+                const dayDiffLast = Math.floor((d - lastMon) / 86400000);
+
+                if (dayDiffThis >= 0 && dayDiffThis < 7) counts.this[dayDiffThis]++;
+                else if (dayDiffLast >= 0 && dayDiffLast < 7) counts.last[dayDiffLast]++;
+            });
+
+            // render
+            ['last', 'this'].forEach(week => {
+                for (let i = 0; i < 7; i++) {
+                const cell = document.getElementById((week === 'last' ? 'L' : 'T') + i);
+                cell.textContent = '✓'.repeat(Math.min(counts[week][i], 5));
+                cell.style.opacity = counts[week][i] ? '1' : '.25';
+                }
+            });
+        }
+
     </script>
 </body>
 </html>
