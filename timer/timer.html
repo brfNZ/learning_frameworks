@@ -983,50 +983,53 @@
         }
 
         /* ---------- 14-day chart ---------- */
-        function renderWeekChart() {
-            const sessions = getSessionHistory();
+    function renderWeekChart() {
+        const sessions = getSessionHistory();
 
-            /* ---------- 1.  TODAY in NZ calendar ---------- */
-            const now = new Date();
-            const nzOffset = 13;                                // NZDT Nov 2025
-            const nzToday = new Date(now.getTime() +
-                                (now.getTimezoneOffset() + nzOffset*60)*60000);
-            nzToday.setHours(0,0,0,0);                        // NZ midnight
+        /* 1.  TODAY in NZ calendar ------------------------------------------ */
+        const now = new Date();
+        const nzOffset = 13;                                // NZDT Nov 2025
+        const nzToday = new Date(now.getTime() +
+                            (now.getTimezoneOffset() + nzOffset*60)*60000);
+        nzToday.setHours(0,0,0,0);
 
-            /* ---------- 2.  Monday of THIS week (NZ) ---------- */
-            const dayOfWeek = nzToday.getDay();                 // Sun = 0
-            const daysSinceMonday = (dayOfWeek + 6) % 7;
-            const thisMon = new Date(nzToday);
-            thisMon.setDate(nzToday.getDate() - daysSinceMonday);
+        /* 2.  Monday of THIS week (NZ) -------------------------------------- */
+        const dayOfWeek = nzToday.getDay();                 // Sun = 0
+        const daysSinceMonday = (dayOfWeek + 6) % 7;
+        const thisMon = new Date(nzToday);
+        thisMon.setDate(nzToday.getDate() - daysSinceMonday);
 
-            const lastMon = new Date(thisMon);
-            lastMon.setDate(thisMon.getDate() - 7);
+        const lastMon = new Date(thisMon);
+        lastMon.setDate(thisMon.getDate() - 7);
 
-            /* ---------- 3.  bucket sessions by NZ day ---------- */
-            const counts = { this:[0,0,0,0,0,0,0], last:[0,0,0,0,0,0,0] };
+        /* 3.  bucket sessions by NZ day ------------------------------------- */
+        const counts = { this:[0,0,0,0,0,0,0], last:[0,0,0,0,0,0,0] };
 
-            sessions.forEach(s => {
-                // UTC timestamp → NZ wall-clock
-                const d = new Date(s.timestamp);
-                const nzSession = new Date(d.getTime() +
-                                    (d.getTimezoneOffset() + nzOffset*60)*60000);
+        sessions.forEach(s => {
+            /* *****  CRITICAL FIX  ***** */
+            // UTC string "2025-11-05T09:04:00.000Z"  ->  treat it as NZ-time
+            const pieces = s.timestamp.split(/[-T:.Z]/);
+            const nzSession = new Date(
+            +pieces[0], pieces[1]-1, +pieces[2],
+            +pieces[3], +pieces[4], +pieces[5]
+            ); // local Date **in the NZ calendar**
 
-                const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
-                const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
+            const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
+            const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
 
-                if (dayDiffThis >= 0 && dayDiffThis < 7) counts.this[dayDiffThis]++;
-                else if (dayDiffLast >= 0 && dayDiffLast < 7) counts.last[dayDiffLast]++;
-            });
+            if (dayDiffThis >= 0 && dayDiffThis < 7) counts.this[dayDiffThis]++;
+            else if (dayDiffLast >= 0 && dayDiffLast < 7) counts.last[dayDiffLast]++;
+        });
 
-            /* ---------- 4.  render ---------- */
-            ['this','last'].forEach(wk => {
-                for (let i = 0; i < 7; i++){
-                const cell = document.getElementById((wk==='this'?'T':'L')+i);
-                cell.textContent = '✓'.repeat(Math.min(counts[wk][i],5));
-                cell.style.opacity = counts[wk][i] ? '1' : '.25';
-                }
-            });
-        }
+        /* 4.  render -------------------------------------------------------- */
+        ['this','last'].forEach(wk => {
+            for (let i = 0; i < 7; i++){
+            const cell = document.getElementById((wk==='this'?'T':'L')+i);
+            cell.textContent = '✓'.repeat(Math.min(counts[wk][i],5));
+            cell.style.opacity = counts[wk][i] ? '1' : '.25';
+            }
+        });
+    }
 
     </script>
 </body>
