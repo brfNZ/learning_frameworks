@@ -278,6 +278,25 @@
     <div id="historyModal" class="modal">
         <div class="modal-content">
             <h3>Session History</h3>
+
+            <!-- 7-day mini-chart -->
+            <div id="weekChart" style="margin-bottom:15px;font-size:13px;color:#575757;">
+            <div style="display:flex;justify-content:space-between;max-width:340px;margin:0 auto;">
+                <div class="dayCol"><div class="dayLabel">Mo</div><div class="dayTicks" id="d0"></div></div>
+                <div class="dayCol"><div class="dayLabel">Tu</div><div class="dayTicks" id="d1"></div></div>
+                <div class="dayCol"><div class="dayLabel">We</div><div class="dayTicks" id="d2"></div></div>
+                <div class="dayCol"><div class="dayLabel">Th</div><div class="dayTicks" id="d3"></div></div>
+                <div class="dayCol"><div class="dayLabel">Fr</div><div class="dayTicks" id="d4"></div></div>
+                <div class="dayCol"><div class="dayLabel">Sa</div><div class="dayTicks" id="d5"></div></div>
+                <div class="dayCol"><div class="dayLabel">Su</div><div class="dayTicks" id="d6"></div></div>
+            </div>
+            </div>
+            <style>
+            .dayCol{text-align:center;flex:1}
+            .dayLabel{margin-bottom:4px;font-weight:bold}
+            .dayTicks{min-height:20px;font-size:18px;color:var(--primary-cyan)}
+            </style>
+
             <div id="historyList"></div>
             <div style="text-align: center; margin-top: 15px;">
                 <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
@@ -778,6 +797,7 @@
         function openHistoryModal() {
             historyModal.style.display = 'block';
             displayHistory();
+            renderWeekChart();
         }
 
         function closeHistoryModal() {
@@ -928,6 +948,30 @@
             saveSessionHistory(sessions);
             displayHistory();
             }
+        }
+
+        /* ---------- 7-day chart ---------- */
+        function renderWeekChart() {
+        const sessions = getSessionHistory();
+        const today = new Date();
+        const dayMap = [0, 0, 0, 0, 0, 0, 0]; // Mon … Sun
+
+        sessions.forEach(s => {
+            const d = new Date(s.timestamp);
+            const dayDiff = Math.floor((today - d) / 86400000); // whole days ago
+            if (dayDiff >= 0 && dayDiff < 7) {
+            const dayIdx = (d.getDay() + 6) % 7; // Sun=6 → 6; shift so Mon=0
+            dayMap[dayIdx] += 1;
+            }
+        });
+
+        // fill the ticks
+        for (let i = 0; i < 7; i++) {
+            const cell = document.getElementById('d' + i);
+            cell.textContent = '✓'.repeat(Math.min(dayMap[i], 5)); // cap at 5 symbols
+            if (dayMap[i] === 0) cell.style.opacity = '.25';
+            else cell.style.opacity = '1';
+        }
         }
 
     </script>
