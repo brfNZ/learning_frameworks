@@ -307,7 +307,7 @@
 
             <!-- LAST WEEK -->
             <div class="weekRow">
-                <span class="weekLabel">Last week</span>
+                <span class="weekLabel" style="display:none">Last week</span>
                 <div class="flexRow">
                 <div class="dayCol"><div class="dayLabel">M</div><div class="dayTicks" id="L0"></div></div>
                 <div class="dayCol"><div class="dayLabel">T</div><div class="dayTicks" id="L1"></div></div>
@@ -1011,7 +1011,7 @@
             ['last', 'this'].forEach(week => {
                 for (let i = 0; i < 7; i++) {
                 const cell = document.getElementById((week === 'last' ? 'L' : 'T') + i);
-                cell.textContent = '✓'.repeat(Math.min(counts[week][i], 5));
+                cell.textContent = '|'.repeat(Math.min(counts[week][i], 5));
                 cell.style.opacity = counts[week][i] ? '1' : '.25';
                 }
             });
