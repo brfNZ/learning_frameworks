@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art of War - 52 Week Tracker</title>
+    <style>
+   /* [Same CSS as original - keeping all styling identical] */
+:root {
+    --color-bg-primary: #0f172a;
+    --color-bg-secondary: #1e293b;
+    --color-bg-tertiary: #334155;
+    --color-bg-card: #475569;
+    --color-bg-input: #334155;
+    --color-bg-hover: #2d3748;
+    --color-bg-light: #e2e8f0;
+    --color-accent: #fbbf24;  
+    --color-text-primary: #e2e8f0;
+    --color-text-secondary: #cbd5e1;
+    --color-text-muted: #94a3b8;
+    --color-text-dim: #64748b;
+    --color-accent: #fbbf24;
+    --color-accent-dark: #b45309;
+    --color-btn-primary: #b45309;
+    --color-btn-primary-hover: #92400e;
+    --color-btn-success: #059669;
+    --color-btn-success-hover: #047857;
+    --color-btn-purple: #7c3aed;
+    --color-btn-purple-hover: #6d28d9;
+    --border-color: #64748b;
+    --border-color-hover: #fbbf24;
+    --shadow: 0 20px 25px rgba(0, 0, 0, 0.3);
+    --scrollbar-track: #1e293b;
+    --scrollbar-thumb: #64748b;
+    --scrollbar-thumb-hover: #94a3b8;
+}
+
+[data-theme="light"] {
+    --color-bg-primary: #f8fafc;
+    --color-bg-secondary: #e2e8f0;
+    --color-bg-tertiary: #cbd5e1;
+    --color-bg-card: #e2e8f0;
+    --color-bg-input: #f1f5f9;
+    --color-bg-hover: #cbd5e1;
+    --color-bg-light: #f8fafc;
+    --color-accent: #d97706; 
+    --color-text-primary: #1e293b;
+    --color-text-secondary: #475569;
+    --color-text-muted: #64748b;
+    --color-text-dim: #94a3b8;
+    --color-accent: #d97706;
+    --color-accent-dark: #b45309;
+    --border-color: #cbd5e1;
+    --border-color-hover: #fbbf24;
+    --shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+    --scrollbar-track: #e2e8f0;
+    --scrollbar-thumb: #9ca3af;
+    --scrollbar-thumb-hover: #6b7280;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: linear-gradient(to bottom right, var(--color-bg-secondary), var(--color-bg-tertiary), var(--color-bg-primary));
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, sans-serif;
+    padding: 20px;
+    color: var(--color-text-primary);
+}
+
+.container { max-width: 900px; margin: 0 auto; }
+.header { text-align: center; margin-bottom: 40px; }
+.header h1 { font-size: 48px; margin-bottom: 10px; color: white; }
+.header h2 { font-size: 28px; font-weight: bold; color: white; margin-bottom: 8px; }
+.header p { color: var(--color-text-secondary); }
+
+.card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+}
+
+.verse-display {
+    background: var(--color-bg-tertiary);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.verse-number { color: var(--color-text-muted); font-size: 14px; margin-bottom: 8px; }
+.verse-title { color: var(--color-accent); font-size: 24px; font-weight: bold; margin-bottom: 12px; }
+.verse-text { color: var(--color-text-secondary); line-height: 1.8; white-space: pre-line; }
+
+.button-group { display: flex; gap: 12px; margin: 20px 0; }
+
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.btn-primary { flex: 1; background: var(--color-btn-primary); color: white; }
+.btn-primary:hover { background: var(--color-btn-primary-hover); }
+.btn-success { background: var(--color-btn-success); color: white; }
+.btn-success:hover { background: var(--color-btn-success-hover); }
+.btn-purple { background: var(--color-btn-purple); color: white; }
+.btn-purple:hover { background: var(--color-btn-purple-hover); }
+
+textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    background: var(--color-bg-input);
+    color: var(--color-text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: system-ui;
+    font-size: 14px;
+    resize: vertical;
+}
+
+input[type="number"], input[type="file"] {
+    padding: 10px;
+    background: var(--color-bg-input);
+    color: var(--color-text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.entries-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 12px;
+}
+
+.entry-item {
+    background: var(--color-bg-tertiary);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s;
+    position: relative;
+}
+
+.entry-item:hover { background: var(--color-bg-hover); border-color: var(--border-color-hover); }
+.entry-date { color: var(--color-text-muted); font-size: 12px; }
+.entry-chapter { color: var(--color-accent); font-weight: bold; font-size: 14px; }
+.entry-preview { color: var(--color-text-secondary); font-size: 12px; margin-top: 4px; }
+
+.del-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--border-color);
+    background: var(--color-bg-card);
+    color: var(--color-text-secondary);
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .2s, transform .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+}
+
+.entry-item:hover .del-btn { opacity: .6; }
+.del-btn:hover { opacity: 1; transform: scale(1.2); border-color: var(--color-accent); color: var(--color-accent); }
+
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-bg-card);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.upload-toggle {
+    position: fixed;
+    top: 20px;
+    right: 74px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-bg-card);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.upload-toggle:hover, .theme-toggle:hover { transform: scale(1.05); }
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal {
+    background: var(--color-bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.modal h3 { color: var(--color-text-primary); margin-bottom: 20px; font-size: 24px; }
+.modal p { color: var(--color-text-secondary); margin-bottom: 20px; line-height: 1.6; }
+
+.upload-item {
+    background: var(--color-bg-tertiary);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.upload-item label { display: block; color: var(--color-text-primary); font-weight: bold; margin-bottom: 8px; }
+.upload-status { color: var(--color-text-muted); font-size: 12px; margin-top: 4px; }
+.upload-status.loaded { color: #10b981; }
+
+.modal-buttons { display: flex; gap: 12px; margin-top: 20px; }
+.modal-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.modal-btn-primary { background: var(--color-btn-primary); color: white; }
+.modal-btn-primary:hover { background: var(--color-btn-primary-hover); }
+.modal-btn-secondary { background: var(--border-color); color: white; }
+.modal-btn-secondary:hover { background: var(--color-text-muted); }
+
+.manual-entry {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    margin: 20px 0;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚔️</h1>
+            <h2>Art of War</h2>
+            <p>52-Week Strategic Practice</p>
+        </div>
+
+        <div class="card">
+            <div class="verse-display" id="verseDisplay"></div>
+            
+            <div class="button-group">
+                <button class="btn-primary" id="prevBtn">← Previous</button>
+                <button class="btn-primary" id="nextBtn">Next →</button>
+                <button class="btn-primary" id="toggleTranslationBtn">Switch Translation</button>
+            </div>
+
+            <div class="manual-entry">
+                <input type="number" id="manualChapter" min="1" max="52" placeholder="Jump to week (1-52)">
+                <button class="btn-success" id="manualChapterBtn">Go</button>
+            </div>
+
+            <h3 style="color: var(--color-text-primary); margin: 20px 0 10px 0;">Journal Entry</h3>
+            <textarea id="journalText" placeholder="Write your reflections..."></textarea>
+            
+            <div class="button-group">
+                <button class="btn-success" id="saveBtn">Save Entry</button>
+                <button class="btn-purple" id="exportBtn">Export CSV</button>
+            </div>
+
+            <h3 style="color: var(--color-text-primary); margin: 20px 0 10px 0;">Past Entries</h3>
+            <div class="entries-list" id="entriesList"></div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal">
+            <h3>⬆ Upload Translations</h3>
+            <p>Upload translation .js files to add them to the app. Files should be in the format: <code>var versesName = { "1": "text", ... };</code></p>
+            
+            <div class="upload-item">
+                <label>Giles Translation</label>
+                <div class="upload-status loaded">✓ Default (always included)</div>
+            </div>
+
+            <div class="upload-item">
+                <label for="uploadWing">Wing Translation</label>
+                <input type="file" id="uploadWing" accept=".js">
+                <div class="upload-status" id="statusWing">Not uploaded</div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" onclick="closeUploadModal()">Close</button>
+                <button class="modal-btn modal-btn-primary" onclick="clearAllUploads()">Clear Uploads</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Giles translation (will be loaded from external file) -->
+    <script src="war-verses/verses-giles.js"></script>
+    <script src="war-verses/verses.js"></script>
+    <script>
+        // Initialize verse storage with Giles
+        var verseTexts = {
+            "Giles": typeof versesGiles !== 'undefined' ? versesGiles : {}
+        };
+
+        var chapterTitles = ["Laying Plans","Waging War","Attack by Stratagem","Tactical Dispositions","Energy","Weak Points and Strong","Maneuvering","Variation in Tactics","The Army on the March","Terrain","The Nine Situations","The Attack by Fire","The Use of Spies"];
+
+        var app = {
+            currentWeek: 1,
+            currentPosition: 1,
+            currentTranslation: "Giles",
+            currentEditId: null,
+            entries: [],
+            translationOrder: ["Giles"]
+        };
+
+        // Load uploaded Wing translation from localStorage
+        function loadUploadedTranslation() {
+            var stored = localStorage.getItem('artofwar_translation_Wing');
+            if (stored) {
+                try {
+                    verseTexts["Wing"] = JSON.parse(stored);
+                    if (app.translationOrder.indexOf("Wing") === -1) {
+                        app.translationOrder.push("Wing");
+                    }
+                    updateUploadStatus("Wing", true);
+                } catch (e) {
+                    console.error('Error loading Wing translation:', e);
+                }
+            }
+        }
+
+        function updateUploadStatus(name, loaded) {
+            var statusEl = document.getElementById('status' + name);
+            if (statusEl) {
+                if (loaded) {
+                    statusEl.textContent = '✓ Loaded';
+                    statusEl.className = 'upload-status loaded';
+                } else {
+                    statusEl.textContent = 'Not uploaded';
+                    statusEl.className = 'upload-status';
+                }
+            }
+        }
+
+        function setupUploadHandler() {
+            var input = document.getElementById('uploadWing');
+            if (!input) return;
+            
+            input.onchange = function(e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        var content = event.target.result;
+                        
+                        // Extract verses object
+                        var match = content.match(/var\s+\w+\s*=\s*(\{[\s\S]*\});?/);
+                        if (match) {
+                            var versesObj = eval('(' + match[1] + ')');
+                            
+                            // Store in localStorage
+                            localStorage.setItem('artofwar_translation_Wing', JSON.stringify(versesObj));
+                            
+                            // Add to verseTexts
+                            verseTexts["Wing"] = versesObj;
+                            
+                            // Add to translation order
+                            if (app.translationOrder.indexOf("Wing") === -1) {
+                                app.translationOrder.push("Wing");
+                            }
+                            
+                            updateUploadStatus("Wing", true);
+                            alert('Wing translation uploaded successfully!');
+                            
+                            if (app.currentPosition) {
+                                render();
+                            }
+                        } else {
+                            alert('Error: Could not find translation data in file.');
+                        }
+                    } catch (err) {
+                        alert('Error reading file: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+        }
+
+        function clearAllUploads() {
+            if (!confirm('Clear Wing translation? This cannot be undone.')) return;
+            
+            localStorage.removeItem('artofwar_translation_Wing');
+            delete verseTexts["Wing"];
+            updateUploadStatus("Wing", false);
+            
+            var idx = app.translationOrder.indexOf("Wing");
+            if (idx > -1) {
+                app.translationOrder.splice(idx, 1);
+            }
+            
+            app.currentTranslation = "Giles";
+            app.translationOrder = ["Giles"];
+            
+            document.getElementById('uploadWing').value = '';
+            
+            alert('Upload cleared');
+            
+            if (app.currentPosition) {
+                render();
+            }
+        }
+
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.add('show');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.remove('show');
+        }
+
+        function getVerseKey(pos, translation) {
+            if (translation === "Wing") {
+                var chapter = Math.floor((pos - 1) / 4) + 1;
+                var section = ((pos - 1) % 4) + 1;
+                return chapter + "-" + section;
+            } else {
+                return String(pos);
+            }
+        }
+
+        function render() {
+            var key = getVerseKey(app.currentPosition, app.currentTranslation);
+            var verses = verseTexts[app.currentTranslation];
+            
+            if (!verses || !verses[key]) {
+                // If verse doesn't exist in current translation, try switching
+                if (app.translationOrder.length > 1) {
+                    toggleTranslation();
+                    return;
+                }
+                document.getElementById('verseDisplay').innerHTML = '<p style="color: var(--color-text-muted);">Verse not available</p>';
+                return;
+            }
+
+            var verseText = verses[key];
+            var chapter = app.currentTranslation === "Wing" ? Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
+            var title = chapterTitles[chapter - 1];
+            
+            var displayText = app.currentTranslation === "Wing" ? 
+                'Week ' + app.currentPosition + ' - Chapter ' + chapter + ', Part ' + (((app.currentPosition - 1) % 4) + 1) :
+                'Week ' + app.currentPosition + ' - Chapter ' + chapter;
+
+            var html = '<div class="verse-number">' + displayText + '</div>' +
+                '<div class="verse-title">' + title + '</div>' +
+                '<div style="color: var(--color-text-muted); font-size: 12px; font-style: italic; margin-bottom: 12px;">Translation: ' + app.currentTranslation + '</div>' +
+                '<div class="verse-text">' + verseText + '</div>';
+            
+            document.getElementById('verseDisplay').innerHTML = html;
+            
+            // Save position
+            localStorage.setItem('artOfWarPosition', JSON.stringify({
+                week: app.currentWeek,
+                position: app.currentPosition,
+                translation: app.currentTranslation
+            }));
+
+            // Render entries list
+            var listHTML = '';
+            for (var i = app.entries.length - 1; i >= 0; i--) {
+                var e = app.entries[i];
+                var preview = e.text.substring(0, 60);
+                if (e.text.length > 60) preview += '…';
+
+                var chapterText = e.translation === "Wing" ? 
+                    'Ch ' + e.chapter + '-' + (e.section || '1') :
+                    'Ch ' + e.chapter;
+
+                listHTML +=
+                    '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
+                    '<button class="del-btn" onclick="event.stopPropagation(); deleteEntry(' + i + ')" title="Delete entry">×</button>' +
+                    '<div class="entry-date">' + e.date + '</div>' +
+                    '<div class="entry-chapter">' + chapterText + ': ' + e.title + '</div>' +
+                    '<div class="entry-preview">' + preview + '</div>' +
+                    '</div>';
+            }
+            document.getElementById('entriesList').innerHTML = listHTML;
+        }
+
+        function toggleTranslation() {
+            var idx = app.translationOrder.indexOf(app.currentTranslation);
+            idx = (idx + 1) % app.translationOrder.length;
+            app.currentTranslation = app.translationOrder[idx];
+            render();
+        }
+
+        function nextChapter() {
+            var maxWeeks = app.currentTranslation === "Wing" ? 52 : 13;
+            if (app.currentPosition < maxWeeks) {
+                app.currentPosition++;
+                app.currentWeek = app.currentPosition;
+                app.currentEditId = null;
+                document.getElementById('journalText').value = '';
+                render();
+            }
+        }
+
+        function previousChapter() {
+            if (app.currentPosition > 1) {
+                app.currentPosition--;
+                app.currentWeek = app.currentPosition;
+                app.currentEditId = null;
+                document.getElementById('journalText').value = '';
+                render();
+            }
+        }
+
+        function manualChapter() {
+            var week = parseInt(document.getElementById('manualChapter').value);
+            var maxWeeks = app.currentTranslation === "Wing" ? 52 : 13;
+            
+            if (week >= 1 && week <= maxWeeks) {
+                app.currentPosition = week;
+                app.currentWeek = week;
+                app.currentEditId = null;
+                document.getElementById('journalText').value = '';
+                document.getElementById('manualChapter').value = '';
+                render();
+            } else {
+                alert('Please enter a valid week number (1-' + maxWeeks + ')');
+            }
+        }
+
+        function saveEntry() {
+            var text = document.getElementById('journalText').value;
+            if (!text.trim()) {
+                alert('Please write something first');
+                return;
+            }
+
+            var now = new Date().toISOString().split('T')[0];
+            var chapter = app.currentTranslation === "Wing" ? 
+                Math.floor((app.currentPosition - 1) / 4) + 1 : 
+                app.currentPosition;
+            var section = app.currentTranslation === "Wing" ? 
+                ((app.currentPosition - 1) % 4) + 1 : 
+                null;
+            var title = chapterTitles[chapter - 1];
+
+            if (app.currentEditId !== null) {
+                app.entries[app.currentEditId].text = text;
+            } else {
+                var entry = { 
+                    date: now, 
+                    chapter: chapter, 
+                    title: title, 
+                    text: text,
+                    translation: app.currentTranslation
+                };
+                if (section) entry.section = section;
+                app.entries.push(entry);
+            }
+
+            localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
+            app.currentEditId = null;
+            document.getElementById('journalText').value = '';
+            render();
+        }
+
+        function loadEntry(idx) {
+            app.currentEditId = idx;
+            document.getElementById('journalText').value = app.entries[idx].text;
+        }
+
+        function deleteEntry(index) {
+            var entry = app.entries[index];
+            var entryDate = entry.date;
+            var entryTitle = 'Ch ' + entry.chapter + ': ' + entry.title;
+
+            if (!confirm('Delete this entry?\n\n' + entryTitle + '\n' + entryDate)) return;
+            if (!confirm('Are you absolutely sure? This is your final confirmation.')) return;
+
+            app.entries.splice(index, 1);
+            localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
+            render();
+        }
+
+        function exportCSV() {
+            if (app.entries.length === 0) {
+                alert('No entries to export');
+                return;
+            }
+
+            var csv = 'Date,Translation,Chapter,Part,Title,Notes\n';
+            for (var i = 0; i < app.entries.length; i++) {
+                var e = app.entries[i];
+                var notes = e.text.replace(/"/g, '""').replace(/\n/g, ' ');
+                var part = e.section || '';
+                csv += e.date + ',' + e.translation + ',' + e.chapter + ',' + part + ',"' + e.title + '","' + notes + '"\n';
+            }
+
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'art-of-war-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+        }
+
+        // Theme toggle
+        var currentTheme = localStorage.getItem('artofwar-theme') || 'dark';
+        
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('artofwar-theme', theme);
+            currentTheme = theme;
+        }
+
+        function toggleTheme() {
+            var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+
+        function init() {
+            loadUploadedTranslation();
+            setupUploadHandler();
+            
+            var saved = localStorage.getItem('artOfWarEntries');
+            if (saved) app.entries = JSON.parse(saved);
+            
+            var urlParams = new URLSearchParams(window.location.search);
+            var urlChapter = urlParams.get('ch');
+            var urlTranslation = urlParams.get('tr');
+            
+            if (urlChapter) {
+                var parts = urlChapter.split('-');
+                var chapter = parseInt(parts[0]);
+                var section = parts[1] ? parseInt(parts[1]) : 1;
+                
+                if (urlTranslation === 'Wing' || section > 1) {
+                    app.currentPosition = (chapter - 1) * 4 + section;
+                } else {
+                    app.currentPosition = chapter;
+                }
+                
+                if (urlTranslation && verseTexts[urlTranslation]) {
+                    app.currentTranslation = urlTranslation;
+                }
+            } else {
+                var savedPosition = localStorage.getItem('artOfWarPosition');
+                if (savedPosition) {
+                    var pos = JSON.parse(savedPosition);
+                    app.currentWeek = pos.week || pos.position || 1;
+                    app.currentPosition = pos.position || 1;
+                    if (pos.translation && verseTexts[pos.translation]) {
+                        app.currentTranslation = pos.translation;
+                    }
+                }
+            }
+
+            setTheme(currentTheme);
+            render();
+        }
+
+        document.getElementById('prevBtn').onclick = previousChapter;
+        document.getElementById('nextBtn').onclick = nextChapter;
+        document.getElementById('toggleTranslationBtn').onclick = toggleTranslation;
+        document.getElementById('saveBtn').onclick = saveEntry;
+        document.getElementById('exportBtn').onclick = exportCSV;
+        document.getElementById('manualChapterBtn').onclick = manualChapter;
+        
+        document.getElementById('manualChapter').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') manualChapter();
+        });
+
+        document.getElementById('uploadModal').onclick = function(e) {
+            if (e.target.id === 'uploadModal') closeUploadModal();
+        };
+
+        // Create buttons
+        var themeBtn = document.createElement('button');
+        themeBtn.className = 'theme-toggle';
+        themeBtn.id = 'themeToggleBtn';
+        themeBtn.innerHTML = '🌓';
+        themeBtn.onclick = toggleTheme;
+        document.body.appendChild(themeBtn);
+
+        var uploadBtn = document.createElement('button');
+        uploadBtn.className = 'upload-toggle';
+        uploadBtn.innerHTML = '⬆';
+        uploadBtn.onclick = openUploadModal;
+        document.body.appendChild(uploadBtn);
+
+        init();
+    </script>
+</body>
+</html>
