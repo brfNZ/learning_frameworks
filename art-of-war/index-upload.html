@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Art of War - 52 Week Tracker</title>
     <style>
-   /* [Same CSS as original - keeping all styling identical] */
 :root {
     --color-bg-primary: #0f172a;
     --color-bg-secondary: #1e293b;
@@ -13,8 +12,6 @@
     --color-bg-card: #475569;
     --color-bg-input: #334155;
     --color-bg-hover: #2d3748;
-    --color-bg-light: #e2e8f0;
-    --color-accent: #fbbf24;  
     --color-text-primary: #e2e8f0;
     --color-text-secondary: #cbd5e1;
     --color-text-muted: #94a3b8;
@@ -42,8 +39,6 @@
     --color-bg-card: #e2e8f0;
     --color-bg-input: #f1f5f9;
     --color-bg-hover: #cbd5e1;
-    --color-bg-light: #f8fafc;
-    --color-accent: #d97706; 
     --color-text-primary: #1e293b;
     --color-text-secondary: #475569;
     --color-text-muted: #64748b;
@@ -74,27 +69,79 @@ body {
 .header h2 { font-size: 28px; font-weight: bold; color: white; margin-bottom: 8px; }
 .header p { color: var(--color-text-secondary); }
 
+/* TWO COLUMN LAYOUT */
+.main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+@media (max-width: 1000px) { .main { grid-template-columns: 1fr; } }
+
 .card {
     background: var(--color-bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 30px;
     box-shadow: var(--shadow);
-    margin-bottom: 20px;
 }
 
+/* VERSE DISPLAY - CLICKABLE */
 .verse-display {
     background: var(--color-bg-tertiary);
     padding: 20px;
     border-radius: 8px;
-    margin: 20px 0;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.verse-display:hover { background: var(--color-bg-hover); }
+
+.chapter-number, .part-number {
+    color: var(--color-text-secondary);
+    font-size: 16px;
+    margin-top: 12px;
 }
 
-.verse-number { color: var(--color-text-muted); font-size: 14px; margin-bottom: 8px; }
-.verse-title { color: var(--color-accent); font-size: 24px; font-weight: bold; margin-bottom: 12px; }
-.verse-text { color: var(--color-text-secondary); line-height: 1.8; white-space: pre-line; }
+.chapter-title {
+    color: var(--color-accent) !important;
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 4px;
+    margin-bottom: 12px;
+}
 
-.button-group { display: flex; gap: 12px; margin: 20px 0; }
+.verse-author {
+    color: var(--color-text-muted);
+    font-size: 11px;
+    font-style: italic;
+    margin-bottom: 12px;
+}
+
+.verse-text {
+    color: var(--color-text-primary);
+    font-size: 16px;
+    line-height: 1.7;
+    white-space: pre-line;
+    max-height: 400px;
+    overflow-y: auto;
+    text-align: left;
+}
+
+/* Scrollbars */
+.verse-text::-webkit-scrollbar { width: 8px; }
+.verse-text::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 4px;
+}
+.verse-text::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+.verse-text::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+.button-group { display: flex; gap: 12px; margin-bottom: 20px; }
 
 button {
     padding: 12px 24px;
@@ -106,12 +153,17 @@ button {
     font-size: 14px;
 }
 
-.btn-primary { flex: 1; background: var(--color-btn-primary); color: white; }
-.btn-primary:hover { background: var(--color-btn-primary-hover); }
-.btn-success { background: var(--color-btn-success); color: white; }
-.btn-success:hover { background: var(--color-btn-success-hover); }
-.btn-purple { background: var(--color-btn-purple); color: white; }
-.btn-purple:hover { background: var(--color-btn-purple-hover); }
+.reset-btn, .next-btn {
+    flex: 1;
+    background: var(--color-btn-primary);
+    color: white;
+}
+.reset-btn:hover, .next-btn:hover { background: var(--color-btn-primary-hover); }
+
+.save-btn { background: var(--color-btn-success); color: white; }
+.save-btn:hover { background: var(--color-btn-success-hover); }
+.export-btn { background: var(--color-btn-purple); color: white; }
+.export-btn:hover { background: var(--color-btn-purple-hover); }
 
 textarea {
     width: 100%;
@@ -124,9 +176,10 @@ textarea {
     font-family: system-ui;
     font-size: 14px;
     resize: vertical;
+    margin-bottom: 12px;
 }
 
-input[type="number"], input[type="file"] {
+input[type="text"], input[type="file"] {
     padding: 10px;
     background: var(--color-bg-input);
     color: var(--color-text-primary);
@@ -135,10 +188,29 @@ input[type="number"], input[type="file"] {
     font-size: 14px;
 }
 
+.manual-week {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.manual-week button {
+    background: var(--color-btn-success);
+    color: white;
+    white-space: nowrap;
+}
+.manual-week button:hover { background: var(--color-btn-success-hover); }
+
+h3 {
+    color: var(--color-text-primary);
+    margin: 20px 0 10px 0;
+    font-size: 18px;
+}
+
 .entries-list {
     max-height: 400px;
     overflow-y: auto;
-    margin-top: 12px;
 }
 
 .entry-item {
@@ -158,89 +230,53 @@ input[type="number"], input[type="file"] {
 .entry-preview { color: var(--color-text-secondary); font-size: 12px; margin-top: 4px; }
 
 .del-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 20px;
-    height: 20px;
-    border: 1px solid var(--border-color);
-    background: var(--color-bg-card);
-    color: var(--color-text-secondary);
-    border-radius: 50%;
-    font-size: 14px;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity .2s, transform .2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    line-height: 1;
+    position: absolute; top: 8px; right: 8px; width: 20px; height: 20px;
+    border: 1px solid var(--border-color); background: var(--color-bg-card);
+    color: var(--color-text-secondary); border-radius: 50%; font-size: 14px;
+    cursor: pointer; opacity: 0; transition: opacity .2s, transform .2s;
+    display: flex; align-items: center; justify-content: center; padding: 0; line-height: 1;
 }
 
 .entry-item:hover .del-btn { opacity: .6; }
 .del-btn:hover { opacity: 1; transform: scale(1.2); border-color: var(--color-accent); color: var(--color-accent); }
 
-.theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--color-bg-card);
+.theme-toggle-btn {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
     border: 1px solid var(--border-color);
-    cursor: pointer;
-    font-size: 20px;
-    color: var(--color-accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
+    padding: 12px;
+    min-width: 44px;
+}
+.theme-toggle-btn:hover { background: var(--color-bg-hover); }
+
+.footer {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 12px;
+    margin-top: 30px;
 }
 
+/* UPLOAD BUTTON */
 .upload-toggle {
-    position: fixed;
-    top: 20px;
-    right: 74px;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--color-bg-card);
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-    font-size: 20px;
-    color: var(--color-accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
+    position: fixed; top: 20px; right: 20px; width: 44px; height: 44px;
+    border-radius: 50%; background: var(--color-bg-card);
+    border: 1px solid var(--border-color); cursor: pointer; font-size: 20px;
+    color: var(--color-accent); display: flex; align-items: center;
+    justify-content: center; transition: all 0.2s;
 }
+.upload-toggle:hover { transform: scale(1.05); }
 
-.upload-toggle:hover, .theme-toggle:hover { transform: scale(1.05); }
-
+/* MODAL */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.7);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7); display: none; align-items: center;
+    justify-content: center; z-index: 1000;
 }
-
 .modal-overlay.show { display: flex; }
 
 .modal {
-    background: var(--color-bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 30px;
-    max-width: 500px;
-    width: 90%;
+    background: var(--color-bg-card); border: 1px solid var(--border-color);
+    border-radius: 12px; padding: 30px; max-width: 500px; width: 90%;
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
 
@@ -248,11 +284,8 @@ input[type="number"], input[type="file"] {
 .modal p { color: var(--color-text-secondary); margin-bottom: 20px; line-height: 1.6; }
 
 .upload-item {
-    background: var(--color-bg-tertiary);
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border-color);
+    background: var(--color-bg-tertiary); padding: 15px; border-radius: 8px;
+    margin-bottom: 12px; border: 1px solid var(--border-color);
 }
 
 .upload-item label { display: block; color: var(--color-text-primary); font-weight: bold; margin-bottom: 8px; }
@@ -260,60 +293,62 @@ input[type="number"], input[type="file"] {
 .upload-status.loaded { color: #10b981; }
 
 .modal-buttons { display: flex; gap: 12px; margin-top: 20px; }
-.modal-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.modal-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 8px;
+    font-weight: bold; cursor: pointer; transition: all 0.2s;
+}
 .modal-btn-primary { background: var(--color-btn-primary); color: white; }
 .modal-btn-primary:hover { background: var(--color-btn-primary-hover); }
 .modal-btn-secondary { background: var(--border-color); color: white; }
 .modal-btn-secondary:hover { background: var(--color-text-muted); }
-
-.manual-entry {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    margin: 20px 0;
-}
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>⚔️</h1>
+            <h1>⚔</h1>
             <h2>Art of War</h2>
-            <p>52-Week Strategic Practice</p>
+            <p>52-Week Strategy Study</p>
         </div>
 
-        <div class="card">
-            <div class="verse-display" id="verseDisplay"></div>
+        <div class="main">
+            <!-- LEFT COLUMN: Verse Display -->
+            <div class="card">
+                <div id="combinedDisplay"></div>
+                <div class="button-group">
+                    <button class="reset-btn" id="prevBtn">Previous</button>
+                    <button class="next-btn" id="nextBtn">Next</button>
+                </div>
+            </div>
             
-            <div class="button-group">
-                <button class="btn-primary" id="prevBtn">← Previous</button>
-                <button class="btn-primary" id="nextBtn">Next →</button>
-                <button class="btn-primary" id="toggleTranslationBtn">Switch Translation</button>
-            </div>
+            <!-- RIGHT COLUMN: Journal -->
+            <div class="card journal-section">
+                <h3>Journal Entry</h3>
+                <textarea id="journalText" placeholder="Write your reflections on this week's passage..."></textarea>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; margin-bottom: 12px;">
+                    <button class="save-btn" id="saveBtn">Save Entry</button>
+                    <button class="export-btn" id="exportBtn">Export CSV</button>
+                </div>
 
-            <div class="manual-entry">
-                <input type="number" id="manualChapter" min="1" max="52" placeholder="Jump to week (1-52)">
-                <button class="btn-success" id="manualChapterBtn">Go</button>
+                <div class="manual-week">
+                    <input type="text" id="manualChapter" placeholder="Jump to Ch. (e.g.1 or 2-3)">
+                    <button id="manualChapterBtn">Go to Chapter</button>  
+                </div>
+                
+                <h3>Past Entries</h3>
+                <div class="entries-list" id="entriesList"></div>
             </div>
-
-            <h3 style="color: var(--color-text-primary); margin: 20px 0 10px 0;">Journal Entry</h3>
-            <textarea id="journalText" placeholder="Write your reflections..."></textarea>
-            
-            <div class="button-group">
-                <button class="btn-success" id="saveBtn">Save Entry</button>
-                <button class="btn-purple" id="exportBtn">Export CSV</button>
-            </div>
-
-            <h3 style="color: var(--color-text-primary); margin: 20px 0 10px 0;">Past Entries</h3>
-            <div class="entries-list" id="entriesList"></div>
         </div>
+
+        <p class="footer">Study The Art of War through multiple translations. Click the verse text to switch translations.</p>
     </div>
 
     <!-- Upload Modal -->
     <div class="modal-overlay" id="uploadModal">
         <div class="modal">
             <h3>⬆ Upload Translations</h3>
-            <p>Upload translation .js files to add them to the app. Files should be in the format: <code>var versesName = { "1": "text", ... };</code></p>
+            <p>Upload translation .js files to add them to the app. Files should be in the format: <code>var versesName = { ... };</code></p>
             
             <div class="upload-item">
                 <label>Giles Translation</label>
@@ -333,11 +368,9 @@ input[type="number"], input[type="file"] {
         </div>
     </div>
 
-    <!-- Load Giles translation (will be loaded from external file) -->
     <script src="war-verses/verses-giles.js"></script>
     <script src="war-verses/verses.js"></script>
     <script>
-        // Initialize verse storage with Giles
         var verseTexts = {
             "Giles": typeof versesGiles !== 'undefined' ? versesGiles : {}
         };
@@ -345,15 +378,14 @@ input[type="number"], input[type="file"] {
         var chapterTitles = ["Laying Plans","Waging War","Attack by Stratagem","Tactical Dispositions","Energy","Weak Points and Strong","Maneuvering","Variation in Tactics","The Army on the March","Terrain","The Nine Situations","The Attack by Fire","The Use of Spies"];
 
         var app = {
-            currentWeek: 1,
             currentPosition: 1,
-            currentTranslation: "Giles",
             currentEditId: null,
+            currentTranslation: "Giles",
             entries: [],
             translationOrder: ["Giles"]
         };
 
-        // Load uploaded Wing translation from localStorage
+        // Load uploaded Wing translation
         function loadUploadedTranslation() {
             var stored = localStorage.getItem('artofwar_translation_Wing');
             if (stored) {
@@ -372,13 +404,8 @@ input[type="number"], input[type="file"] {
         function updateUploadStatus(name, loaded) {
             var statusEl = document.getElementById('status' + name);
             if (statusEl) {
-                if (loaded) {
-                    statusEl.textContent = '✓ Loaded';
-                    statusEl.className = 'upload-status loaded';
-                } else {
-                    statusEl.textContent = 'Not uploaded';
-                    statusEl.className = 'upload-status';
-                }
+                statusEl.textContent = loaded ? '✓ Loaded' : 'Not uploaded';
+                statusEl.className = loaded ? 'upload-status loaded' : 'upload-status';
             }
         }
 
@@ -394,19 +421,12 @@ input[type="number"], input[type="file"] {
                 reader.onload = function(event) {
                     try {
                         var content = event.target.result;
-                        
-                        // Extract verses object
                         var match = content.match(/var\s+\w+\s*=\s*(\{[\s\S]*\});?/);
                         if (match) {
                             var versesObj = eval('(' + match[1] + ')');
-                            
-                            // Store in localStorage
                             localStorage.setItem('artofwar_translation_Wing', JSON.stringify(versesObj));
-                            
-                            // Add to verseTexts
                             verseTexts["Wing"] = versesObj;
                             
-                            // Add to translation order
                             if (app.translationOrder.indexOf("Wing") === -1) {
                                 app.translationOrder.push("Wing");
                             }
@@ -414,9 +434,7 @@ input[type="number"], input[type="file"] {
                             updateUploadStatus("Wing", true);
                             alert('Wing translation uploaded successfully!');
                             
-                            if (app.currentPosition) {
-                                render();
-                            }
+                            if (app.currentPosition) render();
                         } else {
                             alert('Error: Could not find translation data in file.');
                         }
@@ -436,20 +454,14 @@ input[type="number"], input[type="file"] {
             updateUploadStatus("Wing", false);
             
             var idx = app.translationOrder.indexOf("Wing");
-            if (idx > -1) {
-                app.translationOrder.splice(idx, 1);
-            }
+            if (idx > -1) app.translationOrder.splice(idx, 1);
             
             app.currentTranslation = "Giles";
             app.translationOrder = ["Giles"];
-            
             document.getElementById('uploadWing').value = '';
             
             alert('Upload cleared');
-            
-            if (app.currentPosition) {
-                render();
-            }
+            if (app.currentPosition) render();
         }
 
         function openUploadModal() {
@@ -465,9 +477,17 @@ input[type="number"], input[type="file"] {
                 var chapter = Math.floor((pos - 1) / 4) + 1;
                 var section = ((pos - 1) % 4) + 1;
                 return chapter + "-" + section;
-            } else {
-                return String(pos);
             }
+            return String(pos);
+        }
+
+        // CLICK VERSE TO CYCLE TRANSLATIONS
+        function cycleTranslation() {
+            if (app.translationOrder.length < 2) return;
+            var idx = app.translationOrder.indexOf(app.currentTranslation);
+            idx = (idx + 1) % app.translationOrder.length;
+            app.currentTranslation = app.translationOrder[idx];
+            render();
         }
 
         function render() {
@@ -475,38 +495,41 @@ input[type="number"], input[type="file"] {
             var verses = verseTexts[app.currentTranslation];
             
             if (!verses || !verses[key]) {
-                // If verse doesn't exist in current translation, try switching
                 if (app.translationOrder.length > 1) {
-                    toggleTranslation();
+                    cycleTranslation();
                     return;
                 }
-                document.getElementById('verseDisplay').innerHTML = '<p style="color: var(--color-text-muted);">Verse not available</p>';
+                document.getElementById('combinedDisplay').innerHTML = 
+                    '<div class="verse-display"><p style="color: var(--color-text-muted);">Verse not available</p></div>';
                 return;
             }
 
             var verseText = verses[key];
-            var chapter = app.currentTranslation === "Wing" ? Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
+            var chapter = app.currentTranslation === "Wing" ? 
+                Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
             var title = chapterTitles[chapter - 1];
             
             var displayText = app.currentTranslation === "Wing" ? 
-                'Week ' + app.currentPosition + ' - Chapter ' + chapter + ', Part ' + (((app.currentPosition - 1) % 4) + 1) :
-                'Week ' + app.currentPosition + ' - Chapter ' + chapter;
+                '<div class="chapter-number">Week ' + app.currentPosition + '</div>' +
+                '<div class="chapter-title">Chapter ' + chapter + '</div>' +
+                '<div class="part-number">Part ' + (((app.currentPosition - 1) % 4) + 1) + ': ' + title + '</div>' :
+                '<div class="chapter-number">Week ' + app.currentPosition + '</div>' +
+                '<div class="chapter-title">Chapter ' + chapter + ': ' + title + '</div>';
 
-            var html = '<div class="verse-number">' + displayText + '</div>' +
-                '<div class="verse-title">' + title + '</div>' +
-                '<div style="color: var(--color-text-muted); font-size: 12px; font-style: italic; margin-bottom: 12px;">Translation: ' + app.currentTranslation + '</div>' +
-                '<div class="verse-text">' + verseText + '</div>';
+            var html = '<div class="verse-display" onclick="cycleTranslation()">' +
+                displayText +
+                '<div class="verse-author">Translation: ' + app.currentTranslation + '</div>' +
+                '<div class="verse-text">' + verseText + '</div>' +
+                '</div>';
             
-            document.getElementById('verseDisplay').innerHTML = html;
+            document.getElementById('combinedDisplay').innerHTML = html;
             
-            // Save position
             localStorage.setItem('artOfWarPosition', JSON.stringify({
-                week: app.currentWeek,
                 position: app.currentPosition,
                 translation: app.currentTranslation
             }));
 
-            // Render entries list
+            // Render entries
             var listHTML = '';
             for (var i = app.entries.length - 1; i >= 0; i--) {
                 var e = app.entries[i];
@@ -514,8 +537,7 @@ input[type="number"], input[type="file"] {
                 if (e.text.length > 60) preview += '…';
 
                 var chapterText = e.translation === "Wing" ? 
-                    'Ch ' + e.chapter + '-' + (e.section || '1') :
-                    'Ch ' + e.chapter;
+                    'Ch ' + e.chapter + '-' + (e.section || '1') : 'Ch ' + e.chapter;
 
                 listHTML +=
                     '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
@@ -528,18 +550,10 @@ input[type="number"], input[type="file"] {
             document.getElementById('entriesList').innerHTML = listHTML;
         }
 
-        function toggleTranslation() {
-            var idx = app.translationOrder.indexOf(app.currentTranslation);
-            idx = (idx + 1) % app.translationOrder.length;
-            app.currentTranslation = app.translationOrder[idx];
-            render();
-        }
-
         function nextChapter() {
             var maxWeeks = app.currentTranslation === "Wing" ? 52 : 13;
             if (app.currentPosition < maxWeeks) {
                 app.currentPosition++;
-                app.currentWeek = app.currentPosition;
                 app.currentEditId = null;
                 document.getElementById('journalText').value = '';
                 render();
@@ -549,7 +563,6 @@ input[type="number"], input[type="file"] {
         function previousChapter() {
             if (app.currentPosition > 1) {
                 app.currentPosition--;
-                app.currentWeek = app.currentPosition;
                 app.currentEditId = null;
                 document.getElementById('journalText').value = '';
                 render();
@@ -557,12 +570,26 @@ input[type="number"], input[type="file"] {
         }
 
         function manualChapter() {
-            var week = parseInt(document.getElementById('manualChapter').value);
+            var input = document.getElementById('manualChapter').value.trim();
+            if (!input) return;
+            
             var maxWeeks = app.currentTranslation === "Wing" ? 52 : 13;
+            var week;
+            
+            if (input.indexOf('-') > -1) {
+                var parts = input.split('-');
+                var chapter = parseInt(parts[0]);
+                var section = parseInt(parts[1]) || 1;
+                week = (chapter - 1) * 4 + section;
+                if (app.currentTranslation !== "Wing") {
+                    app.currentTranslation = "Wing";
+                }
+            } else {
+                week = parseInt(input);
+            }
             
             if (week >= 1 && week <= maxWeeks) {
                 app.currentPosition = week;
-                app.currentWeek = week;
                 app.currentEditId = null;
                 document.getElementById('journalText').value = '';
                 document.getElementById('manualChapter').value = '';
@@ -581,22 +608,17 @@ input[type="number"], input[type="file"] {
 
             var now = new Date().toISOString().split('T')[0];
             var chapter = app.currentTranslation === "Wing" ? 
-                Math.floor((app.currentPosition - 1) / 4) + 1 : 
-                app.currentPosition;
+                Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
             var section = app.currentTranslation === "Wing" ? 
-                ((app.currentPosition - 1) % 4) + 1 : 
-                null;
+                ((app.currentPosition - 1) % 4) + 1 : null;
             var title = chapterTitles[chapter - 1];
 
             if (app.currentEditId !== null) {
                 app.entries[app.currentEditId].text = text;
             } else {
                 var entry = { 
-                    date: now, 
-                    chapter: chapter, 
-                    title: title, 
-                    text: text,
-                    translation: app.currentTranslation
+                    date: now, chapter: chapter, title: title, 
+                    text: text, translation: app.currentTranslation
                 };
                 if (section) entry.section = section;
                 app.entries.push(entry);
@@ -615,12 +637,9 @@ input[type="number"], input[type="file"] {
 
         function deleteEntry(index) {
             var entry = app.entries[index];
-            var entryDate = entry.date;
             var entryTitle = 'Ch ' + entry.chapter + ': ' + entry.title;
-
-            if (!confirm('Delete this entry?\n\n' + entryTitle + '\n' + entryDate)) return;
+            if (!confirm('Delete this entry?\n\n' + entryTitle + '\n' + entry.date)) return;
             if (!confirm('Are you absolutely sure? This is your final confirmation.')) return;
-
             app.entries.splice(index, 1);
             localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
             render();
@@ -658,8 +677,7 @@ input[type="number"], input[type="file"] {
         }
 
         function toggleTheme() {
-            var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            setTheme(newTheme);
+            setTheme(currentTheme === 'dark' ? 'light' : 'dark');
         }
 
         function init() {
@@ -691,7 +709,6 @@ input[type="number"], input[type="file"] {
                 var savedPosition = localStorage.getItem('artOfWarPosition');
                 if (savedPosition) {
                     var pos = JSON.parse(savedPosition);
-                    app.currentWeek = pos.week || pos.position || 1;
                     app.currentPosition = pos.position || 1;
                     if (pos.translation && verseTexts[pos.translation]) {
                         app.currentTranslation = pos.translation;
@@ -705,7 +722,6 @@ input[type="number"], input[type="file"] {
 
         document.getElementById('prevBtn').onclick = previousChapter;
         document.getElementById('nextBtn').onclick = nextChapter;
-        document.getElementById('toggleTranslationBtn').onclick = toggleTranslation;
         document.getElementById('saveBtn').onclick = saveEntry;
         document.getElementById('exportBtn').onclick = exportCSV;
         document.getElementById('manualChapterBtn').onclick = manualChapter;
@@ -718,19 +734,19 @@ input[type="number"], input[type="file"] {
             if (e.target.id === 'uploadModal') closeUploadModal();
         };
 
-        // Create buttons
-        var themeBtn = document.createElement('button');
-        themeBtn.className = 'theme-toggle';
-        themeBtn.id = 'themeToggleBtn';
-        themeBtn.innerHTML = '🌓';
-        themeBtn.onclick = toggleTheme;
-        document.body.appendChild(themeBtn);
-
+        // Upload button
         var uploadBtn = document.createElement('button');
         uploadBtn.className = 'upload-toggle';
         uploadBtn.innerHTML = '⬆';
         uploadBtn.onclick = openUploadModal;
         document.body.appendChild(uploadBtn);
+
+        // Theme toggle button (top right)
+        var themeBtn = document.createElement('button');
+        themeBtn.className = 'theme-toggle';
+        themeBtn.innerHTML = '🌓';
+        themeBtn.onclick = toggleTheme;
+        document.body.appendChild(themeBtn);
 
         init();
     </script>
