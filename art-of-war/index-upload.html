@@ -65,9 +65,9 @@ body {
 
 .container { max-width: 900px; margin: 0 auto; }
 .header { text-align: center; margin-bottom: 40px; }
-.header h1 { font-size: 48px; margin-bottom: 10px; color: white; }
-.header h2 { font-size: 28px; font-weight: bold; color: white; margin-bottom: 8px; }
-.header p { color: var(--color-text-secondary); }
+.header h1 { font-size: 48px; margin-bottom: 10px; color: var(--color-text-primary); }
+.header h2 { font-size: 28px; font-weight: bold; color: var(--color-text-primary); margin-bottom: 8px; }
+.header p { color: var(--color-text-primary); }
 
 /* TWO COLUMN LAYOUT */
 .main {
@@ -394,11 +394,8 @@ h3 {
     <script src="war-verses/verses-giles.js"></script>
     <script src="war-verses/verses.js"></script>
     <script>
-        var verseTexts = {
-            "Giles": typeof versesGiles !== 'undefined' ? versesGiles : {}
-        };
-
-        var chapterTitles = ["Laying Plans","Waging War","Attack by Stratagem","Tactical Dispositions","Energy","Weak Points and Strong","Maneuvering","Variation in Tactics","The Army on the March","Terrain","The Nine Situations","The Attack by Fire","The Use of Spies"];
+        // verseTexts is now initialized in verses.js
+        // chapterTitles are handled by getPositionTitle() function in verses.js
 
         var app = {
             currentPosition: 1,
@@ -530,11 +527,13 @@ h3 {
             var verseText = verses[key];
             var chapter = app.currentTranslation === "Wing" ? 
                 Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
-            var title = chapterTitles[chapter - 1];
+            
+            // Get title using helper function from verses.js
+            var title = getPositionTitle(app.currentPosition, app.currentTranslation);
             
             var displayText = app.currentTranslation === "Wing" ? 
                 '<div class="chapter-number">Week ' + app.currentPosition + '</div>' +
-                '<div class="chapter-title">Chapter ' + chapter + '</div>' +
+                '<div class="chapter-title">' + chapterTitlesWing[chapter - 1] + '</div>' +
                 '<div class="part-number">Part ' + (((app.currentPosition - 1) % 4) + 1) + ': ' + title + '</div>' :
                 '<div class="chapter-number">Week ' + app.currentPosition + '</div>' +
                 '<div class="chapter-title">Chapter ' + chapter + ': ' + title + '</div>';
@@ -634,7 +633,9 @@ h3 {
                 Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
             var section = app.currentTranslation === "Wing" ? 
                 ((app.currentPosition - 1) % 4) + 1 : null;
-            var title = chapterTitles[chapter - 1];
+            
+            // Get title using helper function from verses.js
+            var title = getPositionTitle(app.currentPosition, app.currentTranslation);
 
             if (app.currentEditId !== null) {
                 app.entries[app.currentEditId].text = text;
