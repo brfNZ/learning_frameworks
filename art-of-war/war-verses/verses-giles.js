@@ -5,7 +5,7 @@ var versesGiles = {
 It is a matter of life and death, a road either to safety or to ruin. Hence it is a subject of
 inquiry which can on no account be neglected.
 
-The art of war, then, is governed by five constant factors, to be taken into account in one’s
+The art of war, then, is governed by five constant factors, to be taken into account in one's
 deliberations, when seeking to determine the conditions obtaining in the field.
 
 These are: (1) The Moral Law; (2) Heaven; (3) Earth; (4) The Commander; (5) Method and
@@ -60,7 +60,38 @@ These military devices, leading to victory, must not be divulged beforehand.
 
 Now the general who wins a battle makes many calculations in his temple ere the battle is fought. The general who loses a battle makes but few calculations beforehand. Thus do many calculations lead to victory, and few calculations to defeat: how much more no calculation at all! It is by attention to this point that I can foresee who is likely to win or lose.`,
     
-    "29": ``,
+    "2": `[PASTE CHAPTER 2 - WAGING WAR HERE]`,
     
-    "43": ``,
+    "3": `[PASTE CHAPTER 3 - ATTACK BY STRATAGEM HERE]`,
+    
+    "4": `[PASTE CHAPTER 4 - TACTICAL DISPOSITIONS HERE]`,
+    
+    "5": `[PASTE CHAPTER 5 - ENERGY HERE]`,
+    
+    "6": `[PASTE CHAPTER 6 - WEAK POINTS AND STRONG HERE]`,
+    
+    "7": `[PASTE CHAPTER 7 - MANEUVERING HERE]`,
+    
+    "8": `[PASTE CHAPTER 8 - VARIATION IN TACTICS HERE]`,
+    
+    "9": `[PASTE CHAPTER 9 - THE ARMY ON THE MARCH HERE]`,
+    
+    "10": `[PASTE CHAPTER 10 - TERRAIN HERE]`,
+    
+    "11": `[PASTE CHAPTER 11 - THE NINE SITUATIONS HERE]`,
+    
+    "12": `[PASTE CHAPTER 12 - THE ATTACK BY FIRE HERE]`,
+    
+    "13": `[PASTE CHAPTER 13 - THE USE OF SPIES HERE]`
 };
+
+/*
+TO COMPLETE THIS FILE:
+1. Go to: https://www.gutenberg.org/ebooks/132
+2. Click "Plain Text UTF-8"
+3. Copy each chapter (2-13)
+4. Paste between the backticks above
+5. Keep natural line breaks - just paste as-is!
+
+NOTE: I fixed the encoding in Chapter 1 (Tzǔ instead of TzÇ", one's instead of oneâ€™s)
+*/
