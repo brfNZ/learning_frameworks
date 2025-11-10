@@ -1,8 +1,9 @@
 // Main verses file - combines all Art of War translations
+// UPLOAD VERSION - Wing is added dynamically
 
 var verseTexts = {
-    "Giles": versesGiles,
-    "Wing": versesWing,
+    "Giles": typeof versesGiles !== 'undefined' ? versesGiles : {}
+    // Wing will be added via upload system
 };
 
 // Giles chapter titles (13 chapters)
@@ -185,6 +186,7 @@ function getPositionInfo(position, translation) {
         return { chapter: position, section: null };
     }
 }
+
 // Helper to get title
 function getPositionTitle(position, translation) {
     if (translation === "Wing") {
