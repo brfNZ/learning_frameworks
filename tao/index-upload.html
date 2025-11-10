@@ -122,6 +122,7 @@
             background: var(--surface); border: 1px solid var(--border);
             border-radius: var(--radius); padding: 30px; max-width: 500px; width: 90%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-height: 90vh; overflow-y: auto;
         }
         .modal h3 { color: var(--text1); margin-bottom: 20px; font-size: 24px; }
         .modal p { color: var(--text2); margin-bottom: 20px; line-height: 1.6; }
@@ -770,6 +771,16 @@
                 closeUploadModal();
             }
         };
+
+        // Escape key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                var modal = document.getElementById('uploadModal');
+                if (modal.classList.contains('show')) {
+                    closeUploadModal();
+                }
+            }
+        });
 
         init();
 
