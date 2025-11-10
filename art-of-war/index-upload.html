@@ -504,9 +504,23 @@ h3 {
         // CLICK VERSE TO CYCLE TRANSLATIONS
         function cycleTranslation() {
             if (app.translationOrder.length < 2) return;
+            
+            var oldTranslation = app.currentTranslation;
             var idx = app.translationOrder.indexOf(app.currentTranslation);
             idx = (idx + 1) % app.translationOrder.length;
             app.currentTranslation = app.translationOrder[idx];
+            
+            // Adjust position when switching between Wing and Giles
+            if (oldTranslation === "Wing" && app.currentTranslation === "Giles") {
+                // Wing to Giles: convert week to chapter
+                var chapter = Math.floor((app.currentPosition - 1) / 4) + 1;
+                app.currentPosition = chapter;
+            } else if (oldTranslation === "Giles" && app.currentTranslation === "Wing") {
+                // Giles to Wing: go to first week of that chapter
+                var week = (app.currentPosition - 1) * 4 + 1;
+                app.currentPosition = week;
+            }
+            
             render();
         }
 
