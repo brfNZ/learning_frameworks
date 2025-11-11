@@ -116,6 +116,22 @@ body {
     input[type="text"] { font-size: 13px; }
     .entry-item { padding: 10px; margin-bottom: 6px; }
     .del-btn { width: 24px; height: 24px; }
+
+    .manual-week {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin: 16px 0;
+    }
+
+    .manual-week input[type="text"] {
+        width: 100%;
+        box-sizing: border-box; /* Prevents padding from causing overflow */
+    }
+
+    .manual-week button {
+        width: 100%;
+    }
+
 }
 
 /* VERSE DISPLAY - CLICKABLE */
@@ -234,6 +250,10 @@ input[type="text"], input[type="file"] {
     white-space: nowrap;
 }
 .manual-week button:hover { background: var(--color-btn-success-hover); }
+
+.manual-week input[type="text"] {
+    box-sizing: border-box;
+}
 
 h3 {
     color: var(--color-text-primary);
