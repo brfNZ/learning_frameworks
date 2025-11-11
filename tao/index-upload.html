@@ -114,6 +114,12 @@
             transition: all 0.2s;
         }
         .upload-toggle:hover { background: var(--surface); transform: scale(1.05); }
+
+        @media (max-width:480px) {
+            .theme-toggle { top: 12px; right: 8px; width: 40px; height: 40px; font-size: 18px; }
+            .upload-toggle { top: 60px; right: 8px; width: 40px; height: 40px; font-size: 18px; }
+        }
+
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.7); display: none; align-items: center;
