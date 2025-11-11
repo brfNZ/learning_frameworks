@@ -95,6 +95,11 @@
             white-space: nowrap;
             min-height: 22px;
             border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+        #timerNameDisplay:hover {
+            background-color: rgba(0, 153, 153, 0.15);
         }
         #minutesLabel {
             margin-top: 10px;
@@ -245,7 +250,7 @@
 </head>
 <body>
     <div id="timerContainer">
-        <div id="timerNameDisplay"></div>
+        <div id="timerNameDisplay" onclick="openNameModal()"></div>
         <canvas id="timerCanvas"></canvas>
         <div id="controls">
             <div id="minutesLabel">MINUTES REMAINING</div>
