@@ -150,6 +150,37 @@
         .modal-btn-primary:hover { background: #92400e; }
         .modal-btn-secondary { background: var(--border); color: var(--text1); }
         .modal-btn-secondary:hover { background: #475569; }
+
+        /* === MOBILE FIX – MAKE TAO LOOK LIKE AOW === */
+        @media (max-width: 768px) {
+            body { 
+                padding: 12px !important; 
+            }
+            .container { 
+                max-width: 100% !important; 
+                padding: 0 !important; 
+            }
+            .card {
+                padding: 20px !important;
+                margin-bottom: 20px !important;
+            }
+            .main {
+                gap: 16px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body { 
+                padding: 8px !important; 
+            }
+            .card {
+                padding: 16px !important;
+            }
+            .header h1 { font-size: 36px !important; }
+            .header h2 { font-size: 18px !important; }
+            .verse-display { padding: 16px !important; }
+        }
+
     </style>
 </head>
 <body>
