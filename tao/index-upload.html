@@ -45,29 +45,9 @@
         body{background: var(--bg);min-height: 100vh;font-family: system-ui, -apple-system, sans-serif;padding: 20px;color: var(--text1);}
         .container{max-width:900px;margin:0 auto}
         .main{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-
-        /* ←←← ONLY THESE THREE @media BLOCKS ARE NEW – EVERYTHING ELSE IS YOUR ORIGINAL CODE ←←← */
         @media (max-width:1000px){.main{grid-template-columns:1fr}}
-        @media (max-width:768px){
-            body{padding:12px}
-            .container{padding:0 12px;max-width:none}
-            .card{padding:20px;margin-bottom:20px}
-        }
-        @media (max-width:480px){
-            body{padding:8px}
-            .container{padding:0 8px}
-            .card{padding:16px}
-            .header h1{font-size:36px}
-            .header h2{font-size:18px}
-            .verse-display{padding:16px}
-            .theme-toggle,.upload-toggle{
-                width:40px;height:40px;font-size:18px;right:12px
-            }
-            .theme-toggle{top:12px}
-            .upload-toggle{top:60px}
-        }
-        /* ←←← END OF CHANGES ←←← */
-
+        @media (max-width:768px){body{padding:12px}.card{padding:20px}.header h1{font-size:48px}.header h2{font-size:24px}.header p{font-size:14px}}
+        @media (max-width:480px){body{padding:8px}.card{padding:16px}.header h1{font-size:36px}.header h2{font-size:18px} .theme-toggle{top:12px;right:8px;width:40px;height:40px;font-size:18px}.upload-toggle{top:60px;right:8px;width:40px;height:40px;font-size:18px}}
         button{font-weight:bold;padding:12px 16px;border:none;border-radius:8px;font-size:14px;cursor:pointer;transition:background .2s}
         .generate-btn{flex:1;background:var(--accent-dark);color:var(--text1)}
         .generate-btn:hover{background:#92400e}
@@ -170,8 +150,678 @@
         .modal-btn-primary:hover { background: #92400e; }
         .modal-btn-secondary { background: var(--border); color: var(--text1); }
         .modal-btn-secondary:hover { background: #475569; }
+
     </style>
 </head>
 <body>
-    <!-- the rest of your HTML is 100 % untouched -->
-    (your full body and script stay exactly as you posted)
+    <div class="container">
+        <div class="header">
+            <h1>☯</h1>
+            <h2>Tao Te Ching</h2>
+            <p>Journal & I Ching Divination</p>
+        </div>
+
+        <div class="main">
+            <div class="card">
+                <div class="lines-display" id="linesDisplay"></div>
+                <div class="line-codes" id="lineCodesDisplay"></div>
+               
+                <div class="button-group">
+                    <button class="generate-btn" id="genBtn">Generate</button>
+                    <button class="reset-btn" id="resetBtn">Reset</button>
+                </div>
+                <div id="verseDisplay"></div>
+                <div class="line-codes" id="relatedVersesDisplay"></div>
+            </div>
+
+            <div class="card journal-section">
+                <div class="search-section">
+                    <h3>Search Verses</h3>
+                    <div class="search-box" style="display: grid; grid-template-columns: 1fr auto auto; gap: 12px;">
+                        <input type="text" id="searchInput" placeholder="Search for a word in verses...">
+                        <button class="search-btn" id="searchBtn">Search</button>
+                        <button id="clearSearchBtn" style="display: none; background: transparent; color: #94a3b8; padding: 10px 8px; border: 1px solid #64748b; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: normal; min-width: 32px;">×</button>
+                    </div>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+
+                <h3>Journal Entry</h3>
+                <textarea id="journalText" placeholder="Write your reflections here..."></textarea>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0;">
+                    <button class="save-btn" id="saveBtn">Save Entry</button>
+                    <button class="export-btn" id="exportBtn">Export to CSV</button>
+                </div>
+
+                <div class="manual-entry">
+                    <input type="text" id="manualVerse" placeholder="Verse # (1-81) or Lines (1120)">
+                    <button id="manualEntryBtn" style="background: #059669; color: white; padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; white-space: nowrap;">Manual Entry</button>
+                </div>
+                
+                <h3>Past Entries</h3>
+                <div class="entries-list" id="entriesList"></div>
+            </div>
+        </div>
+
+        <p class="footer">Click the verse text to cycle through different translations</p>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal">
+            <h3>⬆ Upload Translations</h3>
+            <p>Upload translation .js files to add them to the app. Files should be in the format: <code>var versesName = { "1": "text", ... };</code></p>
+            
+            <div class="upload-item">
+                <label>Lau Translation</label>
+                <div class="upload-status loaded">✓ Default (always included)</div>
+            </div>
+
+            <div class="upload-item">
+                <label for="uploadMitchell">Mitchell Translation</label>
+                <input type="file" id="uploadMitchell" accept=".js">
+                <div class="upload-status" id="statusMitchell">Not uploaded</div>
+            </div>
+
+            <div class="upload-item">
+                <label for="uploadCheng">Cheng Translation</label>
+                <input type="file" id="uploadCheng" accept=".js">
+                <div class="upload-status" id="statusCheng">Not uploaded</div>
+            </div>
+
+            <div class="upload-item">
+                <label for="uploadLeGuin">Le Guin Translation</label>
+                <input type="file" id="uploadLeGuin" accept=".js">
+                <div class="upload-status" id="statusLeGuin">Not uploaded</div>
+            </div>
+
+            <div class="upload-item">
+                <label for="uploadWing">Wing Translation</label>
+                <input type="file" id="uploadWing" accept=".js">
+                <div class="upload-status" id="statusWing">Not uploaded</div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" onclick="closeUploadModal()">Close</button>
+                <button class="modal-btn modal-btn-primary" onclick="clearAllUploads()">Clear All Uploads</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load Lau translation inline (default) -->
+    <script src="verses/verses-lau.js"></script>
+    <script src="verses/verses.js"></script>
+    <script>
+        var verseTitles = ["The Beginning of Power", "Using Polarity", "Keeping Peace", "The Nature of the Tao", "Holding to the Center", "Perceiving the Subtle", "The Power of Selflessness", "Noncompetitive Values", "Transcending Decline", "Inner Harmony", "Using What Is Not", "Controlling the Senses", "Expanding Identification", "The Essence of Tao", "The Power in Subtle Force", "Knowing the Absolute", "The Way of Subtle Influence", "Losing the Instincts", "Return to Simplicity", "Developing Independence", "Knowing the Collective Origin", "Following the Pattern", "The Steady Force of Attitude", "Nature rarely speaks", "The Tao of Greatness", "The Gravity of Power", "The Skillful Exchange of Information", "Uniting the Forces", "The Way of Noninterference", "Leading the Leader", "The Use of Force", "The Limits of Specialization", "Self-Mastery", "The Evolving Tao", "Sensing the Insensible", "Concealing the Advantage", "The Power in Desirelessness", "Power Without Motive", "Oneness in Leadership", "The Way", "Mastering the Paradox", "Knowing Polarity", "Subtle Powers", "The Power in Needing Less", "Using Emptiness", "Knowing Enough", "Cultivating Inner-Knowledge", "The Art of Nonaction", "Opening the Mind", "The Art of Survival", "The Power of Impartial Support", "Returning to Insight", "The Undivided Path", "Establishing a Universal View", "The Power in Not Contending", "Gaining Oneness", "The Power in Effortlessness", "Cultivating the Center", "The Way of Moderation", "Holding the Position", "The Power in Modesty", "The Tao in Leaders", "The Path of Least Resistance", "The Power at the Beginning", "The Danger in Cleverness", "The Power in Staying Low", "The Power in Compassion", "Nonaggressive Strength", "Neutralizing Escalation", "Knowing the Tao", "Knowing the Disease", "The Appropriate Perspective", "Nature's Way", "Unnatural Authority", "Self-Destructive Leadership", "The Power in Flexibility", "Directing the Power", "Accepting the Blame", "The Power In Not Taking Advantage", "Fulfilling Independence", "The Evolved Way"];
+        
+        var verseCategories = {
+            "Power in Nature": [4, 6, 11, 14, 21, 25, 34, 40, 41, 42, 51, 73],
+            "Power in Leadership": [3, 17, 19, 26, 28, 37, 39, 57, 58, 60, 62, 65, 66, 67, 68, 72],
+            "Power in Awareness": [5, 8, 12, 13, 16, 18, 35, 38, 45, 50, 52, 54, 56, 71],
+            "Power in Organizations": [24, 27, 30, 31, 36, 46, 53, 59, 61, 69, 78, 80],
+            "Power in Projection": [1, 2, 9, 10, 15, 20, 22, 23, 33, 44, 49, 70, 76, 77, 79, 81],
+            "Power in Noninterference": [7, 29, 32, 43, 47, 48, 55, 63, 64, 74, 75]
+        };
+
+        // Initialize verseTexts with Lau (assuming verses-lau.js defines versesLau)
+        var verseTexts = {
+            "Lau": typeof versesLau !== 'undefined' ? versesLau : {}
+        };
+
+        var app = {
+            lines: [null, null, null, null],
+            verseNumber: null,
+            currentEditId: null,
+            entries: [],
+            currentTranslation: "Lau",
+            translationOrder: ["Lau"]
+        };
+
+        // Load uploaded translations from localStorage
+        function loadUploadedTranslations() {
+            var translations = ['Mitchell', 'Cheng', 'Le Guin', 'Wing'];
+            
+            for (var i = 0; i < translations.length; i++) {
+                var name = translations[i];
+                var stored = localStorage.getItem('tao_translation_' + name);
+                if (stored) {
+                    try {
+                        verseTexts[name] = JSON.parse(stored);
+                        if (app.translationOrder.indexOf(name) === -1) {
+                            app.translationOrder.push(name);
+                        }
+                        updateUploadStatus(name, true);
+                    } catch (e) {
+                        console.error('Error loading ' + name + ' translation:', e);
+                    }
+                }
+            }
+        }
+
+        function updateUploadStatus(name, loaded) {
+            var statusId = 'status' + name.replace(' ', '').replace('.', '');
+            var statusEl = document.getElementById(statusId);
+            if (statusEl) {
+                if (loaded) {
+                    statusEl.textContent = '✓ Loaded';
+                    statusEl.className = 'upload-status loaded';
+                } else {
+                    statusEl.textContent = 'Not uploaded';
+                    statusEl.className = 'upload-status';
+                }
+            }
+        }
+
+        function setupUploadHandler(inputId, translationName) {
+            var input = document.getElementById(inputId);
+            if (!input) return;
+            
+            input.onchange = function(e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        var content = event.target.result;
+                        
+                        // Extract verses object - format: var versesName = { "1": "text", ... };
+                        var match = content.match(/var\s+\w+\s*=\s*(\{[\s\S]*\});?/);
+                        if (match) {
+                            var versesObj = eval('(' + match[1] + ')');
+                            
+                            // Store in localStorage
+                            localStorage.setItem('tao_translation_' + translationName, JSON.stringify(versesObj));
+                            
+                            // Add to verseTexts
+                            verseTexts[translationName] = versesObj;
+                            
+                            // Add to translation order if not already there
+                            if (app.translationOrder.indexOf(translationName) === -1) {
+                                app.translationOrder.push(translationName);
+                            }
+                            
+                            updateUploadStatus(translationName, true);
+                            alert(translationName + ' translation uploaded successfully!');
+                            
+                            // Re-render if viewing a verse
+                            if (app.verseNumber) {
+                                render();
+                            }
+                        } else {
+                            alert('Error: Could not find translation data in file. Expected format: var versesName = { "1": "text", ... };');
+                        }
+                    } catch (err) {
+                        alert('Error reading file: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+        }
+
+        function clearAllUploads() {
+            if (!confirm('Clear all uploaded translations? This cannot be undone.')) return;
+            
+            var translations = ['Mitchell', 'Cheng', 'Le Guin', 'Wing'];
+            for (var i = 0; i < translations.length; i++) {
+                var name = translations[i];
+                localStorage.removeItem('tao_translation_' + name);
+                delete verseTexts[name];
+                updateUploadStatus(name, false);
+                
+                var idx = app.translationOrder.indexOf(name);
+                if (idx > -1) {
+                    app.translationOrder.splice(idx, 1);
+                }
+            }
+            
+            app.currentTranslation = "Lau";
+            app.translationOrder = ["Lau"];
+            
+            // Clear file inputs
+            var inputs = ['uploadMitchell', 'uploadCheng', 'uploadLeGuin', 'uploadWing'];
+            for (var i = 0; i < inputs.length; i++) {
+                document.getElementById(inputs[i]).value = '';
+            }
+            
+            alert('All uploads cleared');
+            
+            if (app.verseNumber) {
+                render();
+            }
+        }
+
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.add('show');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.remove('show');
+        }
+
+        function getLineHTML(type) {
+            if (type === 0) return '<div class="line-segment solid"></div>';
+            if (type === 1) return '<div class="broken-line"><div class="line-segment broken-segment"></div><div class="line-segment broken-segment"></div></div>';
+            if (type === 2) return '<div class="dashed-line"><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div></div>';
+            return '<div class="dashed-line" style="opacity:0.3"><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div></div>';
+        }
+
+        function cycleLine(index, direction) {
+            if (app.lines[index] === null) {
+                app.lines[index] = 0;
+            } else {
+                if (direction === 'forward') {
+                    app.lines[index] = (app.lines[index] + 1) % 3;
+                } else {
+                    app.lines[index] = (app.lines[index] + 2) % 3;
+                }
+            }
+            
+            if (app.lines.every(function(l) { return l !== null; })) {
+                var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
+                app.verseNumber = base3 + 1;
+            } else {
+                app.verseNumber = null;
+            }
+            render();
+        }
+
+        function render() {
+            var linesHTML = '';
+            for (var i = 0; i < 4; i++) {
+                linesHTML += '<div onclick="cycleLine(' + i + ', \'forward\')" oncontextmenu="cycleLine(' + i + ', \'backward\'); return false;" style="cursor: pointer; padding: 1px 0;">' + getLineHTML(app.lines[i]) + '</div>';
+            }
+            document.getElementById('linesDisplay').innerHTML = linesHTML;
+            
+            var lineCodesHTML = '';
+            if (app.lines.every(function(l) { return l !== null; })) {
+                lineCodesHTML = 'Lines: ' + app.lines.join('');
+            }
+            document.getElementById('lineCodesDisplay').innerHTML = lineCodesHTML;
+
+            if (app.verseNumber !== null) {
+                var verseIdx = app.verseNumber - 1;
+                var title = verseTitles[verseIdx];
+                
+                var verseText = '';
+                if (typeof verseTexts !== 'undefined' && verseTexts[app.currentTranslation] && verseTexts[app.currentTranslation][app.verseNumber]) {
+                    verseText = verseTexts[app.currentTranslation][app.verseNumber];
+                } else {
+                    cycleTranslation();
+                    return;
+                }
+
+                var category = '';
+                for (var cat in verseCategories) {
+                    if (verseCategories[cat].indexOf(app.verseNumber) !== -1) {
+                        category = cat;
+                        break;
+                    }
+                }
+
+                var verseHTML = '<div class="verse-display" onclick="cycleTranslation()">' +
+                    '<div class="verse-number">Verse ' + app.verseNumber + '</div>' +
+                    '<div class="verse-title">' + title + '</div>' +
+                    '<div class="verse-author">Translation: ' + app.currentTranslation + '</div>' +
+                    '<div class="verse-text">' + verseText + '</div>' +
+                    '</div>';
+                
+                document.getElementById('verseDisplay').innerHTML = verseHTML;
+                saveLastVerse(app.verseNumber);
+
+                var related = verseCategories[category] || [];
+                var relatedHTML = '';
+                if (related.length > 0) {
+                    var relatedVersesOnly = related.filter(function(v) { return v !== app.verseNumber; });
+                    var relatedLinks = relatedVersesOnly.map(function(v) {
+                        return '<span style="cursor: pointer; text-decoration: underline; color: #94a3b8;" onclick="loadVerseFromSearch(' + v + ')">' + v + '</span>';
+                    }).join(', ');
+                    
+                    relatedHTML = category + ': ' + relatedLinks;
+                }
+                document.getElementById('relatedVersesDisplay').innerHTML = relatedHTML;
+            } else {
+                document.getElementById('verseDisplay').innerHTML = '';
+                document.getElementById('relatedVersesDisplay').innerHTML = '';
+            }
+
+            var listHTML = '';
+            for (var i = app.entries.length - 1; i >= 0; i--) {
+                var e = app.entries[i];
+                var preview = e.text.substring(0, 60);
+                if (e.text.length > 60) preview += '…';
+
+                listHTML +=
+                    '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
+                    '<button class="del-btn" onclick="event.stopPropagation(); deleteEntry(' + i + ')" title="Delete entry">×</button>' +
+                    '<div class="entry-date">' + e.date + '</div>' +
+                    '<div class="entry-verse">Verse ' + e.verse + ': ' + e.title + '</div>' +
+                    '<div class="entry-preview">' + preview + '</div>' +
+                    '</div>';
+            }
+            document.getElementById('entriesList').innerHTML = listHTML;
+        }
+
+        function cycleTranslation() {
+            var idx = app.translationOrder.indexOf(app.currentTranslation);
+            idx = (idx + 1) % app.translationOrder.length;
+            app.currentTranslation = app.translationOrder[idx];
+            render();
+        }
+
+        function generate() {
+            app.lines = [
+                Math.floor(Math.random() * 3), 
+                Math.floor(Math.random() * 3), 
+                Math.floor(Math.random() * 3), 
+                Math.floor(Math.random() * 3)
+            ];
+            
+            var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
+            app.verseNumber = base3 + 1;
+            
+            app.currentEditId = null;
+            document.getElementById('journalText').value = '';
+            render();
+        }
+
+        function verseToLines(verseNum) {
+            var base3 = verseNum - 1;
+            var lines = [];
+            
+            lines[0] = Math.floor(base3 / 27);
+            base3 = base3 % 27;
+            
+            lines[1] = Math.floor(base3 / 9);
+            base3 = base3 % 9;
+            
+            lines[2] = Math.floor(base3 / 3);
+            lines[3] = base3 % 3;
+            
+            return lines;
+        }
+
+        function manualEntry() {
+            var input = document.getElementById('manualVerse').value.trim();
+            
+            if (input.length === 4 && /^[0-2]{4}$/.test(input)) {
+                app.lines = [
+                    parseInt(input[0]),
+                    parseInt(input[1]),
+                    parseInt(input[2]),
+                    parseInt(input[3])
+                ];
+                var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
+                app.verseNumber = base3 + 1;
+            } 
+            else {
+                var num = parseInt(input);
+                if (isNaN(num) || num < 1 || num > 81) {
+                    alert('Enter verse 1-81 or 4-digit line pattern (e.g., 1120)');
+                    return;
+                }
+                app.verseNumber = num;
+                app.lines = verseToLines(num);
+            }
+            
+            app.currentEditId = null;
+            document.getElementById('journalText').value = '';
+            document.getElementById('manualVerse').value = '';
+            render();
+        }
+
+        function saveEntry() {
+            if (app.verseNumber === null) {
+                alert('Generate or select a verse first');
+                return;
+            }
+            var text = document.getElementById('journalText').value;
+            var now = new Date().toISOString().split('T')[0];
+            var title = verseTitles[app.verseNumber - 1];
+
+            if (app.currentEditId !== null) {
+                app.entries[app.currentEditId].text = text;
+            } else {
+                app.entries.push({ date: now, verse: app.verseNumber, title: title, text: text, translation: app.currentTranslation });
+            }
+            localStorage.setItem('taoEntries', JSON.stringify(app.entries));
+            app.currentEditId = null;
+            document.getElementById('journalText').value = '';
+            render();
+        }
+
+        function loadEntry(idx) {
+            var e = app.entries[idx];
+            app.verseNumber = e.verse;
+            app.lines = verseToLines(e.verse);
+            app.currentEditId = idx;
+            document.getElementById('journalText').value = e.text;
+            if (e.translation && verseTexts[e.translation]) {
+                app.currentTranslation = e.translation;
+            }
+            render();
+        }
+
+        function deleteEntry(idx) {
+            var entry = app.entries[idx];
+            var entryDate = entry.date;
+            var entryTitle = 'Verse ' + entry.verse + ': ' + entry.title;
+
+            if (!confirm('Delete this entry?\n\n' + entryTitle + '\n' + entryDate)) return;
+            if (!confirm('Are you absolutely sure? This is your final confirmation.')) return;
+
+            app.entries.splice(idx, 1);
+            localStorage.setItem('taoEntries', JSON.stringify(app.entries));
+            render();
+        }
+
+        function exportCSV() {
+            if (app.entries.length === 0) {
+                alert('No entries to export');
+                return;
+            }
+            var csv = 'Date,Verse,Title,Translation,Reflection\n';
+            for (var i = 0; i < app.entries.length; i++) {
+                var e = app.entries[i];
+                var text = '"' + (e.text || '').replace(/"/g, '""') + '"';
+                csv += e.date + ',' + e.verse + ',"' + e.title + '","' + (e.translation || 'Lau') + '",' + text + '\n';
+            }
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'tao-journal-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+        }
+
+        function searchVerses() {
+            var searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!searchTerm) {
+                alert('Please enter a search term');
+                return;
+            }
+
+            var resultsDiv = document.getElementById('searchResults');
+            var results = [];
+            
+            for (var verseNum = 1; verseNum <= 81; verseNum++) {
+                for (var trans in verseTexts) {
+                    if (!verseTexts[trans][verseNum]) continue;
+                    
+                    var text = verseTexts[trans][verseNum].toLowerCase();
+                    if (text.indexOf(searchTerm) !== -1) {
+                        var index = text.indexOf(searchTerm);
+                        var start = Math.max(0, index - 50);
+                        var end = Math.min(text.length, index + searchTerm.length + 50);
+                        var snippet = text.substring(start, end);
+                        
+                        if (start > 0) snippet = '...' + snippet;
+                        if (end < text.length) snippet = snippet + '...';
+                        
+                        var regex = new RegExp('(' + searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                        snippet = snippet.replace(regex, '<span class="search-highlight">$1</span>');
+                        
+                        results.push({
+                            verse: verseNum,
+                            title: verseTitles[verseNum - 1],
+                            translation: trans,
+                            snippet: snippet
+                        });
+                        
+                        break;
+                    }
+                }
+            }
+
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<div class="search-count">No verses found containing "' + searchTerm + '"</div>';
+            } else {
+                var html = '';
+                for (var i = 0; i < results.length; i++) {
+                    var r = results[i];
+                    html += '<div class="search-result-item" onclick="loadVerseFromSearch(' + r.verse + ')">' +
+                        '<div class="search-result-verse">Verse ' + r.verse + '</div>' +
+                        '<div class="search-result-title">' + r.title + '</div>' +
+                        '<div class="search-result-snippet">' + r.snippet + '</div>' +
+                        '</div>';
+                }
+                html += '<div class="search-count">Found ' + results.length + ' verse(s) containing "' + searchTerm + '"</div>';
+                resultsDiv.innerHTML = html;
+                document.getElementById('clearSearchBtn').style.display = 'block';
+            }
+        }
+
+        function loadVerseFromSearch(verseNum) {
+            app.verseNumber = verseNum;
+            app.lines = verseToLines(verseNum);
+            app.currentEditId = null;
+            document.getElementById('journalText').value = '';
+            render();
+            
+            document.getElementById('verseDisplay').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('clearSearchBtn').style.display = 'none';
+        }
+
+        function saveLastVerse(verseNum) {
+            localStorage.setItem('taoLastVerse', verseNum);
+            updateURL(verseNum);
+        }
+
+        function loadLastVerse() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var verseFromURL = urlParams.get('verse');
+            
+            if (verseFromURL) {
+                return parseInt(verseFromURL);
+            }
+            
+            var saved = localStorage.getItem('taoLastVerse');
+            return saved ? parseInt(saved) : null;
+        }
+
+        function updateURL(verseNum) {
+            var newURL = window.location.pathname + '?verse=' + verseNum;
+            window.history.replaceState({}, '', newURL);
+        }
+
+        function init() {
+            loadUploadedTranslations();
+            
+            var saved = localStorage.getItem('taoEntries');
+            if (saved) app.entries = JSON.parse(saved);
+            
+            var lastVerse = loadLastVerse();
+            if (lastVerse && lastVerse >= 1 && lastVerse <= 81) {
+                app.verseNumber = lastVerse;
+                app.lines = verseToLines(lastVerse);
+            }
+            
+            setupUploadHandler('uploadMitchell', 'Mitchell');
+            setupUploadHandler('uploadCheng', 'Cheng');
+            setupUploadHandler('uploadLeGuin', 'Le Guin');
+            setupUploadHandler('uploadWing', 'Wing');
+            
+            render();
+        }
+
+        document.getElementById('genBtn').onclick = generate;
+        document.getElementById('resetBtn').onclick = function() { 
+            app.lines = [null, null, null, null]; 
+            app.verseNumber = null; 
+            app.currentEditId = null; 
+            app.currentTranslation = "Lau";
+            document.getElementById('journalText').value = ''; 
+            render(); 
+        };
+        document.getElementById('saveBtn').onclick = saveEntry;
+        document.getElementById('exportBtn').onclick = exportCSV;
+        document.getElementById('manualEntryBtn').onclick = manualEntry;
+        document.getElementById('manualVerse').onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                manualEntry();
+            }
+        };
+
+        document.getElementById('searchBtn').onclick = searchVerses;
+        document.getElementById('searchInput').onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                searchVerses();
+            }
+        };
+        document.getElementById('clearSearchBtn').onclick = clearSearch;
+
+        document.getElementById('uploadModal').onclick = function(e) {
+            if (e.target.id === 'uploadModal') {
+                closeUploadModal();
+            }
+        };
+
+        // Escape key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                var modal = document.getElementById('uploadModal');
+                if (modal.classList.contains('show')) {
+                    closeUploadModal();
+                }
+            }
+        });
+
+        init();
+
+        /* Theme toggle */
+        var STORAGE_KEY = 'tao-theme';
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var defaultTheme = localStorage.getItem(STORAGE_KEY) || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', defaultTheme);
+
+        function toggleTheme() {
+            var current = document.documentElement.getAttribute('data-theme');
+            var next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem(STORAGE_KEY, next);
+        }
+
+        var toggleBtn = document.createElement('button');
+        toggleBtn.className = 'theme-toggle';
+        toggleBtn.setAttribute('aria-label', 'Toggle dark/light mode');
+        toggleBtn.innerHTML = '🌓';
+        toggleBtn.onclick = toggleTheme;
+        document.body.appendChild(toggleBtn);
+
+        /* Upload button */
+        var uploadBtn = document.createElement('button');
+        uploadBtn.className = 'upload-toggle';
+        uploadBtn.setAttribute('aria-label', 'Upload translations');
+        uploadBtn.innerHTML = '⬆';
+        uploadBtn.onclick = openUploadModal;
+        document.body.appendChild(uploadBtn);
+
+    </script>
+
+</body>
+</html>
