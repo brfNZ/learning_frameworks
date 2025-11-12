@@ -295,7 +295,7 @@
             </div>
 
             <!-- 2-week mini-chart – THIS week on TOP -->
-                <div id="weekChart" style="margin-bottom:25px;font-size:13px;color:#575757; text-align:center">
+                <div id="weekChart" style="margin-bottom:30px;font-size:13px;color:#575757; text-align:center">
 
                 <!-- THIS WEEK -->
                 <div class="weekRow">
@@ -869,7 +869,7 @@
                             ${scoreEmoji ? `<span style="font-size: 20px;">${scoreEmoji}</span>` : ''}
                             ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
                         </div>
-                            <div style="display: flex; gap: 3px; flex-wrap: wrap;">
+                            <div style="display: flex; gap: 2px; flex-wrap: wrap;">
                                 <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px; opacity: 0.65;">
                                     ${session.score !== undefined ? 'Edit' : 'Review'}
                                 </button>
