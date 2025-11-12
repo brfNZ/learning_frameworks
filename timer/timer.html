@@ -169,7 +169,7 @@
 
         .modal-button.primary {
             background-color: transparent;
-            color: var(#009999);
+            color: var(--primary-cyan-outline);
             border: 1px solid var(--primary-cyan-outline);
         }
 
@@ -882,7 +882,7 @@
                             ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
                         </div>
                             <div style="display: flex; gap: 2px; flex-wrap: wrap;">
-                                <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="background-color: transparent; color: var(--secondary-gray); border: 1px solid var(--secondary-gray); font-size: 12px; padding: 4px 8px;"
+                                <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px;">
                                     ${session.score !== undefined ? 'Edit' : 'Review'}
                                 </button>
                                 <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: transparent; color: #333; border: 1px solid #666; font-size: 14px; padding: 4px 8px;">×</button>
@@ -896,7 +896,7 @@
         }
 
         // Review Modal Functions
-        function openReviewModal(sessionId) {
+        function openReviewModal(sessionId) {f
             currentReviewSessionId = sessionId;
             selectedReviewScore = null;
             
