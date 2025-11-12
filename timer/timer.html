@@ -164,8 +164,9 @@
         }
 
         .modal-button.primary {
-            background-color: var(--primary-cyan);
-            color: white;
+            background-color: transparent;
+            color: var(--primary-cyan);
+            border: 1px solid var(--primary-cyan);
         }
 
         .modal-button.primary:hover {
@@ -874,7 +875,7 @@
                                 <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px; opacity: 0.65;">
                                     ${session.score !== undefined ? 'Edit' : 'Review'}
                                 </button>
-                                <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: #999999; color: white; font-size: 12px; padding: 4px 8px; opacity: 0.65;">×</button>
+                                <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: transparent; color: #333; border: 1px solid #333; font-size: 12px; padding: 4px 8px; opacity: 0.65;">×</button>
                             </div>
                         </div>
                     </div>
