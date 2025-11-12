@@ -344,7 +344,7 @@
     <!-- Review Modal -->
     <div id="reviewModal" class="modal">
         <div class="modal-content" style="width: 340px;">
-        <h3 style="margin-top: 0; margin-bottom: 10px;">Review</h3>
+        <h3 style="margin-top: 0; margin-bottom: 12px;">Review</h3>
             <div id="reviewSessionInfo" style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-bottom: 8px; font-size: 14px;"></div>
             
             <div style="display: flex; justify-content: space-around; margin: 4px 0 6px 0;">
@@ -353,7 +353,7 @@
                 <button class="emoji-button" onclick="selectReviewScore(1)" style="font-size: 20px; background: none; border: 3px solid transparent; border-radius: 6px; cursor: pointer; padding: 3px;">😊</button>
             </div>
             
-            <div style="display: flex; justify-content: space-around; margin-bottom: 14px; font-size: 12px; color: #878787;">
+            <div style="display: flex; justify-content: space-around; margin-bottom: 14px; font-size: 12px; color: #ababab;">
                 <span>Not useful</span>
                 <span>Neutral</span>
                 <span>Very useful</span>
@@ -869,7 +869,7 @@
                             ${scoreEmoji ? `<span style="font-size: 20px;">${scoreEmoji}</span>` : ''}
                             ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
                         </div>
-                            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                            <div style="display: flex; gap: 3px; flex-wrap: wrap;">
                                 <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px; opacity: 0.65;">
                                     ${session.score !== undefined ? 'Edit' : 'Review'}
                                 </button>
