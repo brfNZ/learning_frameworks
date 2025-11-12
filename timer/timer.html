@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Countdown Timer</title>
     <style>
-        :root {
-            --primary-cyan: #009999;
-            --primary-cyan-hover: #007777;
-            --primary-red: #ed4d66;
-            --primary-red-active: #ff4444;
-        }
+     :root {
+        --primary-cyan: #009999;
+        --primary-cyan-hover: #007777;
+        --primary-cyan-outline: #009999;
+        --primary-cyan-outline-hover: #006666;
+        --secondary-gray: #999;
+        --secondary-gray-hover: #333;
+        --primary-red: #ed4d66;
+        --primary-red-active: #ff4444;
+    }
 
         body {
             display: flex;
@@ -165,12 +169,18 @@
 
         .modal-button.primary {
             background-color: transparent;
-            color: var(--primary-cyan);
-            border: 1px solid var(--primary-cyan);
+            color: var(--primary-cyan-outline);
+            border: 1px solid var(--primary-cyan-outline);
         }
 
         .modal-button.primary:hover {
-            background-color: var(--primary-cyan-hover);
+            color: var(--primary-cyan-outline-hover);
+            border-color: var(--primary-cyan-outline-hover);
+        }
+
+        .modal-button:hover {
+            color: var(--secondary-gray-hover);
+            border-color: var(--secondary-gray-hover);
         }
 
         .modal-button.secondary {
@@ -872,10 +882,10 @@
                             ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
                         </div>
                             <div style="display: flex; gap: 2px; flex-wrap: wrap;">
-                                <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px; opacity: 0.85;">
+                                <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="background-color: transparent; color: var(--secondary-gray); border: 1px solid var(--secondary-gray); font-size: 12px; padding: 4px 8px;"
                                     ${session.score !== undefined ? 'Edit' : 'Review'}
                                 </button>
-                                <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: transparent; color: #333; border: 1px solid #666; font-size: 14px; padding: 4px 8px; opacity: 0.85;">×</button>
+                                <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: transparent; color: #333; border: 1px solid #666; font-size: 14px; padding: 4px 8px;">×</button>
                             </div>
                         </div>
                     </div>
