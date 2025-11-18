@@ -190,11 +190,7 @@
             </div>
         </div>
 
-        <div class="footer">
-            <p>Featuring translations by D.C. Lau, Stephen Mitchell, Ursula K. Le Guin, R.L. Wing, and Cheng Man-ch'ing</p>
-            <p style="margin-top:8px">Click verse to cycle through translations • Click entries to view/edit</p>
-            <p style="margin-top:16px"><a href="guide/guide.html" style="color:var(--accent);text-decoration:none">📖 Guide to Passages</a></p>
-        </div>
+        <p class="footer">Click the verse text to cycle through different translations</p>
     </div>
 
     <script src="verses/verses-lau.js"></script>
@@ -259,12 +255,14 @@
             var ld = document.getElementById('linesDisplay');
             var lcd = document.getElementById('lineCodesDisplay');
             var vd = document.getElementById('verseDisplay');
+            var rvd = document.getElementById('relatedVersesDisplay');
             var el = document.getElementById('entriesList');
 
             if (app.verseNumber === null) {
                 ld.innerHTML = '';
                 lcd.innerHTML = '';
                 vd.innerHTML = '';
+                rvd.innerHTML = '';
             } else {
                 var lineHTML = '<div class="lines-display">';
                 for (var i = 0; i < 4; i++) {
@@ -279,15 +277,37 @@
                 lineHTML += '</div>';
                 ld.innerHTML = lineHTML;
                 
-                lcd.innerHTML = app.lines.map(function(x) { return x === 0 ? '▬' : x === 1 ? '- -' : '- - -'; }).join(' / ');
+                // Display line codes as numbers like "Lines: 0012"
+                lcd.innerHTML = 'Lines: ' + app.lines.join('');
 
                 var currentVerse = verseTexts[app.currentTranslation][app.verseNumber];
                 vd.innerHTML = '<div class="verse-display" onclick="cycleTranslation()">' +
                     '<div class="verse-number">Verse ' + app.verseNumber + '</div>' +
                     '<div class="verse-title">' + verseTitles[app.verseNumber - 1] + '</div>' +
-                    '<div class="verse-author">' + app.currentTranslation + ' translation</div>' +
+                    '<div class="verse-author">Translation: ' + app.currentTranslation + '</div>' +
                     '<div class="verse-text">' + currentVerse + '</div>' +
                     '</div>';
+                
+                // Display category and related verses
+                var category = '';
+                for (var cat in verseCategories) {
+                    if (verseCategories[cat].indexOf(app.verseNumber) !== -1) {
+                        category = cat;
+                        break;
+                    }
+                }
+                
+                var related = verseCategories[category] || [];
+                var relatedHTML = '';
+                if (related.length > 0) {
+                    var relatedVersesOnly = related.filter(function(v) { return v !== app.verseNumber; });
+                    var relatedLinks = relatedVersesOnly.map(function(v) {
+                        return '<span style="cursor:pointer;text-decoration:underline;color:#94a3b8" onclick="loadVerseFromSearch(' + v + ')">' + v + '</span>';
+                    }).join(', ');
+                    
+                    relatedHTML = '<a href="guide/guide.html" target="_blank" style="color:#fbbf24;text-decoration:none;border-bottom:1px dotted #fbbf24">' + category + '</a>: ' + relatedLinks;
+                }
+                rvd.innerHTML = relatedHTML;
             }
 
             var entriesHTML = '';
