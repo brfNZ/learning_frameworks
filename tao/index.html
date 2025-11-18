@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tao Te Ching - Journal & Divination</title>
+    <style>
+        /* [CSS with improved mobile responsive from upload version] */
+        :root {
+        --bg: linear-gradient(to bottom right, #1e293b, #334155, #0f172a);
+        --surface: #475569;
+        --card: #334155;
+        --border: #64748b;
+        --text1: #ffffff;
+        --text2: #cbd5e1;
+        --text3: #94a3b8;
+        --accent: #fbbf24;
+        --accent-dark: #b45309;
+        --radius: 12px;
+        --shadow: 0 20px 25px rgba(0,0,0,.3);
+        }
+        [data-theme="light"] {
+        --bg: linear-gradient(to bottom right, #fdf6f0, #f3ece4, #e7dfd8);
+        --surface: #f5f2ed;
+        --card: #f9f7f4;
+        --border: #d6c9b8;
+        --text1: #3a3229;
+        --text2: #6b5e52;
+        --text3: #9e8d7c;
+        --accent: #d97706;
+        --accent-dark: #b45309;
+        --shadow: 0 10px 20px -4px rgba(94, 80, 63, .12);
+        }
+        .entry-item { position: relative; }
+        .del-btn {
+            position: absolute; top: 8px; right: 8px; width: 20px; height: 20px;
+            border: 1px solid var(--border); background: var(--surface); color: var(--text2);
+            border-radius: 50%; font-size: 14px; cursor: pointer; opacity: 0;
+            transition: opacity .2s, transform .2s; display: flex;
+            align-items: center; justify-content: center; padding: 0; line-height: 1;
+        }
+        .entry-item:hover .del-btn { opacity: .6; }
+        .del-btn:hover { opacity: 1; transform: scale(1.2); border-color: var(--accent); color: var(--accent); }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{background: var(--bg);min-height: 100vh;font-family: system-ui, -apple-system, sans-serif;padding: 20px;color: var(--text1);}
+        .container{max-width:900px;margin:0 auto}
+        .main{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        @media (max-width:1000px){.main{grid-template-columns:1fr}}
+        @media (max-width:768px){body{padding:12px}.card{padding:20px}.header h1{font-size:48px}.header h2{font-size:24px}.header p{font-size:14px}}
+
+        @media (max-width: 480px) {
+            body { padding: 8px; }
+            .container { 
+                max-width: 100%; 
+                width: 100%;
+                margin: 0 auto;
+            }
+            .card { 
+                padding: 16px; 
+                overflow-x: hidden;
+            }
+            .header h1 { font-size: 36px; }
+            .header h2 { font-size: 18px; }
+            .theme-toggle { top: 12px; right: 8px; width: 40px; height: 40px; font-size: 18px; }
+            
+            /* Force verse text to wrap and stay within bounds */
+            .verse-text {
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+        }
+
+        button{font-weight:bold;padding:12px 16px;border:none;border-radius:8px;font-size:14px;cursor:pointer;transition:background .2s}
+        .generate-btn{flex:1;background:var(--accent-dark);color:var(--text1)}
+        .generate-btn:hover{background:#92400e}
+        .reset-btn{flex:1;background:var(--border);color:var(--text1)}
+        .reset-btn:hover{background:#475569}
+        .save-btn{width:100%;background:#059669;color:var(--text1)}
+        .save-btn:hover{background:#047857}
+        .export-btn{width:100%;background:#7c3aed;color:var(--text1)}
+        .export-btn:hover{background:#6d28d9}
+        .search-btn{background:#0284c7;color:var(--text1);padding:10px 20px}
+        .search-btn:hover{background:#0369a1}
+        input[type="text"], input[type="number"]{padding:10px;background:var(--card);color:var(--text1);border:1px solid var(--border);border-radius:6px;font-size:14px}
+        textarea{width:100%;height:200px;padding:12px;background:var(--card);color:var(--text1);border:1px solid var(--border);border-radius:8px;font-family:system-ui;font-size:14px;resize:vertical}
+        textarea::placeholder{color:var(--text3)}
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow)}
+        .header{text-align:center;margin-bottom:40px}
+        .header h1{font-size:60px;margin-bottom:10px}
+        .header h2{font-size:36px;font-weight:bold;color:var(--text1);margin-bottom:8px}
+        .header p{color:var(--text2)}
+        .lines-display{display:flex;flex-direction:column;align-items:center;margin-bottom:15px;gap:4px}
+        .line-segment{background:var(--text1);height:6px;display:inline-block}
+        .solid{width:80px}
+        .broken-line{display:flex;gap:16px;justify-content:center}
+        .broken-segment{width:32px}
+        .dashed-line{display:flex;gap:10px;justify-content:center}
+        .dashed-segment{width:20px}
+        .verse-display{text-align:center;padding:20px;background:var(--card);border-radius:8px;margin-top:10px;margin-bottom:20px;cursor:pointer;transition:background .2s}
+        .verse-display:hover{background:rgba(255,255,255,.08)}
+        .verse-number{font-size:18px;margin-bottom:8px;color:var(--text1)}
+        .verse-title{color:var(--accent);font-size:24px;font-weight:bold}
+        .verse-author{color:var(--text3);font-size:11px;font-style:italic;margin:6px 0 12px}
+        .verse-text{color:var(--text2);font-size:13px;line-height:1.6;white-space:pre-line;max-height:400px;overflow-y:auto;text-align:left;margin-top:12px}
+        .instruction{text-align:center;padding:20px;background:var(--card);border-radius:8px;margin-bottom:20px;color:var(--text2);font-size:14px}
+        .button-group{display:flex;gap:12px;margin-bottom:20px}
+        .manual-entry{display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:20px;padding:12px;background:var(--card);border-radius:8px}
+        .entries-list{max-height:400px;overflow-y:auto;margin-bottom:12px}
+        .entry-item{background:var(--card);padding:12px;border-radius:8px;margin-bottom:8px;cursor:pointer;border:1px solid var(--border);transition:all .2s}
+        .entry-item:hover{background:rgba(255,255,255,.05);border-color:var(--accent)}
+        .entry-date{color:var(--text3);font-size:12px}
+        .entry-verse{color:var(--accent);font-weight:bold;font-size:14px}
+        .entry-preview{color:var(--text2);font-size:12px;margin-top:4px}
+        .footer{text-align:center;color:var(--text3);font-size:12px;margin-top:30px}
+        .line-codes{text-align:center;color:var(--text3);font-size:12px;margin-bottom:10px;font-family:monospace}
+        .search-section{margin-bottom:20px}
+        .search-box{display:grid;grid-template-columns:1fr auto;gap:12px;padding:12px;background:var(--card);border-radius:8px}
+        .search-results{max-height:300px;overflow-y:auto;margin-top:12px}
+        .search-result-item{background:var(--card);padding:12px;border-radius:8px;margin-bottom:8px;cursor:pointer;border:1px solid var(--border);transition:all .2s}
+        .search-result-item:hover{background:rgba(255,255,255,.05);border-color:#0284c7}
+        .search-result-verse{color:#0284c7;font-weight:bold;font-size:14px;margin-bottom:4px}
+        .search-result-title{color:var(--accent);font-size:13px;margin-bottom:4px}
+        .search-result-snippet{color:var(--text2);font-size:12px;line-height:1.4}
+        .search-highlight{background:var(--accent);color:var(--surface);padding:2px 4px;border-radius:2px;font-weight:bold}
+        .search-count{color:var(--text3);font-size:12px;margin-top:8px;text-align:center}
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%;
+            background: var(--card); border: 1px solid var(--border); cursor: pointer; font-size: 20px;
+            color: var(--accent); display: flex; align-items: center; justify-content: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☯</h1>
+            <h2>Tao Te Ching</h2>
+            <p>Journal & I Ching Divination</p>
+        </div>
+
+        <div class="main">
+            <!-- Left Column -->
+            <div>
+                <!-- Search Section -->
+                <div class="search-section">
+                    <div class="card">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Search all verses...">
+                            <button class="search-btn" id="searchBtn">Search</button>
+                        </div>
+                        <button style="display:none;margin-top:12px;width:100%;padding:8px;background:var(--border);color:var(--text1);border:none;border-radius:6px;cursor:pointer" id="clearSearchBtn">Clear Results</button>
+                        <div id="searchResults" class="search-results"></div>
+                    </div>
+                </div>
+
+                <!-- Divination Section -->
+                <div class="card">
+                    <div class="instruction">Hold a question in your mind and click Generate</div>
+                    <div class="button-group">
+                        <button class="generate-btn" id="genBtn">Generate</button>
+                        <button class="reset-btn" id="resetBtn">Reset</button>
+                    </div>
+
+                    <div id="linesDisplay"></div>
+                    <div id="verseDisplay"></div>
+
+                    <!-- Manual Entry -->
+                    <div class="manual-entry">
+                        <input type="number" id="manualVerse" min="1" max="81" placeholder="Enter verse # (1-81)">
+                        <button class="search-btn" id="manualEntryBtn">Load</button>
+                    </div>
+
+                    <textarea id="journalText" placeholder="Journal your thoughts..."></textarea>
+                    <button class="save-btn" id="saveBtn" style="margin-top:12px">Save Entry</button>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+                <div class="card">
+                    <h3 style="color:var(--text1);margin-bottom:12px">Journal Entries</h3>
+                    <div id="entriesList" class="entries-list"></div>
+                    <button class="export-btn" id="exportBtn">Export CSV</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Featuring translations by D.C. Lau, Stephen Mitchell, Ursula K. Le Guin, R.L. Wing, and Cheng Man-ch'ing</p>
+            <p style="margin-top:8px">Click verse to cycle through translations • Click entries to view/edit</p>
+            <p style="margin-top:16px"><a href="guide/guide.html" style="color:var(--accent);text-decoration:none">📖 Guide to Passages</a></p>
+        </div>
+    </div>
+
+    <script src="verses/verses-lau.js"></script>
+    <script src="verses/verses-mitchell.js"></script>
+    <script src="verses/verses-le-guin.js"></script>
+    <script src="verses/verses-wing.js"></script>
+    <script src="verses/verses-cheng.js"></script>
+    <script src="verses/verses.js"></script>
+    <script>
+        var app = {
+            lines: [null, null, null, null],
+            verseNumber: null,
+            entries: [],
+            currentEditId: null,
+            currentTranslation: "Lau"
+        };
+
+        var translationCycle = ["Lau", "Mitchell", "Le Guin", "Wing", "Cheng"];
+        var verseTexts = {
+            "Lau": versesLau,
+            "Mitchell": versesMitchell,
+            "Le Guin": versesLeGuin,
+            "Wing": versesWing,
+            "Cheng": versesCheng
+        };
+
+        function generate() {
+            for (var i = 0; i < 4; i++) {
+                app.lines[i] = Math.floor(Math.random() * 3);
+            }
+            var verse = linesToVerse(app.lines);
+            app.verseNumber = verse;
+            app.currentEditId = null;
+            app.currentTranslation = "Lau";
+            document.getElementById('journalText').value = '';
+            saveLastVerse(verse);
+            render();
+        }
+
+        function linesToVerse(lines) {
+            var b = lines.map(function(x) { return x === 0 ? 1 : 0; });
+            var top = b[0] * 4 + b[1] * 2 + b[2];
+            var bot = b[1] * 4 + b[2] * 2 + b[3];
+            return top * 9 + bot + 1;
+        }
+
+        function verseToLines(v) {
+            v--;
+            var bot = v % 9;
+            var top = Math.floor(v / 9);
+            var b2 = Math.floor(bot / 4);
+            var b1 = Math.floor(top / 4);
+            var b3 = bot % 4 >= 2 ? 1 : 0;
+            var b0 = top % 4 >= 2 ? 1 : 0;
+            return [b0 === 1 ? 0 : Math.random() > 0.5 ? 1 : 2, b1 === 1 ? 0 : Math.random() > 0.5 ? 1 : 2, b2 === 1 ? 0 : Math.random() > 0.5 ? 1 : 2, bot % 2 === 1 ? 0 : Math.random() > 0.5 ? 1 : 2];
+        }
+
+        function render() {
+            var ld = document.getElementById('linesDisplay');
+            var vd = document.getElementById('verseDisplay');
+            var el = document.getElementById('entriesList');
+
+            if (app.verseNumber === null) {
+                ld.innerHTML = '';
+                vd.innerHTML = '';
+            } else {
+                var lineHTML = '<div class="lines-display">';
+                for (var i = 0; i < 4; i++) {
+                    if (app.lines[i] === 0) {
+                        lineHTML += '<div class="line-segment solid"></div>';
+                    } else if (app.lines[i] === 1) {
+                        lineHTML += '<div class="broken-line"><div class="line-segment broken-segment"></div><div class="line-segment broken-segment"></div></div>';
+                    } else {
+                        lineHTML += '<div class="dashed-line"><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div><div class="line-segment dashed-segment"></div></div>';
+                    }
+                }
+                lineHTML += '</div>';
+                lineHTML += '<div class="line-codes">' + app.lines.map(function(x) { return x === 0 ? '▬' : x === 1 ? '- -' : '- - -'; }).join(' / ') + '</div>';
+                ld.innerHTML = lineHTML;
+
+                var currentVerse = verseTexts[app.currentTranslation][app.verseNumber];
+                vd.innerHTML = '<div class="verse-display" onclick="cycleTranslation()">' +
+                    '<div class="verse-number">Verse ' + app.verseNumber + '</div>' +
+                    '<div class="verse-title">' + verseTitles[app.verseNumber - 1] + '</div>' +
+                    '<div class="verse-author">' + app.currentTranslation + ' translation</div>' +
+                    '<div class="verse-text">' + currentVerse + '</div>' +
+                    '</div>';
+            }
+
+            var entriesHTML = '';
+            for (var i = app.entries.length - 1; i >= 0; i--) {
+                var e = app.entries[i];
+                var preview = e.text.substring(0, 60);
+                if (e.text.length > 60) preview += '...';
+                entriesHTML += '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
+                    '<button class="del-btn" onclick="event.stopPropagation(); deleteEntry(' + i + ')">×</button>' +
+                    '<div class="entry-date">' + e.date + '</div>' +
+                    '<div class="entry-verse">Verse ' + e.verse + ': ' + e.title + '</div>' +
+                    '<div class="entry-preview">' + preview + '</div>' +
+                    '</div>';
+            }
+            el.innerHTML = entriesHTML || '<div style="color:var(--text3);text-align:center;padding:20px">No entries yet</div>';
+        }
+
+        function cycleTranslation() {
+            var idx = translationCycle.indexOf(app.currentTranslation);
+            app.currentTranslation = translationCycle[(idx + 1) % translationCycle.length];
+            render();
+        }
+
+        function saveEntry() {
+            var text = document.getElementById('journalText').value.trim();
+            if (!text || app.verseNumber === null) {
+                alert('Please generate a verse and add journal text');
+                return;
+            }
+
+            var entry = {
+                id: Date.now(),
+                date: new Date().toLocaleString(),
+                verse: app.verseNumber,
+                title: verseTitles[app.verseNumber - 1],
+                lines: app.lines.slice(),
+                text: text
+            };
+
+            if (app.currentEditId !== null) {
+                var idx = app.entries.findIndex(function(e) { return e.id === app.currentEditId; });
+                if (idx !== -1) {
+                    entry.id = app.currentEditId;
+                    app.entries[idx] = entry;
+                }
+                app.currentEditId = null;
+            } else {
+                app.entries.push(entry);
+            }
+
+            localStorage.setItem('taoEntries', JSON.stringify(app.entries));
+            document.getElementById('journalText').value = '';
+            render();
+        }
+
+        function loadEntry(idx) {
+            var e = app.entries[idx];
+            app.lines = e.lines;
+            app.verseNumber = e.verse;
+            app.currentEditId = e.id;
+            app.currentTranslation = "Lau";
+            document.getElementById('journalText').value = e.text;
+            render();
+            document.getElementById('verseDisplay').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function exportCSV() {
+            if (app.entries.length === 0) {
+                alert('No entries to export');
+                return;
+            }
+
+            var csv = 'Date,Verse,Title,Lines,Journal\n';
+            for (var i = 0; i < app.entries.length; i++) {
+                var e = app.entries[i];
+                var lines = e.lines.map(function(x) { return x === 0 ? 'solid' : x === 1 ? 'broken' : 'dashed'; }).join('-');
+                var text = '"' + e.text.replace(/"/g, '""') + '"';
+                csv += e.date + ',' + e.verse + ',"' + e.title + '",' + lines + ',' + text + '\n';
+            }
+
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'tao-journal-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+        }
+
+        function manualEntry() {
+            var num = parseInt(document.getElementById('manualVerse').value);
+            if (isNaN(num) || num < 1 || num > 81) {
+                alert('Please enter a number between 1 and 81');
+                return;
+            }
+            app.verseNumber = num;
+            app.lines = verseToLines(num);
+            app.currentEditId = null;
+            app.currentTranslation = "Lau";
+            document.getElementById('journalText').value = '';
+            document.getElementById('manualVerse').value = '';
+            saveLastVerse(num);
+            render();
+        }
+
+        function searchVerses() {
+            var query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+
+            var searchTerm = query.toLowerCase();
+            var resultsDiv = document.getElementById('searchResults');
+
+            var results = [];
+            
+            for (var verseNum = 1; verseNum <= 81; verseNum++) {
+                for (var trans in verseTexts) {
+                    if (!verseTexts[trans][verseNum]) continue;
+                    
+                    var text = verseTexts[trans][verseNum].toLowerCase();
+                    if (text.indexOf(searchTerm) !== -1) {
+                        var index = text.indexOf(searchTerm);
+                        var start = Math.max(0, index - 50);
+                        var end = Math.min(text.length, index + searchTerm.length + 50);
+                        var snippet = text.substring(start, end);
+                        
+                        if (start > 0) snippet = '...' + snippet;
+                        if (end < text.length) snippet = snippet + '...';
+                        
+                        var regex = new RegExp('(' + searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                        snippet = snippet.replace(regex, '<span class="search-highlight">$1</span>');
+                        
+                        results.push({
+                            verse: verseNum,
+                            title: verseTitles[verseNum - 1],
+                            translation: trans,
+                            snippet: snippet
+                        });
+                        
+                        break;
+                    }
+                }
+            }
+
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<div class="search-count">No verses found containing "' + searchTerm + '"</div>';
+            } else {
+                var html = '';
+                for (var i = 0; i < results.length; i++) {
+                    var r = results[i];
+                    html += '<div class="search-result-item" onclick="loadVerseFromSearch(' + r.verse + ')">' +
+                        '<div class="search-result-verse">Verse ' + r.verse + '</div>' +
+                        '<div class="search-result-title">' + r.title + '</div>' +
+                        '<div class="search-result-snippet">' + r.snippet + '</div>' +
+                        '</div>';
+                }
+                html += '<div class="search-count">Found ' + results.length + ' verse(s) containing "' + searchTerm + '"</div>';
+                resultsDiv.innerHTML = html;
+                document.getElementById('clearSearchBtn').style.display = 'block';
+            }
+        }
+
+        function loadVerseFromSearch(verseNum) {
+            app.verseNumber = verseNum;
+            app.lines = verseToLines(verseNum);
+            app.currentEditId = null;
+            app.currentTranslation = "Lau";
+            document.getElementById('journalText').value = '';
+            render();
+            
+            document.getElementById('verseDisplay').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('clearSearchBtn').style.display = 'none';
+        }
+
+        function saveLastVerse(verseNum) {
+            localStorage.setItem('taoLastVerse', verseNum);
+            updateURL(verseNum);
+        }
+
+        function loadLastVerse() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var verseFromURL = urlParams.get('verse');
+            
+            if (verseFromURL) {
+                return parseInt(verseFromURL);
+            }
+            
+            var saved = localStorage.getItem('taoLastVerse');
+            return saved ? parseInt(saved) : null;
+        }
+
+        function updateURL(verseNum) {
+            var newURL = window.location.pathname + '?verse=' + verseNum;
+            window.history.replaceState({}, '', newURL);
+        }
+
+        function init() {
+            var saved = localStorage.getItem('taoEntries');
+            if (saved) app.entries = JSON.parse(saved);
+            
+            var lastVerse = loadLastVerse();
+            if (lastVerse && lastVerse >= 1 && lastVerse <= 81) {
+                app.verseNumber = lastVerse;
+                app.lines = verseToLines(lastVerse);
+            }
+            
+            render();
+        }
+
+        document.getElementById('genBtn').onclick = generate;
+        document.getElementById('resetBtn').onclick = function() { 
+            app.lines = [null, null, null, null]; 
+            app.verseNumber = null; 
+            app.currentEditId = null; 
+            app.currentTranslation = "Lau";
+            document.getElementById('journalText').value = ''; 
+            render(); 
+        };
+        document.getElementById('saveBtn').onclick = saveEntry;
+        document.getElementById('exportBtn').onclick = exportCSV;
+        document.getElementById('manualEntryBtn').onclick = manualEntry;
+        document.getElementById('manualVerse').onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                manualEntry();
+            }
+        };
+
+        document.getElementById('searchBtn').onclick = searchVerses;
+        document.getElementById('searchInput').onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                searchVerses();
+            }
+        };
+        document.getElementById('clearSearchBtn').onclick = clearSearch;
+
+        init();
+
+        /* Theme toggle */
+        var STORAGE_KEY = 'tao-theme';
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var defaultTheme = localStorage.getItem(STORAGE_KEY) || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', defaultTheme);
+
+        function toggleTheme() {
+            var current = document.documentElement.getAttribute('data-theme');
+            var next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem(STORAGE_KEY, next);
+        }
+
+        var toggleBtn = document.createElement('button');
+        toggleBtn.className = 'theme-toggle';
+        toggleBtn.setAttribute('aria-label', 'Toggle dark/light mode');
+        toggleBtn.innerHTML = '🌓';
+        toggleBtn.onclick = toggleTheme;
+        document.body.appendChild(toggleBtn);
+
+        function deleteEntry(idx) {
+            var entry = app.entries[idx];
+            var entryDate = entry.date;
+            var entryTitle = 'Verse ' + entry.verse + ': ' + entry.title;
+
+            if (!confirm('Delete this entry?\n\n' + entryTitle + '\n' + entryDate)) return;
+
+            if (!confirm('Are you absolutely sure? This is your final confirmation.')) return;
+
+            app.entries.splice(idx, 1);
+            localStorage.setItem('taoEntries', JSON.stringify(app.entries));
+            render();
+        }
+
+    </script>
+
+</body>
+</html>
