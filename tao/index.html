@@ -142,49 +142,51 @@
         </div>
 
         <div class="main">
-            <!-- Left Column -->
-            <div>
-                <!-- Search Section -->
-                <div class="search-section">
-                    <div class="card">
-                        <div class="search-box">
-                            <input type="text" id="searchInput" placeholder="Search all verses...">
-                            <button class="search-btn" id="searchBtn">Search</button>
-                        </div>
-                        <button style="display:none;margin-top:12px;width:100%;padding:8px;background:var(--border);color:var(--text1);border:none;border-radius:6px;cursor:pointer" id="clearSearchBtn">Clear Results</button>
-                        <div id="searchResults" class="search-results"></div>
-                    </div>
+            <!-- Left Column - Divination -->
+            <div class="card">
+                <div id="linesDisplay"></div>
+                <div id="lineCodesDisplay" class="line-codes"></div>
+                
+                <div class="instruction">Hold a question in your mind and click Generate</div>
+                <div class="button-group">
+                    <button class="generate-btn" id="genBtn">Generate</button>
+                    <button class="reset-btn" id="resetBtn">Reset</button>
                 </div>
-
-                <!-- Divination Section -->
-                <div class="card">
-                    <div class="instruction">Hold a question in your mind and click Generate</div>
-                    <div class="button-group">
-                        <button class="generate-btn" id="genBtn">Generate</button>
-                        <button class="reset-btn" id="resetBtn">Reset</button>
-                    </div>
-
-                    <div id="linesDisplay"></div>
-                    <div id="verseDisplay"></div>
-
-                    <!-- Manual Entry -->
-                    <div class="manual-entry">
-                        <input type="number" id="manualVerse" min="1" max="81" placeholder="Enter verse # (1-81)">
-                        <button class="search-btn" id="manualEntryBtn">Load</button>
-                    </div>
-
-                    <textarea id="journalText" placeholder="Journal your thoughts..."></textarea>
-                    <button class="save-btn" id="saveBtn" style="margin-top:12px">Save Entry</button>
-                </div>
+                
+                <div id="verseDisplay"></div>
             </div>
 
-            <!-- Right Column -->
-            <div>
-                <div class="card">
-                    <h3 style="color:var(--text1);margin-bottom:12px">Journal Entries</h3>
-                    <div id="entriesList" class="entries-list"></div>
+            <!-- Right Column - Search & Journal -->
+            <div class="card">
+                <!-- Search Section -->
+                <div class="search-section">
+                    <h3 style="color:var(--text1);margin-bottom:12px">Search Verses</h3>
+                    <div class="search-box" style="display:grid;grid-template-columns:1fr auto auto;gap:12px">
+                        <input type="text" id="searchInput" placeholder="Search for a word in verses...">
+                        <button class="search-btn" id="searchBtn">Search</button>
+                        <button id="clearSearchBtn" style="display:none;background:transparent;color:var(--text3);padding:10px 8px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:16px;font-weight:normal;min-width:32px">×</button>
+                    </div>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+
+                <!-- Journal Section -->
+                <h3 style="color:var(--text1);margin:20px 0 12px 0">Journal Entry</h3>
+                <textarea id="journalText" placeholder="Write your reflections here..."></textarea>
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
+                    <button class="save-btn" id="saveBtn">Save Entry</button>
                     <button class="export-btn" id="exportBtn">Export CSV</button>
                 </div>
+
+                <!-- Manual Entry -->
+                <div class="manual-entry">
+                    <input type="text" id="manualVerse" placeholder="Verse # (1-81)">
+                    <button id="manualEntryBtn" style="background:var(--accent-dark);color:var(--text1);padding:10px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;white-space:nowrap">Load Verse</button>
+                </div>
+                
+                <!-- Past Entries -->
+                <h3 style="color:var(--text1);margin:20px 0 12px 0">Past Entries</h3>
+                <div id="entriesList" class="entries-list"></div>
             </div>
         </div>
 
@@ -202,6 +204,17 @@
     <script src="verses/verses-cheng.js"></script>
     <script src="verses/verses.js"></script>
     <script>
+        var verseTitles = ["The Beginning of Power", "Using Polarity", "Keeping Peace", "The Nature of the Tao", "Holding to the Center", "Perceiving the Subtle", "The Power of Selflessness", "Noncompetitive Values", "Transcending Decline", "Inner Harmony", "Using What Is Not", "Controlling the Senses", "Expanding Identification", "The Essence of Tao", "The Power in Subtle Force", "Knowing the Absolute", "The Way of Subtle Influence", "Losing the Instincts", "Return to Simplicity", "Developing Independence", "Knowing the Collective Origin", "Following the Pattern", "The Steady Force of Attitude", "Nature rarely speaks", "The Tao of Greatness", "The Gravity of Power", "The Skillful Exchange of Information", "Uniting the Forces", "The Way of Noninterference", "Leading the Leader", "The Use of Force", "The Limits of Specialization", "Self-Mastery", "The Evolving Tao", "Sensing the Insensible", "Concealing the Advantage", "The Power in Desirelessness", "Power Without Motive", "Oneness in Leadership", "The Way", "Mastering the Paradox", "Knowing Polarity", "Subtle Powers", "The Power in Needing Less", "Using Emptiness", "Knowing Enough", "Cultivating Inner-Knowledge", "The Art of Nonaction", "Opening the Mind", "The Art of Survival", "The Power of Impartial Support", "Returning to Insight", "The Undivided Path", "Establishing a Universal View", "The Power in Not Contending", "Gaining Oneness", "The Power in Effortlessness", "Cultivating the Center", "The Way of Moderation", "Holding the Position", "The Power in Modesty", "The Tao in Leaders", "The Path of Least Resistance", "The Power at the Beginning", "The Danger in Cleverness", "The Power in Staying Low", "The Power in Compassion", "Nonaggressive Strength", "Neutralizing Escalation", "Knowing the Tao", "Knowing the Disease", "The Appropriate Perspective", "Nature's Way", "Unnatural Authority", "Self-Destructive Leadership", "The Power in Flexibility", "Directing the Power", "Accepting the Blame", "The Power In Not Taking Advantage", "Fulfilling Independence", "The Evolved Way"];
+        
+        var verseCategories = {
+            "Power in Nature": [4, 6, 11, 14, 21, 25, 34, 40, 41, 42, 51, 73],
+            "Power in Leadership": [3, 17, 19, 26, 28, 37, 39, 57, 58, 60, 62, 65, 66, 67, 68, 72],
+            "Power in Awareness": [5, 8, 12, 13, 16, 18, 35, 38, 45, 50, 52, 54, 56, 71],
+            "Power in Organizations": [24, 27, 30, 31, 36, 46, 53, 59, 61, 69, 78, 80],
+            "Power in Projection": [1, 2, 9, 10, 15, 20, 22, 23, 33, 44, 49, 70, 76, 77, 79, 81],
+            "Power in Noninterference": [7, 29, 32, 43, 47, 48, 55, 63, 64, 74, 75]
+        };
+
         var app = {
             lines: [null, null, null, null],
             verseNumber: null,
@@ -220,43 +233,48 @@
         };
 
         function generate() {
-            for (var i = 0; i < 4; i++) {
-                app.lines[i] = Math.floor(Math.random() * 3);
-            }
-            var verse = linesToVerse(app.lines);
-            app.verseNumber = verse;
+            app.lines = [
+                Math.floor(Math.random() * 3), 
+                Math.floor(Math.random() * 3), 
+                Math.floor(Math.random() * 3), 
+                Math.floor(Math.random() * 3)
+            ];
+            
+            var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
+            app.verseNumber = base3 + 1;
+            
             app.currentEditId = null;
             app.currentTranslation = "Lau";
             document.getElementById('journalText').value = '';
-            saveLastVerse(verse);
+            saveLastVerse(app.verseNumber);
             render();
         }
 
-        function linesToVerse(lines) {
-            var b = lines.map(function(x) { return x === 0 ? 1 : 0; });
-            var top = b[0] * 4 + b[1] * 2 + b[2];
-            var bot = b[1] * 4 + b[2] * 2 + b[3];
-            return top * 9 + bot + 1;
-        }
-
-        function verseToLines(v) {
-            v--;
-            var bot = v % 9;
-            var top = Math.floor(v / 9);
-            var b2 = Math.floor(bot / 4);
-            var b1 = Math.floor(top / 4);
-            var b3 = bot % 4 >= 2 ? 1 : 0;
-            var b0 = top % 4 >= 2 ? 1 : 0;
-            return [b0 === 1 ? 0 : Math.random() > 0.5 ? 1 : 2, b1 === 1 ? 0 : Math.random() > 0.5 ? 1 : 2, b2 === 1 ? 0 : Math.random() > 0.5 ? 1 : 2, bot % 2 === 1 ? 0 : Math.random() > 0.5 ? 1 : 2];
+        function verseToLines(verseNum) {
+            var base3 = verseNum - 1;
+            var lines = [];
+            
+            lines[0] = Math.floor(base3 / 27);
+            base3 = base3 % 27;
+            
+            lines[1] = Math.floor(base3 / 9);
+            base3 = base3 % 9;
+            
+            lines[2] = Math.floor(base3 / 3);
+            lines[3] = base3 % 3;
+            
+            return lines;
         }
 
         function render() {
             var ld = document.getElementById('linesDisplay');
+            var lcd = document.getElementById('lineCodesDisplay');
             var vd = document.getElementById('verseDisplay');
             var el = document.getElementById('entriesList');
 
             if (app.verseNumber === null) {
                 ld.innerHTML = '';
+                lcd.innerHTML = '';
                 vd.innerHTML = '';
             } else {
                 var lineHTML = '<div class="lines-display">';
@@ -270,8 +288,9 @@
                     }
                 }
                 lineHTML += '</div>';
-                lineHTML += '<div class="line-codes">' + app.lines.map(function(x) { return x === 0 ? '▬' : x === 1 ? '- -' : '- - -'; }).join(' / ') + '</div>';
                 ld.innerHTML = lineHTML;
+                
+                lcd.innerHTML = app.lines.map(function(x) { return x === 0 ? '▬' : x === 1 ? '- -' : '- - -'; }).join(' / ');
 
                 var currentVerse = verseTexts[app.currentTranslation][app.verseNumber];
                 vd.innerHTML = '<div class="verse-display" onclick="cycleTranslation()">' +
@@ -369,18 +388,35 @@
         }
 
         function manualEntry() {
-            var num = parseInt(document.getElementById('manualVerse').value);
-            if (isNaN(num) || num < 1 || num > 81) {
-                alert('Please enter a number between 1 and 81');
-                return;
+            var input = document.getElementById('manualVerse').value.trim();
+            
+            // Check if input is a 4-digit line pattern (e.g., "1120")
+            if (input.length === 4 && /^[0-2]{4}$/.test(input)) {
+                app.lines = [
+                    parseInt(input[0]),
+                    parseInt(input[1]),
+                    parseInt(input[2]),
+                    parseInt(input[3])
+                ];
+                var base3 = app.lines[0] * 27 + app.lines[1] * 9 + app.lines[2] * 3 + app.lines[3];
+                app.verseNumber = base3 + 1;
+            } 
+            else {
+                // Otherwise treat as verse number
+                var num = parseInt(input);
+                if (isNaN(num) || num < 1 || num > 81) {
+                    alert('Please enter a verse number (1-81) or a 4-digit line pattern (e.g., 1120)');
+                    return;
+                }
+                app.verseNumber = num;
+                app.lines = verseToLines(num);
             }
-            app.verseNumber = num;
-            app.lines = verseToLines(num);
+            
             app.currentEditId = null;
             app.currentTranslation = "Lau";
             document.getElementById('journalText').value = '';
             document.getElementById('manualVerse').value = '';
-            saveLastVerse(num);
+            saveLastVerse(app.verseNumber);
             render();
         }
 
