@@ -2,8 +2,8 @@
 // UPLOAD VERSION - Wing is added dynamically
 
 var verseTexts = {
-    "Giles": typeof versesGiles !== 'undefined' ? versesGiles : {}
-    // Wing will be added via upload system
+    "Giles": typeof versesGiles !== 'undefined' ? versesGiles : {},
+    "Wing": typeof versesWing !== 'undefined' ? versesWing : {}
 };
 
 // Giles chapter titles (13 chapters)
