@@ -610,6 +610,13 @@ h3 {
             }
 
             var verseText = verses[key];
+
+            // Style footnotes differently (text after underscores)
+            if (verseText.includes('___')) {
+                var parts = verseText.split('___');
+                verseText = parts[0] + '<div class="verse-footnote">___' + parts.slice(1).join('___') + '</div>';
+            }
+
             var chapter = app.currentTranslation === "Wing" ? 
                 Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
             
