@@ -534,9 +534,24 @@ h3 {
                     app.currentTranslation = "Wing";
                 }
             } else {
-                week = parseInt(input);
+                // Plain number: treat as chapter number
+                var chapter = parseInt(input);
+                
+                // Validate chapter (1-13)
+                if (chapter < 1 || chapter > 13) {
+                    alert('Chapter must be between 1 and 13');
+                    return;
+                }
+                
+                // Convert based on current translation
+                if (app.currentTranslation === "Wing") {
+                    // Go to first section of that chapter
+                    week = (chapter - 1) * 4 + 1;
+                } else {
+                    // Giles or Questions: chapter = position
+                    week = chapter;
+                }
             }
-            
             if (week >= 1 && week <= maxWeeks) {
                 app.currentPosition = week;
                 app.currentEditId = null;
