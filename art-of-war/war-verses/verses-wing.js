@@ -114,7 +114,29 @@ ___________________________________________
 The term headquarters comes from the Chinese word miao, which can also be translated as
 "temple"'or "imperial court," and refers to the central place of ruling.`,
     
-    "2-1": ``,
+    "2-1": `Sun Tzu said:
+
+Generally, an Artful Strategy must be supported with
+A thousand swift four-horse vehicles,
+A thousand armored four-horse vehicles,
+A hundred thousand armored troops,
+And provisions transported for a thousand miles.
+
+Moreover, further expenses must come from within
+To be used for visitors and advisors;
+Resin, varnish, and other construction materials;
+And the maintenance of armor and vehicles.
+
+To raise a corps of a hundred thousand,
+A thousand pieces of gold will be spent each day.
+
+___________________________________________
+The term miles comes from the Chinese word ti, and actually refers to
+a distance of about one third of a mile.
+
+The term vehicles comes from an ideogram that is also translated as
+"chariot," "wagon," or "cart."`,
+
     "2-2": ``,
     "2-3": ``,
     "2-4": ``,
