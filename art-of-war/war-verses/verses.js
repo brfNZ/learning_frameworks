@@ -1,9 +1,9 @@
 // Main verses file - combines all Art of War translations
-// UPLOAD VERSION - Wing is added dynamically
 
 var verseTexts = {
     "Giles": typeof versesGiles !== 'undefined' ? versesGiles : {},
-    "Wing": typeof versesWing !== 'undefined' ? versesWing : {}
+    "Wing": typeof versesWing !== 'undefined' ? versesWing : {},
+    "Questions": typeof versesQuestions !== 'undefined' ? versesQuestions : {}
 };
 
 // Giles chapter titles (13 chapters)
@@ -38,6 +38,23 @@ var chapterTitlesWing = [
     "The Nine Situations",        // Chapter 11
     "The Fiery Attack",           // Chapter 12
     "The Use Of Intelligence"     // Chapter 13
+];
+
+// Questions chapter titles (same as Giles)
+var chapterTitlesQuestions = [
+    "Laying Plans",
+    "Waging War",
+    "Attack by Stratagem",
+    "Tactical Dispositions",
+    "Energy",
+    "Weak Points and Strong",
+    "Maneuvering",
+    "Variation in Tactics",
+    "The Army on the March",
+    "Terrain",
+    "The Nine Situations",
+    "The Attack by Fire",
+    "The Use of Spies"
 ];
 
 // Wing week titles (52 weeks total: 13 chapters × 4 weeks each)
@@ -182,7 +199,7 @@ function getPositionInfo(position, translation) {
     if (translation === "Wing") {
         return wingWeekMap[position];
     } else {
-        // For Giles: position = chapter
+        // For Giles and Questions: position = chapter
         return { chapter: position, section: null };
     }
 }
@@ -191,6 +208,8 @@ function getPositionInfo(position, translation) {
 function getPositionTitle(position, translation) {
     if (translation === "Wing") {
         return wingWeekTitles[position - 1];
+    } else if (translation === "Questions") {
+        return chapterTitlesQuestions[position - 1];
     } else {
         return chapterTitlesGiles[position - 1];
     }
