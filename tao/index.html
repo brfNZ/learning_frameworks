@@ -393,12 +393,14 @@
 
             var results = [];
             
+            // Search through all verses and all translations
             for (var verseNum = 1; verseNum <= 81; verseNum++) {
                 for (var trans in verseTexts) {
                     if (!verseTexts[trans][verseNum]) continue;
                     
                     var text = verseTexts[trans][verseNum].toLowerCase();
                     if (text.indexOf(searchTerm) !== -1) {
+                        // Found a match - extract snippet with context
                         var index = text.indexOf(searchTerm);
                         var start = Math.max(0, index - 50);
                         var end = Math.min(text.length, index + searchTerm.length + 50);
@@ -407,6 +409,7 @@
                         if (start > 0) snippet = '...' + snippet;
                         if (end < text.length) snippet = snippet + '...';
                         
+                        // Highlight the search term
                         var regex = new RegExp('(' + searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
                         snippet = snippet.replace(regex, '<span class="search-highlight">$1</span>');
                         
@@ -416,12 +419,12 @@
                             translation: trans,
                             snippet: snippet
                         });
-                        
-                        break;
+                        // Removed break - now shows all matching translations
                     }
                 }
             }
 
+            // Display results
             if (results.length === 0) {
                 resultsDiv.innerHTML = '<div class="search-count">No verses found containing "' + searchTerm + '"</div>';
             } else {
@@ -429,12 +432,12 @@
                 for (var i = 0; i < results.length; i++) {
                     var r = results[i];
                     html += '<div class="search-result-item" onclick="loadVerseFromSearch(' + r.verse + ')">' +
-                        '<div class="search-result-verse">Verse ' + r.verse + '</div>' +
+                        '<div class="search-result-verse">Verse ' + r.verse + ' (' + r.translation + ')</div>' +
                         '<div class="search-result-title">' + r.title + '</div>' +
                         '<div class="search-result-snippet">' + r.snippet + '</div>' +
                         '</div>';
                 }
-                html += '<div class="search-count">Found ' + results.length + ' verse(s) containing "' + searchTerm + '"</div>';
+                html += '<div class="search-count">Found ' + results.length + ' match(es) across all translations</div>';
                 resultsDiv.innerHTML = html;
                 document.getElementById('clearSearchBtn').style.display = 'block';
             }
