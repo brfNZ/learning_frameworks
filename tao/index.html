@@ -147,13 +147,13 @@
                 <div id="linesDisplay"></div>
                 <div id="lineCodesDisplay" class="line-codes"></div>
                 
-                <div class="instruction">Hold a question in your mind and click Generate</div>
                 <div class="button-group">
                     <button class="generate-btn" id="genBtn">Generate</button>
                     <button class="reset-btn" id="resetBtn">Reset</button>
                 </div>
                 
                 <div id="verseDisplay"></div>
+                <div id="relatedVersesDisplay" class="line-codes"></div>
             </div>
 
             <!-- Right Column - Search & Journal -->
@@ -204,17 +204,6 @@
     <script src="verses/verses-cheng.js"></script>
     <script src="verses/verses.js"></script>
     <script>
-        var verseTitles = ["The Beginning of Power", "Using Polarity", "Keeping Peace", "The Nature of the Tao", "Holding to the Center", "Perceiving the Subtle", "The Power of Selflessness", "Noncompetitive Values", "Transcending Decline", "Inner Harmony", "Using What Is Not", "Controlling the Senses", "Expanding Identification", "The Essence of Tao", "The Power in Subtle Force", "Knowing the Absolute", "The Way of Subtle Influence", "Losing the Instincts", "Return to Simplicity", "Developing Independence", "Knowing the Collective Origin", "Following the Pattern", "The Steady Force of Attitude", "Nature rarely speaks", "The Tao of Greatness", "The Gravity of Power", "The Skillful Exchange of Information", "Uniting the Forces", "The Way of Noninterference", "Leading the Leader", "The Use of Force", "The Limits of Specialization", "Self-Mastery", "The Evolving Tao", "Sensing the Insensible", "Concealing the Advantage", "The Power in Desirelessness", "Power Without Motive", "Oneness in Leadership", "The Way", "Mastering the Paradox", "Knowing Polarity", "Subtle Powers", "The Power in Needing Less", "Using Emptiness", "Knowing Enough", "Cultivating Inner-Knowledge", "The Art of Nonaction", "Opening the Mind", "The Art of Survival", "The Power of Impartial Support", "Returning to Insight", "The Undivided Path", "Establishing a Universal View", "The Power in Not Contending", "Gaining Oneness", "The Power in Effortlessness", "Cultivating the Center", "The Way of Moderation", "Holding the Position", "The Power in Modesty", "The Tao in Leaders", "The Path of Least Resistance", "The Power at the Beginning", "The Danger in Cleverness", "The Power in Staying Low", "The Power in Compassion", "Nonaggressive Strength", "Neutralizing Escalation", "Knowing the Tao", "Knowing the Disease", "The Appropriate Perspective", "Nature's Way", "Unnatural Authority", "Self-Destructive Leadership", "The Power in Flexibility", "Directing the Power", "Accepting the Blame", "The Power In Not Taking Advantage", "Fulfilling Independence", "The Evolved Way"];
-        
-        var verseCategories = {
-            "Power in Nature": [4, 6, 11, 14, 21, 25, 34, 40, 41, 42, 51, 73],
-            "Power in Leadership": [3, 17, 19, 26, 28, 37, 39, 57, 58, 60, 62, 65, 66, 67, 68, 72],
-            "Power in Awareness": [5, 8, 12, 13, 16, 18, 35, 38, 45, 50, 52, 54, 56, 71],
-            "Power in Organizations": [24, 27, 30, 31, 36, 46, 53, 59, 61, 69, 78, 80],
-            "Power in Projection": [1, 2, 9, 10, 15, 20, 22, 23, 33, 44, 49, 70, 76, 77, 79, 81],
-            "Power in Noninterference": [7, 29, 32, 43, 47, 48, 55, 63, 64, 74, 75]
-        };
-
         var app = {
             lines: [null, null, null, null],
             verseNumber: null,
