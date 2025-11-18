@@ -190,7 +190,7 @@
             </div>
         </div>
 
-        <!-- <p class="footer">Click the verse text to cycle through different translations</p> -->
+        <p class="footer">Click the verse text to cycle through different translations</p>
     </div>
 
     <script src="verses/verses-lau.js"></script>
@@ -332,46 +332,45 @@
         }
 
         function saveEntry() {
-            var text = document.getElementById('journalText').value.trim();
-            if (!text || app.verseNumber === null) {
-                alert('Please generate a verse and add journal text');
+            if (app.verseNumber === null) {
+                alert('Generate or select a verse first');
                 return;
             }
-
-            var entry = {
-                id: Date.now(),
-                date: new Date().toLocaleString(),
-                verse: app.verseNumber,
-                title: verseTitles[app.verseNumber - 1],
-                lines: app.lines.slice(),
-                text: text
-            };
+            var text = document.getElementById('journalText').value;
+            var now = new Date().toISOString().split('T')[0];
+            var title = verseTitles[app.verseNumber - 1];
 
             if (app.currentEditId !== null) {
-                var idx = app.entries.findIndex(function(e) { return e.id === app.currentEditId; });
-                if (idx !== -1) {
-                    entry.id = app.currentEditId;
-                    app.entries[idx] = entry;
-                }
-                app.currentEditId = null;
+                app.entries[app.currentEditId].text = text;
+                app.entries[app.currentEditId].translation = app.currentTranslation;
             } else {
-                app.entries.push(entry);
+                app.entries.push({ 
+                    date: now, 
+                    verse: app.verseNumber, 
+                    title: title, 
+                    text: text, 
+                    translation: app.currentTranslation 
+                });
             }
-
             localStorage.setItem('taoEntries', JSON.stringify(app.entries));
+            app.currentEditId = null;
             document.getElementById('journalText').value = '';
+            alert('Entry saved!');
             render();
         }
 
         function loadEntry(idx) {
-            var e = app.entries[idx];
-            app.lines = e.lines;
-            app.verseNumber = e.verse;
-            app.currentEditId = e.id;
-            app.currentTranslation = "Lau";
-            document.getElementById('journalText').value = e.text;
+            app.currentEditId = idx;
+            var entry = app.entries[idx];
+            document.getElementById('journalText').value = entry.text;
+            app.verseNumber = entry.verse;
+            app.lines = verseToLines(entry.verse);
+            if (entry.translation) {
+                app.currentTranslation = entry.translation;
+            } else {
+                app.currentTranslation = "Lau";
+            }
             render();
-            document.getElementById('verseDisplay').scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function exportCSV() {
