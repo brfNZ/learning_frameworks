@@ -444,12 +444,9 @@
                 var chapter = Math.floor((app.currentPosition - 1) % 4) +1;
                 var section = ((app.currentPosition - 1) % 4) + 1;
 
-                var chapter = app.currentTranslation === "Wing" ? 
-                    Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
+                var chapter = Math.floor((app.currentPosition - 1) / 4) + 1;
                 
                 // Get title using helper function from verses.js
-                var title = getPositionTitle(app.currentPosition, app.currentTranslation, chapter);
-                
                 var title = getPositionTitle(app.currentPosition, app.currentTranslation, chapter);
 
                 var displayText = app.currentTranslation === "Wing" ? 
