@@ -540,9 +540,9 @@
                     if (app.currentTranslation === "Wing") {
                         // Go to first section of that chapter
                         week = (chapter - 1) * 4 + 1;
-                    } else {
-                        // Giles or Questions: chapter = position
-                        week = chapter;
+                   } else {
+                        // All translations: go to first week of the chapter
+                        week = (chapter - 1) * 4 + 1;
                     }
                 }
                 if (week >= 1 && week <= maxWeeks) {
