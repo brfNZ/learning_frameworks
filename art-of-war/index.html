@@ -628,90 +628,85 @@
                 document.getElementById('csvFileInput').click();
             }
 
- function parseAndImportCSV(csv) {
-    var lines = csv.split(/\r?\n/);
-    var imported = 0;
-    var duplicates = 0;
-    
-    for (var i = 1; i < lines.length; i++) {
-        var line = lines[i].trim();
-        if (!line) continue;
+    function parseAndImportCSV(csv) {
+        var lines = csv.split(/\r?\n/);
+        var imported = 0;
+        var duplicates = 0;
         
-        // Parse CSV properly - handles empty fields and quoted commas
-        var matches = line.split(',').map(function(s, idx, arr) {
-            // Handle quoted fields that contain commas
-            if (s.startsWith('"')) {
-                var endIdx = idx;
-                while (!s.endsWith('"') && endIdx < arr.length - 1) {
-                    endIdx++;
-                    s += ',' + arr[endIdx];
-                }
-                // Remove the quotes
-                return s.slice(1, -1).trim();
+        for (var i = 1; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (!line) continue;
+            
+            // Parse CSV properly
+            var matches = parseCSVLine(line);
+            if (!matches || matches.length < 6) {
+                console.log('Skipped malformed line:', line, matches);
+                continue;
             }
-            return s.trim();
-        }).filter(function(s, idx, arr) {
-            // Remove the fragments that were part of quoted fields
-            var prev = arr[idx - 1];
-            return !(prev && prev.startsWith('"') && !prev.endsWith('"'));
-        });
-        
-        if (matches.length < 6) {
-            console.log('Skipped malformed line:', line);
-            continue;
+            
+            var date = matches[0].trim();
+            var translation = matches[1].trim();
+            var chapter = parseInt(matches[2]);
+            var part = matches[3].trim();
+            var title = matches[4].trim();
+            var notes = matches[5];
+            
+            if (isNaN(chapter)) continue;
+            
+            // Check for duplicates
+            var isDuplicate = app.entries.some(function(entry) {
+                return entry.date === date && 
+                    entry.translation === translation && 
+                    entry.chapter === chapter && 
+                    ((entry.section === null && part === '') || entry.section === parseInt(part)) &&
+                    entry.title === title;
+            });
+            
+            if (isDuplicate) {
+                duplicates++;
+                continue;
+            }
+            
+            var entry = { 
+                date: date,
+                translation: translation,
+                chapter: chapter,
+                section: part ? parseInt(part) : null,
+                title: title,
+                text: notes
+            };
+            
+            app.entries.push(entry);
+            imported++;
         }
         
-        var date = matches[0];
-        var translation = matches[1];
-        var chapter = parseInt(matches[2]);
-        var part = matches[3]; // Can be empty
-        var title = matches[4];
-        var notes = matches[5];
+        localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
+        render();
         
-        if (isNaN(chapter)) {
-            console.log('Invalid chapter:', matches[2], 'in line:', line);
-            continue;
-        }
-        
-        // Check for duplicates (existing code)
-        var isDuplicate = app.entries.some(function(entry) {
-            return entry.date === date && 
-                   entry.translation === translation && 
-                   entry.chapter === chapter && 
-                   entry.section === (part ? parseInt(part) : undefined) &&
-                   entry.title === title;
-        });
-        
-        if (isDuplicate) {
-            duplicates++;
-            continue;
-        }
-        
-        var entry = {
-            date: date,
-            translation: translation,
-            chapter: chapter,
-            section: part ? parseInt(part) : null,
-            title: title,
-            text: notes
-        };
-        
-        app.entries.push(entry);
-        imported++;
+        var message = 'Imported ' + imported + ' entries!';
+        if (duplicates > 0) message += '\n' + duplicates + ' duplicates skipped.';
+        alert(message);
     }
-    
-    // Sort and save
-    app.entries.sort(function(a, b) {
-        return new Date(a.date) - new Date(b.date);
-    });
-    localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
-    render();
-    
-    // Alert result
-    var message = 'Imported ' + imported + ' entries!';
-    if (duplicates > 0) message += '\n' + duplicates + ' duplicates skipped.';
-    alert(message);
-}
+
+    function parseCSVLine(line) {
+        var result = [];
+        var current = '';
+        var inQuotes = false;
+        
+        for (var i = 0; i < line.length; i++) {
+            var char = line[i];
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                result.push(current);
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        result.push(current);
+        return result;
+    }
 
             function init() {
                 var saved = localStorage.getItem('artOfWarEntries');
