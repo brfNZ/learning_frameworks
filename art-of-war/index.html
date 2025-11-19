@@ -418,22 +418,8 @@
                 var translations = Object.keys(verseTexts);
                 if (translations.length < 2) return;
                 
-                var oldTranslation = app.currentTranslation;
                 var idx = translations.indexOf(app.currentTranslation);
-                idx = (idx + 1) % translations.length;
-                app.currentTranslation = translations[idx];
-                
-                // Always convert to chapter number when leaving Wing
-                if (oldTranslation === "Wing") {
-                    var chapter = Math.floor((app.currentPosition - 1) / 4) + 1;
-                    app.currentPosition = chapter;
-                } 
-                // Always convert to first week of chapter when entering Wing
-                else if (app.currentTranslation === "Wing") {
-                    var week = (app.currentPosition - 1) * 4 + 1;
-                    app.currentPosition = week;
-                }
-                
+                app.currentTranslation = translations[(idx + 1) % translations.length];
                 render();
             }
 
