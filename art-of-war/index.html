@@ -221,6 +221,8 @@ button {
 .save-btn:hover { background: var(--color-btn-success-hover); }
 .export-btn { background: var(--color-btn-purple); color: white; }
 .export-btn:hover { background: var(--color-btn-purple-hover); }
+.import-btn { background: var(--color-btn-purple); color: white; }
+.import-btn:hover { background: var(--color-btn-purple-hover); }
 
 textarea {
     width: 100%;
@@ -359,6 +361,8 @@ h3 {
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                     <button class="save-btn" id="saveBtn">Save Entry</button>
                     <button class="export-btn" id="exportBtn">Export CSV</button>
+                    <button class="import-button" id="importBtn">Import CSVx</button>
+
                 </div>
 
                 <div class="manual-week">
@@ -632,6 +636,101 @@ h3 {
             a.download = 'art-of-war-' + new Date().toISOString().split('T')[0] + '.csv';
             a.click();
         }
+
+        // When Import button is clicked, open the hidden file picker
+function importCSV() {
+    document.getElementById('csvFileInput').click();
+}
+
+    // When user selects a CSV file, read it
+    document.getElementById('csvFileInput').addEventListener('change', function(e) {
+        var file = e.target.files[0];  // Get the selected file
+        if (!file) return;  // If no file selected, stop
+        
+        var reader = new FileReader();  // Create file reader
+        reader.onload = function(event) {  // When file is loaded
+            var csv = event.target.result;  // Get the CSV text
+            parseAndImportCSV(csv);  // Process the CSV
+        };
+        reader.readAsText(file);  // Start reading the file
+    });
+
+    // Process the CSV file and import entries
+    function parseAndImportCSV(csv) {
+        var lines = csv.split('\n');  // Split CSV into lines
+        var imported = 0;  // Count successful imports
+        var duplicates = 0;  // Count skipped duplicates
+        
+        // Loop through each line (skip first line - it's the header)
+        for (var i = 1; i < lines.length; i++) {
+            var line = lines[i].trim();  // Remove extra spaces
+            if (!line) continue;  // Skip empty lines
+            
+            // Split line into columns (handles quotes properly)
+            var matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
+            if (!matches || matches.length < 6) continue;  // Skip invalid lines
+            
+            // Extract each column and remove quotes
+            var date = matches[0].replace(/"/g, '').trim();  // Column 1: Date
+            var translation = matches[1].replace(/"/g, '').trim();  // Column 2: Translation
+            var chapter = parseInt(matches[2].replace(/"/g, '').trim());  // Column 3: Chapter
+            var part = matches[3].replace(/"/g, '').trim();  // Column 4: Part
+            var title = matches[4].replace(/"/g, '').trim();  // Column 5: Title
+            var notes = matches[5].replace(/"/g, '').trim();  // Column 6: Notes
+            
+            // Convert part to number (or null if empty - for Giles)
+            var section = part ? parseInt(part) : null;
+            
+            // Check if this entry already exists (same date+chapter+section+translation)
+            var isDuplicate = app.entries.some(function(entry) {
+                return entry.date === date && 
+                    entry.chapter === chapter && 
+                    entry.section === section &&
+                    entry.translation === translation;
+            });
+            
+            // If duplicate found, skip this entry
+            if (isDuplicate) {
+                duplicates++;
+                continue;
+            }
+            
+            // Create new entry object
+            var entry = {
+                date: date,
+                translation: translation,
+                chapter: chapter,
+                section: section,
+                title: title,
+                text: notes
+            };
+            
+            // Add entry to your entries list
+            app.entries.push(entry);
+            imported++;  // Count it
+        }
+        
+        // Sort entries by date (newest first)
+        app.entries.sort(function(a, b) {
+            return new Date(b.date) - new Date(a.date);
+        });
+        
+        // Save all entries to browser storage
+        localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
+        
+        // Update the display to show imported entries
+        render();
+        
+        // Show success message to user
+        var message = 'Successfully imported ' + imported + ' entries!';
+        if (duplicates > 0) {
+            message += '\n' + duplicates + ' duplicate entries were skipped.';
+        }
+        alert(message);
+        
+        // Clear the file input so you can import again
+        document.getElementById('csvFileInput').value = '';
+    }
 
         function init() {
             var saved = localStorage.getItem('artOfWarEntries');
