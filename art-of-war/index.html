@@ -686,9 +686,9 @@
                     imported++;
                 }
                 
-                app.entries.sort(function(a, b) {
-                    return new Date(b.date) - new Date(a.date);
-                });
+               app.entries.sort(function(a, b) {
+                    return new Date(a.date) - new Date(b.date); // ✅ ASCENDING
+             });
                 
                 localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
                 render();
