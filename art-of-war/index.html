@@ -628,73 +628,90 @@
                 document.getElementById('csvFileInput').click();
             }
 
-            function parseAndImportCSV(csv) {
-                var lines = csv.split('\n');
-                var imported = 0;
-                var duplicates = 0;
-                
-                for (var i = 1; i < lines.length; i++) {
-                    var line = lines[i].trim();
-                    if (!line) continue;
-                    
-console.log('Line:', line);
-console.log('Matches:', matches);
-console.log('Matches length:', matches ? matches.length : 0);
-
-var matches = line.split(',').map(function(s) { 
-    return s.trim().replace(/^"|"$/g, ''); 
-});
-                    if (!matches || matches.length < 6) continue;
-                    
-                    var date = matches[0].replace(/"/g, '').trim();
-                    var translation = matches[1].replace(/"/g, '').trim();
-                    var chapter = parseInt(matches[2].replace(/"/g, '').trim());
-                    var part = matches[3].replace(/"/g, '').trim();
-                    var title = matches[4].replace(/"/g, '').trim();
-                    var notes = matches[5].replace(/"/g, '').trim();
-                    
-                    var section = part ? parseInt(part) : null;
-                    
-                    var isDuplicate = app.entries.some(function(entry) {
-                        return entry.date === date && 
-                            entry.chapter === chapter && 
-                            entry.section === section &&
-                            entry.translation === translation;
-                    });
-                    
-                    if (isDuplicate) {
-                        duplicates++;
-                        continue;
-                    }
-                    
-                    var entry = {
-                        date: date,
-                        translation: translation,
-                        chapter: chapter,
-                        section: section,
-                        title: title,
-                        text: notes
-                    };
-                    
-                    app.entries.push(entry);
-                    imported++;
+ function parseAndImportCSV(csv) {
+    var lines = csv.split(/\r?\n/);
+    var imported = 0;
+    var duplicates = 0;
+    
+    for (var i = 1; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (!line) continue;
+        
+        // Parse CSV properly - handles empty fields and quoted commas
+        var matches = line.split(',').map(function(s, idx, arr) {
+            // Handle quoted fields that contain commas
+            if (s.startsWith('"')) {
+                var endIdx = idx;
+                while (!s.endsWith('"') && endIdx < arr.length - 1) {
+                    endIdx++;
+                    s += ',' + arr[endIdx];
                 }
-                
-                app.entries.sort(function(a, b) {
-                    return new Date(a.date) - new Date(b.date); // ✅ ASCENDING
-                });
-                
-                localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
-                render();
-                
-                var message = 'Successfully imported ' + imported + ' entries!';
-                if (duplicates > 0) {
-                    message += '\n' + duplicates + ' duplicate entries were skipped.';
-                }
-                alert(message);
-                
-                document.getElementById('csvFileInput').value = '';
+                // Remove the quotes
+                return s.slice(1, -1).trim();
             }
+            return s.trim();
+        }).filter(function(s, idx, arr) {
+            // Remove the fragments that were part of quoted fields
+            var prev = arr[idx - 1];
+            return !(prev && prev.startsWith('"') && !prev.endsWith('"'));
+        });
+        
+        if (matches.length < 6) {
+            console.log('Skipped malformed line:', line);
+            continue;
+        }
+        
+        var date = matches[0];
+        var translation = matches[1];
+        var chapter = parseInt(matches[2]);
+        var part = matches[3]; // Can be empty
+        var title = matches[4];
+        var notes = matches[5];
+        
+        if (isNaN(chapter)) {
+            console.log('Invalid chapter:', matches[2], 'in line:', line);
+            continue;
+        }
+        
+        // Check for duplicates (existing code)
+        var isDuplicate = app.entries.some(function(entry) {
+            return entry.date === date && 
+                   entry.translation === translation && 
+                   entry.chapter === chapter && 
+                   entry.section === (part ? parseInt(part) : undefined) &&
+                   entry.title === title;
+        });
+        
+        if (isDuplicate) {
+            duplicates++;
+            continue;
+        }
+        
+        var entry = {
+            date: date,
+            translation: translation,
+            chapter: chapter,
+            section: part ? parseInt(part) : null,
+            title: title,
+            text: notes
+        };
+        
+        app.entries.push(entry);
+        imported++;
+    }
+    
+    // Sort and save
+    app.entries.sort(function(a, b) {
+        return new Date(b.date) - new Date(a.date);
+    });
+    localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
+    render();
+    
+    // Alert result
+    var message = 'Imported ' + imported + ' entries!';
+    if (duplicates > 0) message += '\n' + duplicates + ' duplicates skipped.';
+    alert(message);
+}
 
             function init() {
                 var saved = localStorage.getItem('artOfWarEntries');
