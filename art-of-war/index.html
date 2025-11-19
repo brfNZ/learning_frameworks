@@ -637,7 +637,13 @@
                     var line = lines[i].trim();
                     if (!line) continue;
                     
-                    var matches = line.match(/(".*?"|[^,]*)(?=\s*,|\s*$)/g);
+console.log('Line:', line);
+console.log('Matches:', matches);
+console.log('Matches length:', matches ? matches.length : 0);
+
+var matches = line.split(',').map(function(s) { 
+    return s.trim().replace(/^"|"$/g, ''); 
+});
                     if (!matches || matches.length < 6) continue;
                     
                     var date = matches[0].replace(/"/g, '').trim();
