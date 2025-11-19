@@ -700,10 +700,7 @@
         imported++;
     }
     
-    // Sort and save
-    app.entries.sort(function(a, b) {
-        return new Date(b.date) - new Date(a.date);
-    });
+    // Save
     localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
     render();
     
