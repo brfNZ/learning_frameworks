@@ -462,7 +462,7 @@
                     Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
                 
                 // Get title using helper function from verses.js
-                var title = getPositionTitle(app.currentPosition, app.currentTranslation);
+                var title = getPositionTitle(app.currentPosition, app.currentTranslation, chapter);
                 
                 var title = getPositionTitle(app.currentPosition, app.currentTranslation, chapter);
 
@@ -507,15 +507,14 @@
                 document.getElementById('entriesList').innerHTML = listHTML;
             }
 
-            function nextChapter() {
-                var maxWeeks = app.currentTranslation === "Wing" ? 52 : 13;
-                if (app.currentPosition < maxWeeks) {
-                    app.currentPosition++;
-                    app.currentEditId = null;
-                    document.getElementById('journalText').value = '';
-                    render();
+                function nextChapter() {
+                    if (app.currentPosition < 52) { // Always 52 weeks
+                        app.currentPosition++;
+                        app.currentEditId = null;
+                        document.getElementById('journalText').value = '';
+                        render();
+                    }
                 }
-            }
 
             function previousChapter() {
                 if (app.currentPosition > 1) {
@@ -530,7 +529,7 @@
                 var input = document.getElementById('manualChapter').value.trim();
                 if (!input) return;
                 
-                var maxWeeks = app.currentTranslation === "Wing" ? 52 : 13;
+                var maxWeeks = 52; // Always 52 weeks for all translations
                 var week;
                 
                 if (input.indexOf('-') > -1) {
@@ -567,7 +566,7 @@
                     document.getElementById('manualChapter').value = '';
                     render();
                 } else {
-                    alert('Please enter a valid week number (1-' + maxWeeks + ')');
+                    alert('Please enter a valid week number (1-52)');
                 }
             }
 
@@ -579,8 +578,9 @@
                 }
 
                 var now = new Date().toISOString().split('T')[0];
-                var chapter = app.currentTranslation === "Wing" ? 
-                    Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
+                var chapter = Math.floor((app.currentPosition - 1) / 4) + 1;
+                var section = app.currentTranslation === "Wing" ? 
+                    ((app.currentPosition - 1) % 4) + 1 : null;
                 var section = app.currentTranslation === "Wing" ? 
                     ((app.currentPosition - 1) % 4) + 1 : null;
                 
