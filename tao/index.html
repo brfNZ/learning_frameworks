@@ -190,7 +190,7 @@
             </div>
         </div>
 
-        <p class="footer">Click the verse text to cycle through different translations</p>
+        <!-- <p class="footer">Click the verse text to cycle through different translations</p> -->
     </div>
 
     <script src="verses/verses-lau.js"></script>
@@ -379,16 +379,16 @@
                 return;
             }
 
-            var csv = 'Date,Verse,Title,Lines,Journal\n';
+            var csv = 'Date,Verse,Title,Translation,Notes\n';
             for (var i = 0; i < app.entries.length; i++) {
                 var e = app.entries[i];
-                var lines = e.lines.map(function(x) { return x === 0 ? 'solid' : x === 1 ? 'broken' : 'dashed'; }).join('-');
-                var text = '"' + e.text.replace(/"/g, '""') + '"';
-                csv += e.date + ',' + e.verse + ',"' + e.title + '",' + lines + ',' + text + '\n';
+                var notes = e.text.replace(/"/g, '""').replace(/\n/g, ' ');
+                var trans = e.translation || 'Lau';
+                csv += e.date + ',' + e.verse + ',"' + e.title + '","' + trans + '","' + notes + '"\n';
             }
 
             var blob = new Blob([csv], { type: 'text/csv' });
-            var url = window.URL.createObjectURL(blob);
+            var url = URL.createObjectURL(blob);
             var a = document.createElement('a');
             a.href = url;
             a.download = 'tao-journal-' + new Date().toISOString().split('T')[0] + '.csv';
