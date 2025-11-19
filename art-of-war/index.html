@@ -1,775 +1,775 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Art of War - 52 Week Tracker</title>
-    <style>
-:root {
-    --color-bg-primary: #0f172a;
-    --color-bg-secondary: #1e293b;
-    --color-bg-tertiary: #334155;
-    --color-bg-card: #475569;
-    --color-bg-input: #334155;
-    --color-bg-hover: #2d3748;
-    --color-text-primary: #e2e8f0;
-    --color-text-secondary: #cbd5e1;
-    --color-text-muted: #94a3b8;
-    --color-text-dim: #64748b;
-    --color-accent: #fbbf24;
-    --color-accent-dark: #b45309;
-    --color-btn-primary: #b45309;
-    --color-btn-primary-hover: #92400e;
-    --color-btn-success: #059669;
-    --color-btn-success-hover: #047857;
-    --color-btn-purple: #7c3aed;
-    --color-btn-purple-hover: #6d28d9;
-    --border-color: #64748b;
-    --border-color-hover: #fbbf24;
-    --shadow: 0 20px 25px rgba(0, 0, 0, 0.3);
-    --scrollbar-track: #1e293b;
-    --scrollbar-thumb: #64748b;
-    --scrollbar-thumb-hover: #94a3b8;
-}
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Art of War - 52 Week Tracker</title>
+        <style>
+    :root {
+        --color-bg-primary: #0f172a;
+        --color-bg-secondary: #1e293b;
+        --color-bg-tertiary: #334155;
+        --color-bg-card: #475569;
+        --color-bg-input: #334155;
+        --color-bg-hover: #2d3748;
+        --color-text-primary: #e2e8f0;
+        --color-text-secondary: #cbd5e1;
+        --color-text-muted: #94a3b8;
+        --color-text-dim: #64748b;
+        --color-accent: #fbbf24;
+        --color-accent-dark: #b45309;
+        --color-btn-primary: #b45309;
+        --color-btn-primary-hover: #92400e;
+        --color-btn-success: #059669;
+        --color-btn-success-hover: #047857;
+        --color-btn-purple: #7c3aed;
+        --color-btn-purple-hover: #6d28d9;
+        --border-color: #64748b;
+        --border-color-hover: #fbbf24;
+        --shadow: 0 20px 25px rgba(0, 0, 0, 0.3);
+        --scrollbar-track: #1e293b;
+        --scrollbar-thumb: #64748b;
+        --scrollbar-thumb-hover: #94a3b8;
+    }
 
-[data-theme="light"] {
-    --color-bg-primary: #f8fafc;
-    --color-bg-secondary: #e2e8f0;
-    --color-bg-tertiary: #cbd5e1;
-    --color-bg-card: #e2e8f0;
-    --color-bg-input: #f1f5f9;
-    --color-bg-hover: #cbd5e1;
-    --color-text-primary: #1e293b;
-    --color-text-secondary: #475569;
-    --color-text-muted: #64748b;
-    --color-text-dim: #94a3b8;
-    --color-accent: #d97706;
-    --color-accent-dark: #b45309;
-    --border-color: #cbd5e1;
-    --border-color-hover: #fbbf24;
-    --shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
-    --scrollbar-track: #e2e8f0;
-    --scrollbar-thumb: #9ca3af;
-    --scrollbar-thumb-hover: #6b7280;
-}
+    [data-theme="light"] {
+        --color-bg-primary: #f8fafc;
+        --color-bg-secondary: #e2e8f0;
+        --color-bg-tertiary: #cbd5e1;
+        --color-bg-card: #e2e8f0;
+        --color-bg-input: #f1f5f9;
+        --color-bg-hover: #cbd5e1;
+        --color-text-primary: #1e293b;
+        --color-text-secondary: #475569;
+        --color-text-muted: #64748b;
+        --color-text-dim: #94a3b8;
+        --color-accent: #d97706;
+        --color-accent-dark: #b45309;
+        --border-color: #cbd5e1;
+        --border-color-hover: #fbbf24;
+        --shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+        --scrollbar-track: #e2e8f0;
+        --scrollbar-thumb: #9ca3af;
+        --scrollbar-thumb-hover: #6b7280;
+    }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-    background: linear-gradient(to bottom right, var(--color-bg-secondary), var(--color-bg-tertiary), var(--color-bg-primary));
-    min-height: 100vh;
-    font-family: system-ui, -apple-system, sans-serif;
-    padding: 20px;
-    color: var(--color-text-primary);
-}
+    body {
+        background: linear-gradient(to bottom right, var(--color-bg-secondary), var(--color-bg-tertiary), var(--color-bg-primary));
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, sans-serif;
+        padding: 20px;
+        color: var(--color-text-primary);
+    }
 
-.container { max-width: 900px; margin: 0 auto; }
-.header { text-align: center; margin-bottom: 40px; }
-.header h1 { font-size: 48px; margin-bottom: 10px; color: var(--color-text-primary); }
-.header h2 { font-size: 28px; font-weight: bold; color: var(--color-text-primary); margin-bottom: 8px; }
-.header p { color: var(--color-text-primary); }
+    .container { max-width: 900px; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 40px; }
+    .header h1 { font-size: 48px; margin-bottom: 10px; color: var(--color-text-primary); }
+    .header h2 { font-size: 28px; font-weight: bold; color: var(--color-text-primary); margin-bottom: 8px; }
+    .header p { color: var(--color-text-primary); }
 
-/* TWO COLUMN LAYOUT */
-.main {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-@media (max-width: 1000px) { .main { grid-template-columns: 1fr; } }
+    /* TWO COLUMN LAYOUT */
+    .main {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    @media (max-width: 1000px) { .main { grid-template-columns: 1fr; } }
 
-.card {
-    background: var(--color-bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: var(--shadow);
-}
+    .card {
+        background: var(--color-bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: var(--shadow);
+    }
 
-/* Mobile Responsive Adjustments */
-@media (max-width: 480px) {
-    body { padding: 8px; }
-    .container { 
-        max-width: 100%; 
+    /* Mobile Responsive Adjustments */
+    @media (max-width: 480px) {
+        body { padding: 8px; }
+        .container { 
+            max-width: 100%; 
+            width: 100%;
+            margin: 0 auto;
+        }
+        .header { margin-bottom: 20px; }
+        .header h1 { font-size: 26px; }
+        .header h2 { font-size: 16px; }
+        .card { 
+            padding: 16px; 
+            overflow-x: hidden;
+        }
+        .button-group { flex-direction: column; gap: 8px; }
+        button { width: 100%; padding: 12px; }
+        .verse-display { padding: 16px; }
+        .chapter-title { font-size: 22px; }
+        .verse-text { 
+            font-size: 13px; 
+            max-height: 250px; 
+            line-height: 1.6;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            max-width: 100% !important;
+        }
+        textarea { min-height: 120px; padding: 12px; font-size: 13px; }
+        input[type="text"] { font-size: 13px; }
+        .entry-item { padding: 10px; margin-bottom: 6px; }
+        .del-btn { width: 24px; height: 24px; }
+
+        .manual-week {
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .manual-week input[type="text"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .manual-week button {
+            width: 100%;
+        }
+
+        .theme-toggle { top: 12px; right: 12px; width: 40px; height: 40px; font-size: 18px; }
+    }
+
+    /* VERSE DISPLAY - CLICKABLE */
+    .verse-display {
+        background: var(--color-bg-tertiary);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .verse-display:hover { background: var(--color-bg-hover); }
+
+    .chapter-number, .part-number {
+        color: var(--color-text-secondary);
+        font-size: 16px;
+        margin-top: 12px;
+    }
+
+    .chapter-title {
+        color: var(--color-accent) !important;
+        font-size: 28px;
+        font-weight: bold;
+        margin-top: 4px;
+        margin-bottom: 12px;
+    }
+
+    .verse-author {
+        color: var(--color-text-muted);
+        font-size: 11px;
+        font-style: italic;
+        margin-bottom: 12px;
+    }
+
+    .verse-text {
+        color: var(--color-text-primary);
+        font-size: 16px;
+        line-height: 1.7;
+        white-space: pre-line;
+        max-height: 400px;
+        overflow-y: auto;
+        text-align: left;
+    }
+
+    .verse-footnote {
+        font-size: 11px;
+        font-style: italic;
+        color: var(--color-text-muted);
+        margin-top: 16px;
+    }
+
+    /* Scrollbars */
+    .verse-text::-webkit-scrollbar { width: 8px; }
+    .verse-text::-webkit-scrollbar-track {
+        background: var(--scrollbar-track);
+        border-radius: 4px;
+    }
+    .verse-text::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border-radius: 4px;
+    }
+    .verse-text::-webkit-scrollbar-thumb:hover {
+        background: var(--scrollbar-thumb-hover);
+    }
+
+    .button-group { display: flex; gap: 12px; margin-bottom: 20px; }
+
+    button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 14px;
+    }
+
+    .reset-btn, .next-btn {
+        flex: 1;
+        background: var(--color-btn-primary);
+        color: white;
+    }
+    .reset-btn:hover, .next-btn:hover { background: var(--color-btn-primary-hover); }
+
+    .save-btn { background: var(--color-btn-success); color: white; }
+    .save-btn:hover { background: var(--color-btn-success-hover); }
+    .export-btn { background: var(--color-btn-purple); color: white; padding: 12px 4px; }
+    .export-btn:hover { background: var(--color-btn-purple-hover); }
+    .import-btn { background: var(--color-btn-purple); color: white; padding: 12px 4px; }
+    .import-btn:hover { background: var(--color-btn-purple-hover); }
+
+    textarea {
         width: 100%;
-        margin: 0 auto;
+        min-height: 200px;
+        padding: 15px;
+        background: var(--color-bg-input);
+        color: var(--color-text-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-family: system-ui;
+        font-size: 14px;
+        resize: vertical;
+        margin-bottom: 12px;
     }
-    .header { margin-bottom: 20px; }
-    .header h1 { font-size: 26px; }
-    .header h2 { font-size: 16px; }
-    .card { 
-        padding: 16px; 
-        overflow-x: hidden;
+
+    input[type="text"] {
+        padding: 10px;
+        background: var(--color-bg-input);
+        color: var(--color-text-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 14px;
     }
-    .button-group { flex-direction: column; gap: 8px; }
-    button { width: 100%; padding: 12px; }
-    .verse-display { padding: 16px; }
-    .chapter-title { font-size: 22px; }
-    .verse-text { 
-        font-size: 13px; 
-        max-height: 250px; 
-        line-height: 1.6;
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        max-width: 100% !important;
-    }
-    textarea { min-height: 120px; padding: 12px; font-size: 13px; }
-    input[type="text"] { font-size: 13px; }
-    .entry-item { padding: 10px; margin-bottom: 6px; }
-    .del-btn { width: 24px; height: 24px; }
 
     .manual-week {
-        grid-template-columns: 1fr;
-        gap: 8px;
-        margin: 16px 0;
-    }
-
-    .manual-week input[type="text"] {
-        width: 100%;
-        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        margin: 20px 0;
     }
 
     .manual-week button {
-        width: 100%;
+        background: var(--color-btn-success);
+        color: white;
+        white-space: nowrap;
+    }
+    .manual-week button:hover { background: var(--color-btn-success-hover); }
+
+    .manual-week input[type="text"] {
+        box-sizing: border-box;
     }
 
-    .theme-toggle { top: 12px; right: 12px; width: 40px; height: 40px; font-size: 18px; }
-}
+    h3 {
+        color: var(--color-text-primary);
+        margin: 20px 0 10px 0;
+        font-size: 18px;
+    }
 
-/* VERSE DISPLAY - CLICKABLE */
-.verse-display {
-    background: var(--color-bg-tertiary);
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.verse-display:hover { background: var(--color-bg-hover); }
+    .entries-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
 
-.chapter-number, .part-number {
-    color: var(--color-text-secondary);
-    font-size: 16px;
-    margin-top: 12px;
-}
+    .entry-item {
+        background: var(--color-bg-tertiary);
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        border: 1px solid var(--border-color);
+        transition: all 0.2s;
+        position: relative;
+    }
 
-.chapter-title {
-    color: var(--color-accent) !important;
-    font-size: 28px;
-    font-weight: bold;
-    margin-top: 4px;
-    margin-bottom: 12px;
-}
+    .entry-item:hover { background: var(--color-bg-hover); border-color: var(--border-color-hover); }
+    .entry-date { color: var(--color-text-muted); font-size: 12px; }
+    .entry-chapter { color: var(--color-accent); font-weight: bold; font-size: 14px; }
+    .entry-preview { color: var(--color-text-secondary); font-size: 12px; margin-top: 4px; }
 
-.verse-author {
-    color: var(--color-text-muted);
-    font-size: 11px;
-    font-style: italic;
-    margin-bottom: 12px;
-}
+    .del-btn {
+        position: absolute; top: 8px; right: 8px; width: 20px; height: 20px;
+        border: 1px solid var(--border-color); background: var(--color-bg-card);
+        color: var(--color-text-secondary); border-radius: 50%; font-size: 14px;
+        cursor: pointer; opacity: 0; transition: opacity .2s, transform .2s;
+        display: flex; align-items: center; justify-content: center; padding: 0; line-height: 1;
+    }
 
-.verse-text {
-    color: var(--color-text-primary);
-    font-size: 16px;
-    line-height: 1.7;
-    white-space: pre-line;
-    max-height: 400px;
-    overflow-y: auto;
-    text-align: left;
-}
+    .entry-item:hover .del-btn { opacity: .6; }
+    .del-btn:hover { opacity: 1; transform: scale(1.2); border-color: var(--color-accent); color: var(--color-accent); }
 
-.verse-footnote {
-    font-size: 11px;
-    font-style: italic;
-    color: var(--color-text-muted);
-    margin-top: 16px;
-}
+    .footer {
+        text-align: center;
+        color: var(--color-text-muted);
+        font-size: 12px;
+        margin-top: 30px;
+    }
 
-/* Scrollbars */
-.verse-text::-webkit-scrollbar { width: 8px; }
-.verse-text::-webkit-scrollbar-track {
-    background: var(--scrollbar-track);
-    border-radius: 4px;
-}
-.verse-text::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
-    border-radius: 4px;
-}
-.verse-text::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover);
-}
+    /* THEME TOGGLE BUTTON */
+    .theme-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--color-bg-card);
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        font-size: 20px;
+        color: var(--color-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        z-index: 100;
+    }
 
-.button-group { display: flex; gap: 12px; margin-bottom: 20px; }
-
-button {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 14px;
-}
-
-.reset-btn, .next-btn {
-    flex: 1;
-    background: var(--color-btn-primary);
-    color: white;
-}
-.reset-btn:hover, .next-btn:hover { background: var(--color-btn-primary-hover); }
-
-.save-btn { background: var(--color-btn-success); color: white; }
-.save-btn:hover { background: var(--color-btn-success-hover); }
-.export-btn { background: var(--color-btn-purple); color: white; padding: 12px 8px; }
-.export-btn:hover { background: var(--color-btn-purple-hover); }
-.import-btn { background: var(--color-btn-purple); color: white; padding: 12px 8px; }
-.import-btn:hover { background: var(--color-btn-purple-hover); }
-
-textarea {
-    width: 100%;
-    min-height: 200px;
-    padding: 15px;
-    background: var(--color-bg-input);
-    color: var(--color-text-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-family: system-ui;
-    font-size: 14px;
-    resize: vertical;
-    margin-bottom: 12px;
-}
-
-input[type="text"] {
-    padding: 10px;
-    background: var(--color-bg-input);
-    color: var(--color-text-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 14px;
-}
-
-.manual-week {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    margin: 20px 0;
-}
-
-.manual-week button {
-    background: var(--color-btn-success);
-    color: white;
-    white-space: nowrap;
-}
-.manual-week button:hover { background: var(--color-btn-success-hover); }
-
-.manual-week input[type="text"] {
-    box-sizing: border-box;
-}
-
-h3 {
-    color: var(--color-text-primary);
-    margin: 20px 0 10px 0;
-    font-size: 18px;
-}
-
-.entries-list {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.entry-item {
-    background: var(--color-bg-tertiary);
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    border: 1px solid var(--border-color);
-    transition: all 0.2s;
-    position: relative;
-}
-
-.entry-item:hover { background: var(--color-bg-hover); border-color: var(--border-color-hover); }
-.entry-date { color: var(--color-text-muted); font-size: 12px; }
-.entry-chapter { color: var(--color-accent); font-weight: bold; font-size: 14px; }
-.entry-preview { color: var(--color-text-secondary); font-size: 12px; margin-top: 4px; }
-
-.del-btn {
-    position: absolute; top: 8px; right: 8px; width: 20px; height: 20px;
-    border: 1px solid var(--border-color); background: var(--color-bg-card);
-    color: var(--color-text-secondary); border-radius: 50%; font-size: 14px;
-    cursor: pointer; opacity: 0; transition: opacity .2s, transform .2s;
-    display: flex; align-items: center; justify-content: center; padding: 0; line-height: 1;
-}
-
-.entry-item:hover .del-btn { opacity: .6; }
-.del-btn:hover { opacity: 1; transform: scale(1.2); border-color: var(--color-accent); color: var(--color-accent); }
-
-.footer {
-    text-align: center;
-    color: var(--color-text-muted);
-    font-size: 12px;
-    margin-top: 30px;
-}
-
-/* THEME TOGGLE BUTTON */
-.theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--color-bg-card);
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-    font-size: 20px;
-    color: var(--color-accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    z-index: 100;
-}
-
-.theme-toggle:hover {
-    transform: scale(1.05);
-}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>⚔</h1>
-            <h2>Art of War</h2>
-            <p>52-Week Strategy Study</p>
-        </div>
-
-        <div class="main">
-            <!-- LEFT COLUMN: Verse Display -->
-            <div class="card">
-                <div id="combinedDisplay"></div>
-                <div class="button-group">
-                    <button class="reset-btn" id="prevBtn">Previous</button>
-                    <button class="next-btn" id="nextBtn">Next</button>
-                </div>
+    .theme-toggle:hover {
+        transform: scale(1.05);
+    }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>⚔</h1>
+                <h2>Art of War</h2>
+                <p>52-Week Strategy Study</p>
             </div>
-            
-            <!-- RIGHT COLUMN: Journal -->
-            <div class="card journal-section">
-                <h3>Journal Entry</h3>
-                <textarea id="journalText" placeholder="Write your reflections on this week's passage..."></textarea>
-                
-                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 6px; margin-bottom: 12px;">                    <button class="save-btn" id="saveBtn">Save Entry</button>
-                    <button class="export-btn" id="exportBtn">Export CSV</button>
-                    <button class="import-btn" id="importBtn">Import CSV</button>
-                </div>
-                <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
 
-                <div class="manual-week">
-                    <input type="text" id="manualChapter" placeholder="Jump to Ch. (e.g. 1 or 2-3)">
-                    <button id="manualChapterBtn">Go to Chapter</button>  
+            <div class="main">
+                <!-- LEFT COLUMN: Verse Display -->
+                <div class="card">
+                    <div id="combinedDisplay"></div>
+                    <div class="button-group">
+                        <button class="reset-btn" id="prevBtn">Previous</button>
+                        <button class="next-btn" id="nextBtn">Next</button>
+                    </div>
                 </div>
                 
-                <h3>Past Entries</h3>
-                <div class="entries-list" id="entriesList"></div>
+                <!-- RIGHT COLUMN: Journal -->
+                <div class="card journal-section">
+                    <h3>Journal Entry</h3>
+                    <textarea id="journalText" placeholder="Write your reflections on this week's passage..."></textarea>
+                    
+                    <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; gap: 6px; margin-bottom: 12px;">                    <button class="save-btn" id="saveBtn">Save Entry</button>
+                        <button class="export-btn" id="exportBtn">Export CSV</button>
+                        <button class="import-btn" id="importBtn">Import CSV</button>
+                    </div>
+                    <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+
+                    <div class="manual-week">
+                        <input type="text" id="manualChapter" placeholder="Jump to Ch. (e.g. 1 or 2-3)">
+                        <button id="manualChapterBtn">Go to Chapter</button>  
+                    </div>
+                    
+                    <h3>Past Entries</h3>
+                    <div class="entries-list" id="entriesList"></div>
+                </div>
             </div>
+
+        <!-- <p class="footer">Study The Art of War through multiple translations. Click the verse text to switch translations.</p> --> 
         </div>
 
-      <!-- <p class="footer">Study The Art of War through multiple translations. Click the verse text to switch translations.</p> --> 
-    </div>
-
-    <!-- Load verse files from war-verses folder -->
-    <script src="war-verses/verses-giles.js"></script>
-    <script src="war-verses/verses-wing.js"></script>
-    <script src="war-verses/verses-questions.js"></script>
-    <script src="war-verses/verses.js"></script>
-    
-    <script>
-        var app = {
-            currentPosition: 1,
-            currentEditId: null,
-            currentTranslation: "Giles",
-            entries: []
-        };
-
-        // Theme toggle
-        var currentTheme = localStorage.getItem('artofwar-theme') || 'dark';
+        <!-- Load verse files from war-verses folder -->
+        <script src="war-verses/verses-giles.js"></script>
+        <script src="war-verses/verses-wing.js"></script>
+        <script src="war-verses/verses-questions.js"></script>
+        <script src="war-verses/verses.js"></script>
         
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('artofwar-theme', theme);
-            currentTheme = theme;
-        }
+        <script>
+            var app = {
+                currentPosition: 1,
+                currentEditId: null,
+                currentTranslation: "Giles",
+                entries: []
+            };
 
-        function toggleTheme() {
-            setTheme(currentTheme === 'dark' ? 'light' : 'dark');
-        }
-
-        function getVerseKey(pos, translation) {
-            if (translation === "Wing") {
-                var chapter = Math.floor((pos - 1) / 4) + 1;
-                var section = ((pos - 1) % 4) + 1;
-                return chapter + "-" + section;
-            }
-            return String(pos);
-        }
-
-        // CLICK VERSE TO CYCLE TRANSLATIONS
-        function cycleTranslation() {
-            var translations = Object.keys(verseTexts);
-            if (translations.length < 2) return;
+            // Theme toggle
+            var currentTheme = localStorage.getItem('artofwar-theme') || 'dark';
             
-            var oldTranslation = app.currentTranslation;
-            var idx = translations.indexOf(app.currentTranslation);
-            idx = (idx + 1) % translations.length;
-            app.currentTranslation = translations[idx];
-            
-            // Adjust position when switching between Wing and Giles
-            if (oldTranslation === "Wing" && app.currentTranslation === "Giles") {
-                // Wing to Giles: convert week to chapter
-                var chapter = Math.floor((app.currentPosition - 1) / 4) + 1;
-                app.currentPosition = chapter;
-            } else if (oldTranslation === "Giles" && app.currentTranslation === "Wing") {
-                // Giles to Wing: go to first week of that chapter
-                var week = (app.currentPosition - 1) * 4 + 1;
-                app.currentPosition = week;
-            }
-            
-            render();
-        }
-
-        function render() {
-            var key = getVerseKey(app.currentPosition, app.currentTranslation);
-            var verses = verseTexts[app.currentTranslation];
-            
-            if (!verses || !verses[key]) {
-                document.getElementById('combinedDisplay').innerHTML = 
-                    '<div class="verse-display"><p style="color: var(--color-text-muted);">Verse not available</p></div>';
-                return;
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('artofwar-theme', theme);
+                currentTheme = theme;
             }
 
-            var verseText = verses[key];
-
-            // Style footnotes differently (text after underscores)
-            if (verseText.includes('___')) {
-                var parts = verseText.split('___');
-                verseText = parts[0] + '<div class="verse-footnote">___' + parts.slice(1).join('___') + '</div>';
+            function toggleTheme() {
+                setTheme(currentTheme === 'dark' ? 'light' : 'dark');
             }
 
-            var chapter = app.currentTranslation === "Wing" ? 
-                Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
-            
-            // Get title using helper function from verses.js
-            var title = getPositionTitle(app.currentPosition, app.currentTranslation);
-            
-            var displayText = app.currentTranslation === "Wing" ? 
-                '<div class="chapter-number">Week ' + app.currentPosition + '</div>' +
-                '<div class="chapter-title">' + chapterTitlesWing[chapter - 1] + '</div>' +
-                '<div class="part-number">Part ' + (((app.currentPosition - 1) % 4) + 1) + ': ' + title + '</div>' :
-                '<div class="chapter-number">Week ' + app.currentPosition + '</div>' +
-                '<div class="chapter-title">Chapter ' + chapter + ': ' + title + '</div>';
-
-            var html = '<div class="verse-display" onclick="cycleTranslation()">' +
-                displayText +
-                '<div class="verse-author">Translation: ' + app.currentTranslation + '</div>' +
-                '<div class="verse-text">' + verseText + '</div>' +
-                '</div>';
-            
-            document.getElementById('combinedDisplay').innerHTML = html;
-            
-            localStorage.setItem('artOfWarPosition', JSON.stringify({
-                position: app.currentPosition,
-                translation: app.currentTranslation
-            }));
-
-            // Render entries
-            var listHTML = '';
-            for (var i = app.entries.length - 1; i >= 0; i--) {
-                var e = app.entries[i];
-                var preview = e.text.substring(0, 60);
-                if (e.text.length > 60) preview += '…';
-
-                var chapterText = e.translation === "Wing" ? 
-                    'Ch ' + e.chapter + '-' + (e.section || '1') : 'Ch ' + e.chapter;
-
-                listHTML +=
-                    '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
-                    '<button class="del-btn" onclick="event.stopPropagation(); deleteEntry(' + i + ')" title="Delete entry">×</button>' +
-                    '<div class="entry-date">' + e.date + '</div>' +
-                    '<div class="entry-chapter">' + chapterText + ': ' + e.title + '</div>' +
-                    '<div class="entry-preview">' + preview + '</div>' +
-                    '</div>';
-            }
-            document.getElementById('entriesList').innerHTML = listHTML;
-        }
-
-        function nextChapter() {
-            var maxWeeks = app.currentTranslation === "Wing" ? 52 : 13;
-            if (app.currentPosition < maxWeeks) {
-                app.currentPosition++;
-                app.currentEditId = null;
-                document.getElementById('journalText').value = '';
-                render();
-            }
-        }
-
-        function previousChapter() {
-            if (app.currentPosition > 1) {
-                app.currentPosition--;
-                app.currentEditId = null;
-                document.getElementById('journalText').value = '';
-                render();
-            }
-        }
-
-        function manualChapter() {
-            var input = document.getElementById('manualChapter').value.trim();
-            if (!input) return;
-            
-            var maxWeeks = app.currentTranslation === "Wing" ? 52 : 13;
-            var week;
-            
-            if (input.indexOf('-') > -1) {
-                var parts = input.split('-');
-                var chapter = parseInt(parts[0]);
-                var section = parseInt(parts[1]) || 1;
-                week = (chapter - 1) * 4 + section;
-                if (app.currentTranslation !== "Wing") {
-                    app.currentTranslation = "Wing";
+            function getVerseKey(pos, translation) {
+                if (translation === "Wing") {
+                    var chapter = Math.floor((pos - 1) / 4) + 1;
+                    var section = ((pos - 1) % 4) + 1;
+                    return chapter + "-" + section;
                 }
-            } else {
-                // Plain number: treat as chapter number
-                var chapter = parseInt(input);
+                return String(pos);
+            }
+
+            // CLICK VERSE TO CYCLE TRANSLATIONS
+            function cycleTranslation() {
+                var translations = Object.keys(verseTexts);
+                if (translations.length < 2) return;
                 
-                // Validate chapter (1-13)
-                if (chapter < 1 || chapter > 13) {
-                    alert('Chapter must be between 1 and 13');
+                var oldTranslation = app.currentTranslation;
+                var idx = translations.indexOf(app.currentTranslation);
+                idx = (idx + 1) % translations.length;
+                app.currentTranslation = translations[idx];
+                
+                // Always convert to chapter number when leaving Wing
+                if (oldTranslation === "Wing") {
+                    var chapter = Math.floor((app.currentPosition - 1) / 4) + 1;
+                    app.currentPosition = chapter;
+                } 
+                // Always convert to first week of chapter when entering Wing
+                else if (app.currentTranslation === "Wing") {
+                    var week = (app.currentPosition - 1) * 4 + 1;
+                    app.currentPosition = week;
+                }
+                
+                render();
+            }
+
+            function render() {
+                var key = getVerseKey(app.currentPosition, app.currentTranslation);
+                var verses = verseTexts[app.currentTranslation];
+                
+                if (!verses || !verses[key]) {
+                    document.getElementById('combinedDisplay').innerHTML = 
+                        '<div class="verse-display"><p style="color: var(--color-text-muted);">Verse not available</p></div>';
                     return;
                 }
+
+                var verseText = verses[key];
+
+                // Style footnotes differently (text after underscores)
+                if (verseText.includes('___')) {
+                    var parts = verseText.split('___');
+                    verseText = parts[0] + '<div class="verse-footnote">___' + parts.slice(1).join('___') + '</div>';
+                }
+
+                var chapter = app.currentTranslation === "Wing" ? 
+                    Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
                 
-                // Convert based on current translation
-                if (app.currentTranslation === "Wing") {
-                    // Go to first section of that chapter
-                    week = (chapter - 1) * 4 + 1;
+                // Get title using helper function from verses.js
+                var title = getPositionTitle(app.currentPosition, app.currentTranslation);
+                
+                var displayText = app.currentTranslation === "Wing" ? 
+                    '<div class="chapter-number">Week ' + app.currentPosition + '</div>' +
+                    '<div class="chapter-title">' + chapterTitlesWing[chapter - 1] + '</div>' +
+                    '<div class="part-number">Part ' + (((app.currentPosition - 1) % 4) + 1) + ': ' + title + '</div>' :
+                    '<div class="chapter-number">Week ' + app.currentPosition + '</div>' +
+                    '<div class="chapter-title">Chapter ' + chapter + ': ' + title + '</div>';
+
+                var html = '<div class="verse-display" onclick="cycleTranslation()">' +
+                    displayText +
+                    '<div class="verse-author">Translation: ' + app.currentTranslation + '</div>' +
+                    '<div class="verse-text">' + verseText + '</div>' +
+                    '</div>';
+                
+                document.getElementById('combinedDisplay').innerHTML = html;
+                
+                localStorage.setItem('artOfWarPosition', JSON.stringify({
+                    position: app.currentPosition,
+                    translation: app.currentTranslation
+                }));
+
+                // Render entries
+                var listHTML = '';
+                for (var i = app.entries.length - 1; i >= 0; i--) {
+                    var e = app.entries[i];
+                    var preview = e.text.substring(0, 60);
+                    if (e.text.length > 60) preview += '…';
+
+                    var chapterText = e.translation === "Wing" ? 
+                        'Ch ' + e.chapter + '-' + (e.section || '1') : 'Ch ' + e.chapter;
+
+                    listHTML +=
+                        '<div class="entry-item" onclick="loadEntry(' + i + ')">' +
+                        '<button class="del-btn" onclick="event.stopPropagation(); deleteEntry(' + i + ')" title="Delete entry">×</button>' +
+                        '<div class="entry-date">' + e.date + '</div>' +
+                        '<div class="entry-chapter">' + chapterText + ': ' + e.title + '</div>' +
+                        '<div class="entry-preview">' + preview + '</div>' +
+                        '</div>';
+                }
+                document.getElementById('entriesList').innerHTML = listHTML;
+            }
+
+            function nextChapter() {
+                var maxWeeks = app.currentTranslation === "Wing" ? 52 : 13;
+                if (app.currentPosition < maxWeeks) {
+                    app.currentPosition++;
+                    app.currentEditId = null;
+                    document.getElementById('journalText').value = '';
+                    render();
+                }
+            }
+
+            function previousChapter() {
+                if (app.currentPosition > 1) {
+                    app.currentPosition--;
+                    app.currentEditId = null;
+                    document.getElementById('journalText').value = '';
+                    render();
+                }
+            }
+
+            function manualChapter() {
+                var input = document.getElementById('manualChapter').value.trim();
+                if (!input) return;
+                
+                var maxWeeks = app.currentTranslation === "Wing" ? 52 : 13;
+                var week;
+                
+                if (input.indexOf('-') > -1) {
+                    var parts = input.split('-');
+                    var chapter = parseInt(parts[0]);
+                    var section = parseInt(parts[1]) || 1;
+                    week = (chapter - 1) * 4 + section;
+                    if (app.currentTranslation !== "Wing") {
+                        app.currentTranslation = "Wing";
+                    }
                 } else {
-                    // Giles or Questions: chapter = position
-                    week = chapter;
-                }
-            }
-            if (week >= 1 && week <= maxWeeks) {
-                app.currentPosition = week;
-                app.currentEditId = null;
-                document.getElementById('journalText').value = '';
-                document.getElementById('manualChapter').value = '';
-                render();
-            } else {
-                alert('Please enter a valid week number (1-' + maxWeeks + ')');
-            }
-        }
-
-        function saveEntry() {
-            var text = document.getElementById('journalText').value;
-            if (!text.trim()) {
-                alert('Please write something first');
-                return;
-            }
-
-            var now = new Date().toISOString().split('T')[0];
-            var chapter = app.currentTranslation === "Wing" ? 
-                Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
-            var section = app.currentTranslation === "Wing" ? 
-                ((app.currentPosition - 1) % 4) + 1 : null;
-            
-            // Get title using helper function from verses.js
-            var title = getPositionTitle(app.currentPosition, app.currentTranslation);
-
-            if (app.currentEditId !== null) {
-                app.entries[app.currentEditId].text = text;
-            } else {
-                var entry = { 
-                    date: now, chapter: chapter, title: title, 
-                    text: text, translation: app.currentTranslation
-                };
-                if (section) entry.section = section;
-                app.entries.push(entry);
-            }
-
-            localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
-            app.currentEditId = null;
-            document.getElementById('journalText').value = '';
-            render();
-        }
-
-        function loadEntry(idx) {
-            app.currentEditId = idx;
-            document.getElementById('journalText').value = app.entries[idx].text;
-        }
-
-        function deleteEntry(index) {
-            var entry = app.entries[index];
-            var entryTitle = 'Ch ' + entry.chapter + ': ' + entry.title;
-            if (!confirm('Delete this entry?\n\n' + entryTitle + '\n' + entry.date)) return;
-            if (!confirm('Are you absolutely sure? This is your final confirmation.')) return;
-            app.entries.splice(index, 1);
-            localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
-            render();
-        }
-
-        function exportCSV() {
-            if (app.entries.length === 0) {
-                alert('No entries to export');
-                return;
-            }
-
-            var csv = 'Date,Translation,Chapter,Part,Title,Notes\n';
-            for (var i = 0; i < app.entries.length; i++) {
-                var e = app.entries[i];
-                var notes = e.text.replace(/"/g, '""').replace(/\n/g, ' ');
-                var part = e.section || '';
-                csv += e.date + ',' + e.translation + ',' + e.chapter + ',' + part + ',"' + e.title + '","' + notes + '"\n';
-            }
-
-            var blob = new Blob([csv], { type: 'text/csv' });
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = 'art-of-war-' + new Date().toISOString().split('T')[0] + '.csv';
-            a.click();
-        }
-
-        function importCSV() {
-            document.getElementById('csvFileInput').click();
-        }
-
-        function parseAndImportCSV(csv) {
-            var lines = csv.split('\n');
-            var imported = 0;
-            var duplicates = 0;
-            
-            for (var i = 1; i < lines.length; i++) {
-                var line = lines[i].trim();
-                if (!line) continue;
-                
-                var matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
-                if (!matches || matches.length < 6) continue;
-                
-                var date = matches[0].replace(/"/g, '').trim();
-                var translation = matches[1].replace(/"/g, '').trim();
-                var chapter = parseInt(matches[2].replace(/"/g, '').trim());
-                var part = matches[3].replace(/"/g, '').trim();
-                var title = matches[4].replace(/"/g, '').trim();
-                var notes = matches[5].replace(/"/g, '').trim();
-                
-                var section = part ? parseInt(part) : null;
-                
-                var isDuplicate = app.entries.some(function(entry) {
-                    return entry.date === date && 
-                           entry.chapter === chapter && 
-                           entry.section === section &&
-                           entry.translation === translation;
-                });
-                
-                if (isDuplicate) {
-                    duplicates++;
-                    continue;
-                }
-                
-                var entry = {
-                    date: date,
-                    translation: translation,
-                    chapter: chapter,
-                    section: section,
-                    title: title,
-                    text: notes
-                };
-                
-                app.entries.push(entry);
-                imported++;
-            }
-            
-            app.entries.sort(function(a, b) {
-                return new Date(b.date) - new Date(a.date);
-            });
-            
-            localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
-            render();
-            
-            var message = 'Successfully imported ' + imported + ' entries!';
-            if (duplicates > 0) {
-                message += '\n' + duplicates + ' duplicate entries were skipped.';
-            }
-            alert(message);
-            
-            document.getElementById('csvFileInput').value = '';
-        }
-
-        function init() {
-            var saved = localStorage.getItem('artOfWarEntries');
-            if (saved) app.entries = JSON.parse(saved);
-            
-            var urlParams = new URLSearchParams(window.location.search);
-            var urlChapter = urlParams.get('ch');
-            var urlTranslation = urlParams.get('tr');
-            
-            if (urlChapter) {
-                var parts = urlChapter.split('-');
-                var chapter = parseInt(parts[0]);
-                var section = parts[1] ? parseInt(parts[1]) : 1;
-                
-                if (urlTranslation === 'Wing' || section > 1) {
-                    app.currentPosition = (chapter - 1) * 4 + section;
-                } else {
-                    app.currentPosition = chapter;
-                }
-                
-                if (urlTranslation && verseTexts[urlTranslation]) {
-                    app.currentTranslation = urlTranslation;
-                }
-            } else {
-                var savedPosition = localStorage.getItem('artOfWarPosition');
-                if (savedPosition) {
-                    var pos = JSON.parse(savedPosition);
-                    app.currentPosition = pos.position || 1;
-                    if (pos.translation && verseTexts[pos.translation]) {
-                        app.currentTranslation = pos.translation;
+                    // Plain number: treat as chapter number
+                    var chapter = parseInt(input);
+                    
+                    // Validate chapter (1-13)
+                    if (chapter < 1 || chapter > 13) {
+                        alert('Chapter must be between 1 and 13');
+                        return;
+                    }
+                    
+                    // Convert based on current translation
+                    if (app.currentTranslation === "Wing") {
+                        // Go to first section of that chapter
+                        week = (chapter - 1) * 4 + 1;
+                    } else {
+                        // Giles or Questions: chapter = position
+                        week = chapter;
                     }
                 }
+                if (week >= 1 && week <= maxWeeks) {
+                    app.currentPosition = week;
+                    app.currentEditId = null;
+                    document.getElementById('journalText').value = '';
+                    document.getElementById('manualChapter').value = '';
+                    render();
+                } else {
+                    alert('Please enter a valid week number (1-' + maxWeeks + ')');
+                }
             }
 
-            setTheme(currentTheme);
-            render();
-        }
+            function saveEntry() {
+                var text = document.getElementById('journalText').value;
+                if (!text.trim()) {
+                    alert('Please write something first');
+                    return;
+                }
 
-        document.getElementById('prevBtn').onclick = previousChapter;
-        document.getElementById('nextBtn').onclick = nextChapter;
-        document.getElementById('saveBtn').onclick = saveEntry;
-        document.getElementById('exportBtn').onclick = exportCSV;
-        document.getElementById('importBtn').onclick = importCSV;
-        document.getElementById('manualChapterBtn').onclick = manualChapter;
-        
-        document.getElementById('csvFileInput').addEventListener('change', function(e) {
-            var file = e.target.files[0];
-            if (!file) return;
+                var now = new Date().toISOString().split('T')[0];
+                var chapter = app.currentTranslation === "Wing" ? 
+                    Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
+                var section = app.currentTranslation === "Wing" ? 
+                    ((app.currentPosition - 1) % 4) + 1 : null;
+                
+                // Get title using helper function from verses.js
+                var title = getPositionTitle(app.currentPosition, app.currentTranslation);
+
+                if (app.currentEditId !== null) {
+                    app.entries[app.currentEditId].text = text;
+                } else {
+                    var entry = { 
+                        date: now, chapter: chapter, title: title, 
+                        text: text, translation: app.currentTranslation
+                    };
+                    if (section) entry.section = section;
+                    app.entries.push(entry);
+                }
+
+                localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
+                app.currentEditId = null;
+                document.getElementById('journalText').value = '';
+                render();
+            }
+
+            function loadEntry(idx) {
+                app.currentEditId = idx;
+                document.getElementById('journalText').value = app.entries[idx].text;
+            }
+
+            function deleteEntry(index) {
+                var entry = app.entries[index];
+                var entryTitle = 'Ch ' + entry.chapter + ': ' + entry.title;
+                if (!confirm('Delete this entry?\n\n' + entryTitle + '\n' + entry.date)) return;
+                if (!confirm('Are you absolutely sure? This is your final confirmation.')) return;
+                app.entries.splice(index, 1);
+                localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
+                render();
+            }
+
+            function exportCSV() {
+                if (app.entries.length === 0) {
+                    alert('No entries to export');
+                    return;
+                }
+
+                var csv = 'Date,Translation,Chapter,Part,Title,Notes\n';
+                for (var i = 0; i < app.entries.length; i++) {
+                    var e = app.entries[i];
+                    var notes = e.text.replace(/"/g, '""').replace(/\n/g, ' ');
+                    var part = e.section || '';
+                    csv += e.date + ',' + e.translation + ',' + e.chapter + ',' + part + ',"' + e.title + '","' + notes + '"\n';
+                }
+
+                var blob = new Blob([csv], { type: 'text/csv' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'art-of-war-' + new Date().toISOString().split('T')[0] + '.csv';
+                a.click();
+            }
+
+            function importCSV() {
+                document.getElementById('csvFileInput').click();
+            }
+
+            function parseAndImportCSV(csv) {
+                var lines = csv.split('\n');
+                var imported = 0;
+                var duplicates = 0;
+                
+                for (var i = 1; i < lines.length; i++) {
+                    var line = lines[i].trim();
+                    if (!line) continue;
+                    
+                    var matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
+                    if (!matches || matches.length < 6) continue;
+                    
+                    var date = matches[0].replace(/"/g, '').trim();
+                    var translation = matches[1].replace(/"/g, '').trim();
+                    var chapter = parseInt(matches[2].replace(/"/g, '').trim());
+                    var part = matches[3].replace(/"/g, '').trim();
+                    var title = matches[4].replace(/"/g, '').trim();
+                    var notes = matches[5].replace(/"/g, '').trim();
+                    
+                    var section = part ? parseInt(part) : null;
+                    
+                    var isDuplicate = app.entries.some(function(entry) {
+                        return entry.date === date && 
+                            entry.chapter === chapter && 
+                            entry.section === section &&
+                            entry.translation === translation;
+                    });
+                    
+                    if (isDuplicate) {
+                        duplicates++;
+                        continue;
+                    }
+                    
+                    var entry = {
+                        date: date,
+                        translation: translation,
+                        chapter: chapter,
+                        section: section,
+                        title: title,
+                        text: notes
+                    };
+                    
+                    app.entries.push(entry);
+                    imported++;
+                }
+                
+                app.entries.sort(function(a, b) {
+                    return new Date(b.date) - new Date(a.date);
+                });
+                
+                localStorage.setItem('artOfWarEntries', JSON.stringify(app.entries));
+                render();
+                
+                var message = 'Successfully imported ' + imported + ' entries!';
+                if (duplicates > 0) {
+                    message += '\n' + duplicates + ' duplicate entries were skipped.';
+                }
+                alert(message);
+                
+                document.getElementById('csvFileInput').value = '';
+            }
+
+            function init() {
+                var saved = localStorage.getItem('artOfWarEntries');
+                if (saved) app.entries = JSON.parse(saved);
+                
+                var urlParams = new URLSearchParams(window.location.search);
+                var urlChapter = urlParams.get('ch');
+                var urlTranslation = urlParams.get('tr');
+                
+                if (urlChapter) {
+                    var parts = urlChapter.split('-');
+                    var chapter = parseInt(parts[0]);
+                    var section = parts[1] ? parseInt(parts[1]) : 1;
+                    
+                    if (urlTranslation === 'Wing' || section > 1) {
+                        app.currentPosition = (chapter - 1) * 4 + section;
+                    } else {
+                        app.currentPosition = chapter;
+                    }
+                    
+                    if (urlTranslation && verseTexts[urlTranslation]) {
+                        app.currentTranslation = urlTranslation;
+                    }
+                } else {
+                    var savedPosition = localStorage.getItem('artOfWarPosition');
+                    if (savedPosition) {
+                        var pos = JSON.parse(savedPosition);
+                        app.currentPosition = pos.position || 1;
+                        if (pos.translation && verseTexts[pos.translation]) {
+                            app.currentTranslation = pos.translation;
+                        }
+                    }
+                }
+
+                setTheme(currentTheme);
+                render();
+            }
+
+            document.getElementById('prevBtn').onclick = previousChapter;
+            document.getElementById('nextBtn').onclick = nextChapter;
+            document.getElementById('saveBtn').onclick = saveEntry;
+            document.getElementById('exportBtn').onclick = exportCSV;
+            document.getElementById('importBtn').onclick = importCSV;
+            document.getElementById('manualChapterBtn').onclick = manualChapter;
             
-            var reader = new FileReader();
-            reader.onload = function(event) {
-                var csv = event.target.result;
-                parseAndImportCSV(csv);
-            };
-            reader.readAsText(file);
-        });
-        
-        document.getElementById('manualChapter').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') manualChapter();
-        });
+            document.getElementById('csvFileInput').addEventListener('change', function(e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    var csv = event.target.result;
+                    parseAndImportCSV(csv);
+                };
+                reader.readAsText(file);
+            });
+            
+            document.getElementById('manualChapter').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') manualChapter();
+            });
 
-        // Theme toggle button (top right)
-        var themeBtn = document.createElement('button');
-        themeBtn.className = 'theme-toggle';
-        themeBtn.innerHTML = '🌓';
-        themeBtn.onclick = toggleTheme;
-        document.body.appendChild(themeBtn);
+            // Theme toggle button (top right)
+            var themeBtn = document.createElement('button');
+            themeBtn.className = 'theme-toggle';
+            themeBtn.innerHTML = '🌓';
+            themeBtn.onclick = toggleTheme;
+            document.body.appendChild(themeBtn);
 
-        init();
-    </script>
-</body>
-</html>
+            init();
+        </script>
+    </body>
+    </html>
