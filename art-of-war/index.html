@@ -405,12 +405,12 @@
             }
 
             function getVerseKey(pos, translation) {
+                var chapter = Math.floor((pos - 1) / 4) + 1;
                 if (translation === "Wing") {
-                    var chapter = Math.floor((pos - 1) / 4) + 1;
                     var section = ((pos - 1) % 4) + 1;
                     return chapter + "-" + section;
                 }
-                return String(pos);
+                return String(chapter); // Always return chapter number for Giles/Questions
             }
 
             // CLICK VERSE TO CYCLE TRANSLATIONS
@@ -455,16 +455,21 @@
                     verseText = parts[0] + '<div class="verse-footnote">___' + parts.slice(1).join('___') + '</div>';
                 }
 
+                var chapter = Math.floor((app.currentPosition - 1) % 4) +1;
+                var section = ((app.currentPosition - 1) % 4) + 1;
+
                 var chapter = app.currentTranslation === "Wing" ? 
                     Math.floor((app.currentPosition - 1) / 4) + 1 : app.currentPosition;
                 
                 // Get title using helper function from verses.js
                 var title = getPositionTitle(app.currentPosition, app.currentTranslation);
                 
+                var title = getPositionTitle(app.currentPosition, app.currentTranslation, chapter);
+
                 var displayText = app.currentTranslation === "Wing" ? 
                     '<div class="chapter-number">Week ' + app.currentPosition + '</div>' +
                     '<div class="chapter-title">' + chapterTitlesWing[chapter - 1] + '</div>' +
-                    '<div class="part-number">Part ' + (((app.currentPosition - 1) % 4) + 1) + ': ' + title + '</div>' :
+                    '<div class="part-number">Part ' + section + ': ' + title + '</div>' :
                     '<div class="chapter-number">Week ' + app.currentPosition + '</div>' +
                     '<div class="chapter-title">Chapter ' + chapter + ': ' + title + '</div>';
 
