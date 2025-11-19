@@ -175,7 +175,11 @@
                 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
                     <button class="save-btn" id="saveBtn">Save Entry</button>
-                    <button class="export-btn" id="exportBtn">Export CSV</button>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                        <button class="export-btn" id="exportBtn">Export CSV</button>
+                        <button class="export-btn" id="importBtn">Import CSV</button>
+                    </div>
+                    <input type="file" id="importFile" accept=".csv" style="display:none">
                 </div>
 
                 <!-- Manual Entry -->
@@ -190,7 +194,7 @@
             </div>
         </div>
 
-        <!-- <p class="footer">Click the verse text to cycle through different translations</p> -->
+        <p class="footer">Click the verse text to cycle through different translations</p>
     </div>
 
     <script src="verses/verses-lau.js"></script>
@@ -395,6 +399,69 @@
             a.click();
         }
 
+        function importCSV() {
+            document.getElementById('importFile').click();
+        }
+
+        function handleImportFile(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var csv = e.target.result;
+                var lines = csv.split('\n');
+                
+                // Skip header row
+                var importedCount = 0;
+                var duplicateCount = 0;
+                
+                for (var i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue; // Skip empty lines
+                    
+                    // Parse CSV line (handles quoted fields with commas)
+                    var match = lines[i].match(/^([^,]*),([^,]*),("(?:[^"]|"")*"|[^,]*),("(?:[^"]|"")*"|[^,]*),("(?:[^"]|"")*"|[^,]*)$/);
+                    if (!match) continue;
+                    
+                    var date = match[1];
+                    var verse = parseInt(match[2]);
+                    var title = match[3].replace(/^"|"$/g, '').replace(/""/g, '"');
+                    var translation = match[4].replace(/^"|"$/g, '').replace(/""/g, '"');
+                    var text = match[5].replace(/^"|"$/g, '').replace(/""/g, '"');
+                    
+                    // Check for duplicate (same date and verse)
+                    var isDuplicate = app.entries.some(function(entry) {
+                        return entry.date === date && entry.verse === verse;
+                    });
+                    
+                    if (!isDuplicate) {
+                        app.entries.push({
+                            date: date,
+                            verse: verse,
+                            title: title,
+                            translation: translation,
+                            text: text
+                        });
+                        importedCount++;
+                    } else {
+                        duplicateCount++;
+                    }
+                }
+                
+                if (importedCount > 0) {
+                    localStorage.setItem('taoEntries', JSON.stringify(app.entries));
+                    render();
+                }
+                
+                alert('Import complete!\n\nNew entries: ' + importedCount + '\nDuplicates skipped: ' + duplicateCount);
+                
+                // Reset file input
+                event.target.value = '';
+            };
+            
+            reader.readAsText(file);
+        }
+
         function manualEntry() {
             var input = document.getElementById('manualVerse').value.trim();
             
@@ -550,6 +617,8 @@
         };
         document.getElementById('saveBtn').onclick = saveEntry;
         document.getElementById('exportBtn').onclick = exportCSV;
+        document.getElementById('importBtn').onclick = importCSV;
+        document.getElementById('importFile').onchange = handleImportFile;
         document.getElementById('manualEntryBtn').onclick = manualEntry;
         document.getElementById('manualVerse').onkeypress = function(e) {
             if (e.key === 'Enter') {
