@@ -205,12 +205,12 @@ function getPositionInfo(position, translation) {
 }
 
 // Helper to get title
-function getPositionTitle(position, translation) {
+function getPositionTitle(position, translation, chapter) {
     if (translation === "Wing") {
         return wingWeekTitles[position - 1];
     } else if (translation === "Questions") {
-        return chapterTitlesQuestions[position - 1];
+        return chapterTitlesQuestions[chapter - 1];
     } else {
-        return chapterTitlesGiles[position - 1];
+        return chapterTitlesGiles[chapter - 1];
     }
 }
