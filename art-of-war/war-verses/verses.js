@@ -209,8 +209,8 @@ function getPositionTitle(position, translation, chapter) {
     if (translation === "Wing") {
         return wingWeekTitles[position - 1];
     } else if (translation === "Questions") {
-        return chapterTitlesQuestions[chapter - 1];
+        return chapterTitlesQuestions[chapter - 1]; // ✅ Uses chapter
     } else {
-        return chapterTitlesGiles[chapter - 1];
+        return chapterTitlesGiles[chapter - 1]; // ✅ Uses chapter
     }
 }
