@@ -212,7 +212,7 @@
             currentTranslation: "Lau"
         };
 
-        var translationCycle = ["Lau", "Mitchell", "Le Guin", "Wing", "Cheng"];
+        var translationCycle = ["Lau", "Cheng", "Mitchell", "Le Guin", "Wing"];
         var verseTexts = {
             "Lau": versesLau,
             "Mitchell": versesMitchell,
@@ -233,7 +233,6 @@
             app.verseNumber = base3 + 1;
             
             app.currentEditId = null;
-            app.currentTranslation = "Lau";
             document.getElementById('journalText').value = '';
             saveLastVerse(app.verseNumber);
             render();
@@ -332,6 +331,7 @@
         function cycleTranslation() {
             var idx = translationCycle.indexOf(app.currentTranslation);
             app.currentTranslation = translationCycle[(idx + 1) % translationCycle.length];
+            localStorage.setItem('taoTranslation', app.currentTranslation);
             render();
         }
 
@@ -371,9 +371,8 @@
             app.lines = verseToLines(entry.verse);
             if (entry.translation) {
                 app.currentTranslation = entry.translation;
-            } else {
-                app.currentTranslation = "Lau";
             }
+            // else: preserve current translation preference
             render();
         }
 
@@ -488,7 +487,6 @@
             }
             
             app.currentEditId = null;
-            app.currentTranslation = "Lau";
             document.getElementById('journalText').value = '';
             document.getElementById('manualVerse').value = '';
             saveLastVerse(app.verseNumber);
@@ -558,7 +556,6 @@
             app.verseNumber = verseNum;
             app.lines = verseToLines(verseNum);
             app.currentEditId = null;
-            app.currentTranslation = "Lau";
             document.getElementById('journalText').value = '';
             render();
             
@@ -597,6 +594,9 @@
             var saved = localStorage.getItem('taoEntries');
             if (saved) app.entries = JSON.parse(saved);
             
+            var savedTranslation = localStorage.getItem('taoTranslation');
+            if (savedTranslation) app.currentTranslation = savedTranslation;
+            
             var lastVerse = loadLastVerse();
             if (lastVerse && lastVerse >= 1 && lastVerse <= 81) {
                 app.verseNumber = lastVerse;
@@ -611,7 +611,6 @@
             app.lines = [null, null, null, null]; 
             app.verseNumber = null; 
             app.currentEditId = null; 
-            app.currentTranslation = "Lau";
             document.getElementById('journalText').value = ''; 
             render(); 
         };
