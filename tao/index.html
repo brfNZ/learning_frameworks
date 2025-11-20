@@ -329,10 +329,31 @@
         }
 
         function cycleTranslation() {
-            var idx = translationCycle.indexOf(app.currentTranslation);
-            app.currentTranslation = translationCycle[(idx + 1) % translationCycle.length];
-            localStorage.setItem('taoTranslation', app.currentTranslation);
-            render();
+            var startIdx = translationCycle.indexOf(app.currentTranslation);
+            var idx = startIdx;
+            var attempts = 0;
+            
+            // Try up to the number of available translations
+            do {
+                idx = (idx + 1) % translationCycle.length;
+                attempts++;
+                
+                var nextTranslation = translationCycle[idx];
+                var nextVerse = verseTexts[nextTranslation][app.verseNumber];
+                
+                // If this translation has the verse, use it
+                if (nextVerse && nextVerse.trim() !== '') {
+                    app.currentTranslation = nextTranslation;
+                    localStorage.setItem('taoTranslation', app.currentTranslation);
+                    render();
+                    return;
+                }
+                
+            } while (idx !== startIdx && attempts < translationCycle.length);
+            
+            // If we've cycled through all and none have the verse (shouldn't happen normally)
+            // Just stay on current translation
+            alert('No other translations available for this verse');
         }
 
         function saveEntry() {
