@@ -415,7 +415,7 @@
         let isExpired = false;
         let isPaused = false;
         let startAngle = null;
-        let currentSize = 'large'; // Track size: large, medium, small
+        let currentSize = 'medium'; // Track size: large, medium, small
         let randomChimeSelected = false;
         let timerName = "";
         let currentSessionStartTime = null;
@@ -441,17 +441,18 @@
         ];
         const defaultChime = 'timer-sounds/clear-announce-tones-2861.wav';
 
-        // Initial setup for the default (large) timer size
-        canvas.width = 360;
-        canvas.height = 360;
-        canvas.style.width = '360px';
-        canvas.style.height = '360px';
+        // Initial setup for the default (medium) timer size
+        canvas.width = 300;
+        canvas.height = 300;
+        canvas.style.width = '300px';
+        canvas.style.height = '300px';
         centerX = canvas.width / 2;
         centerY = canvas.height / 2;
-        timerContainer.style.width = '380px';
-        timerContainer.style.height = '500px';
-        timerNameDisplay.style.fontSize = '18px';
+        timerContainer.style.width = '320px';
+        timerContainer.style.height = '460px';
+        timerNameDisplay.style.fontSize = '14.4px';
 
+        
         function updateButtonStates() {
             if (isExpired || (!isRunning && !isPaused)) {
                 startButton.disabled = false;
