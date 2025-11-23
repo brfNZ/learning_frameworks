@@ -357,8 +357,10 @@
     <div id="reviewModal" class="modal">
         <div class="modal-content" style="width: 340px;">
         <h3 style="margin-top: 0; margin-bottom: 12px;">Review</h3>
-            <div id="reviewSessionInfo" style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-bottom: 8px; font-size: 14px;"></div>
-            
+            <div style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 14px;">
+                <input type="text" id="reviewSessionName" style="width: 100%; padding: 4px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; font-weight: bold; box-sizing: border-box;">
+                <div id="reviewSessionInfo"></div>
+            </div>  
             <div style="display: flex; justify-content: space-around; margin: 4px 0 6px 0;">
                 <button class="emoji-button" onclick="selectReviewScore(-1)" style="font-size: 20px; background: none; border: 3px solid transparent; border-radius: 6px; cursor: pointer; padding: 3px;">😞</button>
                 <button class="emoji-button" onclick="selectReviewScore(0)" style="font-size: 20px; background: none; border: 3px solid transparent; border-radius: 6px; cursor: pointer; padding: 3px;">😐</button>
@@ -911,12 +913,12 @@
             const session = sessions.find(s => s.id === sessionId);
             if (session) {
                 // Populate session info - 1 line - name, duration, timestamp 
+                document.getElementById('reviewSessionName').value = session.name || 'Untitled Session';
                 document.getElementById('reviewSessionInfo').innerHTML = 
-                `<div style="display: flex; justify-content: space-between;">
-                    <div><strong>${session.name || 'Untitled Session'}</strong> <span style="color: #999;">— ${session.duration} minute${session.duration !== 1 ? 's' : ''}</span></div>
-                    <span style="color: #999; font-size: 12px;">${new Date(session.timestamp).toLocaleString()}</span>
-                </div>`;
-
+                    `<div style="display: flex; justify-content: space-between;">
+                        <div><span style="color: #999;">${session.duration} minute${session.duration !== 1 ? 's' : ''}</span></div>
+                        <span style="color: #999; font-size: 12px;">${new Date(session.timestamp).toLocaleString()}</span>
+                    </div>`;
                 // If session already has a review, load it
                 if (session.score !== undefined) {
                     selectedReviewScore = session.score;
@@ -933,6 +935,7 @@
             }
             
             reviewModal.style.display = 'block';
+            document.getElementById('reviewComment').focus(); // Focus on comment box
         }
 
         function closeReviewModal() {
@@ -954,6 +957,7 @@
             if (session) {
                 session.score = selectedReviewScore;
                 session.comment = document.getElementById('reviewComment').value.trim();
+                session.name = document.getElementById('reviewSessionName').value.trim();
                 saveSessionHistory(sessions);
             }
             
