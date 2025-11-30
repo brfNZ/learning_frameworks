@@ -20,7 +20,7 @@
         --text-color: #000;
         --digital-bg: #000;
         --digital-text: #fff;
-        --digital-pulse: #fff;
+        --digital-pulse-glow: rgba(255, 255, 255, 0.6);
     }
     
     /* Dark mode theme */
@@ -29,7 +29,7 @@
         --text-color: #fff;
         --digital-bg: #fff;
         --digital-text: #000;
-        --digital-pulse: #000;
+        --digital-pulse-glow: rgba(0, 0, 0, 0.4);
     }
 
         body {
@@ -72,7 +72,7 @@
             user-select: none;
             text-align: center;
             line-height: 1;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.2s ease;
         }
         #digitalDisplay .minutes-label {
             font-size: 24px;
@@ -81,18 +81,9 @@
             margin-top: 5px;
             display: block;
         }
-        #digitalDisplay .pulse-dot {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 12px;
-            height: 12px;
-            background-color: transparent;
-            border-radius: 50%;
-            transition: background-color 0.15s ease-in-out;
-        }
-        #digitalDisplay .pulse-dot.flash {
-            background-color: var(--digital-pulse);
+        /* Pulse effect for digital display */
+        #digitalDisplay.pulse-active {
+            box-shadow: 0 0 20px var(--digital-pulse-glow);
         }
         #controls {
             display: flex;
@@ -220,16 +211,16 @@
             justify-content: center;
             gap: 2px;
         }
-        #smallButton, #randomButton, #resetButton, #historyButton, #displayModeButton {
-            font-size: 16px;
-            padding: 5px 8px;
+        #smallButton, #randomButton, #resetButton, #historyButton, #displayModeButton, #themeToggleButton {
+            font-size: 12px;
+            padding: 4px 6px;
             background-color: var(--primary-cyan);
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
-        #smallButton:hover, #randomButton:hover, #resetButton:hover, #historyButton:hover, #displayModeButton:hover {
+        #smallButton:hover, #randomButton:hover, #resetButton:hover, #historyButton:hover, #displayModeButton:hover, #themeToggleButton:hover {
             background-color: var(--primary-cyan-hover);
         }
         #randomButton.active {
@@ -368,7 +359,6 @@
         <div id="timerNameDisplay" class="circular-mode" onclick="openNameModal()"></div>
         <canvas id="timerCanvas"></canvas>
         <div id="digitalDisplay">
-            <div class="pulse-dot"></div>
             <div id="timerNameDisplayDigital" class="digital-mode" onclick="openNameModal()"></div>
             <div class="number">25</div>
             <span class="minutes-label">minutes</span>
@@ -380,8 +370,9 @@
                 <button id="startButton" onclick="startTimer()">Start</button>
             </div>
             <div id="sizeButtonContainer">
-                <button id="smallButton" onclick="toggleSize()">Toggle Size ◯</button>
+                <button id="smallButton" onclick="toggleSize()">Size ◯</button>
                 <button id="displayModeButton" onclick="toggleDisplayMode()">Display ⊡</button>
+                <button id="themeToggleButton" onclick="toggleTheme()">☾ ☀</button>
                 <button id="randomButton" onclick="toggleRandomChime()">Random ♬</button>
                 <button id="resetButton" onclick="resetTimer()">Reset ⟳</button>
                 <button id="historyButton" onclick="openHistoryModal()">History ⌕</button>
@@ -875,6 +866,13 @@
             setDisplayMode(nextMode);
         }
 
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            // Save theme preference
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
         function setDisplayMode(mode) {
             if (!displayModes[mode]) return;
             
@@ -1031,14 +1029,14 @@
                     remainingTime--;
                     drawTimer(); // Update every second
                     
-                    // Flash pulse dot every 10 seconds in digital mode
+                    // Pulse border every 10 seconds in digital mode
                     if (currentDisplayMode === 'digital' && remainingTime % 10 === 0) {
-                        const pulseDot = document.querySelector('#digitalDisplay .pulse-dot');
-                        if (pulseDot) {
-                            pulseDot.classList.add('flash');
+                        const digitalDisplay = document.getElementById('digitalDisplay');
+                        if (digitalDisplay) {
+                            digitalDisplay.classList.add('pulse-active');
                             setTimeout(() => {
-                                pulseDot.classList.remove('flash');
-                            }, 200); // Flash for 200ms
+                                digitalDisplay.classList.remove('pulse-active');
+                            }, 300); // Pulse for 300ms
                         }
                     }
 
@@ -1218,6 +1216,12 @@
             timerName = savedName;
         }
         updateTimerNameDisplay();
+        
+        // Restore saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
         
         // Restore saved display mode and resize window on first load
         const savedDisplayMode = localStorage.getItem('displayMode');
