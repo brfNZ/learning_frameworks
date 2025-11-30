@@ -20,7 +20,7 @@
         --text-color: #000;
         --digital-bg: #000;
         --digital-text: #fff;
-        --digital-pulse-glow: rgba(255, 255, 255, 0.6);
+        --digital-pulse-glow: rgba(0, 153, 153, 0.8);
     }
     
     /* Dark mode theme */
@@ -29,7 +29,7 @@
         --text-color: #fff;
         --digital-bg: #fff;
         --digital-text: #000;
-        --digital-pulse-glow: rgba(0, 0, 0, 0.4);
+        --digital-pulse-glow: rgba(0, 153, 153, 0.8);
     }
 
         body {
@@ -72,7 +72,8 @@
             user-select: none;
             text-align: center;
             line-height: 1;
-            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.2s ease;
+            position: relative;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         #digitalDisplay .minutes-label {
             font-size: 24px;
@@ -81,9 +82,20 @@
             margin-top: 5px;
             display: block;
         }
-        /* Pulse effect for digital display */
-        #digitalDisplay.pulse-active {
-            box-shadow: 0 0 20px var(--digital-pulse-glow);
+        /* Pulse dot in bottom-right corner */
+        #digitalDisplay .pulse-dot {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--digital-text);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #digitalDisplay .pulse-dot.flash {
+            opacity: 0.5;
         }
         #controls {
             display: flex;
@@ -362,6 +374,7 @@
             <div id="timerNameDisplayDigital" class="digital-mode" onclick="openNameModal()"></div>
             <div class="number">25</div>
             <span class="minutes-label">minutes</span>
+            <div class="pulse-dot"></div>
         </div>
         <div id="controls">
             <div id="minutesLabel">MINUTES REMAINING</div>
@@ -1029,14 +1042,14 @@
                     remainingTime--;
                     drawTimer(); // Update every second
                     
-                    // Pulse border every 10 seconds in digital mode
-                    if (currentDisplayMode === 'digital' && remainingTime % 10 === 0) {
-                        const digitalDisplay = document.getElementById('digitalDisplay');
-                        if (digitalDisplay) {
-                            digitalDisplay.classList.add('pulse-active');
+                    // Pulse dot every 6 seconds in digital mode
+                    if (currentDisplayMode === 'digital' && remainingTime % 6 === 0) {
+                        const pulseDot = document.querySelector('#digitalDisplay .pulse-dot');
+                        if (pulseDot) {
+                            pulseDot.classList.add('flash');
                             setTimeout(() => {
-                                digitalDisplay.classList.remove('pulse-active');
-                            }, 300); // Pulse for 300ms
+                                pulseDot.classList.remove('flash');
+                            }, 400); // Flash for 400ms
                         }
                     }
 
