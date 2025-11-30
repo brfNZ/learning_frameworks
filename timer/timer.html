@@ -43,7 +43,7 @@
             background-color: #000;
             color: #fff;
             border-radius: 12px;
-            padding: 30px 60px 20px 60px;
+            padding: 15px 60px 20px 60px;
             font-size: 120px;
             font-weight: bold;
             font-family: 'Arial', sans-serif;
@@ -144,6 +144,10 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 18px;
+            display: block;
+        }
+        #timerNameDisplay {
+            display: none; /* Hidden by default, shown only in circular mode */
         }
         #timerNameDisplayDigital {
             font-size: 12px;
@@ -517,7 +521,7 @@
                 containerWidth: '380px',
                 containerHeight: '500px',
                 windowWidth: 420,
-                windowHeight: 600,
+                windowHeight: 540,
                 buttonStyle: {
                     background: 'var(--primary-cyan)',
                     color: 'white',
@@ -541,7 +545,7 @@
                 containerWidth: '300px',
                 containerHeight: '380px',
                 windowWidth: 340,
-                windowHeight: 480,
+                windowHeight: 420,
                 buttonStyle: {
                     background: '#000',
                     color: '#aaa',
@@ -849,6 +853,17 @@
             currentDisplayMode = mode;
             const config = displayModes[mode];
             document.getElementById(config.element).style.display = 'block';
+            
+            // Show/hide the correct name display
+            const circularName = document.getElementById('timerNameDisplay');
+            const digitalName = document.getElementById('timerNameDisplayDigital');
+            if (mode === 'circular') {
+                circularName.style.display = 'block';
+                if (digitalName) digitalName.style.display = 'none';
+            } else if (mode === 'digital') {
+                circularName.style.display = 'none';
+                if (digitalName) digitalName.style.display = 'block';
+            }
             
             // Save to localStorage
             localStorage.setItem('displayMode', mode);
