@@ -20,7 +20,6 @@
         --text-color: #000;
         --digital-bg: #000;
         --digital-text: #fff;
-        --digital-pulse-glow: rgba(0, 153, 153, 0.8);
     }
     
     /* Dark mode theme */
@@ -29,7 +28,6 @@
         --text-color: #fff;
         --digital-bg: #dbd8d8;
         --digital-text: #000;
-        --digital-pulse-glow: rgba(0, 153, 153, 0.8);
     }
 
         body {
@@ -235,8 +233,12 @@
         #smallButton:hover, #randomButton:hover, #resetButton:hover, #historyButton:hover, #displayModeButton:hover, #themeToggleButton:hover {
             background-color: var(--primary-cyan-hover);
         }
+
+
         #randomButton.active {
-            background-color: var(--primary-red-active);
+            background-color: var(--primary-cyan);
+            color: #fff;
+            border-color: var(--primary-cyan);
         }
 
         /* Modal styles */
@@ -363,6 +365,7 @@
 }
 
     #weekChart { margin-bottom: 25px !important; }
+
 
     </style>
 </head>
@@ -627,38 +630,19 @@
         timerContainer.style.height = '460px';
         timerNameDisplay.style.fontSize = '14.4px';
 
-        
         function updateButtonStates() {
-            if (isExpired || (!isRunning && !isPaused)) {
-                startButton.disabled = false;
-                timeInput.disabled = false;
-                smallButton.disabled = false;
-                randomButton.disabled = false;
-                resetButton.disabled = false;
-                controls.style.visibility = 'visible';
-                startButton.removeAttribute('disabled');
-                timeInput.removeAttribute('disabled');
-            } else if (isRunning && !isPaused) {
-                startButton.disabled = true;
-                timeInput.disabled = true;
-                smallButton.disabled = false;
-                randomButton.disabled = false;
-                resetButton.disabled = false;
-                controls.style.visibility = 'hidden';
-                startButton.setAttribute('disabled', 'true');
-                timeInput.setAttribute('disabled', 'true');
-            } else if (isRunning && isPaused) {
-                startButton.disabled = true;
-                timeInput.disabled = true;
-                smallButton.disabled = false;
-                randomButton.disabled = false;
-                resetButton.disabled = false;
-                controls.style.visibility = 'visible';
-                startButton.setAttribute('disabled', 'true');
-                timeInput.setAttribute('disabled', 'true');
-            }
-            randomButton.classList.toggle('active', randomChimeSelected);
+            const setState = (disabled) => {
+                startButton.disabled = timeInput.disabled = disabled;
+                smallButton.disabled = randomButton.disabled = resetButton.disabled = false;
+                controls.style.visibility = disabled && !isPaused ? 'hidden' : 'visible';
+            };
+
+            if (isExpired || (!isRunning && !isPaused))   setState(false);
+            else                                          setState(true);
+
+            updateRandomButtonStyling();
         }
+        
 
         function drawTimer() {
             // Universal draw function - delegates to mode-specific function
@@ -779,17 +763,16 @@
         }
 
         function toggleRandomChime() {
-            if (randomChimeSelected) {
-                timerSound.src = defaultChime;
-                timerSound.load();
-                randomChimeSelected = false;
-            } else {
-                const randomIndex = Math.floor(Math.random() * chimes.length);
-                timerSound.src = chimes[randomIndex];
-                timerSound.load();
-                randomChimeSelected = true;
-            }
-            updateButtonStates();
+            randomChimeSelected = !randomChimeSelected;
+            timerSound.src = randomChimeSelected
+                ? chimes[Math.floor(Math.random() * chimes.length)]
+                : defaultChime;
+            timerSound.load();
+            updateRandomButtonStyling();
+        }
+
+        function updateRandomButtonStyling() {
+            randomButton.classList.toggle('active', randomChimeSelected);
         }
 
         function toggleSize() {
@@ -898,7 +881,9 @@
             currentDisplayMode = mode;
             const config = displayModes[mode];
             document.getElementById(config.element).style.display = 'block';
-            
+
+            updateRandomButtonStyling();      // keep random colours in sync
+
             // Show/hide the correct name display
             const circularName = document.getElementById('timerNameDisplay');
             const digitalName = document.getElementById('timerNameDisplayDigital');
@@ -928,49 +913,30 @@
         function updateModeSpecificButtons() {
             const config = displayModes[currentDisplayMode];
             const sizeButton = document.getElementById('smallButton');
-            
-            // Show/hide size button based on mode support
+
             if (config.supportsSize) {
                 sizeButton.style.display = 'inline-block';
             } else {
                 sizeButton.style.display = 'none';
             }
-            
-            // Apply button styling for current mode
+
             if (config.buttonStyle) {
-                const buttons = document.querySelectorAll('#sizeButtonContainer button');
-                buttons.forEach(button => {
-                    button.style.backgroundColor = config.buttonStyle.background;
-                    button.style.color = config.buttonStyle.color;
-                    if (config.buttonStyle.border) {
-                        button.style.border = config.buttonStyle.border;
-                    } else {
-                        button.style.border = 'none';
-                    }
-                    
-                    // Store hover color for event listeners
-                    button.dataset.hoverColor = config.buttonStyle.backgroundHover;
-                    button.dataset.defaultColor = config.buttonStyle.background;
-                });
-                
-                // Style start button
-                startButton.style.backgroundColor = config.buttonStyle.background;
-                startButton.style.color = config.buttonStyle.color;
-                if (config.buttonStyle.border) {
-                    startButton.style.border = config.buttonStyle.border;
-                } else {
-                    startButton.style.borderColor = config.buttonStyle.background;
-                    startButton.style.border = '2px solid ' + config.buttonStyle.background;
-                }
-                startButton.dataset.hoverColor = config.buttonStyle.backgroundHover;
-                startButton.dataset.defaultColor = config.buttonStyle.background;
+                // every button except random
+                document.querySelectorAll('#sizeButtonContainer button:not(#randomButton), #startButton')
+                    .forEach(btn => {
+                        btn.style.backgroundColor = config.buttonStyle.background;
+                        btn.style.color           = config.buttonStyle.color;
+                        btn.style.border          = config.buttonStyle.border || 'none';
+                        btn.dataset.hoverColor    = config.buttonStyle.backgroundHover;
+                        btn.dataset.defaultColor  = config.buttonStyle.background;
+                    });
+                updateRandomButtonStyling();          // random handles itself
             }
-            
-            // Apply input styling
+
             if (config.inputStyle) {
-                timeInput.style.borderColor = config.inputStyle.borderColor;
-                timeInput.style.backgroundColor = config.inputStyle.background;
-                timeInput.style.color = config.inputStyle.color;
+                timeInput.style.borderColor      = config.inputStyle.borderColor;
+                timeInput.style.backgroundColor  = config.inputStyle.background;
+                timeInput.style.color            = config.inputStyle.color;
             }
         }
 
