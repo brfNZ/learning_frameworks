@@ -107,36 +107,64 @@
             cursor: not-allowed;
         }
         #timerNameDisplay {
-            font-size: 18px;
+            font-size: 14px;
             font-weight: bold;
             color: #575757;
             text-align: center;
-            position: absolute;
-            top: 5px;
-            width: 50%;
-            max-width: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-            margin: 2px 0 10px 0;
             padding: 2px 8px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            min-height: 22px;
+            min-height: 20px;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.2s, box-shadow 0.2s, color 0.2s;
+            margin-bottom: 10px;
         }
         #timerNameDisplay:hover {
             background-color: rgba(0, 153, 153, 0.15);
             box-shadow: inset 0 0 0 1px rgba(0, 153, 153, 0.3);
         }
         #timerNameDisplay.digital-mode {
-            color: #aaa;
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         #timerNameDisplay.digital-mode:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.05);
+            box-shadow: none;
+        }
+        /* For circular mode, position name above canvas */
+        #timerNameDisplay.circular-mode {
+            position: absolute;
+            top: 5px;
+            width: 50%;
+            max-width: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+        }
+        #timerNameDisplayDigital {
+            font-size: 12px;
+            font-weight: bold;
+            color: #888;
+            text-align: center;
+            padding: 2px 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-height: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s, color 0.2s;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        #timerNameDisplayDigital:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            box-shadow: none;
         }
         #minutesLabel {
             margin-top: 10px;
@@ -300,9 +328,10 @@
 </head>
 <body>
     <div id="timerContainer">
-        <div id="timerNameDisplay" onclick="openNameModal()"></div>
+        <div id="timerNameDisplay" class="circular-mode" onclick="openNameModal()"></div>
         <canvas id="timerCanvas"></canvas>
         <div id="digitalDisplay">
+            <div id="timerNameDisplayDigital" class="digital-mode" onclick="openNameModal()"></div>
             <div class="number">25</div>
             <span class="minutes-label">minutes</span>
         </div>
@@ -484,7 +513,11 @@
                 defaultSize: 'large',
                 drawFunction: 'drawCircularTimer',
                 clickHandler: handleTimerClick,
-                nameDisplayClass: '',  // No special class for circular
+                nameDisplayClass: 'circular-mode',  // Position above canvas
+                containerWidth: '380px',
+                containerHeight: '500px',
+                windowWidth: 420,
+                windowHeight: 600,
                 buttonStyle: {
                     background: 'var(--primary-cyan)',
                     color: 'white',
@@ -504,7 +537,11 @@
                 defaultSize: 'large',
                 drawFunction: 'updateDigitalDisplay',
                 clickHandler: handleTimerClick,
-                nameDisplayClass: 'digital-mode',  // Special styling for digital
+                nameDisplayClass: 'digital-mode',  // Inside black box
+                containerWidth: '300px',
+                containerHeight: '380px',
+                windowWidth: 340,
+                windowHeight: 480,
                 buttonStyle: {
                     background: '#000',
                     color: '#aaa',
@@ -813,6 +850,9 @@
             const config = displayModes[mode];
             document.getElementById(config.element).style.display = 'block';
             
+            // Save to localStorage
+            localStorage.setItem('displayMode', mode);
+            
             // Update the display
             if (config.drawFunction) {
                 // Call function by name
@@ -835,10 +875,6 @@
             } else {
                 sizeButton.style.display = 'none';
             }
-            
-            // Apply name display class
-            const nameDisplay = document.getElementById('timerNameDisplay');
-            nameDisplay.className = config.nameDisplayClass || '';
             
             // Apply button styling for current mode
             if (config.buttonStyle) {
@@ -1043,8 +1079,14 @@
         }
 
         function updateTimerNameDisplay() {
-            timerNameDisplay.textContent = timerName || '';
+            const displayText = timerName || '';
+            timerNameDisplay.textContent = displayText;
             timerNameDisplay.style.display = timerName ? 'block' : 'block';
+            // Also update digital name display
+            const digitalNameDisplay = document.getElementById('timerNameDisplayDigital');
+            if (digitalNameDisplay) {
+                digitalNameDisplay.textContent = displayText;
+            }
         }
 
         window.onclick = function(event) {
@@ -1116,6 +1158,26 @@
             timerName = savedName;
         }
         updateTimerNameDisplay();
+        
+        // Restore saved display mode and resize window on first load
+        const savedDisplayMode = localStorage.getItem('displayMode');
+        if (savedDisplayMode && displayModes[savedDisplayMode]) {
+            setDisplayMode(savedDisplayMode);
+            // Resize window to match the display mode (only on first load)
+            const config = displayModes[savedDisplayMode];
+            if (config.windowWidth && config.windowHeight) {
+                try {
+                    window.resizeTo(config.windowWidth, config.windowHeight);
+                } catch (e) {
+                    // Window resize may fail in some browsers/contexts
+                    console.log('Window resize not available');
+                }
+            }
+        } else {
+            // Default to circular
+            setDisplayMode('circular');
+        }
+        
         drawTimer();
         updateButtonStates();
         updateModeSpecificButtons(); // Initialize button styling
