@@ -14,6 +14,22 @@
         --secondary-gray-hover: #333;
         --primary-red: #ed4d66;
         --primary-red-active: #ff4444;
+        
+        /* Theme colors - light mode (default) */
+        --bg-color: #f0f0f0;
+        --text-color: #000;
+        --digital-bg: #000;
+        --digital-text: #fff;
+        --digital-pulse: #fff;
+    }
+    
+    /* Dark mode theme */
+    body.dark-mode {
+        --bg-color: #1a1a1a;
+        --text-color: #fff;
+        --digital-bg: #fff;
+        --digital-text: #000;
+        --digital-pulse: #000;
     }
 
         body {
@@ -23,7 +39,8 @@
             justify-content: center;
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: var(--bg-color);
+            transition: background-color 0.3s ease;
         }
         #timerContainer {
             display: flex;
@@ -41,8 +58,8 @@
             cursor: pointer;
         }
         #digitalDisplay {
-            background-color: #000;
-            color: #fff;
+            background-color: var(--digital-bg);
+            color: var(--digital-text);
             border-radius: 12px;
             padding: 8px 60px 20px 60px;
             font-size: 120px;
@@ -55,6 +72,7 @@
             user-select: none;
             text-align: center;
             line-height: 1;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         #digitalDisplay .minutes-label {
             font-size: 24px;
@@ -62,6 +80,19 @@
             color: #999;
             margin-top: 5px;
             display: block;
+        }
+        #digitalDisplay .pulse-dot {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 12px;
+            height: 12px;
+            background-color: transparent;
+            border-radius: 50%;
+            transition: background-color 0.15s ease-in-out;
+        }
+        #digitalDisplay .pulse-dot.flash {
+            background-color: var(--digital-pulse);
         }
         #controls {
             display: flex;
@@ -337,6 +368,7 @@
         <div id="timerNameDisplay" class="circular-mode" onclick="openNameModal()"></div>
         <canvas id="timerCanvas"></canvas>
         <div id="digitalDisplay">
+            <div class="pulse-dot"></div>
             <div id="timerNameDisplayDigital" class="digital-mode" onclick="openNameModal()"></div>
             <div class="number">25</div>
             <span class="minutes-label">minutes</span>
@@ -998,6 +1030,17 @@
                 if (!isPaused) {
                     remainingTime--;
                     drawTimer(); // Update every second
+                    
+                    // Flash pulse dot every 10 seconds in digital mode
+                    if (currentDisplayMode === 'digital' && remainingTime % 10 === 0) {
+                        const pulseDot = document.querySelector('#digitalDisplay .pulse-dot');
+                        if (pulseDot) {
+                            pulseDot.classList.add('flash');
+                            setTimeout(() => {
+                                pulseDot.classList.remove('flash');
+                            }, 200); // Flash for 200ms
+                        }
+                    }
 
                     if (remainingTime <= 0) {
                         clearInterval(timerInterval);
