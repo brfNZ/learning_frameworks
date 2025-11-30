@@ -941,7 +941,7 @@
                 numberDiv.style.fontSize = '48px';
                 minutesLabel.style.display = 'none';
             } else {
-                const minutes = Math.ceil(remainingTime / 60);
+                const minutes = remainingTime > 0 ? Math.ceil(remainingTime / 60) : parseInt(document.getElementById('timeInput').value) || 25;
                 numberDiv.textContent = minutes;
                 
                 // Much more dramatic size differences
