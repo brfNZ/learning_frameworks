@@ -410,15 +410,27 @@
     <!-- History Modal -->
     <div id="historyModal" class="modal">
         <div class="modal-content">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <button onclick="closeHistoryModal()" title="Close"
-                    style="background:none;border:none;font-size:20px;cursor:pointer;color:#777">×</button>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;">
+            <button type="button"
+                    onclick="exportHistoryCSV()"
+                    aria-label="Export session history as CSV"
+                    style="background:none;border:none;color:var(--primary-cyan);font-size:12px;cursor:pointer;white-space:nowrap;padding:4px 6px;">
+                Export CSV
+            </button>
 
-            <h3 style="margin:0;flex:1;text-align:center">Session History</h3>
+            <h3 id="historyModalTitle" style="margin:0;position:absolute;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;">
+                Session History
+            </h3>
 
-            <a href="#" onclick="exportHistoryCSV();return false;"
-                style="font-size:12px;color:var(--primary-cyan);text-decoration:none;white-space:nowrap">Export CSV</a>
-            </div>
+            <button type="button"
+                    onclick="closeHistoryModal()"
+                    aria-label="Close session history"
+                    title="Close"
+                    style="background:none;border:none;font-size:20px;cursor:pointer;color:#777;padding:4px 8px;">
+                ×
+            </button>
+        </div>
+
 
             <!-- 2-week mini-chart – THIS week on TOP -->
                 <div id="weekChart" style="margin-bottom:25px;font-size:13px;color:#575757; text-align:center">
