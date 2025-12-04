@@ -20,6 +20,7 @@
         --text-color: #000;
         --digital-bg: #000;
         --digital-text: #fff;
+
     }
     
     /* Dark mode theme */
@@ -28,6 +29,32 @@
         --text-color: #fff;
         --digital-bg: #dbd8d8;
         --digital-text: #000;
+
+    }
+
+    /* Circular mode – cyan */
+    .random-active {
+        background: #007777;
+        color: white;
+        transform: scale(1.06);
+        box-shadow: 0 0 10px rgba(0,153,153,0.6);
+        transition: all 0.2s ease;
+    }
+
+    body.dark-mode .random-active {
+        background: #00cccc;
+        box-shadow: 0 0 12px rgba(0,204,204,0.7);
+    }
+
+    /* Digital mode – grey override */
+    #digitalDisplay[style*="display: block"] ~ #controls #randomButton.random-active {
+        background: #777 !important;
+        box-shadow: 0 0 8px rgba(255,255,255,0.3) !important;
+    }
+
+    body.dark-mode #digitalDisplay[style*="display: block"] ~ #controls #randomButton.random-active {
+        background: #666 !important;
+        box-shadow: 0 0 8px rgba(0,0,0,0.4) !important;
     }
 
         body {
@@ -427,7 +454,7 @@
                     aria-label="Close session history"
                     title="Close"
                     style="background:none;border:none;font-size:20px;cursor:pointer;color:#777;padding:4px 8px;">
-                ×  <!-- Multiplication glyph/sign as close icon -->
+                ×    <!-- Multiplication glyph/sign as close icon -->
             </button>
         </div>
 
@@ -667,7 +694,6 @@
                 startButton.setAttribute('disabled', 'true');
                 timeInput.setAttribute('disabled', 'true');
             }
-            randomButton.classList.toggle('active', randomChimeSelected);
         }
 
         function drawTimer() {
@@ -788,19 +814,21 @@
             }
         }
 
-        function toggleRandomChime() {
-            if (randomChimeSelected) {
-                timerSound.src = defaultChime;
-                timerSound.load();
-                randomChimeSelected = false;
-            } else {
-                const randomIndex = Math.floor(Math.random() * chimes.length);
-                timerSound.src = chimes[randomIndex];
-                timerSound.load();
-                randomChimeSelected = true;
-            }
-            updateButtonStates();
+    function toggleRandomChime() {
+        randomChimeSelected = !randomChimeSelected;
+
+        if (randomChimeSelected) {
+            const randomIndex = Math.floor(Math.random() * chimes.length);
+            timerSound.src = chimes[randomIndex];
+            timerSound.load();
+        } else {
+            timerSound.src = defaultChime;
+            timerSound.load();
         }
+
+        // This is the only line that applies the new style
+        randomButton.classList.toggle('random-active', randomChimeSelected);
+    }
 
         function toggleSize() {
             const config = displayModes[currentDisplayMode];
