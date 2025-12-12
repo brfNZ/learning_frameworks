@@ -4,8 +4,7 @@
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <title>My Trading Journal</title>
-
-<style>
+ <style>
   :root {
     --primary: #8cc2ee;
     --primary-dark: #64a5df;
@@ -303,8 +302,6 @@
     box-shadow: 0 4px 15px rgba(168, 213, 168, 0.4);
   }
 </style>
-
-
 </head>
 <body>
  <h1>Trading Journal</h1>
@@ -925,17 +922,8 @@ function loadEntry(date) {
  document.getElementById('exportBtn').style.display = 'inline-block';
  document.getElementById('saveTopBtn').style.display = 'none';
  
- // Restore button states from saved preferences
- Object.keys(visibleColumns).forEach(columnName => {
- const btn = document.getElementById(`toggle-${columnName}`);
- if (btn) {
- if (visibleColumns[columnName]) {
- btn.classList.add('active');
- } else {
- btn.classList.remove('active');
- }
- }
- });
+ // Sync button states after section is visible
+ setTimeout(syncButtonStates, 10);
  } else {
  document.getElementById('exportBtn').style.display = 'none';
  document.getElementById('saveTopBtn').style.display = 'inline-block'; 
@@ -1107,6 +1095,20 @@ function saveEntry() {
  
  // Refresh the table
  displayWeeklyData();
+ }
+
+ // Sync button states with visibleColumns preferences
+ function syncButtonStates() {
+ Object.keys(visibleColumns).forEach(columnName => {
+ const btn = document.getElementById(`toggle-${columnName}`);
+ if (btn) {
+ if (visibleColumns[columnName]) {
+ btn.classList.add('active');
+ } else {
+ btn.classList.remove('active');
+ }
+ }
+ });
  }
 
  // Function to filter weekly data by date range
@@ -1417,4 +1419,3 @@ window.onload = function() {
  </script>
 </body>
 </html>
-
