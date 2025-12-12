@@ -594,28 +594,28 @@
  <div id="weekly" class="section">
  <!-- Date Range Filter Buttons -->
  <div class="date-filter-container">
- <button class="filter-btn active" onclick="filterWeeklyData('last30')">Last 30 Days</button>
- <button class="filter-btn" onclick="filterWeeklyData('thisWeek')">This Week</button>
- <button class="filter-btn" onclick="filterWeeklyData('all')">All Time</button>
+ <button class="filter-btn timeframe-btn active" onclick="filterWeeklyData('last30')">Last 30 Days</button>
+ <button class="filter-btn timeframe-btn" onclick="filterWeeklyData('thisWeek')">This Week</button>
+ <button class="filter-btn timeframe-btn" onclick="filterWeeklyData('all')">All Time</button>
  </div>
  
  <!-- Column Visibility Toggles -->
  <div class="section-header" style="margin-top: 20px;">Column Visibility</div>
  <div class="date-filter-container" style="margin-bottom: 15px;">
- <button class="filter-btn" id="toggle-timing" onclick="toggleColumn('timing')">T - Timing</button>
- <button class="filter-btn" id="toggle-risk" onclick="toggleColumn('risk')">R - Risk</button>
- <button class="filter-btn" id="toggle-analysis" onclick="toggleColumn('analysis')">A - Analysis</button>
- <button class="filter-btn" id="toggle-discipline" onclick="toggleColumn('discipline')">D - Discipline</button>
- <button class="filter-btn" id="toggle-exit" onclick="toggleColumn('exit')">E - Exit</button>
- <button class="filter-btn" id="toggle-results" onclick="toggleColumn('results')">R - Results</button>
+ <button class="filter-btn column-btn" id="toggle-timing" onclick="toggleColumn('timing')">T - Timing</button>
+ <button class="filter-btn column-btn" id="toggle-risk" onclick="toggleColumn('risk')">R - Risk</button>
+ <button class="filter-btn column-btn" id="toggle-analysis" onclick="toggleColumn('analysis')">A - Analysis</button>
+ <button class="filter-btn column-btn" id="toggle-discipline" onclick="toggleColumn('discipline')">D - Discipline</button>
+ <button class="filter-btn column-btn" id="toggle-exit" onclick="toggleColumn('exit')">E - Exit</button>
+ <button class="filter-btn column-btn" id="toggle-results" onclick="toggleColumn('results')">R - Results</button>
  </div>
  <div class="date-filter-container" style="margin-bottom: 15px;">
- <button class="filter-btn" id="toggle-setup" onclick="toggleColumn('setup')">Setup</button>
- <button class="filter-btn" id="toggle-market" onclick="toggleColumn('market')">Market</button>
- <button class="filter-btn" id="toggle-rvalue" onclick="toggleColumn('rvalue')">R value</button>
- <button class="filter-btn active" id="toggle-greenflags" onclick="toggleColumn('greenflags')">Green Flags</button>
- <button class="filter-btn active" id="toggle-redflags" onclick="toggleColumn('redflags')">Red Flags</button>
- <button class="filter-btn" id="toggle-takeaway" onclick="toggleColumn('takeaway')">Takeaway</button>
+ <button class="filter-btn column-btn" id="toggle-setup" onclick="toggleColumn('setup')">Setup</button>
+ <button class="filter-btn column-btn" id="toggle-market" onclick="toggleColumn('market')">Market</button>
+ <button class="filter-btn column-btn" id="toggle-rvalue" onclick="toggleColumn('rvalue')">R value</button>
+ <button class="filter-btn column-btn active" id="toggle-greenflags" onclick="toggleColumn('greenflags')">Green Flags</button>
+ <button class="filter-btn column-btn active" id="toggle-redflags" onclick="toggleColumn('redflags')">Red Flags</button>
+ <button class="filter-btn column-btn" id="toggle-takeaway" onclick="toggleColumn('takeaway')">Takeaway</button>
  </div>
  
  <div id="weeklyTable"></div>
@@ -922,8 +922,11 @@ function loadEntry(date) {
  document.getElementById('exportBtn').style.display = 'inline-block';
  document.getElementById('saveTopBtn').style.display = 'none';
  
- // Sync button states after section is visible
- setTimeout(syncButtonStates, 10);
+ // Initialize column buttons only once per session
+ if (!columnButtonsInitialized) {
+ syncButtonStates();
+ columnButtonsInitialized = true;
+ }
  } else {
  document.getElementById('exportBtn').style.display = 'none';
  document.getElementById('saveTopBtn').style.display = 'inline-block'; 
@@ -1078,6 +1081,9 @@ function saveEntry() {
  takeaway: false
  };
 
+ // Track if column buttons have been initialized
+ let columnButtonsInitialized = false;
+
  // Toggle column visibility
  function toggleColumn(columnName) {
  visibleColumns[columnName] = !visibleColumns[columnName];
@@ -1116,8 +1122,8 @@ function saveEntry() {
  // Update the current filter
  currentFilter = filterType;
  
- // Update button styles
- document.querySelectorAll('.filter-btn').forEach(btn => {
+ // Update ONLY timeframe button styles (not column toggles)
+ document.querySelectorAll('.timeframe-btn').forEach(btn => {
  btn.classList.remove('active');
  });
  event.target.classList.add('active');
