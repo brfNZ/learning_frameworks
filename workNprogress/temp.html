@@ -1100,6 +1100,18 @@ function loadEntry(date) {
  displayWeeklyData();
  document.getElementById('exportBtn').style.display = 'inline-block';
  document.getElementById('saveTopBtn').style.display = 'none';
+ 
+ // Restore button states from saved preferences
+ Object.keys(visibleColumns).forEach(columnName => {
+ const btn = document.getElementById(`toggle-${columnName}`);
+ if (btn) {
+ if (visibleColumns[columnName]) {
+ btn.classList.add('active');
+ } else {
+ btn.classList.remove('active');
+ }
+ }
+ });
  } else {
  document.getElementById('exportBtn').style.display = 'none';
  document.getElementById('saveTopBtn').style.display = 'inline-block'; 
@@ -1257,6 +1269,9 @@ function saveEntry() {
  // Toggle column visibility
  function toggleColumn(columnName) {
  visibleColumns[columnName] = !visibleColumns[columnName];
+ 
+ // Save to localStorage
+ localStorage.setItem('columnPreferences', JSON.stringify(visibleColumns));
  
  // Update button appearance
  const btn = document.getElementById(`toggle-${columnName}`);
@@ -1561,6 +1576,12 @@ window.onload = function() {
         loadEntry(this.value);
     });
     
+    // Load column preferences from localStorage
+    const savedPreferences = localStorage.getItem('columnPreferences');
+    if (savedPreferences) {
+        visibleColumns = JSON.parse(savedPreferences);
+    }
+    
     // Generate dropdowns after date setup
     generateTraderDropdowns();
     
@@ -1572,3 +1593,4 @@ window.onload = function() {
  </script>
 </body>
 </html>
+
