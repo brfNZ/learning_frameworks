@@ -324,32 +324,36 @@
 <body>
  <h1>Trading Journal</h1>
 
-<!-- MONTHLY GOAL PROGRESS BAR (now with editable title) -->
+<!-- MONTHLY GOAL – fits long text, always shows bar -->
 <div class="section-header positive"
-     style="margin:0 auto 15px; max-width:480px; font-size:13px; display:flex; align-items:center; gap:10px;">
+     style="margin:0 auto 15px; max-width:540px; font-size:13px; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
 
-  <!-- editable title -->
-  <span id="goalTitle" style="cursor:pointer;" title="Click to edit">🎯 Monthly Goal</span>
+  <!-- title (wraps) -->
+  <span id="goalTitle" style="cursor:pointer; white-space:normal; line-height:1.3; min-width:0;"
+        title="Click to edit">🎯 string of 5 reversal trades, no disasters</span>
   <input id="goalTitleEdit" type="text" style="display:none; width:140px; font-size:12px;"
          onblur="saveGoalTitle()" onkeyup="if(event.key==='Enter') this.blur()">
 
-  <!-- same inputs/bar as before -->
-  <label style="font-size:12px; white-space:nowrap;">Target
-    <input id="goalTarget" type="number" min="1" value="20" style="width:50px; text-align:center"
+  <!-- smaller number boxes -->
+  <label style="font-size:12px;">Target
+    <input id="goalTarget" type="number" min="1" value="2" style="width:46px; font-size:12px; text-align:center"
            oninput="updateGoalBar()">
   </label>
-  <label style="font-size:12px; white-space:nowrap;">Done
-    <input id="goalDone"  type="number" min="0" value="0"  style="width:50px; text-align:center"
+  <label style="font-size:12px;">Done
+    <input id="goalDone"  type="number" min="0" value="100" style="width:46px; font-size:12px; text-align:center"
            oninput="updateGoalBar()">
   </label>
 
-  <div style="flex:1; height:10px; background:#e0e0e0; border-radius:5px; overflow:hidden;">
+  <!-- progress bar (always visible) -->
+  <div style="flex:1 1 120px; height:10px; background:#e0e0e0; border-radius:5px; overflow:hidden; min-width:80px;">
     <div id="goalBar" style="height:100%; width:0%; background:var(--success); transition:width .3s"></div>
   </div>
+
+  <!-- percent -->
   <span id="goalPct" style="font-size:12px; font-weight:600; color:var(--success-text)">0 %</span>
 </div>
  
-
+ <!-- Navigation Buttons -->
  <div class="nav-buttons">
  <button class="nav-button active" onclick="showSection('daily')">Daily Entry</button>
  <button class="nav-button" onclick="showSection('weekly')">Trading History</button>
