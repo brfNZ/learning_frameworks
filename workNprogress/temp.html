@@ -1473,26 +1473,32 @@ window.onload = function() {
 };
 
     // ---------- MONTHLY GOAL PROGRESS ----------
-    function updateGoalBar(){
-    const target = Math.max(1, parseInt(document.getElementById('goalTarget').value) || 1);
-    const done   = Math.max(0, parseInt(document.getElementById('goalDone').value)  || 0);
-    const pct    = Math.min(100, Math.round((done / target) * 100));
 
-    document.getElementById('goalBar').style.width = pct + '%';
-    document.getElementById('goalPct').textContent  = pct + ' %';
+function updateGoalBar(){
+  let target = Math.max(1, parseInt(document.getElementById('goalTarget').value) || 1);
+  let done   = Math.max(0, parseInt(document.getElementById('goalDone').value)  || 0);
 
-    // persist
-    localStorage.setItem('monthlyGoalTarget', target);
-    localStorage.setItem('monthlyGoalDone',   done);
-    }
-    function loadMonthlyGoal(){
-    const t = localStorage.getItem('monthlyGoalTarget') || 20;
-    const d = localStorage.getItem('monthlyGoalDone')   || 0;
-    document.getElementById('goalTarget').value = t;
-    document.getElementById('goalDone').value   = d;
-    updateGoalBar();          // paints the bar
-    }
-    window.addEventListener('DOMContentLoaded', loadMonthlyGoal);
+  // ---- keep done inside 0-target ----
+  done = Math.min(done, target);
+  // -----------------------------------
+  document.getElementById('goalDone').value = done;     // visually cap it
+
+  const pct = Math.round((done / target) * 100);
+  document.getElementById('goalBar').style.width = pct + '%';
+  document.getElementById('goalPct').textContent = pct + ' %';
+
+  localStorage.setItem('monthlyGoalTarget', target);
+  localStorage.setItem('monthlyGoalDone',   done);
+}
+
+function loadMonthlyGoal(){
+  const t = localStorage.getItem('monthlyGoalTarget') || 20;
+  const d = localStorage.getItem('monthlyGoalDone')   || 0;
+  document.getElementById('goalTarget').value = t;
+  document.getElementById('goalDone').value   = d;
+  updateGoalBar();          // paints the bar
+}
+window.addEventListener('DOMContentLoaded', loadMonthlyGoal);
     
 
     // ---------- GOAL TITLE (EDITABLE) ----------
