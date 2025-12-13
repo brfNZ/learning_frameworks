@@ -5,482 +5,321 @@
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <title>My Trading Journal</title>
  <style>
- :root {
- --primary: #8cc2ee;
- --primary-dark: #64a5df;
- --success: #A8D5A8;
- --table-header-gradient: #5A9BD4;
- --danger: #E8A5A5;
- --info: #B8D0E8;
- --light: #F8F9FB;
- --dark: #5A6B7A;
- --gradient: linear-gradient(135deg, #FAFBFC 0%, #F0F2F5 100%);
- --red-flag: #E8A5A5;
- --red-flag-dark: #D99494;
- --green-flag: #A8D5A8;
- --green-flag-dark: #95C895;
- }
- 
- body {
- background: var(--gradient);
- color: var(--dark);
- font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
- padding: 15px;
- margin: 0;
- min-height: 100vh;
- max-width: 900px;
- margin: 0 auto;
- }
- 
- h1 {
- text-align: center;
- margin-bottom: 20px;
- color: var(--dark);
- font-size: 24px;
- font-weight: 600;
- }
- 
- .nav-buttons {
- display: flex;
- justify-content: center;
- gap: 8px;
- margin-bottom: 20px;
- }
- 
- .nav-button {
- background-color: white;
- color: var(--primary);
- padding: 8px 16px;
- border: 2px solid var(--primary);
- border-radius: 12px;
- cursor: pointer;
- font-size: 14px;
- font-weight: 500;
- transition: all 0.3s ease;
- }
- 
- .nav-button.active {
- background-color: var(--primary);
- color: white;
- }
- 
- .nav-button:hover {
- background-color: var(--primary-dark);
- color: white;
- }
- 
- .date-filter-container {
- display: flex;
- justify-content: center;
- gap: 8px;
- margin-bottom: 20px;
- flex-wrap: wrap;
- }
- 
- .filter-btn {
- background-color: white;
- color: var(--primary);
- padding: 8px 16px;
- border: 2px solid var(--primary);
- border-radius: 12px;
- cursor: pointer;
- font-size: 13px;
- font-weight: 500;
- transition: all 0.3s ease;
- }
- 
- .filter-btn:hover {
- background-color: rgba(140, 194, 238, 0.1);
- border-color: var(--primary-dark);
- }
- 
- .filter-btn.active {
- background-color: var(--primary);
- color: white;
- border-color: var(--primary-dark);
- box-shadow: 0 2px 8px rgba(140, 194, 238, 0.3);
- }
- 
- .section {
- display: none;
- }
- 
- .section.active {
- display: block;
- }
- 
- .question {
- margin: 12px 0;
- }
- 
- .question + .question {
- margin-top: 6px;
- }
- 
- select {
- padding: 6px 8px;
- height: 36px;
- font-size: 13px;
- line-height: 1.4;
- }
- 
- select:focus {
- border-color: var(--primary);
- box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.1);
- }
- 
- .section-header {
- background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
- color: white;
- padding: 10px 15px;
- border-radius: 12px;
- margin: 15px 0 12px 0;
- text-align: center;
- font-weight: 600;
- font-size: 14px;
- }
- 
- .section-header.positive {
- background: #f6fff6;
- color: var(--green-flag);
- border: 2px solid var(--green-flag);
- }
+  :root {
+    --primary: #8cc2ee;
+    --primary-dark: #64a5df;
+    --primary-text: #2c5f8d;
+    --primary-light-bg: #f5f9ff;
+    --success: #A8D5A8;
+    --success-dark: #95C895;
+    --success-text: #4a7a4a;
+    --success-light-bg: #fefffe;
+    --danger: #E8A5A5;
+    --danger-dark: #D99494;
+    --danger-text: #8d4a4a;
+    --danger-light-bg: #fffefe;
+    --info: #B8D0E8;
+    --light: #F8F9FB;
+    --dark: #5A6B7A;
+    --gradient: linear-gradient(135deg, #FAFBFC 0%, #F0F2F5 100%);
+    --table-header-gradient: #5A9BD4;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --transition: all 0.3s ease;
+  }
 
- .section-header.danger {
- background: #fcf5f6;
- color: var(--red-flag-dark);
- border: 2px solid var(--red-flag);
- }
+  body {
+    background: var(--gradient);
+    color: var(--dark);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    padding: 15px;
+    margin: 0 auto;
+    min-height: 100vh;
+    max-width: 900px;
+  }
 
- .section-header.collapsible {
- cursor: pointer;
- display: flex;
- justify-content: space-between;
- align-items: center;
- transition: all 0.3s ease;
- }
- 
- .section-header.collapsible:hover {
- opacity: 0.9;
- }
- 
- .section-header.collapsible .arrow {
- transition: transform 0.3s ease;
- font-size: 16px;
- }
- 
- .section-header.collapsible.expanded .arrow {
- transform: rotate(180deg);
- }
- 
- .collapsible-content {
- max-height: 0;
- overflow: hidden;
- transition: max-height 0.4s ease;
- }
- 
- .collapsible-content.expanded {
- max-height: 2000px;
- }
- 
- .rating-container {
- display: flex;
- justify-content: center;
- gap: 6px;
- align-items: center;
- margin: 10px 0;
- }
- 
- .emoji-btn {
- width: 60px;
- height: 60px;
- padding: 5px;
- border-radius: 12px;
- transition: all 0.3s;
- font-size: 16px;
- font-weight: 500;
- display: flex;
- flex-direction: column;
- align-items: center;
- justify-content: center;
- border: 2px solid var(--primary);
- background-color: white;
- color: var(--primary);
- cursor: pointer;
- }
- 
- .emoji-btn:hover {
- border-color: var(--primary-dark);
- background-color: rgba(123, 179, 224, 0.1);
- }
- 
- .emoji-btn.selected {
- background-color: var(--primary);
- border-color: var(--primary-dark);
- color: white;
- border-width: 3px;
- box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.2);
- }
- 
- .rating-question {
- background: white;
- border-radius: 12px;
- padding: 15px;
- margin: 10px 0;
- border: 1px solid #E5E7EB;
- color: var(--dark);
- box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
- }
- 
- .rating-question label {
- display: block;
- font-weight: 500;
- margin-bottom: 10px;
- text-align: center;
- color: var(--dark);
- font-size: 14px;
- }
- 
- label {
- display: block;
- margin-bottom: 4px;
- font-weight: 500;
- color: var(--dark);
- font-size: 13px;
- }
- 
- input[type="text"], input[type="date"], input[type="number"], textarea, select {
- width: 100%;
- padding: 8px 10px;
- background-color: white;
- color: var(--dark);
- border: 2px solid #E5E7EB;
- border-radius: 8px;
- font-size: 14px;
- box-sizing: border-box;
- transition: all 0.3s ease;
- }
- 
- input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
- border-color: var(--primary);
- outline: none;
- box-shadow: 0 0 0 3px rgba(123, 179, 224, 0.1);
- }
- 
- textarea {
- height: 60px;
- resize: vertical;
- }
- 
- button {
- background: white;
- color: var(--success);
- border: 2px solid var(--success);
- padding: 10px 20px;
- border-radius: 8px;
- font-size: 14px;
- font-weight: 500;
- cursor: pointer;
- margin-top: 15px;
- transition: all 0.3s ease;
- }
- 
- button:hover {
- background-color: rgba(168, 213, 168, 0.1);
- border-color: var(--green-flag-dark);
- transform: translateY(-1px);
- box-shadow: 0 2px 8px rgba(168, 213, 168, 0.2);
- }
- 
- .green-flag-container {
- background: white;
- border-radius: 12px;
- padding: 15px;
- margin: 10px 0;
- border: 1px solid #E5E7EB;
- box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
- }
- 
- .red-flag-container {
- background: white;
- border-radius: 12px;
- padding: 15px;
- margin: 10px 0;
- border: 1px solid #E5E7EB;
- box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
- }
- 
- .red-flag-grid, .green-flag-grid {
- display: grid;
- grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
- gap: 8px;
- margin-top: 10px;
- }
- 
- .red-flag-btn, .green-flag-btn {
- background-color: white;
- padding: 8px 12px;
- border-radius: 12px;
- cursor: pointer;
- font-size: 12px;
- font-weight: 500;
- transition: all 0.3s ease;
- display: flex;
- align-items: center;
- gap: 6px;
- justify-content: center;
- }
- 
- .red-flag-btn {
- border: 2px solid var(--red-flag);
- color: var(--red-flag);
- }
- 
- .red-flag-btn:hover {
- background-color: rgba(232, 165, 165, 0.1);
- border-color: var(--red-flag-dark);
- }
- 
- .red-flag-btn.active {
- background-color: var(--red-flag);
- color: white;
- box-shadow: 0 2px 8px rgba(232, 165, 165, 0.3);
- }
- 
- .green-flag-btn {
- border: 2px solid var(--green-flag);
- color: var(--green-flag);
- }
- 
- .green-flag-btn:hover {
- background-color: rgba(168, 213, 168, 0.1);
- border-color: var(--green-flag-dark);
- }
- 
- .green-flag-btn.active {
- background-color: var(--green-flag);
- color: white;
- box-shadow: 0 2px 8px rgba(168, 213, 168, 0.3);
- }
- 
- .red-flag-btn .icon, .green-flag-btn .icon {
- font-size: 14px;
- }
- 
- table {
- width: 100%;
- border-collapse: collapse;
- margin-top: 15px;
- background: white;
- border-radius: 12px;
- overflow: hidden;
- box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
- font-size: 13px;
- }
- 
- th, td {
- border: 1px solid #E5E7EB;
- padding: 8px 10px;
- text-align: left;
- box-sizing: border-box; /* Add this: Padding/borders inside width, stops overlap */
- }
- 
- th {
- background: linear-gradient(180deg, var(--table-header-gradient) 0%, var(--primary) 100%);
- color: white;
- font-weight: 500;
- font-size: 12px;
- }
- 
- td {
- background-color: white;
- color: var(--dark);
- }
- 
- tr:nth-child(even) td {
- background-color: #FAFBFC;
- }
- 
- .no-data {
- text-align: center;
- font-style: italic;
- color: var(--dark);
- margin-top: 15px;
- padding: 15px;
- background: white;
- border-radius: 12px;
- border: 2px dashed #E5E7EB;
- font-size: 14px;
- }
- 
- .red-flags-column {
- max-width: 120px;
- font-size: 11px;
- }
- 
- .red-flag-tag, .green-flag-tag {
- display: inline-block;
- padding: 2px 6px;
- margin: 1px;
- border-radius: 4px;
- font-size: 10px;
- }
- 
- .red-flag-tag {
- background-color: var(--red-flag);
- color: white;
- }
- 
- .green-flag-tag {
- background-color: var(--green-flag);
- color: white;
- }
- 
- th:nth-child(1), td:nth-child(1) {
- max-width: 50px;
- white-space: nowrap;
- }
- 
- th:nth-last-child(4), td:nth-last-child(4) {
- width: 55px;
- }
- 
- th:nth-child(6), td:nth-child(6) {
- max-width: 180px;
- font-size: 11px;
- overflow: hidden;
- text-overflow: ellipsis;
- }
- 
- th:nth-child(7), td:nth-child(7) {
- max-width: 120px;
- font-size: 11px;
- overflow: hidden;
- text-overflow: ellipsis;
- }
+  h1 { text-align: center; margin-bottom: 20px; color: var(--dark); font-size: 24px; font-weight: 600; }
 
- .save-btn {
- display: block;
- width: 20%;
- margin: 8px auto 0;
- padding: 12px 24px;
- font-size: 16px;
- font-weight: 600;
- background: var(--success);
- color: white;
- border: 2px solid var(--success);
- border-radius: 12px;
- box-shadow: 0 2px 10px rgba(168, 213, 168, 0.3);
- transition: all 0.3s ease;
- }
- 
- .save-btn:hover {
- background: var(--green-flag-dark);
- border-color: var(--green-flag-dark);
- transform: translateY(-2px);
- box-shadow: 0 4px 15px rgba(168, 213, 168, 0.4);
- }
- </style>
+  .nav-buttons, .date-filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .nav-button, .filter-btn {
+    background-color: white;
+    color: var(--primary);
+    padding: 8px 16px;
+    border: 2px solid var(--primary);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--transition);
+  }
+  .nav-button.active, .filter-btn.active {
+    background-color: var(--primary);
+    color: white;
+  }
+  .nav-button:hover, .filter-btn:hover {
+    background-color: var(--primary-dark);
+    color: white;
+    border-color: var(--primary-dark);
+  }
+  .filter-btn.active { box-shadow: 0 2px 8px rgba(140, 194, 238, 0.3); }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .question { margin: 8px 0; }
+  .question + .question { margin-top: 4px; }
+
+  select { padding: 6px 8px; height: 36px; font-size: 13px; line-height: 1.4; }
+  select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.1); }
+
+  .section-header {
+    background: var(--primary-light-bg);
+    color: var(--primary-text);
+    padding: 10px 15px;
+    border: 2px solid var(--primary);
+    border-radius: var(--radius);
+    margin: 2px 0 4px 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .section-header.positive {
+    background: #f6fff6;
+    color: var(--success-text);
+    border: 2px solid var(--success);
+  }
+  .section-header.danger {
+    background: #fcf5f6;
+    color: var(--danger-text);
+    border: 2px solid var(--danger);
+  }
+  .section-header.collapsible {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .section-header.collapsible:hover {
+    background: #d1ebfd;
+    border-color: var(--primary-dark);
+  }
+  .section-header.collapsible .arrow {
+    transition: transform 0.3s ease;
+    font-size: 16px;
+  }
+  .section-header.collapsible.expanded .arrow { transform: rotate(180deg); }
+
+  .collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .collapsible-content.expanded { max-height: 3000px; }
+
+  .rating-container {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    align-items: center;
+    margin: 6px 0;
+  }
+  .emoji-btn {
+    width: 32px;
+    height: 32px;
+    padding: 2px;
+    border-radius: var(--radius);
+    transition: var(--transition);
+    font-size: 22px;
+    line-height: 1;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--primary);
+    background-color: var(--primary-light-bg);
+    color: var(--primary-text);
+    cursor: pointer;
+  }
+  .emoji-btn:hover { border-color: var(--primary-dark); background-color: #d1ebfd; }
+  .emoji-btn.selected {
+    background-color: var(--primary);
+    border-color: var(--primary-dark);
+    color: white;
+    border-width: 3px;
+    box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.2);
+  }
+  /* Scale down X and O to match checkmark size */
+  .rating-container .emoji-btn:nth-child(1),
+  .rating-container .emoji-btn:nth-child(2) {
+    font-size: 18px;
+  }
+
+  .rating-question, .green-flag-container, .red-flag-container {
+    background: white;
+    border-radius: var(--radius);
+    padding: 10px;
+    margin: 6px 0;
+    border: 1px solid #E5E7EB;
+    box-shadow: var(--shadow);
+  }
+  .rating-question label { text-align: center; font-weight: 500; margin-bottom: 6px; font-size: 13px; }
+
+  label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: var(--dark);
+    font-size: 13px;
+  }
+  input[type="text"], input[type="date"], input[type="number"], textarea, select {
+    width: 100%;
+    padding: 8px 10px;
+    background-color: white;
+    color: var(--dark);
+    border: 2px solid #E5E7EB;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: var(--transition);
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(123, 179, 224, 0.1);
+  }
+  textarea { height: 60px; resize: vertical; }
+
+  .green-flag-grid, .red-flag-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .green-flag-btn, .red-flag-btn {
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+  }
+  .green-flag-btn {
+    border: 2px solid var(--success);
+    color: var(--success-text);
+    background-color: var(--success-light-bg);
+  }
+  .green-flag-btn:hover, .green-flag-btn.active {
+    background-color: var(--success);
+    color: white;
+    box-shadow: 0 2px 8px rgba(168, 213, 168, 0.3);
+  }
+  .red-flag-btn {
+    border: 2px solid var(--danger);
+    color: var(--danger-text);
+    background-color: var(--danger-light-bg);
+  }
+  .red-flag-btn:hover, .red-flag-btn.active {
+    background-color: var(--danger);
+    color: white;
+    box-shadow: 0 2px 8px rgba(232, 165, 165, 0.3);
+  }
+
+  /* ←←← CRITICAL: Weekly table mobile scroll →→→ */
+  #weeklyTable {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 15px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  table {
+    width: 100%;
+    min-width: 850px;           /* forces horizontal scroll on small screens */
+    border-collapse: collapse;
+    background: white;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 13px;
+  }
+  th, td {
+    border: 1px solid #E5E7EB;
+    padding: 8px 10px;
+    text-align: left;
+    box-sizing: border-box;
+  }
+  th {
+    background: linear-gradient(180deg, var(--table-header-gradient) 0%, var(--primary) 100%);
+    color: white;
+    font-weight: 500;
+    font-size: 12px;
+  }
+  td { background-color: white; color: var(--dark); }
+  tr:nth-child(even) td { background-color: #FAFBFC; }
+
+  .no-data {
+    text-align: center;
+    font-style: italic;
+    color: var(--dark);
+    margin-top: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: var(--radius);
+    border: 2px dashed #E5E7EB;
+    font-size: 14px;
+  }
+
+  .red-flags-column { max-width: 120px; font-size: 11px; }
+  .red-flag-tag, .green-flag-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    margin: 1px;
+    border-radius: 4px;
+    font-size: 10px;
+  }
+  .red-flag-tag { background-color: var(--danger); color: white; }
+  .green-flag-tag { background-color: var(--success); color: white; }
+
+  th:nth-child(1), td:nth-child(1) { max-width: 50px; white-space: nowrap; }
+  th:nth-last-child(4), td:nth-last-child(4) { width: 55px; }
+  th:nth-child(6), td:nth-child(6) { max-width: 180px; font-size: 11px; overflow: hidden; text-overflow: ellipsis; }
+  th:nth-child(7), td:nth-child(7) { max-width: 120px; font-size: 11px; overflow: hidden; text-overflow: ellipsis; }
+
+  .save-btn {
+    display: block;
+    width: 20%;
+    margin: 8px auto 0;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    background: var(--success);
+    color: white;
+    border: 2px solid var(--success);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 10px rgba(168, 213, 168, 0.3);
+    transition: var(--transition);
+    cursor: pointer;
+  }
+  .save-btn:hover {
+    background: var(--success-dark);
+    border-color: var(--success-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(168, 213, 168, 0.4);
+  }
+</style>
 </head>
 <body>
  <h1>Trading Journal</h1>
@@ -494,37 +333,46 @@
 
  <div id="daily" class="section active">
  <form id="dailyForm">
- <div class="question">
+ <!-- Compact layout: Date and Market on same line -->
+ <div style="display: flex; gap: 10px; margin: 12px 0;">
+ <div class="question" style="margin: 0; flex: 0 0 180px;">
  <label for="date">Date:</label>
  <input type="date" id="date" name="date">
  </div>
-
- <div class="question">
+ <div class="question" style="margin: 0; flex: 1;">
  <label for="market_timeframe">Market & Timeframe:</label>
  <input type="text" id="market_timeframe" name="market_timeframe" placeholder="eg. HK, USD/JPY - 1H, 4H, Daily...">
  </div>
+ </div>
  <div id="market-conditions-container"></div>
 
- <div class="section-header">⏰ TIMING & TRIGGER</div>
- 
+ <div class="section-header collapsible" onclick="toggleSection(this)">
+ <span>⏰ TIMING & TRIGGER</span>
+ <span class="arrow">▼</span>
+ </div>
+ <div class="collapsible-content">
  <div class="rating-question">
  <label>Entry Quality & Timing Score</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('timing', -1)">😡<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('timing', 0)">😐<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('timing', 1)">😊<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('timing', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('timing', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('timing', 1)">✔️</button>
  </div>
  </div>
  <div id="timing-dropdown-container"></div>
+ </div>
  
- <div class="section-header">⚠️ RISK MANAGEMENT</div>
- 
+ <div class="section-header collapsible" onclick="toggleSection(this)">
+ <span>⚠️ RISK MANAGEMENT</span>
+ <span class="arrow">▼</span>
+ </div>
+ <div class="collapsible-content">
  <div class="rating-question">
  <label>Risk Control & Discipline</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('risk', -1)">😡<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('risk', 0)">😐<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('risk', 1)">😊<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('risk', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('risk', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('risk', 1)">✔️</button>
  </div>
  </div>
  <div id="risk-dropdown-container"></div>
@@ -533,15 +381,19 @@
  <label for="risk_percent">Risk %:</label>
  <input type="number" step="0.1" placeholder="1.0%" id="risk_percent" value="1.0">
  </div>
+ </div>
  
- <div class="section-header">🎯 ANALYSIS & SETUP</div>
- 
+ <div class="section-header collapsible" onclick="toggleSection(this)">
+ <span>🎯 ANALYSIS & SETUP</span>
+ <span class="arrow">▼</span>
+ </div>
+ <div class="collapsible-content">
  <div class="rating-question">
  <label>Setup Quality & Analysis</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('analysis', -1)">😡<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('analysis', 0)">😐<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('analysis', 1)">😊<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('analysis', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('analysis', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('analysis', 1)">✔️</button>
  </div>
  </div>
  <div id="analysis-dropdown-container"></div>
@@ -551,39 +403,51 @@
  <label for="setup_details">Setup Details (optional):</label>
  <input type="text" id="setup_details" placeholder="e.g., hanging man, at 1.2500 resistance...">
  </div>
+ </div>
 
- <div class="section-header">🧠 DISCIPLINE & PSYCHOLOGY</div>
- 
+ <div class="section-header collapsible" onclick="toggleSection(this)">
+ <span>🧠 DISCIPLINE & PSYCHOLOGY</span>
+ <span class="arrow">▼</span>
+ </div>
+ <div class="collapsible-content">
  <div class="rating-question">
  <label>Mental State & Discipline</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('discipline', -1)">😡<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('discipline', 0)">😐<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('discipline', 1)">😊<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('discipline', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('discipline', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('discipline', 1)">✔️</button>
  </div>
  </div>
  <div id="discipline-dropdown-container"></div>
+ </div>
  
- <div class="section-header">🚪 EXIT STRATEGY</div>
- 
+ <div class="section-header collapsible" onclick="toggleSection(this)">
+ <span>🚪 EXIT STRATEGY</span>
+ <span class="arrow">▼</span>
+ </div>
+ <div class="collapsible-content">
  <div class="rating-question">
  <label>Exit Timing & Execution</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('exit', -1)">😡<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('exit', 0)">😐<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('exit', 1)">😊<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('exit', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('exit', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('exit', 1)">✔️</button>
  </div>
  </div>
  <div id="exit-dropdown-container"></div>
+ </div>
  
- <div class="section-header">💰 RESULTS & REWARD</div>
- 
+ <div class="section-header collapsible" onclick="toggleSection(this)">
+ <span>💰 RESULTS & REWARD</span>
+ <span class="arrow">▼</span>
+ </div>
+ <div class="collapsible-content">
  <div class="rating-question">
  <label>Risk/Reward Outcome</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('results', -1)">😡<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('results', 0)">😐<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('results', 1)">😊<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('results', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('results', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('results', 1)">✔️</button>
  </div>
  </div>
  
@@ -591,9 +455,10 @@
  <label for="r_multiple">R value</label>
  <input type="number" step="0.1" placeholder="+5.0 or -1.0" id="r_multiple" value="1.0">
  </div>
+ </div>
 
  <div class="section-header collapsible positive" onclick="toggleMainSection('green-flags')">
- <span>✅ GREEN TICKS - What I Did Well</span>
+ <span>✔️ GREEN TICKS - What I Did Well</span>
  <span class="arrow">▼</span>
  </div>
  <div class="collapsible-content" id="green-flags-content">
@@ -727,10 +592,15 @@
  </div>
  </div>
 
- <div class="section-header">💡 KEY TAKEAWAY</div>
+ <div class="section-header collapsible" onclick="toggleSection(this)">
+ <span>💡 KEY TAKEAWAY</span>
+ <span class="arrow">▼</span>
+ </div>
+ <div class="collapsible-content">
  <div class="question">
  <label for="key_takeaway">Key lesson learned:</label>
  <textarea id="key_takeaway" placeholder="What's the most important lesson from today's trading?"></textarea>
+ </div>
  </div>
  
  <div style="text-align: center; margin-top: 20px;">
@@ -744,9 +614,28 @@
  <div id="weekly" class="section">
  <!-- Date Range Filter Buttons -->
  <div class="date-filter-container">
- <button class="filter-btn active" onclick="filterWeeklyData('last30')">Last 30 Days</button>
- <button class="filter-btn" onclick="filterWeeklyData('thisWeek')">This Week</button>
- <button class="filter-btn" onclick="filterWeeklyData('all')">All Time</button>
+ <button class="filter-btn timeframe-btn active" onclick="filterWeeklyData('last30')">Last 30 Days</button>
+ <button class="filter-btn timeframe-btn" onclick="filterWeeklyData('thisWeek')">This Week</button>
+ <button class="filter-btn timeframe-btn" onclick="filterWeeklyData('all')">All Time</button>
+ </div>
+ 
+ <!-- Column Visibility Toggles -->
+ <div class="section-header" style="margin-top: 20px;">Column Visibility</div>
+ <div class="date-filter-container" style="margin-bottom: 15px;">
+ <button class="filter-btn column-btn" id="toggle-timing" onclick="toggleColumn('timing')">T - Timing</button>
+ <button class="filter-btn column-btn" id="toggle-risk" onclick="toggleColumn('risk')">R - Risk</button>
+ <button class="filter-btn column-btn" id="toggle-analysis" onclick="toggleColumn('analysis')">A - Analysis</button>
+ <button class="filter-btn column-btn" id="toggle-discipline" onclick="toggleColumn('discipline')">D - Discipline</button>
+ <button class="filter-btn column-btn" id="toggle-exit" onclick="toggleColumn('exit')">E - Exit</button>
+ <button class="filter-btn column-btn" id="toggle-results" onclick="toggleColumn('results')">R - Results</button>
+ </div>
+ <div class="date-filter-container" style="margin-bottom: 15px;">
+ <button class="filter-btn column-btn" id="toggle-setup" onclick="toggleColumn('setup')">Setup</button>
+ <button class="filter-btn column-btn" id="toggle-market" onclick="toggleColumn('market')">Market</button>
+ <button class="filter-btn column-btn" id="toggle-rvalue" onclick="toggleColumn('rvalue')">R value</button>
+ <button class="filter-btn column-btn active" id="toggle-greenflags" onclick="toggleColumn('greenflags')">Green Flags</button>
+ <button class="filter-btn column-btn active" id="toggle-redflags" onclick="toggleColumn('redflags')">Red Flags</button>
+ <button class="filter-btn column-btn" id="toggle-takeaway" onclick="toggleColumn('takeaway')">Takeaway</button>
  </div>
  
  <div id="weeklyTable"></div>
@@ -1023,6 +912,19 @@ function loadEntry(date) {
  }
  }
 
+ // Function to toggle generic collapsible sections (T.R.A.D.E.R sections, Key Takeaway)
+ function toggleSection(headerElement) {
+ const content = headerElement.nextElementSibling;
+ 
+ if (content.classList.contains('expanded')) {
+ content.classList.remove('expanded');
+ headerElement.classList.remove('expanded');
+ } else {
+ content.classList.add('expanded');
+ headerElement.classList.add('expanded');
+ }
+ }
+
  // Function to switch between Daily and Weekly sections
  function showSection(sectionName) {
  const sections = document.querySelectorAll('.section');
@@ -1039,6 +941,12 @@ function loadEntry(date) {
  displayWeeklyData();
  document.getElementById('exportBtn').style.display = 'inline-block';
  document.getElementById('saveTopBtn').style.display = 'none';
+ 
+ // Initialize column buttons only once per session
+ if (!columnButtonsInitialized) {
+ syncButtonStates();
+ columnButtonsInitialized = true;
+ }
  } else {
  document.getElementById('exportBtn').style.display = 'none';
  document.getElementById('saveTopBtn').style.display = 'inline-block'; 
@@ -1127,7 +1035,7 @@ function saveEntry() {
  }
  
  // CSV headers
- let csv = 'Date,Instrument,Daily Score,T Score,R Score,A Score,D Score,E Score,R Score,';
+ let csv = 'Date,Instrument,T Score,R Score,A Score,D Score,E Score,R Score,';
  csv += 'Timing,Risk,Analysis Quality,Setup Type,Emotional State,Exit,';
  csv += 'Market Condition,R-Multiple,Setup Details,Green Flags,Red Flags,Key Takeaway\n';
  
@@ -1139,7 +1047,6 @@ function saveEntry() {
  const row = [
  entry.date,
  entry.marketTimeframe || '',
- entry.dailyTotal || 0,
  entry.scores?.timing || 0,
  entry.scores?.risk || 0,
  entry.scores?.analysis || 0,
@@ -1178,13 +1085,65 @@ function saveEntry() {
  // Global variable to track current filter
  let currentFilter = 'last30';
 
+ // Track which columns are visible
+ let visibleColumns = {
+ timing: false,
+ risk: false,
+ analysis: false,
+ discipline: false,
+ exit: false,
+ results: false,
+ setup: false,
+ market: false,
+ rvalue: false,
+ greenflags: true,
+ redflags: true,
+ takeaway: false
+ };
+
+ // Track if column buttons have been initialized
+ let columnButtonsInitialized = false;
+
+ // Toggle column visibility
+ function toggleColumn(columnName) {
+ visibleColumns[columnName] = !visibleColumns[columnName];
+ 
+ // Save to localStorage
+ localStorage.setItem('columnPreferences', JSON.stringify(visibleColumns));
+ 
+ // Update button appearance
+ const btn = document.getElementById(`toggle-${columnName}`);
+ if (visibleColumns[columnName]) {
+ btn.classList.add('active');
+ } else {
+ btn.classList.remove('active');
+ }
+ 
+ // Refresh the table
+ displayWeeklyData();
+ }
+
+ // Sync button states with visibleColumns preferences
+ function syncButtonStates() {
+ Object.keys(visibleColumns).forEach(columnName => {
+ const btn = document.getElementById(`toggle-${columnName}`);
+ if (btn) {
+ if (visibleColumns[columnName]) {
+ btn.classList.add('active');
+ } else {
+ btn.classList.remove('active');
+ }
+ }
+ });
+ }
+
  // Function to filter weekly data by date range
  function filterWeeklyData(filterType) {
  // Update the current filter
  currentFilter = filterType;
  
- // Update button styles
- document.querySelectorAll('.filter-btn').forEach(btn => {
+ // Update ONLY timeframe button styles (not column toggles)
+ document.querySelectorAll('.timeframe-btn').forEach(btn => {
  btn.classList.remove('active');
  });
  event.target.classList.add('active');
@@ -1238,6 +1197,7 @@ function saveEntry() {
  }
 
 
+
  // Function to display weekly data in a table
  function displayWeeklyData() {
  let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
@@ -1266,59 +1226,86 @@ function saveEntry() {
  
  entries.sort((a, b) => new Date(b.date) - new Date(a.date));
  
- let tableHTML = `
- <table>
- <thead>
- <tr>
- <th>Date</th>
- <th>Instrument</th>
- <th>Daily Score</th>
- <th>T.R.A.D.E.R Scores</th>
- <th>T.R.A.D.E.R Details</th>
- <th>Setup</th>
- <th>Market</th>
- <th>R value</th>
- <th class="red-flags-column">Green Flags</th>
- <th class="red-flags-column">Red Flags</th>
- <th>Key Takeaway</th>
- </tr>
- </thead>
- <tbody>
- `;
+ // Helper function to convert score to symbol
+ function scoreToSymbol(score) {
+ if (score === -1) return '❌';
+ if (score === 0) return '⚪';
+ if (score === 1) return '✔️';
+ return '';
+ }
+ 
+ // Build dynamic table header
+ let headerHTML = '<tr><th>Date</th><th>Instrument</th>';
+ 
+ if (visibleColumns.timing) headerHTML += '<th>T - Timing</th>';
+ if (visibleColumns.risk) headerHTML += '<th>R - Risk</th>';
+ if (visibleColumns.analysis) headerHTML += '<th>A - Analysis</th>';
+ if (visibleColumns.discipline) headerHTML += '<th>D - Discipline</th>';
+ if (visibleColumns.exit) headerHTML += '<th>E - Exit</th>';
+ if (visibleColumns.results) headerHTML += '<th>R - Results</th>';
+ if (visibleColumns.setup) headerHTML += '<th>Setup</th>';
+ if (visibleColumns.market) headerHTML += '<th>Market</th>';
+ if (visibleColumns.rvalue) headerHTML += '<th>R value</th>';
+ if (visibleColumns.greenflags) headerHTML += '<th class="red-flags-column">Green Flags</th>';
+ if (visibleColumns.redflags) headerHTML += '<th class="red-flags-column">Red Flags</th>';
+ if (visibleColumns.takeaway) headerHTML += '<th>Key Takeaway</th>';
+ 
+ headerHTML += '</tr>';
+ 
+ let tableHTML = `<table><thead>${headerHTML}</thead><tbody>`;
  
  entries.forEach(entry => {
- let scoresText = '';
- let dailyScore = 0;
- if (entry.scores) {
- dailyScore = entry.dailyTotal || Object.values(entry.scores).reduce((sum, score) => sum + score, 0);
+ let rowHTML = '<tr>';
  
- const scoreLabels = ['T', 'R', 'A', 'D', 'E', 'R'];
- const scoreValues = [entry.scores.timing, entry.scores.risk, entry.scores.analysis, entry.scores.discipline, entry.scores.exit, entry.scores.results];
- const nonZeroScores = [];
+ // Always show Date and Instrument
+ rowHTML += `<td>${formatDateShort(entry.date)}</td>`;
+ rowHTML += `<td>${entry.marketTimeframe || ''}</td>`;
  
- scoreValues.forEach((score, index) => {
- if (score !== 0) {
- nonZeroScores.push(`${scoreLabels[index]}:${score}`);
- }
- });
- 
- scoresText = nonZeroScores.join(' ') || '------';
- } 
-
- let traderDetails = '';
- if (entry.traderTexts) {
- const details = traderDropdowns.map(config => {
- if (config.category === 'setup' || config.category === 'market') return null;
- const text = entry.traderTexts[config.category];
- let displayText = text ? `${config.category.charAt(0).toUpperCase()}: ${text}` : null;
- if (config.category === 'risk' && entry.riskPercent) {
- displayText += ` (${entry.riskPercent}%)`;
- }
- return displayText;
- }).filter(Boolean);
- traderDetails = details.join('<br>');
+ // T.R.A.D.E.R components (show score + details if visible)
+ if (visibleColumns.timing) {
+ const score = entry.scores?.timing || 0;
+ const detail = entry.traderTexts?.timing || '';
+ rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}<br>${detail}</td>`;
  }
  
+ if (visibleColumns.risk) {
+ const score = entry.scores?.risk || 0;
+ const detail = entry.traderTexts?.risk || '';
+ const riskPercent = entry.riskPercent ? ` (${entry.riskPercent}%)` : '';
+ rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}<br>${detail}${riskPercent}</td>`;
+ }
+ 
+ if (visibleColumns.analysis) {
+ const score = entry.scores?.analysis || 0;
+ const detail = entry.traderTexts?.analysis_quality || '';
+ rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}<br>${detail}</td>`;
+ }
+ 
+ if (visibleColumns.discipline) {
+ const score = entry.scores?.discipline || 0;
+ const detail = entry.emotionalState || '';
+ rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}<br>${detail}</td>`;
+ }
+ 
+ if (visibleColumns.exit) {
+ const score = entry.scores?.exit || 0;
+ const detail = entry.traderTexts?.exit || '';
+ rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}<br>${detail}</td>`;
+ }
+ 
+ if (visibleColumns.results) {
+ const score = entry.scores?.results || 0;
+ rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}</td>`;
+ }
+ 
+ // Setup
+ if (visibleColumns.setup) {
+ const setupDisplay = [entry.setupUsed, entry.setupDetails].filter(Boolean).join('<br>– ') || '';
+ rowHTML += `<td>${setupDisplay}</td>`;
+ }
+ 
+ // Market
+ if (visibleColumns.market) {
  const conditionText = {
  'strong_uptrend': 'Strong Uptrend',
  'strong_downtrend': 'Strong Downtrend',
@@ -1326,13 +1313,17 @@ function saveEntry() {
  'high_volatility': 'High Volatility',
  'low_volatility': 'Low Volatility'
  };
- 
  const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
- const setupDisplay = [entry.setupUsed, entry.setupDetails].filter(Boolean).join('<br>– ') || '';
-
- const rMultipleDisplay = entry.rMultiple || '';
- const takeawayDisplay = entry.keyTakeaway || '';
+ rowHTML += `<td>${marketDisplay}</td>`;
+ }
  
+ // R value
+ if (visibleColumns.rvalue) {
+ rowHTML += `<td>${entry.rMultiple || ''}</td>`;
+ }
+ 
+ // Green Flags
+ if (visibleColumns.greenflags) {
  let greenFlagsDisplay = '';
  if (entry.greenFlags && entry.greenFlags.length > 0) {
  const greenFlagLabels = {
@@ -1361,7 +1352,11 @@ function saveEntry() {
  `<span class="green-flag-tag">${greenFlagLabels[flag] || flag}</span>`
  ).join(' ');
  }
-
+ rowHTML += `<td class="red-flags-column">${greenFlagsDisplay}</td>`;
+ }
+ 
+ // Red Flags
+ if (visibleColumns.redflags) {
  let redFlagsDisplay = '';
  if (entry.redFlags && entry.redFlags.length > 0) {
  const flagLabels = {
@@ -1387,25 +1382,13 @@ function saveEntry() {
  `<span class="red-flag-tag">${flagLabels[flag] || flag}</span>`
  ).join(' ');
  }
+ rowHTML += `<td class="red-flags-column">${redFlagsDisplay}</td>`;
+ }
  
- let scoreColor = '#333';
- if (dailyScore > 0) scoreColor = 'var(--success)';
- if (dailyScore < 0) scoreColor = 'var(--danger)';
- 
- tableHTML += `
- <tr>
- <td>${formatDateShort(entry.date)}</td>
- <td>${entry.marketTimeframe || ''}</td>
- <td style="color: ${scoreColor};">${dailyScore}</td>
- <td style="font-size: 12px;">${scoresText}</td>
- <td style="font-size: 10px; max-width: 150px;">${traderDetails || 'N/A'}</td>
- <td>${setupDisplay}</td>
- <td>${marketDisplay}</td>
- <td>${rMultipleDisplay}</td>
- <td class="red-flags-column">${greenFlagsDisplay}</td>
- <td class="red-flags-column">${redFlagsDisplay}</td>
-
- <td>
+ // Takeaway
+ if (visibleColumns.takeaway) {
+ const takeawayDisplay = entry.keyTakeaway || '';
+ rowHTML += `<td>
  <div style="
  display: -webkit-box;
  -webkit-line-clamp: 3;
@@ -1415,14 +1398,16 @@ function saveEntry() {
  white-space: normal;
  word-break: break-word;
  line-height: 1.5em;
- height: 100%; /* Add this: Fills td height exactly, no cutoff */
+ height: 100%;
  cursor: help;
  " title="${takeawayDisplay.replace(/"/g, '&quot;')}">
  ${takeawayDisplay}
  </div>
- </td>
- </tr>
- `;
+ </td>`;
+ }
+ 
+ rowHTML += '</tr>';
+ tableHTML += rowHTML;
  });
  
  tableHTML += '</tbody></table>';
@@ -1443,6 +1428,12 @@ window.onload = function() {
         loadEntry(this.value);
     });
     
+    // Load column preferences from localStorage
+    const savedPreferences = localStorage.getItem('columnPreferences');
+    if (savedPreferences) {
+        visibleColumns = JSON.parse(savedPreferences);
+    }
+    
     // Generate dropdowns after date setup
     generateTraderDropdowns();
     
@@ -1454,4 +1445,3 @@ window.onload = function() {
  </script>
 </body>
 </html>
-
