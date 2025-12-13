@@ -324,14 +324,12 @@
 <body>
  <h1>Trading Journal</h1>
 
-<!-- MONTHLY GOAL WRAPPING TEXT + SAME EDIT PATTERN AS NUMBERS -->
+<!-- ▼ MONTHLY GOAL (progress + notes inside one block) -->
 <div class="section-header positive"
      style="margin:0 auto 10px; max-width:640px; font-size:13px; line-height:1.35;">
 
-  <!-- wrapping text line -->
-  <span id="goalTextShow" style="cursor:pointer; word-break:break-word;">Monthly Goal: Complete 5 trades with &gt;2R</span>
-
-  <!-- inline edit box (hidden by default, appears below) -->
+  <!-- editable goal text -->
+  <span id="goalTextShow" style="cursor:pointer; word-break:break-word;">Monthly Goal: 5 reversal candle trades no disasters</span>
   <input id="goalTextEdit" type="text"
          style="display:none; width:100%; margin-top:4px; font-size:12px;"
          onblur="finishTextEdit()" onkeyup="if(event.key==='Enter') this.blur()">
@@ -342,10 +340,20 @@
     <span style="flex:1 1 110px; height:10px; background:#e0e0e0; border-radius:5px; overflow:hidden;">
       <span id="goalBar" style="display:block; height:100%; width:0%; background:var(--success); transition:width .3s"></span>
     </span>
-    <!-- editable numbers -->
     <span style="cursor:pointer;" onclick="startNumEdit('done')"  title="Click to edit"><b id="doneDisp">3</b></span>/
     <span style="cursor:pointer;" onclick="startNumEdit('target')" title="Click to edit"><b id="targetDisp">5</b></span>
     (<span id="goalPct">0</span>%)
+  </div>
+
+  <!-- ===== Notes accordion INSIDE same block ===== -->
+  <div class="section-header collapsible" onclick="toggleGoalNotes(this)" style="margin-top:8px; font-size:12px;">
+    <span>Notes</span>
+    <span class="arrow">▼</span>
+  </div>
+  <div class="collapsible-content" id="goalNotesContent">
+    <textarea id="goalNotesArea"
+              style="width:100%; min-height:120px; font-size:12px; resize:vertical;"
+              placeholder="Freestyle notes…"></textarea>
   </div>
 </div>
 
@@ -1535,6 +1543,38 @@ function loadGoalBar(){
 /* ---------- wire clicks ---------- */
 document.getElementById('goalTextShow').addEventListener('click', startTextEdit);
 window.addEventListener('DOMContentLoaded', loadGoalBar);
+
+
+// ========== MONTHLY GOAL NOTES (freestyle, auto-saved) ==========
+function toggleGoalNotes(header){
+  header.classList.toggle('expanded');
+  const content = document.getElementById('goalNotesContent');
+  content.classList.toggle('expanded');
+}
+function saveNotes(){
+  localStorage.setItem('monthlyGoalNotes', document.getElementById('goalNotesArea').value);
+}
+// auto-save while typing
+document.getElementById('goalNotesArea')?.addEventListener('input', saveNotes);
+// load once
+window.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('goalNotesArea').value = localStorage.getItem('monthlyGoalNotes') || '';
+});
+
+// ---------- NOTES ACCORDION INSIDE GOAL BLOCK ----------
+function toggleGoalNotes(header){
+  header.classList.toggle('expanded');
+  document.getElementById('goalNotesContent').classList.toggle('expanded');
+}
+function saveNotes(){
+  localStorage.setItem('monthlyGoalNotes', document.getElementById('goalNotesArea').value);
+}
+document.getElementById('goalNotesArea')?.addEventListener('input', saveNotes);
+// load on ready
+window.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('goalNotesArea').value = localStorage.getItem('monthlyGoalNotes') || '';
+});
+
  </script>
 </body>
 </html>
