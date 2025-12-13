@@ -333,6 +333,31 @@
 
  <div id="daily" class="section active">
  <form id="dailyForm">
+ 
+ <!-- Monthly Goal Tracker -->
+ <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid var(--primary); border-radius: var(--radius); padding: 15px; margin-bottom: 20px; box-shadow: var(--shadow);">
+ <div style="text-align: center; margin-bottom: 10px;">
+ <label style="font-size: 14px; font-weight: 600; color: var(--primary-text); display: block; margin-bottom: 8px;">🎯 Monthly Goal</label>
+ <input type="text" id="goalText" placeholder="e.g., Complete 5 trades with >2R" 
+ style="text-align: center; font-size: 14px; padding: 8px; width: 100%; max-width: 400px; border: 2px solid #E5E7EB; border-radius: 8px;"
+ onchange="saveGoal()">
+ </div>
+ <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
+ <input type="number" id="goalCurrent" min="0" value="0" 
+ style="width: 60px; text-align: center; font-size: 16px; font-weight: 600; padding: 6px; border: 2px solid #E5E7EB; border-radius: 8px;"
+ onchange="saveGoal()">
+ <span style="font-size: 18px; font-weight: 600; color: var(--dark);">/</span>
+ <input type="number" id="goalTarget" min="1" value="5" 
+ style="width: 60px; text-align: center; font-size: 16px; font-weight: 600; padding: 6px; border: 2px solid #E5E7EB; border-radius: 8px;"
+ onchange="saveGoal()">
+ <span id="goalPercent" style="font-size: 14px; font-weight: 600; color: var(--primary-text); margin-left: 5px;">(0%)</span>
+ </div>
+ <div style="background: white; border-radius: 10px; height: 24px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
+ <div id="goalProgressBar" style="height: 100%; background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%); width: 0%; transition: width 0.5s ease, background 0.3s ease; border-radius: 10px;"></div>
+ </div>
+ <div id="goalMessage" style="text-align: center; margin-top: 8px; font-size: 13px; font-weight: 500; min-height: 20px;"></div>
+ </div>
+ 
  <!-- Compact layout: Date and Market on same line -->
  <div style="display: flex; gap: 10px; margin: 12px 0;">
  <div class="question" style="margin: 0; flex: 0 0 180px;">
@@ -466,10 +491,10 @@
  <label style="text-align: center; color: var(--green-flag-dark); font-size: 14px; font-weight: 500;">Celebrate wins to build discipline & edge</label>
  <div class="green-flag-grid">
  <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('followed_plan')">
- <span class="icon">📝</span> Followed Plan
+ <span class="icon">📋</span> Followed Plan
  </button>
  <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('premarket_analysis')">
- <span class="icon">🔍</span> Pre-Market Analysis
+ <span class="icon">📊</span> Pre-Market Analysis
  </button>
  <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('waited_setup')">
  <span class="icon">⏳</span> Waited for Setup
@@ -508,10 +533,10 @@
  <span class="icon">🔄</span> Multi-Timeframe Confluence
  </button>
  <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('reviewed_last_trade')">
- <span class="icon">🔍</span> Reviewed Last Trade
+ <span class="icon">📖</span> Reviewed Last Trade
  </button>
  <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('neutral_mindset')">
- <span class="icon">🧠</span> Neutral Mindset (No Tilt)
+ <span class="icon">🧘</span> Neutral Mindset (No Tilt)
  </button>
  <button type="button" class="green-flag-btn" onclick="toggleGreenFlag('documented_rationale')">
  <span class="icon">📝</span> Documented Rationale
@@ -939,509 +964,4 @@ function loadEntry(date) {
  
  if (sectionName === 'weekly') {
  displayWeeklyData();
- document.getElementById('exportBtn').style.display = 'inline-block';
- document.getElementById('saveTopBtn').style.display = 'none';
- 
- // Initialize column buttons only once per session
- if (!columnButtonsInitialized) {
- syncButtonStates();
- columnButtonsInitialized = true;
- }
- } else {
- document.getElementById('exportBtn').style.display = 'none';
- document.getElementById('saveTopBtn').style.display = 'inline-block'; 
- }
- 
- // Load current date entry when switching back to daily (preserves selection)
-if (sectionName === 'daily') {
-    // Load current date entry when switching back to daily (preserves selection)
-    const currentDate = document.getElementById('date').value || getLocalDateString();
-    loadEntry(currentDate);
-}
-}
- 
-
-// Function to save a daily entry
-function saveEntry() {
-    const date = document.getElementById('date').value;
-    
-    if (!date) {
-        alert('Please select a date');
-        return;
-    }
-    
-    const dailyTotal = Object.values(scores).reduce((sum, score) => sum + score, 0);
-    
-    const traderTexts = {};
-    traderDropdowns.forEach(config => {
-        traderTexts[config.category] = document.getElementById(config.id)?.value || '';
-    });
-    
-    const entry = {
-        date: date,
-        marketTimeframe: document.getElementById('market_timeframe').value,
-        scores: { ...scores },
-        dailyTotal: dailyTotal,
-        marketConditions: document.getElementById('market_conditions').value,
-        riskPercent: document.getElementById('risk_percent').value,
-        setupUsed: document.getElementById('setup_used_dropdown').value,
-        setupDetails: document.getElementById('setup_details').value,
-        emotionalState: document.getElementById('discipline_dropdown').value,
-        rMultiple: document.getElementById('r_multiple').value,
-        keyTakeaway: document.getElementById('key_takeaway').value,
-        redFlags: Array.from(redFlags),
-        greenFlags: Array.from(greenFlags),
-        traderTexts: traderTexts
-    };      
-    
-    let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
-    
-    const existingIndex = entries.findIndex(entry => entry.date === date);
-    
-    if (existingIndex >= 0) {
-        entries[existingIndex] = entry;
-        const redFlagCount = entry.redFlags.length;
-        const greenFlagCount = entry.greenFlags.length;
-        let message = `Entry updated for ${formatDateShort(date)}\n`;
-        message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
-        message += `🟢 Green flags: ${greenFlagCount}\n`;
-        message += `🚩 Red flags: ${redFlagCount}\n`;
-        alert(message);
-    } else {
-        entries.push(entry);
-        const redFlagCount = entry.redFlags.length;
-        const greenFlagCount = entry.greenFlags.length;
-        let message = `New entry saved for ${formatDateShort(date)}\n`;
-        message += `Daily Score: ${dailyTotal} (-6 to +6)\n`;
-        message += `🟢 Green flags: ${greenFlagCount}\n`;
-        message += `🚩 Red flags: ${redFlagCount}\n`;
-        alert(message);
-    }
-    
-    localStorage.setItem('tradingEntries', JSON.stringify(entries));
-    
-    // Explicitly reload the saved entry (stays on selected date)
-    setTimeout(() => {
-        loadEntry(date);
-    }, 50);  // Small delay to ensure localStorage sync
-}
- 
- function exportToCSV() {
- const entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
- 
- if (entries.length === 0) {
- alert('No data to export');
- return;
- }
- 
- // CSV headers
- let csv = 'Date,Instrument,T Score,R Score,A Score,D Score,E Score,R Score,';
- csv += 'Timing,Risk,Analysis Quality,Setup Type,Emotional State,Exit,';
- csv += 'Market Condition,R-Multiple,Setup Details,Green Flags,Red Flags,Key Takeaway\n';
- 
- // Sort by date
- entries.sort((a, b) => new Date(a.date) - new Date(b.date));
- 
- // Add data rows
- entries.forEach(entry => {
- const row = [
- entry.date,
- entry.marketTimeframe || '',
- entry.scores?.timing || 0,
- entry.scores?.risk || 0,
- entry.scores?.analysis || 0,
- entry.scores?.discipline || 0,
- entry.scores?.exit || 0,
- entry.scores?.results || 0,
- entry.traderTexts?.timing || '',
- entry.traderTexts?.risk || '',
- entry.traderTexts?.analysis_quality || '',
- entry.traderTexts?.analysis_type || '',
- entry.emotionalState || '',
- entry.traderTexts?.exit || '',
- entry.marketConditions || '',
- entry.rMultiple || '',
- entry.setupDetails || '',
- entry.greenFlags?.join(', ') || '',
- entry.redFlags?.join(', ') || '',
- (entry.keyTakeaway || '').replace(/"/g, '""')
- ];
- 
- csv += row.map(field => `"${field}"`).join(',') + '\n';
- });
- 
- // Create download
- const blob = new Blob([csv], { type: 'text/csv' });
- const url = window.URL.createObjectURL(blob);
- const a = document.createElement('a');
- a.href = url;
- a.download = `trading_journal_${getLocalDateString()}.csv`;
- document.body.appendChild(a);
- a.click();
- document.body.removeChild(a);
- window.URL.revokeObjectURL(url);
- }
-
- // Global variable to track current filter
- let currentFilter = 'last30';
-
- // Track which columns are visible
- let visibleColumns = {
- timing: false,
- risk: false,
- analysis: false,
- discipline: false,
- exit: false,
- results: false,
- setup: false,
- market: false,
- rvalue: false,
- greenflags: true,
- redflags: true,
- takeaway: false
- };
-
- // Track if column buttons have been initialized
- let columnButtonsInitialized = false;
-
- // Toggle column visibility
- function toggleColumn(columnName) {
- visibleColumns[columnName] = !visibleColumns[columnName];
- 
- // Save to localStorage
- localStorage.setItem('columnPreferences', JSON.stringify(visibleColumns));
- 
- // Update button appearance
- const btn = document.getElementById(`toggle-${columnName}`);
- if (visibleColumns[columnName]) {
- btn.classList.add('active');
- } else {
- btn.classList.remove('active');
- }
- 
- // Refresh the table
- displayWeeklyData();
- }
-
- // Sync button states with visibleColumns preferences
- function syncButtonStates() {
- Object.keys(visibleColumns).forEach(columnName => {
- const btn = document.getElementById(`toggle-${columnName}`);
- if (btn) {
- if (visibleColumns[columnName]) {
- btn.classList.add('active');
- } else {
- btn.classList.remove('active');
- }
- }
- });
- }
-
- // Function to filter weekly data by date range
- function filterWeeklyData(filterType) {
- // Update the current filter
- currentFilter = filterType;
- 
- // Update ONLY timeframe button styles (not column toggles)
- document.querySelectorAll('.timeframe-btn').forEach(btn => {
- btn.classList.remove('active');
- });
- event.target.classList.add('active');
- 
- // Re-display the data with the new filter
- displayWeeklyData();
- }
- 
- // Helper function to get date ranges
- function getDateRange(filterType) {
- const now = new Date();
- let startDate, endDate;
- 
- switch(filterType) {
- case 'last30':
- // Last 30 days
- startDate = new Date(now);
- startDate.setDate(now.getDate() - 30);
- endDate = now;
- break;
- 
- case 'thisWeek':
- // This week (Monday to Sunday)
- const dayOfWeek = now.getDay();
- const monday = new Date(now);
- monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
- startDate = monday;
- endDate = now;
- break;
- 
- case 'lastWeek':
- // Last week (previous Monday to Sunday)
- const lastMonday = new Date(now);
- const currentDay = now.getDay();
- lastMonday.setDate(now.getDate() - (currentDay === 0 ? 6 : currentDay - 1) - 7);
- const lastSunday = new Date(lastMonday);
- lastSunday.setDate(lastMonday.getDate() + 6);
- startDate = lastMonday;
- endDate = lastSunday;
- break;
- 
- case 'all':
- // All time - no filter
- return null;
- 
- default:
- return null;
- }
- 
- return { startDate, endDate };
- }
-
-
-
- // Function to display weekly data in a table
- function displayWeeklyData() {
- let entries = JSON.parse(localStorage.getItem('tradingEntries')) || [];
- 
- const tableContainer = document.getElementById('weeklyTable');
- 
- if (entries.length === 0) {
- tableContainer.innerHTML = '<div class="no-data">No entries saved yet. Add some daily entries first!</div>';
- return;
- }
- 
- // Apply date filter
- const dateRange = getDateRange(currentFilter);
- if (dateRange) {
- entries = entries.filter(entry => {
- const entryDate = new Date(entry.date);
- return entryDate >= dateRange.startDate && entryDate <= dateRange.endDate;
- });
- }
- 
- // Check if we have entries after filtering
- if (entries.length === 0) {
- tableContainer.innerHTML = '<div class="no-data">No entries found for this date range.</div>';
- return;
- }
- 
- entries.sort((a, b) => new Date(b.date) - new Date(a.date));
- 
- // Helper function to convert score to symbol
- function scoreToSymbol(score) {
- if (score === -1) return '❌';
- if (score === 0) return '⚪';
- if (score === 1) return '✔️';
- return '';
- }
- 
- // Build dynamic table header
- let headerHTML = '<tr><th>Date</th><th>Instrument</th>';
- 
- if (visibleColumns.timing) headerHTML += '<th>T - Timing</th>';
- if (visibleColumns.risk) headerHTML += '<th>R - Risk</th>';
- if (visibleColumns.analysis) headerHTML += '<th>A - Analysis</th>';
- if (visibleColumns.discipline) headerHTML += '<th>D - Discipline</th>';
- if (visibleColumns.exit) headerHTML += '<th>E - Exit</th>';
- if (visibleColumns.results) headerHTML += '<th>R - Results</th>';
- if (visibleColumns.setup) headerHTML += '<th>Setup</th>';
- if (visibleColumns.market) headerHTML += '<th>Market</th>';
- if (visibleColumns.rvalue) headerHTML += '<th>R value</th>';
- if (visibleColumns.greenflags) headerHTML += '<th class="red-flags-column">Green Flags</th>';
- if (visibleColumns.redflags) headerHTML += '<th class="red-flags-column">Red Flags</th>';
- if (visibleColumns.takeaway) headerHTML += '<th>Key Takeaway</th>';
- 
- headerHTML += '</tr>';
- 
- let tableHTML = `<table><thead>${headerHTML}</thead><tbody>`;
- 
- entries.forEach(entry => {
- let rowHTML = '<tr>';
- 
- // Always show Date and Instrument
- rowHTML += `<td>${formatDateShort(entry.date)}</td>`;
- rowHTML += `<td>${entry.marketTimeframe || ''}</td>`;
- 
- // T.R.A.D.E.R components (show score + details if visible)
- if (visibleColumns.timing) {
- const score = entry.scores?.timing || 0;
- const detail = entry.traderTexts?.timing || '';
- rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}<br>${detail}</td>`;
- }
- 
- if (visibleColumns.risk) {
- const score = entry.scores?.risk || 0;
- const detail = entry.traderTexts?.risk || '';
- const riskPercent = entry.riskPercent ? ` (${entry.riskPercent}%)` : '';
- rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}<br>${detail}${riskPercent}</td>`;
- }
- 
- if (visibleColumns.analysis) {
- const score = entry.scores?.analysis || 0;
- const detail = entry.traderTexts?.analysis_quality || '';
- rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}<br>${detail}</td>`;
- }
- 
- if (visibleColumns.discipline) {
- const score = entry.scores?.discipline || 0;
- const detail = entry.emotionalState || '';
- rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}<br>${detail}</td>`;
- }
- 
- if (visibleColumns.exit) {
- const score = entry.scores?.exit || 0;
- const detail = entry.traderTexts?.exit || '';
- rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}<br>${detail}</td>`;
- }
- 
- if (visibleColumns.results) {
- const score = entry.scores?.results || 0;
- rowHTML += `<td style="font-size: 11px;">${scoreToSymbol(score)}</td>`;
- }
- 
- // Setup
- if (visibleColumns.setup) {
- const setupDisplay = [entry.setupUsed, entry.setupDetails].filter(Boolean).join('<br>– ') || '';
- rowHTML += `<td>${setupDisplay}</td>`;
- }
- 
- // Market
- if (visibleColumns.market) {
- const conditionText = {
- 'strong_uptrend': 'Strong Uptrend',
- 'strong_downtrend': 'Strong Downtrend',
- 'ranging_sideways': 'Ranging/Sideways',
- 'high_volatility': 'High Volatility',
- 'low_volatility': 'Low Volatility'
- };
- const marketDisplay = conditionText[entry.marketConditions] || entry.marketConditions || '';
- rowHTML += `<td>${marketDisplay}</td>`;
- }
- 
- // R value
- if (visibleColumns.rvalue) {
- rowHTML += `<td>${entry.rMultiple || ''}</td>`;
- }
- 
- // Green Flags
- if (visibleColumns.greenflags) {
- let greenFlagsDisplay = '';
- if (entry.greenFlags && entry.greenFlags.length > 0) {
- const greenFlagLabels = {
- 'followed_plan': 'Plan',
- 'premarket_analysis': 'Analysis',
- 'waited_setup': 'Setup',
- 'correct_timeframes': 'Timeframes',
- 'perfect_position_size': 'Position',
- 'quick_loss_cut': 'Cut Loss',
- 'hit_profit_target': 'Target',
- 'avoided_chasing': 'No Chase',
- 'emotional_control': 'Control',
- 'documented_trades': 'Docs',
- 'post_trade_analysis': 'Analysis',
- 'applied_lessons': 'Lessons',
- 'stuck_risk_limits': 'Risk Limits',
- 'waited_confluence': 'Confluence',
- 'reviewed_last_trade': 'Reviewed Last',
- 'neutral_mindset': 'Neutral Mindset',
- 'documented_rationale': 'Rationale',
- 'exited_on_plan': 'Exited on Plan',
- 'adapted_conditions': 'Adapted',
- 'celebrated_small_win': 'Small Win'
- };
- greenFlagsDisplay = entry.greenFlags.map(flag => 
- `<span class="green-flag-tag">${greenFlagLabels[flag] || flag}</span>`
- ).join(' ');
- }
- rowHTML += `<td class="red-flags-column">${greenFlagsDisplay}</td>`;
- }
- 
- // Red Flags
- if (visibleColumns.redflags) {
- let redFlagsDisplay = '';
- if (entry.redFlags && entry.redFlags.length > 0) {
- const flagLabels = {
- 'revenge': 'Revenge',
- 'overtrading': 'Overtrade',
- 'fomo': 'FOMO',
- 'moved_stop': 'Moved SL',
- 'added_loser': 'Added Loss',
- 'no_plan': 'No Plan',
- 'ignored_risk': 'Risk',
- 'trader_error': 'Trader',
- 'news_trade': 'News',
- 'hope_hold': 'Hope',
- 'early_exit': 'Early Exit',
- 'herd_behavior': 'Herd',
- 'loss_aversion': 'Held Loser',
- 'overconfidence': 'Overconfident',
- 'confirmation_bias': 'Confirmation',
- 'illusion_control': 'Illusion Control',
- 'social_influence': 'Social Impulse' 
- };
- redFlagsDisplay = entry.redFlags.map(flag => 
- `<span class="red-flag-tag">${flagLabels[flag] || flag}</span>`
- ).join(' ');
- }
- rowHTML += `<td class="red-flags-column">${redFlagsDisplay}</td>`;
- }
- 
- // Takeaway
- if (visibleColumns.takeaway) {
- const takeawayDisplay = entry.keyTakeaway || '';
- rowHTML += `<td>
- <div style="
- display: -webkit-box;
- -webkit-line-clamp: 3;
- -webkit-box-orient: vertical;
- overflow: hidden;
- text-overflow: ellipsis;
- white-space: normal;
- word-break: break-word;
- line-height: 1.5em;
- height: 100%;
- cursor: help;
- " title="${takeawayDisplay.replace(/"/g, '&quot;')}">
- ${takeawayDisplay}
- </div>
- </td>`;
- }
- 
- rowHTML += '</tr>';
- tableHTML += rowHTML;
- });
- 
- tableHTML += '</tbody></table>';
- tableContainer.innerHTML = tableHTML;
- }
-
- // Load entry for today's date
-function loadTodayEntry() {
-    loadEntry(getLocalDateString());
-}
-
-// Set today's date automatically when page loads
-window.onload = function() {
-    document.getElementById('date').value = getLocalDateString();
-
-    // Load entry when date changes
-    document.getElementById('date').addEventListener('change', function() {
-        loadEntry(this.value);
-    });
-    
-    // Load column preferences from localStorage
-    const savedPreferences = localStorage.getItem('columnPreferences');
-    if (savedPreferences) {
-        visibleColumns = JSON.parse(savedPreferences);
-    }
-    
-    // Generate dropdowns after date setup
-    generateTraderDropdowns();
-    
-    loadTodayEntry();
-    
-    displayWeeklyData();
-};
-
- </script>
-</body>
-</html>
+ document.getElementById('exportBtn').style.display =
