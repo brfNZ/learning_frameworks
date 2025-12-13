@@ -8,10 +8,16 @@
   :root {
     --primary: #8cc2ee;
     --primary-dark: #64a5df;
+    --primary-text: #2c5f8d;
+    --primary-light-bg: #f5f9ff;
     --success: #A8D5A8;
     --success-dark: #95C895;
+    --success-text: #4a7a4a;
+    --success-light-bg: #fefffe;
     --danger: #E8A5A5;
     --danger-dark: #D99494;
+    --danger-text: #8d4a4a;
+    --danger-light-bg: #fffefe;
     --info: #B8D0E8;
     --light: #F8F9FB;
     --dark: #5A6B7A;
@@ -68,30 +74,31 @@
   .section { display: none; }
   .section.active { display: block; }
 
-  .question { margin: 12px 0; }
-  .question + .question { margin-top: 6px; }
+  .question { margin: 8px 0; }
+  .question + .question { margin-top: 4px; }
 
   select { padding: 6px 8px; height: 36px; font-size: 13px; line-height: 1.4; }
   select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.1); }
 
   .section-header {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: white;
+    background: var(--primary-light-bg);
+    color: var(--primary-text);
     padding: 10px 15px;
+    border: 2px solid var(--primary);
     border-radius: var(--radius);
-    margin: 15px 0 12px 0;
+    margin: 2px 0 4px 0;
     text-align: center;
     font-weight: 600;
     font-size: 14px;
   }
   .section-header.positive {
     background: #f6fff6;
-    color: var(--success);
+    color: var(--success-text);
     border: 2px solid var(--success);
   }
   .section-header.danger {
     background: #fcf5f6;
-    color: var(--danger-dark);
+    color: var(--danger-text);
     border: 2px solid var(--danger);
   }
   .section-header.collapsible {
@@ -99,6 +106,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+  .section-header.collapsible:hover {
+    background: #d1ebfd;
+    border-color: var(--primary-dark);
   }
   .section-header.collapsible .arrow {
     transition: transform 0.3s ease;
@@ -116,28 +127,29 @@
   .rating-container {
     display: flex;
     justify-content: center;
-    gap: 6px;
+    gap: 3px;
     align-items: center;
-    margin: 10px 0;
+    margin: 6px 0;
   }
   .emoji-btn {
-    width: 60px;
-    height: 60px;
-    padding: 5px;
+    width: 32px;
+    height: 32px;
+    padding: 2px;
     border-radius: var(--radius);
     transition: var(--transition);
-    font-size: 16px;
+    font-size: 22px;
+    line-height: 1;
     font-weight: 500;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     border: 2px solid var(--primary);
-    background-color: white;
-    color: var(--primary);
+    background-color: var(--primary-light-bg);
+    color: var(--primary-text);
     cursor: pointer;
   }
-  .emoji-btn:hover { border-color: var(--primary-dark); background-color: rgba(123, 179, 224, 0.1); }
+  .emoji-btn:hover { border-color: var(--primary-dark); background-color: #d1ebfd; }
   .emoji-btn.selected {
     background-color: var(--primary);
     border-color: var(--primary-dark);
@@ -145,16 +157,21 @@
     border-width: 3px;
     box-shadow: 0 0 0 2px rgba(123, 179, 224, 0.2);
   }
+  /* Scale down X and O to match checkmark size */
+  .rating-container .emoji-btn:nth-child(1),
+  .rating-container .emoji-btn:nth-child(2) {
+    font-size: 18px;
+  }
 
   .rating-question, .green-flag-container, .red-flag-container {
     background: white;
     border-radius: var(--radius);
-    padding: 15px;
-    margin: 10px 0;
+    padding: 10px;
+    margin: 6px 0;
     border: 1px solid #E5E7EB;
     box-shadow: var(--shadow);
   }
-  .rating-question label { text-align: center; font-weight: 500; margin-bottom: 10px; font-size: 14px; }
+  .rating-question label { text-align: center; font-weight: 500; margin-bottom: 6px; font-size: 13px; }
 
   label {
     display: block;
@@ -188,7 +205,6 @@
     margin-top: 10px;
   }
   .green-flag-btn, .red-flag-btn {
-    background-color: white;
     padding: 8px 12px;
     border-radius: var(--radius);
     cursor: pointer;
@@ -202,7 +218,8 @@
   }
   .green-flag-btn {
     border: 2px solid var(--success);
-    color: var(--success);
+    color: var(--success-text);
+    background-color: var(--success-light-bg);
   }
   .green-flag-btn:hover, .green-flag-btn.active {
     background-color: var(--success);
@@ -211,7 +228,8 @@
   }
   .red-flag-btn {
     border: 2px solid var(--danger);
-    color: var(--danger);
+    color: var(--danger-text);
+    background-color: var(--danger-light-bg);
   }
   .red-flag-btn:hover, .red-flag-btn.active {
     background-color: var(--danger);
@@ -315,14 +333,16 @@
 
  <div id="daily" class="section active">
  <form id="dailyForm">
- <div class="question">
+ <!-- Compact layout: Date and Market on same line -->
+ <div style="display: flex; gap: 10px; margin: 12px 0;">
+ <div class="question" style="margin: 0; flex: 0 0 180px;">
  <label for="date">Date:</label>
  <input type="date" id="date" name="date">
  </div>
-
- <div class="question">
+ <div class="question" style="margin: 0; flex: 1;">
  <label for="market_timeframe">Market & Timeframe:</label>
  <input type="text" id="market_timeframe" name="market_timeframe" placeholder="eg. HK, USD/JPY - 1H, 4H, Daily...">
+ </div>
  </div>
  <div id="market-conditions-container"></div>
 
@@ -334,9 +354,9 @@
  <div class="rating-question">
  <label>Entry Quality & Timing Score</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('timing', -1)">❌<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('timing', 0)">⚪<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('timing', 1)">✅<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('timing', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('timing', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('timing', 1)">✔️</button>
  </div>
  </div>
  <div id="timing-dropdown-container"></div>
@@ -350,9 +370,9 @@
  <div class="rating-question">
  <label>Risk Control & Discipline</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('risk', -1)">❌<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('risk', 0)">⚪<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('risk', 1)">✅<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('risk', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('risk', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('risk', 1)">✔️</button>
  </div>
  </div>
  <div id="risk-dropdown-container"></div>
@@ -371,9 +391,9 @@
  <div class="rating-question">
  <label>Setup Quality & Analysis</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('analysis', -1)">❌<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('analysis', 0)">⚪<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('analysis', 1)">✅<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('analysis', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('analysis', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('analysis', 1)">✔️</button>
  </div>
  </div>
  <div id="analysis-dropdown-container"></div>
@@ -393,9 +413,9 @@
  <div class="rating-question">
  <label>Mental State & Discipline</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('discipline', -1)">❌<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('discipline', 0)">⚪<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('discipline', 1)">✅<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('discipline', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('discipline', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('discipline', 1)">✔️</button>
  </div>
  </div>
  <div id="discipline-dropdown-container"></div>
@@ -409,9 +429,9 @@
  <div class="rating-question">
  <label>Exit Timing & Execution</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('exit', -1)">❌<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('exit', 0)">⚪<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('exit', 1)">✅<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('exit', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('exit', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('exit', 1)">✔️</button>
  </div>
  </div>
  <div id="exit-dropdown-container"></div>
@@ -425,9 +445,9 @@
  <div class="rating-question">
  <label>Risk/Reward Outcome</label>
  <div class="rating-container">
- <button type="button" class="emoji-btn" onclick="setRating('results', -1)">❌<br><small>Bad</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('results', 0)">⚪<br><small>OK</small></button>
- <button type="button" class="emoji-btn" onclick="setRating('results', 1)">✅<br><small>Good</small></button>
+ <button type="button" class="emoji-btn" onclick="setRating('results', -1)">❌</button>
+ <button type="button" class="emoji-btn" onclick="setRating('results', 0)">⚪</button>
+ <button type="button" class="emoji-btn" onclick="setRating('results', 1)">✔️</button>
  </div>
  </div>
  
@@ -438,7 +458,7 @@
  </div>
 
  <div class="section-header collapsible positive" onclick="toggleMainSection('green-flags')">
- <span>✅ GREEN TICKS - What I Did Well</span>
+ <span>✔️ GREEN TICKS - What I Did Well</span>
  <span class="arrow">▼</span>
  </div>
  <div class="collapsible-content" id="green-flags-content">
@@ -1210,7 +1230,7 @@ function saveEntry() {
  function scoreToSymbol(score) {
  if (score === -1) return '❌';
  if (score === 0) return '⚪';
- if (score === 1) return '✅';
+ if (score === 1) return '✔️';
  return '';
  }
  
