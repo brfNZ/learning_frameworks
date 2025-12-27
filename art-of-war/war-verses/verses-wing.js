@@ -265,7 +265,27 @@ and generally refers to an empire and its civilization.
 It is also translated as "world" or "all under heaven."`,
 
     
-    "3-2": `[PASTE CHAPTER 3-2 - THE RULE OF NUMBERS HERE]`,
+    "3-2": `THE RULE OF NUMBERS
+In executing an Artful Strategy:
+
+When ten times greater,
+Surround them;
+When five times greater,
+Attack them;
+When two times greater,
+Scatter them.
+
+If the opponent is ready to challenge:
+
+When fewer in number,
+Be ready to evade them;
+When unequal to the match,
+Be ready to avoid them.
+
+Even when smaller opponents have a strong position,
+The larger opponent will capture them.`,
+
+    
     "3-3": `[PASTE CHAPTER 3-3 - THREE ERRORS OF LEADERS HERE]`,
     "3-4": `[PASTE CHAPTER 3-4 - THE ESSENTIALS OF TRIUMPH HERE]`,
     
