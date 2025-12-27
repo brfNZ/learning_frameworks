@@ -62,6 +62,8 @@ These military devices, leading to victory, must not be divulged beforehand.
 
 Now the general who wins a battle makes many calculations in his temple ere the battle is fought. The general who loses a battle makes but few calculations beforehand. Thus do many calculations lead to victory, and few calculations to defeat: how much more no calculation at all! It is by attention to this point that I can foresee who is likely to win or lose.`,
     
+    
+    
     "2": `Sun Tzŭ said: In the operations of war, where there are in the field a thousand swift chariots, as many heavy chariots, and a hundred thousand mail‑clad soldiers, with provisions enough to carry them a thousand li, the expenditure at home and at the front, including entertainment of guests, small items such as glue and paint, and sums spent on chariots and armor, will reach the total of a thousand ounces of silver per day. Such is the cost of raising an army of 100,000 men. 
 
  When you engage in actual fighting, if victory is long in coming, the men’s weapons will grow dull and their ardour will be damped. If you lay siege to a town, you will exhaust your strength. 
@@ -99,6 +101,8 @@ This is called, using the conquered foe to augment one’s own strength.
 In war, then, let your great object be victory, not lengthy campaigns.
 
 Thus it may be known that the leader of armies is the arbiter of the people’s fate, the man on whom it depends whether the nation shall be in peace or in peril.`,
+    
+   
     
     "3": `Sun Tzŭ said: In the practical art of war, the best thing of all is to take the enemy’s country whole and intact; to shatter and destroy it is not so good. So, too, it is better to capture an army entire than to destroy it, to capture a regiment, a detachment or a company entire than to destroy them.
     
@@ -146,7 +150,31 @@ Thus it may be known that the leader of armies is the arbiter of the people’s 
     
     Hence the saying: If you know the enemy and know yourself, you need not fear the result of a hundred battles. If you know yourself but not the enemy, for every victory gained you will also suffer a defeat. If you know neither the enemy nor yourself, you will succumb in every battle.`,
     
-    "4": `[PASTE CHAPTER 4 - TACTICAL DISPOSITIONS HERE]`,
+    
+    
+    "4": `Sun Tzǔ said: The good fighters of old first put themselves beyond the possibility of defeat, and then waited for an opportunity of defeating the enemy.
+To secure ourselves against defeat lies in our own hands, but the opportunity of defeating the enemy is provided by the enemy himself.
+Thus the good fighter is able to secure himself against defeat, but cannot make certain of defeating the enemy.
+Hence the saying: One may know how to conquer without being able to do it.
+Security against defeat implies defensive tactics; ability to defeat the enemy means taking the offensive.
+Standing on the defensive indicates insufficient strength; attacking, a superabundance of strength.
+The general who is skilled in defence hides in the most secret recesses of the earth; he who is skilled in attack flashes forth from the topmost heights of heaven. Thus on the one hand we have ability to protect ourselves; on the other, a victory that is complete.
+To see victory only when it is within the ken of the common herd is not the acme of excellence.
+Neither is it the acme of excellence if you fight and conquer and the whole Empire says, “Well done!”
+To lift an autumn hair is no sign of great strength; to see the sun and moon is no sign of sharp sight; to hear the noise of thunder is no sign of a quick ear.
+What the ancients called a clever fighter is one who not only wins, but excels in winning with ease.
+Hence his victories bring him neither reputation for wisdom nor credit for courage.
+He wins his battles by making no mistakes. Making no mistakes is what establishes the certainty of victory, for it means conquering an enemy that is already defeated.
+
+does not miss the moment for defeating the enemy.
+Thus it is that in war the victorious strategist only seeks battle after the victory has been won, whereas he who is destined to defeat first fights and afterwards looks for victory.
+The consummate leader cultivates the moral law, and strictly adheres to method and discipline; thus it is in his power to control success.
+In respect of military method, we have, firstly, Measurement; secondly, Estimation of quantity; thirdly, Calculation; fourthly, Balancing of chances; fifthly, Victory.
+Measurement owes its existence to Earth; Estimation of quantity to Measurement; Calculation to Estimation of quantity; Balancing of chances to Calculation; and Victory to Balancing of chances.
+A victorious army opposed to a routed one, is as a pound’s weight placed in the scale against a single grain.
+The onrush of a conquering force is like the bursting of pent-up waters into a chasm a thousand fathoms deep.`,
+
+
     
     "5": `[PASTE CHAPTER 5 - ENERGY HERE]`,
     
