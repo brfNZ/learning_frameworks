@@ -137,6 +137,7 @@ a distance of about one third of a mile.
 The term vehicles comes from an ideogram that is also translated as
 "chariot," "wagon," or "cart."`,
 
+    
     "2-2": `SWIFT STRATEGIES
 Once a Challenge is executed, if triumph is prolonged,
 The Strategy becomes dull and the vigor dampened.
@@ -206,9 +207,64 @@ which refers to the downstream region of the Yellow River,
 a heavily populated area in China then and now.`,
 
 
-    "2-4": `[PASTE CHAPTER 2-4 - INCORPORATING THE OPPONENT'S STRENGTH HERE]`,
+    "2-4": `INCORPORATING THE OPPONENT'S STRENGTH
+Those who destroy the opponent are enraged.
+Those who take hold of the opponent can take advantage of their resources.
+Thus, during a Challenge,
+Reward those who are able to seize ten vehicles or more;
+Change the banners and flags of the seized vehicles and incorporate them;
+Treat captives well and train them.
+This is known as using a triumph over the opponent
+To enhance one's own strength.
+
+Among Strategies, therefore,
+The best triumph is a swift one.
+Therefore, leaders who understand Strategy
+Preside over the destiny of the people,
+And determine the stability or instability of the organization.`,
+
     
-    "3-1": `[PASTE CHAPTER 3-1 - ENGAGING THE ENTIRE SYSTEM HERE]`,
+    "3-1": `ENGAGING THE ENTIRE SYSTEM
+Sun Tzu said:
+Generally, in the execution of an Artful Strategy
+To act on an entire organization is ideal; to break an organization is inferior.
+To act on an entire corps is ideal; to break a corps is inferior.
+To act on an entire company is ideal; to break a company is inferior.
+To act on an entire team is ideal; to break a team is inferior.
+To act on an entire unit is ideal; to break a unit is inferior.
+
+Thus, those who win one hundred triumphs in one hundred conflicts
+Do not have supreme skill.
+Those who have supreme skill
+Use Strategy to bend others without coming to conflict.
+
+The ideal Strategy, therefore, is to thwart a Plan.
+The next best is to thwart a Negotiation.
+The next best is to thwart a Strategy.
+The inferior politic is to Attack a Fortified Area.
+
+Attacking a Fortified Area is an Art of last resort:
+It takes three months to complete the preparations
+Of armored vehicles, tools, and talent;
+It takes three months longer to position a gate in the wall.
+Furious leaders will not triumph, but will swarm, ant-like,
+So that one third of their Force will be destroyed
+And still the Fortification will not be uprooted.
+This is the catastrophe of such an Attack.
+
+Those who are skilled in executing a Strategy
+Bend the strategy of others without conflict,
+Uproot the Fortifications of others without Attacking;
+Absorb the organizations of others without prolonged operations.
+It is essential to engage completely with the Entire System.
+Thus the Strategy is never-ending and the gains are complete.
+Such is the Art of the Plan of Attack.
+___________________________________________
+The term Entire System comes from the ideograms for "below heaven"
+and generally refers to an empire and its civilization.
+It is also translated as "world" or "all under heaven."`,
+
+    
     "3-2": `[PASTE CHAPTER 3-2 - THE RULE OF NUMBERS HERE]`,
     "3-3": `[PASTE CHAPTER 3-3 - THREE ERRORS OF LEADERS HERE]`,
     "3-4": `[PASTE CHAPTER 3-4 - THE ESSENTIALS OF TRIUMPH HERE]`,
