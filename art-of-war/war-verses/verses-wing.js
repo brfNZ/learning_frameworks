@@ -169,7 +169,43 @@ The term Force comes from an ideogram that can also be translated as
 "military," "corps," or "national defense."`,
 
     
-    "2-3": `[PASTE CHAPTER 2-3 - USING THE OPPONENT'S RESOURCES HERE]`,
+    "2-3": `USING THE OPPONENT'S RESOURCES
+Those who are skilled in executing a Strategy
+Do not return again and again to levy taxes or to transport provisions.
+They bring what is useful from the organization
+And let their opponent show them the way to provisions.
+In this way the Force is adequately fed.
+
+When an organization transports to its corps at a distance,
+The long-distance transport impoverishes the People.
+When the corps is nearby, prices inflate,
+And inflated prices use up the wealth of the People.
+As the wealth is used up, taxes become larger and more urgent.
+And as the state's wealth is depleted, its strength is compromised.
+The homes of the People are emptied,
+Along with seventy percent of their disposable income.
+Sixty percent of the public expenditures go for
+Broken vehicles and tired horses,
+Armor, arrows, and crossbows,
+Spears, shields, and mantelets,
+And heavier oxen and larger vehicles.
+
+Therefore, clever leaders endeavor to use their opponent's food.
+One container of the opponent's food
+Is the same as twenty containers of their own;
+And one unit of fodder
+Is the same as twenty units of their own.
+___________________________________________
+The word People is from the Chinese expression "the hundred families," and refers to
+the one hundred clan names
+or to all of the population.
+The word unit is from the Chinese word dan, which can also be translated as "picul":
+a dry measure for grain that is roughly equal to 135 pounds.
+The word state comes from the ideograms for "Central Plains,"
+which refers to the downstream region of the Yellow River,
+a heavily populated area in China then and now.`,
+
+
     "2-4": `[PASTE CHAPTER 2-4 - INCORPORATING THE OPPONENT'S STRENGTH HERE]`,
     
     "3-1": `[PASTE CHAPTER 3-1 - ENGAGING THE ENTIRE SYSTEM HERE]`,
