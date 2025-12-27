@@ -318,7 +318,23 @@ The term Entire Force comes from the ideograms for "three forces,"
 and refers to the military troop formations of advance, backup, and main divisions.`,
 
     
-    "3-4": `[PASTE CHAPTER 3-4 - THE ESSENTIALS OF TRIUMPH HERE]`,
+    "3-4": `THE ESSENTIALS OF TRIUMPH
+There are Five ways triumph can be known:
+Those who know when to challenge and when not to challenge will triumph.
+Those who recognize how to use the numerous and the few will triumph.
+Those who agree on superior and inferior objectives will triumph.
+Those who prepare to lie in wait for the unprepared will triumph.
+Those who lead without interference from a Ruler will triumph.
+
+Those who know these Five, as well as the Tao, will triumph.
+
+Thus, it is said:
+"Know the other and know yourself:
+One hundred challenges without danger.
+Know not the other and yet know yourself:
+One triumph for one defeat.
+Know not the other and know not yourself:
+Every challenge is certain peril.`,
     
     "4-1": `[PASTE CHAPTER 4-1 - THE POWER DEFENSE HERE]`,
     "4-2": `[PASTE CHAPTER 4-2 - THE TRIUMPH OF NO EFFORT HERE]`,
