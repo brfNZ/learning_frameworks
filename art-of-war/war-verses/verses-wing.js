@@ -286,7 +286,38 @@ Even when smaller opponents have a strong position,
 The larger opponent will capture them.`,
 
     
-    "3-3": `[PASTE CHAPTER 3-3 - THREE ERRORS OF LEADERS HERE]`,
+    "3-3": `THREE ERRORS OF LEADERS
+Leaders are those who protect the organization.
+If the protection is complete, the organization will be strong.
+If the protection is flawed, the organization will be vulnerable.
+
+A Ruler can bring adversity to the Force in three ways:
+By not understanding that the Force is unable to advance
+And calling for an advance;
+Or not understanding that the Force is unable to retreat,
+And calling for a retreat.
+This is called hobbling the Force.
+
+By not understanding the Work of the Entire Force
+And aligning the Entire Force along political lines,
+As a result, individuals in the Force become doubtful.
+
+By not understanding the natural authority of the Entire Force
+And aligning the Entire Force with appointed officials,
+As a result, individuals in the Force become skeptical.
+
+When the Entire Force is doubtful, and moreover skeptical,
+Other leaders can cause serious problems.
+This is what is meant by a disordered Force leading to another's triumph.
+___________________________________________
+The word Ruler comes from the Chinese word chu,
+which can be translated as "monarch" or "king."
+It refers to the highest authority, such as a government and its laws and charters.
+
+The term Entire Force comes from the ideograms for "three forces,"
+and refers to the military troop formations of advance, backup, and main divisions.`,
+
+    
     "3-4": `[PASTE CHAPTER 3-4 - THE ESSENTIALS OF TRIUMPH HERE]`,
     
     "4-1": `[PASTE CHAPTER 4-1 - THE POWER DEFENSE HERE]`,
