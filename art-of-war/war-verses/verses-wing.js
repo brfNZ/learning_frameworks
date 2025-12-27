@@ -137,7 +137,38 @@ a distance of about one third of a mile.
 The term vehicles comes from an ideogram that is also translated as
 "chariot," "wagon," or "cart."`,
 
-    "2-2": `[PASTE CHAPTER 2-2 - SWIFT STRATEGIES HERE]`,
+    "2-2": `SWIFT STRATEGIES
+Once a Challenge is executed, if triumph is prolonged,
+The Strategy becomes dull and the vigor dampened.
+If a Fortified Area is attacked,
+One's strength is compromised.
+If the Force's operations in the field are prolonged,
+The support of the organization will be insufficient.
+
+When Strategy is dull and vigor dampened,
+When strength is compromised and resources depleted,
+Other leaders will rise up
+To seize the opportunity of this impairment.
+
+Even those who are very clever
+Cannot remedy the consequences!
+
+Crude yet quick Strategies have been known,
+But skill has yet to be observed in prolonged operations.
+A prolonged Strategy has yet to bring advantage to an organization.
+
+Therefore, those who are not entirely aware
+Of Strategies that are disadvantageous,
+Cannot be entirely aware
+Of Strategies that are advantageous.
+___________________________________________
+The term Fortified Area comes from a Chinese ideogram that refers to the walls of a city.
+Large townships in early China were situated inside high walls built
+to protect the town from bandits or invaders.
+The term Force comes from an ideogram that can also be translated as
+"military," "corps," or "national defense."`,
+
+    
     "2-3": `[PASTE CHAPTER 2-3 - USING THE OPPONENT'S RESOURCES HERE]`,
     "2-4": `[PASTE CHAPTER 2-4 - INCORPORATING THE OPPONENT'S STRENGTH HERE]`,
     
