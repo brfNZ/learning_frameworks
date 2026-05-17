@@ -256,11 +256,19 @@
             line-height: 1;
             border-radius: 4px;
             cursor: pointer;
+            transition: all 0.15s ease;
+            filter: grayscale(1) contrast(0.5) opacity(0.6);
         }
         .card-actions-top button:hover {
             background: var(--border-light);
             color: var(--text);
             border-color: var(--text-faint);
+            filter: grayscale(0) contrast(1) opacity(1);
+        }
+        .card-actions-top button.delete-btn:hover {
+            color: var(--danger);
+            background: var(--learn-bg);
+            border-color: var(--danger);
         }
 
         .edit-form {
@@ -1136,7 +1144,7 @@
                             <div class="card-actions-top">
                                 <button onclick="event.stopPropagation(); toggleEdit(${index})" title="Edit">✏️</button>
                                 <button onclick="event.stopPropagation(); openLockModal(${index}, 'lock')" title="Lock">🔒</button>
-                                <button onclick="event.stopPropagation(); deleteTally(${index})" title="Delete">×</button>
+                                <button class="delete-btn" onclick="event.stopPropagation(); deleteTally(${index})" title="Delete">×</button>
                             </div>
                         </div>
 
@@ -1274,8 +1282,9 @@
         }
 
         function deleteTally(index) {
-            if (!confirm('Delete this tally permanently?')) return;
             const data = loadData();
+            const name = data[index] && data[index].name ? data[index].name : 'this tally';
+            if (!confirm(`Delete "${name}" permanently?`)) return;
             const state = loadCommentsState();
             delete state[index];
             // Reindex remaining states
