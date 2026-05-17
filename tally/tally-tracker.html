@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Tally</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --bg-elevated: #161b22;
+            --bg-input: #0d1117;
+            --border: #30363d;
+            --border-light: #21262d;
+            --text: #c9d1d9;
+            --text-heading: #e6edf3;
+            --text-muted: #8b949e;
+            --text-faint: #6e7681;
+            --accent: #58a6ff;
+            --accent-btn: #238636;
+            --accent-btn-hover: #2ea043;
+            --secondary-btn: #1f6feb;
+            --secondary-btn-hover: #388bfd;
+            --danger: #da3633;
+            --danger-hover: #f85149;
+            --win: #3fb950;
+            --win-bg: rgba(63, 185, 80, 0.20);
+            --learn: #f85149;
+            --learn-bg: rgba(248, 81, 73, 0.20);
+            --note-bg: #8b949e22;
+            --progress-bg: #21262d;
+            --hint: #f0883e;
+            --shadow: rgba(0,0,0,0.3);
+            --hl-blue: #58a6ff;
+            --hl-orange: #f0883e;
+            --hl-purple: #a371f7;
+            --hl-yellow: #e3b341;
+            --hl-blue-tint: rgba(88, 166, 255, 0.10);
+            --hl-orange-tint: rgba(240, 136, 62, 0.10);
+            --hl-purple-tint: rgba(163, 113, 247, 0.10);
+            --hl-yellow-tint: rgba(227, 179, 65, 0.10);
+        }
+
+        [data-theme="light"] {
+            --bg: #f6f8fa;
+            --bg-elevated: #ffffff;
+            --bg-input: #f6f8fa;
+            --border: #d0d7de;
+            --border-light: #eaeef2;
+            --text: #1f2328;
+            --text-heading: #1f2328;
+            --text-muted: #656d76;
+            --text-faint: #8c959f;
+            --accent: #0969da;
+            --accent-btn: #1a7f37;
+            --accent-btn-hover: #2c974b;
+            --secondary-btn: #0969da;
+            --secondary-btn-hover: #0550ae;
+            --danger: #cf222e;
+            --danger-hover: #a40e26;
+            --win: #1a7f37;
+            --win-bg: rgba(26, 127, 55, 0.16);
+            --learn: #cf222e;
+            --learn-bg: rgba(207, 34, 46, 0.16);
+            --note-bg: #f6f8fa;
+            --progress-bg: #eaeef2;
+            --hint: #9a6700;
+            --shadow: rgba(31,35,40,0.08);
+            --hl-blue: #0969da;
+            --hl-orange: #bc4c00;
+            --hl-purple: #8250df;
+            --hl-yellow: #7d4e00;
+            --hl-blue-tint: rgba(9, 105, 218, 0.06);
+            --hl-orange-tint: rgba(188, 76, 0, 0.06);
+            --hl-purple-tint: rgba(130, 80, 223, 0.06);
+            --hl-yellow-tint: rgba(125, 78, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 2rem 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.5;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 { color: var(--accent); font-size: 1.5rem; }
+        .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+        .theme-toggle {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .theme-toggle:hover {
+            background: var(--border-light);
+            color: var(--text-heading);
+            transform: scale(1.05);
+        }
+
+        .add-new {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            transition: background 0.2s;
+        }
+        .add-new-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+        .add-new-row:last-child { margin-bottom: 0; }
+        .add-new input, .add-new select {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .add-new input[name="name"] { flex: 2; min-width: 150px; }
+        .add-new input[name="target"] { flex: 1; min-width: 80px; }
+        .add-new input[name="unit"] { flex: 1; min-width: 80px; }
+        .add-new select { min-width: 140px; }
+        
+        button {
+            background: var(--accent-btn);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        button:hover { background: var(--accent-btn-hover); }
+        button.secondary { background: var(--secondary-btn); }
+        button.secondary:hover { background: var(--secondary-btn-hover); }
+        button.danger { background: var(--danger); }
+        button.danger:hover { background: var(--danger-hover); }
+        button.ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.35rem 0.6rem;
+            font-size: 0.8rem;
+        }
+        button.ghost:hover {
+            background: var(--border-light);
+            color: var(--text);
+        }
+
+        .card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
+            overflow: hidden;
+            border-left: 6px solid transparent;
+        }
+        .card:hover { border-color: var(--accent); }
+        .card.locked {
+            border-color: var(--text-faint);
+            background: var(--bg-elevated);
+            cursor: pointer;
+        }
+        .card.locked:hover { border-color: var(--hint); }
+
+        /* Top accent bar */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: transparent;
+            border-radius: 12px 12px 0 0;
+        }
+
+        /* Highlight styles — left border + top bar + background tint */
+        .card.hl-blue { border-left-color: var(--hl-blue); background: var(--hl-blue-tint); }
+        .card.hl-blue::before { background: var(--hl-blue); }
+        .card.hl-orange { border-left-color: var(--hl-orange); background: var(--hl-orange-tint); }
+        .card.hl-orange::before { background: var(--hl-orange); }
+        .card.hl-purple { border-left-color: var(--hl-purple); background: var(--hl-purple-tint); }
+        .card.hl-purple::before { background: var(--hl-purple); }
+        .card.hl-yellow { border-left-color: var(--hl-yellow); background: var(--hl-yellow-tint); }
+        .card.hl-yellow::before { background: var(--hl-yellow); }
+
+        /* Win/fail top bar overrides highlight top bar */
+        .card.win::before { background: var(--win); }
+        .card.fail::before { background: var(--learn); }
+
+        /* Win/fail border — left stays highlight, perimeter goes status */
+        .card.win { border-color: var(--win); }
+        .card.fail { border-color: var(--learn); }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-heading);
+        }
+        .card-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+        .card-actions-top {
+            display: flex;
+            gap: 0.3rem;
+        }
+        .card-actions-top button {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-faint);
+            padding: 0.25rem 0.45rem;
+            font-size: 0.75rem;
+            line-height: 1;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .card-actions-top button:hover {
+            background: var(--border-light);
+            color: var(--text);
+            border-color: var(--text-faint);
+        }
+
+        .edit-form {
+            display: none;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            transition: background 0.2s;
+        }
+        .edit-form.active { display: block; }
+        .edit-form input {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.4rem 0.6rem;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .counters-row {
+            display: flex;
+            gap: 1rem;
+            margin: 0.5rem 0;
+            flex-wrap: wrap;
+        }
+        .counter-block {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+            padding: 0.4rem 0.5rem;
+            border-radius: 6px;
+            background: var(--bg-input);
+            transition: background 0.2s;
+        }
+        .counter-block.positive { border: 1px solid var(--accent-btn); }
+        .counter-block.negative { border: 1px solid var(--danger); }
+        .counter-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.15rem;
+        }
+        .counter-block.positive .counter-label { color: var(--win); }
+        .counter-block.negative .counter-label { color: var(--learn); }
+        .counter-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        .counter-block.positive .counter-value { color: var(--win); }
+        .counter-block.negative .counter-value { color: var(--learn); }
+
+        .single-counter {
+            text-align: center;
+            margin: 0.5rem 0;
+        }
+        .single-counter .count-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .progress-area { margin: 0.5rem 0; }
+        .progress-bar-bg {
+            background: var(--progress-bg);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            transition: background 0.2s;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-btn), var(--win));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            min-width: 4px;
+        }
+        .progress-bar-fill.near { background: linear-gradient(90deg, #d29922, #e3b341); }
+        [data-theme="light"] .progress-bar-fill.near { background: linear-gradient(90deg, #9a6700, #bf8700); }
+        .progress-bar-fill.done { background: linear-gradient(90deg, #8957e5, #a371f7); }
+        [data-theme="light"] .progress-bar-fill.done { background: linear-gradient(90deg, #8250df, #a475f9); }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.3rem;
+            font-size: 0.75rem;
+        }
+        .target-display { color: var(--text-muted); }
+
+        .actions {
+            display: flex;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .actions button { font-size: 0.85rem; padding: 0.4rem 0.9rem; }
+        .actions button.pos-btn { background: var(--accent-btn); }
+        .actions button.neg-btn { background: var(--danger); }
+        .note-input {
+            flex: 1;
+            min-width: 140px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.4rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .mood-buttons {
+            display: flex;
+            gap: 0.2rem;
+            align-items: center;
+        }
+        .mood-btn {
+            background: var(--border-light);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 0.3rem 0.5rem;
+            font-size: 0.95rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: all 0.15s ease;
+        }
+        .mood-btn:hover {
+            background: var(--border);
+            border-color: var(--text-faint);
+            transform: scale(1.1);
+        }
+        .mood-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Lock modal */
+        .lock-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--shadow);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .lock-modal-overlay.active {
+            display: flex;
+        }
+        .lock-modal {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 8px 24px var(--shadow);
+            transition: background 0.2s;
+        }
+        .lock-modal h3 {
+            color: var(--text-heading);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .lock-modal input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.6rem;
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .lock-modal .hint-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        .lock-modal .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        /* Locked state display */
+        .locked-content {
+            text-align: center;
+            padding: 1.5rem 1rem;
+        }
+        .locked-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .locked-text {
+            font-size: 1rem;
+            color: var(--text-faint);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .locked-sub {
+            font-size: 0.8rem;
+            color: var(--text-faint);
+        }
+
+        .comments-section {
+            margin-top: 0.5rem;
+            border-top: 1px solid var(--border-light);
+            padding-top: 0.5rem;
+        }
+        .comments-header {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        .comments-header:hover { color: var(--accent); }
+        .comments-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .comments-list.expanded {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .comment-entry {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-start;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.8rem;
+            position: relative;
+        }
+        .comment-entry:last-child { border-bottom: none; }
+        .comment-badge {
+            display: inline-block;
+            padding: 0.1rem 0.35rem;
+            border-radius: 3px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            flex-shrink: 0;
+            height: fit-content;
+            margin-top: 0.15rem;
+        }
+        .comment-badge.pos { background: var(--win-bg); color: var(--win); }
+        .comment-badge.neg { background: var(--learn-bg); color: var(--learn); }
+        .comment-badge.simple { background: var(--note-bg); color: var(--accent); }
+        .comment-badge.note { background: var(--note-bg); color: var(--text-muted); }
+        .comment-time {
+            color: var(--text-faint);
+            font-size: 0.7rem;
+            white-space: nowrap;
+            margin-top: 0.15rem;
+        }
+        .comment-text {
+            color: var(--text);
+            flex: 1;
+            line-height: 1.4;
+            padding: 0.05rem 0;
+        }
+        .comment-emoji {
+            font-size: 1rem;
+            margin-right: 0.3rem;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 0.2rem;
+            flex-shrink: 0;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            align-items: center;
+            margin-top: 0.05rem;
+        }
+        .comment-entry:hover .comment-actions {
+            opacity: 1;
+        }
+        .comment-actions button {
+            padding: 0.15rem 0.4rem;
+            font-size: 0.8rem;
+            line-height: 1;
+            min-width: 0;
+            border-radius: 4px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-faint);
+            cursor: pointer;
+        }
+        .comment-actions button:hover {
+            color: var(--text);
+            background: var(--border-light);
+            border-color: var(--text-faint);
+        }
+        .comment-actions .delete-comment:hover {
+            color: var(--learn);
+            background: var(--learn-bg);
+            border-color: var(--learn);
+        }
+
+        .comment-edit-form {
+            display: none;
+            flex: 1;
+            gap: 0.3rem;
+            align-items: center;
+        }
+        .comment-edit-form.active {
+            display: flex;
+        }
+        .comment-edit-form input {
+            flex: 1;
+            background: var(--bg-input);
+            border: 1px solid var(--secondary-btn);
+            color: var(--text);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .comment-edit-form button {
+            padding: 0.2rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 3rem 1rem;
+        }
+
+        .export-area {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .export-area button { background: var(--text-faint); }
+        .export-area button:hover { background: var(--text-muted); }
+        .export-area button.restore {
+            background: var(--secondary-btn);
+        }
+        .export-area button.restore:hover {
+            background: var(--secondary-btn-hover);
+        }
+        #restoreInput {
+            display: none;
+        }
+
+        .export-json {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            max-height: 150px;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .status-banner {
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            display: none;
+        }
+        .status-banner.win { 
+            display: block; 
+            background: var(--win-bg); 
+            color: var(--win); 
+            border: 1px solid var(--win); 
+        }
+        .status-banner.fail { 
+            display: block; 
+            background: var(--learn-bg); 
+            color: var(--learn); 
+            border: 1px solid var(--learn); 
+        }
+
+        .kill-rule {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 0.2rem;
+        }
+        .kill-rule.danger {
+            color: var(--learn);
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .counters-row { flex-direction: column; gap: 0.5rem; }
+            .actions { flex-direction: column; align-items: stretch; }
+            .note-input { width: 100%; }
+            .card-header { flex-direction: column; gap: 0.5rem; }
+            .comment-actions { opacity: 1; }
+            .mood-buttons { justify-content: center; }
+            .export-area { flex-direction: column; }
+            .page-header { flex-direction: column; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div>
+            <h1>🔧 Project Tally</h1>
+            <p class="subtitle">Track wins, learn from losses. Data stays in your browser.</p>
+        </div>
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark">🌙</button>
+    </div>
+
+    <div class="add-new">
+        <div class="add-new-row">
+            <input type="text" id="newName" placeholder="Habit name (e.g., Gave less advice)">
+            <input type="text" id="newTarget" placeholder="Target (e.g., 10)">
+            <input type="text" id="newUnit" value="times" placeholder="Unit">
+        </div>
+        <div class="add-new-row">
+            <select id="newType">
+                <option value="simple">Simple counter</option>
+                <option value="dual">Dual (+/−) counter</option>
+            </select>
+            <select id="newStyle">
+                <option value="default">Default highlight</option>
+                <option value="blue">Blue highlight</option>
+                <option value="orange">Orange highlight</option>
+                <option value="purple">Purple highlight</option>
+                <option value="yellow">Yellow highlight</option>
+            </select>
+            <button onclick="addTally()">Add Tally</button>
+        </div>
+    </div>
+
+    <div id="tallyList"></div>
+
+    <div class="export-area">
+        <button onclick="backupData()">💾 Backup (Download JSON)</button>
+        <button class="restore" onclick="triggerRestore()">📂 Restore (Upload JSON)</button>
+        <input type="file" id="restoreInput" accept=".json" onchange="handleRestore(event)">
+    </div>
+
+    <!-- Lock/Unlock Modal -->
+    <div class="lock-modal-overlay" id="lockModal">
+        <div class="lock-modal">
+            <h3 id="lockModalTitle">Lock Tally</h3>
+            <input type="password" id="lockModalPassword" placeholder="Enter password">
+            <input type="text" id="lockModalHint" placeholder="Hint (optional) — e.g., 'fruit I ate yesterday'">
+            <div class="hint-text">This hint will be shown when unlocking. Leave blank for no hint.</div>
+            <div class="modal-actions">
+                <button class="ghost" onclick="closeLockModal()">Cancel</button>
+                <button onclick="confirmLockAction()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'projectTally_v3';
+        const THEME_KEY = 'projectTally_theme';
+        const COMMENTS_STATE_KEY = 'projectTally_commentsState';
+        let currentLockIndex = null;
+        let currentLockAction = null;
+
+        // ===== THEME =====
+        function initTheme() {
+            const saved = localStorage.getItem(THEME_KEY);
+            if (saved === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.getElementById('themeToggle').textContent = '☀️';
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeToggle');
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            
+            if (isDark) {
+                html.setAttribute('data-theme', 'light');
+                btn.textContent = '☀️';
+                localStorage.setItem(THEME_KEY, 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                btn.textContent = '🌙';
+                localStorage.setItem(THEME_KEY, 'dark');
+            }
+        }
+
+        // ===== COMMENTS TOGGLE STATE =====
+        function loadCommentsState() {
+            try {
+                const raw = localStorage.getItem(COMMENTS_STATE_KEY);
+                return raw ? JSON.parse(raw) : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function saveCommentsState(state) {
+            localStorage.setItem(COMMENTS_STATE_KEY, JSON.stringify(state));
+        }
+
+        function toggleComments(index) {
+            const el = document.getElementById(`comments-${index}`);
+            if (!el) return;
+            
+            const isExpanded = el.classList.toggle('expanded');
+            const state = loadCommentsState();
+            state[index] = isExpanded;
+            saveCommentsState(state);
+        }
+
+        // ===== CRYPTO =====
+        async function deriveKey(password, salt) {
+            const encoder = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw', encoder.encode(password), { name: 'PBKDF2' }, false, ['deriveKey']
+            );
+            return crypto.subtle.deriveKey(
+                { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['encrypt', 'decrypt']
+            );
+        }
+
+        async function encryptData(data, password) {
+            const encoder = new TextEncoder();
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const key = await deriveKey(password, salt);
+            const ciphertext = await crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv }, key, encoder.encode(JSON.stringify(data))
+            );
+            return {
+                salt: Array.from(salt),
+                iv: Array.from(iv),
+                data: Array.from(new Uint8Array(ciphertext))
+            };
+        }
+
+        async function decryptData(encrypted, password) {
+            try {
+                const salt = new Uint8Array(encrypted.salt);
+                const iv = new Uint8Array(encrypted.iv);
+                const data = new Uint8Array(encrypted.data);
+                const key = await deriveKey(password, salt);
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv }, key, data
+                );
+                return JSON.parse(new TextDecoder().decode(decrypted));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // ===== DATA =====
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) {
+                    const old = localStorage.getItem('projectTally_v2');
+                    if (old) {
+                        const parsed = JSON.parse(old);
+                        localStorage.setItem(STORAGE_KEY, old);
+                        return migrateItem(parsed);
+                    }
+                    return [];
+                }
+                const parsed = JSON.parse(raw);
+                return migrateItem(parsed);
+            } catch (e) {
+                console.error('loadData error:', e);
+                return [];
+            }
+        }
+
+        function migrateItem(items) {
+            if (!Array.isArray(items)) return [];
+            return items.map(item => {
+                const comments = Array.isArray(item.comments) ? item.comments : [];
+                const migratedComments = comments.map(c => {
+                    if (!c) return c;
+                    if (c.counted === undefined) return { ...c, counted: true };
+                    return c;
+                });
+                return {
+                    ...item,
+                    type: item.type || 'simple',
+                    comments: migratedComments,
+                    locked: item.locked || false,
+                    encrypted: item.encrypted || null,
+                    lockHint: item.lockHint || '',
+                    style: item.style || 'default'
+                };
+            });
+        }
+
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function parseTarget(targetStr) {
+            if (!targetStr) return { min: 0, max: 0, kill: 0 };
+            const nums = targetStr.match(/\d+/g);
+            if (!nums) return { min: 0, max: 0, kill: 0 };
+            const max = parseInt(nums[nums.length - 1]);
+            return { min: nums.length > 1 ? parseInt(nums[0]) : max, max, kill: Math.ceil(max / 2) };
+        }
+
+        function getCounts(item) {
+            const comments = Array.isArray(item.comments) ? item.comments : [];
+            const pos = comments.filter(c => c && c.type === 'pos' && c.counted === true).length;
+            const neg = comments.filter(c => c && c.type === 'neg' && c.counted === true).length;
+            const simple = comments.filter(c => c && c.type === 'simple' && c.counted === true).length;
+            return { pos, neg, simple, total: comments.length };
+        }
+
+        function formatDate(iso) {
+            const d = new Date(iso);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${d.getDate()} ${months[d.getMonth()]}`;
+        }
+
+        // ===== LOCK/UNLOCK MODAL =====
+        function openLockModal(index, action) {
+            currentLockIndex = index;
+            currentLockAction = action;
+            const modal = document.getElementById('lockModal');
+            const title = document.getElementById('lockModalTitle');
+            const hintInput = document.getElementById('lockModalHint');
+            
+            if (action === 'lock') {
+                title.textContent = '🔒 Lock Tally';
+                hintInput.style.display = 'block';
+                hintInput.value = '';
+                document.querySelector('.hint-text').style.display = 'block';
+            } else {
+                title.textContent = '🔓 Unlock Tally';
+                hintInput.style.display = 'none';
+                document.querySelector('.hint-text').style.display = 'none';
+                
+                const data = loadData();
+                if (data[index] && data[index].lockHint) {
+                    title.innerHTML = `🔓 Unlock Tally<br><span style="font-size:0.8rem;color:var(--hint);margin-top:0.3rem;display:block;">Hint: ${escapeHtml(data[index].lockHint)}</span>`;
+                }
+            }
+            
+            document.getElementById('lockModalPassword').value = '';
+            modal.classList.add('active');
+            document.getElementById('lockModalPassword').focus();
+        }
+
+        function closeLockModal() {
+            document.getElementById('lockModal').classList.remove('active');
+            currentLockIndex = null;
+            currentLockAction = null;
+        }
+
+        async function confirmLockAction() {
+            const password = document.getElementById('lockModalPassword').value;
+            if (!password) {
+                alert('Password is required');
+                return;
+            }
+
+            const data = loadData();
+            if (!data[currentLockIndex]) return;
+
+            if (currentLockAction === 'lock') {
+                const hint = document.getElementById('lockModalHint').value.trim();
+                const item = data[currentLockIndex];
+                const payload = {
+                    name: item.name,
+                    target: item.target,
+                    unit: item.unit,
+                    type: item.type,
+                    comments: item.comments,
+                    created: item.created,
+                    style: item.style
+                };
+                
+                const encrypted = await encryptData(payload, password);
+                data[currentLockIndex] = {
+                    ...item,
+                    locked: true,
+                    encrypted: encrypted,
+                    lockHint: hint,
+                    name: '🔒 Locked',
+                    comments: [],
+                    target: '',
+                    unit: ''
+                };
+                saveData(data);
+                render();
+                closeLockModal();
+            } else {
+                const item = data[currentLockIndex];
+                if (!item.encrypted) return;
+                
+                const decrypted = await decryptData(item.encrypted, password);
+                if (!decrypted) {
+                    alert('Incorrect password');
+                    return;
+                }
+                
+                data[currentLockIndex] = {
+                    ...item,
+                    locked: false,
+                    encrypted: null,
+                    name: decrypted.name,
+                    target: decrypted.target,
+                    unit: decrypted.unit,
+                    type: decrypted.type,
+                    comments: decrypted.comments,
+                    created: decrypted.created,
+                    style: decrypted.style || 'default'
+                };
+                saveData(data);
+                render();
+                closeLockModal();
+            }
+        }
+
+        // ===== RENDER =====
+        function render() {
+            const list = document.getElementById('tallyList');
+            const data = loadData();
+            const commentsState = loadCommentsState();
+
+            if (!Array.isArray(data) || data.length === 0) {
+                list.innerHTML = '<div class="empty-state">No tallies yet. Add your first habit above.</div>';
+                return;
+            }
+
+            try {
+                const html = data.map((item, index) => {
+                    if (!item || typeof item !== 'object') return '';
+
+                    const styleClass = item.style && item.style !== 'default' ? `hl-${item.style}` : '';
+
+                    // LOCKED STATE
+                    if (item.locked) {
+                        return `
+                        <div class="card locked ${styleClass}" id="card-${index}" onclick="openLockModal(${index}, 'unlock')">
+                            <div class="locked-content">
+                                <div class="locked-icon">🔒</div>
+                                <div class="locked-text">Locked</div>
+                                <div class="locked-sub">Click to unlock</div>
+                            </div>
+                        </div>
+                        `;
+                    }
+
+                    // UNLOCKED STATE
+                    const target = parseTarget(item.target);
+                    const isDual = item.type === 'dual';
+                    const counts = getCounts(item);
+                    const pos = counts.pos;
+                    const neg = counts.neg;
+
+                    const currentCount = isDual ? pos : counts.simple;
+                    const pct = target.max > 0 ? Math.min((currentCount / target.max) * 100, 100) : 0;
+                    const barClass = pct >= 100 ? 'done' : pct >= 75 ? 'near' : '';
+
+                    const killThreshold = target.kill;
+                    const isKilled = isDual && neg >= killThreshold;
+                    const isWin = isDual && pos >= target.max && !isKilled;
+
+                    const comments = Array.isArray(item.comments) ? item.comments : [];
+                    const isCommentsExpanded = commentsState[index] || false;
+                    let commentsHtml = '';
+                    if (comments.length > 0) {
+                        const reversed = comments.slice().reverse();
+                        commentsHtml = `
+                        <div class="comments-section">
+                            <div class="comments-header" onclick="toggleComments(${index})">
+                                💬 ${comments.length} comment${comments.length !== 1 ? 's' : ''}
+                                <span style="color:var(--text-faint)">(click to toggle)</span>
+                            </div>
+                            <div class="comments-list ${isCommentsExpanded ? 'expanded' : ''}" id="comments-${index}">
+                                ${reversed.map((c, displayIdx) => {
+                                    const actualIdx = comments.length - 1 - displayIdx;
+                                    const emojiPrefix = c && c.emoji ? `<span class="comment-emoji">${c.emoji}</span>` : '';
+                                    const badgeType = c && c.counted === false ? 'note' : (c && c.type ? c.type : 'simple');
+                                    return `
+                                    <div class="comment-entry" id="comment-${index}-${displayIdx}">
+                                        <span class="comment-badge ${badgeType}">${badgeType === 'pos' ? 'Win' : badgeType === 'neg' ? 'Learn' : badgeType === 'note' ? 'Note' : 'Note'}</span>
+                                        <span class="comment-time">${formatDate(c && c.date ? c.date : new Date().toISOString())}</span>
+                                        <span class="comment-text" id="comment-text-${index}-${displayIdx}">${emojiPrefix}${escapeHtml(c && c.text ? c.text : '')}</span>
+                                        <div class="comment-edit-form" id="comment-edit-${index}-${displayIdx}">
+                                            <input type="text" value="${escapeHtml(c && c.text ? c.text : '')}" id="comment-input-${index}-${displayIdx}">
+                                            <button class="secondary" onclick="saveCommentEdit(${index}, ${actualIdx}, ${displayIdx})">✓</button>
+                                            <button class="ghost" onclick="cancelCommentEdit(${index}, ${displayIdx})">✕</button>
+                                        </div>
+                                        <div class="comment-actions">
+                                            <button class="edit-comment" onclick="startCommentEdit(${index}, ${displayIdx})" title="Edit">✎</button>
+                                            <button class="delete-comment" onclick="deleteComment(${index}, ${actualIdx})" title="Delete">×</button>
+                                        </div>
+                                    </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                        `;
+                    }
+
+                    let statusClass = '';
+                    let statusText = '';
+                    if (isWin) {
+                        statusClass = 'win';
+                        statusText = '🏆 Goal reached — WIN';
+                    } else if (isKilled) {
+                        statusClass = 'fail';
+                        statusText = `⚠ Learn count hit ${killThreshold} — GAME OVER`;
+                    }
+
+                    const killText = isDual
+                        ? `Learn limit: ${neg}/${killThreshold}${isKilled ? ' — EXCEEDED' : ''}`
+                        : '';
+
+                    const moodButtons = `
+                    <div class="mood-buttons">
+                        <button class="mood-btn" onclick="addEmojiToInput(${index}, '😊')" title="Good">😊</button>
+                        <button class="mood-btn" onclick="addEmojiToInput(${index}, '😐')" title="Neutral">😐</button>
+                        <button class="mood-btn" onclick="addEmojiToInput(${index}, '😞')" title="Struggle">😞</button>
+                    </div>
+                    `;
+
+                    // Style dropdown options for edit form
+                    const styleOptions = [
+                        { value: 'default', label: 'Default highlight' },
+                        { value: 'blue', label: 'Blue highlight' },
+                        { value: 'orange', label: 'Orange highlight' },
+                        { value: 'purple', label: 'Purple highlight' },
+                        { value: 'yellow', label: 'Yellow highlight' }
+                    ];
+                    const editStyleOptions = styleOptions.map(o => 
+                        `<option value="${o.value}" ${(item.style || 'default') === o.value ? 'selected' : ''}>${o.label}</option>`
+                    ).join('');
+
+                    return `
+                    <div class="card ${statusClass} ${styleClass}" id="card-${index}">
+                        ${statusText ? `<div class="status-banner ${statusClass}">${statusText}</div>` : ''}
+
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">${escapeHtml(item.name || 'Untitled')}</div>
+                                <div class="card-meta">
+                                    ${isDual ? 'Dual counter' : 'Simple counter'} •
+                                    Goal: ${escapeHtml(item.target || '—')} ${escapeHtml(item.unit || '')}
+                                </div>
+                            </div>
+                            <div class="card-actions-top">
+                                <button onclick="event.stopPropagation(); toggleEdit(${index})" title="Edit">✏️</button>
+                                <button onclick="event.stopPropagation(); openLockModal(${index}, 'lock')" title="Lock">🔒</button>
+                                <button onclick="event.stopPropagation(); deleteTally(${index})" title="Delete">×</button>
+                            </div>
+                        </div>
+
+                        <div class="edit-form" id="edit-${index}">
+                            <input type="text" id="edit-name-${index}" value="${escapeHtml(item.name || '')}">
+                            <input type="text" id="edit-target-${index}" value="${escapeHtml(item.target || '')}">
+                            <input type="text" id="edit-unit-${index}" value="${escapeHtml(item.unit || 'times')}">
+                            <select id="edit-style-${index}" style="background:var(--bg-input);border:1px solid var(--border);color:var(--text);padding:0.4rem 0.6rem;border-radius:4px;font-size:0.85rem;margin-right:0.5rem;margin-bottom:0.5rem;">
+                                ${editStyleOptions}
+                            </select>
+                            <button onclick="saveEdit(${index})">Save</button>
+                            <button class="ghost" onclick="toggleEdit(${index})">Cancel</button>
+                        </div>
+
+                        ${isDual ? `
+                        <div class="counters-row">
+                            <div class="counter-block positive">
+                                <div class="counter-label">Win</div>
+                                <div class="counter-value">${pos}</div>
+                            </div>
+                            <div class="counter-block negative">
+                                <div class="counter-label">Learn</div>
+                                <div class="counter-value">${neg}</div>
+                            </div>
+                        </div>
+                        ` : `
+                        <div class="single-counter">
+                            <div class="count-display">${counts.simple}</div>
+                        </div>
+                        `}
+
+                        <div class="progress-area">
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill ${barClass}" style="width: ${isKilled ? 0 : pct}%; ${isKilled ? 'transition: width 0.6s ease;' : ''}"></div>
+                            </div>
+                            <div class="stats">
+                                <span>${isDual ? `Win: ${pos} / ${target.max}` : `Count: ${counts.simple}`}</span>
+                                <span class="target-display">
+                                    ${isKilled ? 'Bar frozen — learn limit hit' : (pct >= 100 ? '✓ Goal reached' : Math.round(pct) + '% to goal')}
+                                </span>
+                            </div>
+                            ${isDual ? `<div class="kill-rule ${isKilled ? 'danger' : ''}">${killText}</div>` : ''}
+                        </div>
+
+                        <div class="actions">
+                            <input type="text" class="note-input" placeholder="Comment + Enter (or click +1)..." id="note-${index}" onkeypress="handleCommentKeypress(event, ${index})">
+                            ${isDual ? `
+                                <button class="pos-btn" onclick="addEntry(${index}, 'pos')" ${isKilled || isWin ? 'disabled style="opacity:0.4;cursor:not-allowed"' : ''}>+1 Win</button>
+                                <button class="neg-btn" onclick="addEntry(${index}, 'neg')" ${isKilled || isWin ? 'disabled style="opacity:0.4;cursor:not-allowed"' : ''}>+1 Learn</button>
+                                ${moodButtons}
+                            ` : `
+                                <button onclick="addEntry(${index}, 'simple')">+1</button>
+                                ${moodButtons}
+                            `}
+                        </div>
+
+                        ${commentsHtml}
+                    </div>
+                    `;
+                }).join('');
+
+                list.innerHTML = html || '<div class="empty-state">Error rendering tallies. Check console.</div>';
+            } catch (e) {
+                console.error('render error:', e);
+                list.innerHTML = '<div class="empty-state">Error rendering. Check console for details.</div>';
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function addEmojiToInput(index, emoji) {
+            const input = document.getElementById(`note-${index}`);
+            if (!input) return;
+            input.value = (input.value ? input.value + ' ' : '') + emoji;
+            input.focus();
+        }
+
+        function handleCommentKeypress(event, index) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const input = document.getElementById(`note-${index}`);
+                if (!input || !input.value.trim()) return;
+
+                const data = loadData();
+                if (!data[index]) return;
+
+                const note = input.value.trim();
+
+                if (!Array.isArray(data[index].comments)) {
+                    data[index].comments = [];
+                }
+
+                data[index].comments.push({
+                    type: 'note',
+                    text: note,
+                    counted: false,
+                    date: new Date().toISOString()
+                });
+                saveData(data);
+                render();
+            }
+        }
+
+        function addEntry(index, type) {
+            const data = loadData();
+            if (!data[index]) return;
+
+            const counts = getCounts(data[index]);
+            const target = parseTarget(data[index].target);
+            const isKilled = data[index].type === 'dual' && counts.neg >= target.kill;
+            const isWin = data[index].type === 'dual' && counts.pos >= target.max;
+
+            if (isKilled || isWin) return;
+
+            const noteInput = document.getElementById(`note-${index}`);
+            const note = noteInput ? noteInput.value.trim() : '';
+
+            if (!Array.isArray(data[index].comments)) {
+                data[index].comments = [];
+            }
+
+            data[index].comments.push({
+                type,
+                text: note,
+                counted: true,
+                date: new Date().toISOString()
+            });
+            saveData(data);
+            render();
+        }
+
+        function deleteTally(index) {
+            if (!confirm('Delete this tally permanently?')) return;
+            const data = loadData();
+            const state = loadCommentsState();
+            delete state[index];
+            // Reindex remaining states
+            const newState = {};
+            Object.keys(state).forEach(k => {
+                const numK = parseInt(k);
+                if (numK > index) {
+                    newState[numK - 1] = state[k];
+                } else if (numK < index) {
+                    newState[numK] = state[k];
+                }
+            });
+            saveCommentsState(newState);
+            data.splice(index, 1);
+            saveData(data);
+            render();
+        }
+
+        function toggleEdit(index) {
+            const el = document.getElementById(`edit-${index}`);
+            if (el) el.classList.toggle('active');
+        }
+
+        function saveEdit(index) {
+            const data = loadData();
+            if (!data[index]) return;
+
+            const nameEl = document.getElementById(`edit-name-${index}`);
+            const targetEl = document.getElementById(`edit-target-${index}`);
+            const unitEl = document.getElementById(`edit-unit-${index}`);
+            const styleEl = document.getElementById(`edit-style-${index}`);
+
+            if (nameEl) data[index].name = nameEl.value.trim();
+            if (targetEl) data[index].target = targetEl.value.trim();
+            if (unitEl) data[index].unit = unitEl.value.trim();
+            if (styleEl) data[index].style = styleEl.value;
+
+            saveData(data);
+            render();
+        }
+
+        function startCommentEdit(tallyIdx, displayIdx) {
+            const textEl = document.getElementById(`comment-text-${tallyIdx}-${displayIdx}`);
+            const editEl = document.getElementById(`comment-edit-${tallyIdx}-${displayIdx}`);
+            if (textEl) textEl.style.display = 'none';
+            if (editEl) editEl.classList.add('active');
+            const input = document.getElementById(`comment-input-${tallyIdx}-${displayIdx}`);
+            if (input) input.focus();
+        }
+
+        function cancelCommentEdit(tallyIdx, displayIdx) {
+            const textEl = document.getElementById(`comment-text-${tallyIdx}-${displayIdx}`);
+            const editEl = document.getElementById(`comment-edit-${tallyIdx}-${displayIdx}`);
+            if (textEl) textEl.style.display = '';
+            if (editEl) editEl.classList.remove('active');
+        }
+
+        function saveCommentEdit(tallyIdx, actualIdx, displayIdx) {
+            const data = loadData();
+            if (!data[tallyIdx] || !data[tallyIdx].comments[actualIdx]) return;
+
+            const input = document.getElementById(`comment-input-${tallyIdx}-${displayIdx}`);
+            if (!input) return;
+
+            data[tallyIdx].comments[actualIdx].text = input.value.trim();
+            saveData(data);
+            render();
+        }
+
+        function deleteComment(tallyIdx, actualIdx) {
+            if (!confirm('Delete this comment?')) return;
+            const data = loadData();
+            if (!data[tallyIdx] || !data[tallyIdx].comments[actualIdx]) return;
+
+            data[tallyIdx].comments.splice(actualIdx, 1);
+            saveData(data);
+            render();
+        }
+
+        // ===== BACKUP/RESTORE =====
+        function backupData() {
+            const data = loadData();
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const dateStr = new Date().toISOString().slice(0, 10);
+            a.download = `tally-backup-${dateStr}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function triggerRestore() {
+            document.getElementById('restoreInput').click();
+        }
+
+        function handleRestore(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (!Array.isArray(parsed)) {
+                        alert('Invalid backup file: expected an array of tallies.');
+                        return;
+                    }
+                    if (!confirm(`Restore ${parsed.length} tallies? This will replace current data.`)) {
+                        return;
+                    }
+                    const migrated = migrateItem(parsed);
+                    saveData(migrated);
+                    // Clear comments state on restore to avoid index mismatches
+                    localStorage.removeItem(COMMENTS_STATE_KEY);
+                    render();
+                    alert('Restore complete!');
+                } catch (err) {
+                    alert('Error reading file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function addTally() {
+            const nameEl = document.getElementById('newName');
+            const targetEl = document.getElementById('newTarget');
+            const unitEl = document.getElementById('newUnit');
+            const typeEl = document.getElementById('newType');
+            const styleEl = document.getElementById('newStyle');
+
+            const name = nameEl ? nameEl.value.trim() : '';
+            const target = targetEl ? targetEl.value.trim() : '';
+            const unit = unitEl ? unitEl.value.trim() : '';
+            const type = typeEl ? typeEl.value : 'simple';
+            const style = styleEl ? styleEl.value : 'default';
+
+            if (!name) return;
+
+            const data = loadData();
+            data.push({
+                name, target, unit: unit || 'times', type, style,
+                count: 0, posCount: 0, negCount: 0,
+                comments: [],
+                locked: false,
+                encrypted: null,
+                lockHint: '',
+                created: new Date().toISOString()
+            });
+            saveData(data);
+
+            if (nameEl) nameEl.value = '';
+            if (targetEl) targetEl.value = '';
+            render();
+        }
+
+        document.getElementById('newName').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTally();
+        });
+
+        // Global key listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLockModal();
+            
+            const modal = document.getElementById('lockModal');
+            if (e.key === 'Enter' && modal.classList.contains('active')) {
+                e.preventDefault();
+                confirmLockAction();
+            }
+        });
+
+        // Init
+        initTheme();
+        render();
+    </script>
+</body>
+</html>
