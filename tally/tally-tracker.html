@@ -3,1467 +3,932 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Tally</title>
+    <title>Tally Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0d1117;
-            --bg-elevated: #161b22;
-            --bg-input: #0d1117;
-            --border: #30363d;
-            --border-light: #21262d;
-            --text: #c9d1d9;
-            --text-heading: #e6edf3;
-            --text-muted: #8b949e;
-            --text-faint: #6e7681;
-            --accent: #58a6ff;
-            --accent-btn: #238636;
-            --accent-btn-hover: #2ea043;
-            --secondary-btn: #1f6feb;
-            --secondary-btn-hover: #388bfd;
-            --danger: #da3633;
-            --danger-hover: #f85149;
-            --win: #3fb950;
-            --win-bg: rgba(63, 185, 80, 0.20);
-            --learn: #f85149;
-            --learn-bg: rgba(248, 81, 73, 0.20);
-            --note-bg: #8b949e22;
-            --progress-bg: #21262d;
-            --hint: #f0883e;
-            --shadow: rgba(0,0,0,0.3);
-            --hl-blue: #58a6ff;
-            --hl-orange: #f0883e;
-            --hl-purple: #a371f7;
-            --hl-yellow: #e3b341;
-            --hl-blue-tint: rgba(88, 166, 255, 0.10);
-            --hl-orange-tint: rgba(240, 136, 62, 0.10);
-            --hl-purple-tint: rgba(163, 113, 247, 0.10);
-            --hl-yellow-tint: rgba(227, 179, 65, 0.10);
+            --bg: #070a0f;
+            --bg-card: #0d1117;
+            --bg-input: #080b10;
+            --bg-elevated: #121820;
+            --border: #1c2535;
+            --border-light: #141d2a;
+            --text: #b4c2d0;
+            --text-heading: #dce8f2;
+            --text-muted: #5e7080;
+            --text-faint: #3a4a58;
+            --accent: #0fd4b0;
+            --accent-dim: rgba(15, 212, 176, 0.1);
+            --pos: #22d18b;
+            --pos-bg: rgba(34, 209, 139, 0.1);
+            --neg: #ff4d67;
+            --neg-bg: rgba(255, 77, 103, 0.1);
+            --warn: #f5a623;
+            --warn-bg: rgba(245, 166, 35, 0.1);
+            --hl-blue: #3b9eff;
+            --hl-blue-bg: rgba(59,158,255,0.07);
+            --hl-orange: #ff7c35;
+            --hl-orange-bg: rgba(255,124,53,0.07);
+            --hl-purple: #b16df7;
+            --hl-purple-bg: rgba(177,109,247,0.07);
+            --hl-yellow: #f5c842;
+            --hl-yellow-bg: rgba(245,200,66,0.07);
+            --radius: 10px;
         }
-
         [data-theme="light"] {
-            --bg: #f6f8fa;
-            --bg-elevated: #ffffff;
-            --bg-input: #f6f8fa;
-            --border: #d0d7de;
-            --border-light: #eaeef2;
-            --text: #1f2328;
-            --text-heading: #1f2328;
-            --text-muted: #656d76;
-            --text-faint: #8c959f;
-            --accent: #0969da;
-            --accent-btn: #1a7f37;
-            --accent-btn-hover: #2c974b;
-            --secondary-btn: #0969da;
-            --secondary-btn-hover: #0550ae;
-            --danger: #cf222e;
-            --danger-hover: #a40e26;
-            --win: #1a7f37;
-            --win-bg: rgba(26, 127, 55, 0.16);
-            --learn: #cf222e;
-            --learn-bg: rgba(207, 34, 46, 0.16);
-            --note-bg: #f6f8fa;
-            --progress-bg: #eaeef2;
-            --hint: #9a6700;
-            --shadow: rgba(31,35,40,0.08);
-            --hl-blue: #0969da;
-            --hl-orange: #bc4c00;
-            --hl-purple: #8250df;
-            --hl-yellow: #7d4e00;
-            --hl-blue-tint: rgba(9, 105, 218, 0.06);
-            --hl-orange-tint: rgba(188, 76, 0, 0.06);
-            --hl-purple-tint: rgba(130, 80, 223, 0.06);
-            --hl-yellow-tint: rgba(125, 78, 0, 0.06);
+            --bg: #eef1f5;
+            --bg-card: #ffffff;
+            --bg-input: #f3f6f9;
+            --bg-elevated: #f8fafc;
+            --border: #d4dbe4;
+            --border-light: #e4eaf0;
+            --text: #374151;
+            --text-heading: #0f1a28;
+            --text-muted: #6b7c8d;
+            --text-faint: #9aaab8;
+            --accent: #0891b2;
+            --accent-dim: rgba(8,145,178,0.08);
+            --pos: #16a34a;
+            --pos-bg: rgba(22,163,74,0.08);
+            --neg: #dc2626;
+            --neg-bg: rgba(220,38,38,0.08);
+            --warn: #d97706;
+            --warn-bg: rgba(217,119,6,0.08);
+            --hl-blue: #2563eb;
+            --hl-blue-bg: rgba(37,99,235,0.06);
+            --hl-orange: #ea580c;
+            --hl-orange-bg: rgba(234,88,12,0.06);
+            --hl-purple: #7c3aed;
+            --hl-purple-bg: rgba(124,58,237,0.06);
+            --hl-yellow: #b45309;
+            --hl-yellow-bg: rgba(180,83,9,0.06);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            padding: 2rem 1rem;
-            max-width: 900px;
-            margin: 0 auto;
-            line-height: 1.5;
-            transition: background 0.2s, color 0.2s;
+        /* ─── HEADER ─── */
+        .app-header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 0.9rem 1.25rem;
+            position: sticky; top: 0; z-index: 50;
         }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+        .app-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.35rem; color: var(--text-heading); letter-spacing: -0.03em; }
+        .app-title .dot { color: var(--accent); }
+        .header-right { display: flex; gap: 0.35rem; align-items: center; }
 
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.5rem;
-        }
+        .stats-bar { display: flex; gap: 1.2rem; flex-wrap: wrap; padding: 0.35rem 0 0.1rem; border-top: 1px solid var(--border-light); }
+        .stat-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; color: var(--text-muted); }
+        .stat-item strong { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--text-heading); font-weight: 500; }
+        .stat-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 
-        h1 { color: var(--accent); font-size: 1.5rem; }
-        .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .search-wrap { position: relative; margin-top: 0.55rem; }
+        .search-icon { position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); color: var(--text-faint); font-size: 0.8rem; pointer-events: none; }
+        .search-field { width: 100%; background: var(--bg-input); border: 1px solid var(--border); color: var(--text); padding: 0.45rem 0.75rem 0.45rem 2rem; border-radius: 7px; font-size: 0.82rem; outline: none; font-family: inherit; transition: border-color 0.15s; }
+        .search-field:focus { border-color: var(--accent); }
 
-        .theme-toggle {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-        .theme-toggle:hover {
-            background: var(--border-light);
-            color: var(--text-heading);
-            transform: scale(1.05);
-        }
+        /* ─── MAIN ─── */
+        .main { max-width: 860px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
 
-        .add-new {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            transition: background 0.2s;
-        }
-        .add-new-row {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 0.5rem;
-            align-items: center;
-        }
-        .add-new-row:last-child { margin-bottom: 0; }
-        .add-new input, .add-new select {
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            transition: background 0.2s, color 0.2s, border-color 0.2s;
-        }
-        .add-new input[name="name"] { flex: 2; min-width: 150px; }
-        .add-new input[name="target"] { flex: 1; min-width: 80px; }
-        .add-new input[name="unit"] { flex: 1; min-width: 80px; }
-        .add-new select { min-width: 140px; }
-        
-        button {
-            background: var(--accent-btn);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        button:hover { background: var(--accent-btn-hover); }
-        button.secondary { background: var(--secondary-btn); }
-        button.secondary:hover { background: var(--secondary-btn-hover); }
-        button.danger { background: var(--danger); }
-        button.danger:hover { background: var(--danger-hover); }
-        button.ghost {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 0.35rem 0.6rem;
-            font-size: 0.8rem;
-        }
-        button.ghost:hover {
-            background: var(--border-light);
-            color: var(--text);
-        }
+        /* ─── ADD FORM ─── */
+        .add-form { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem; margin-bottom: 1.1rem; }
+        .form-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .form-row + .form-row { margin-top: 0.4rem; }
+        input, select { background: var(--bg-input); border: 1px solid var(--border); color: var(--text); padding: 0.45rem 0.7rem; border-radius: 6px; font-size: 0.83rem; font-family: inherit; outline: none; transition: border-color 0.15s; }
+        input:focus, select:focus { border-color: var(--accent); }
+        .inp-name { flex: 3; min-width: 150px; }
+        .inp-target { flex: 1; min-width: 75px; }
+        .inp-unit { flex: 1; min-width: 75px; }
+        select { min-width: 130px; cursor: pointer; }
+
+        /* ─── BUTTONS ─── */
+        button { font-family: inherit; font-size: 0.82rem; font-weight: 500; border: none; border-radius: 6px; padding: 0.45rem 0.9rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; line-height: 1.2; }
+        .btn-primary { background: var(--accent); color: #070a0f; }
+        .btn-primary:hover { filter: brightness(1.12); }
+        .btn-pos { background: var(--pos); color: #fff; }
+        .btn-pos:hover { filter: brightness(1.1); }
+        .btn-neg { background: var(--neg); color: #fff; }
+        .btn-neg:hover { filter: brightness(1.1); }
+        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 0.35rem 0.6rem; font-size: 0.75rem; }
+        .btn-ghost:hover { background: var(--bg-elevated); color: var(--text); }
+        .btn-icon { background: transparent; border: 1px solid var(--border); color: var(--text-faint); padding: 0.28rem 0.48rem; font-size: 0.75rem; border-radius: 5px; line-height: 1; }
+        .btn-icon:hover { background: var(--bg-elevated); color: var(--text); border-color: var(--text-faint); }
+        .btn-icon.active { color: var(--warn); border-color: var(--warn); background: var(--warn-bg); }
+        .btn-del:hover { color: var(--neg) !important; border-color: var(--neg) !important; background: var(--neg-bg) !important; }
+        .btn-secondary { background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-muted); }
+        .btn-secondary:hover { color: var(--text); background: var(--border-light); }
+
+        /* ─── CARD LIST ─── */
+        .tally-list { display: flex; flex-direction: column; gap: 0.65rem; }
 
         .card {
-            background: var(--bg-elevated);
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.75rem;
-            transition: border-color 0.2s, background 0.2s;
+            border-left: 4px solid transparent;
+            border-radius: var(--radius);
+            padding: 0.9rem 1rem 0.9rem 1.25rem;
             position: relative;
-            overflow: hidden;
-            border-left: 6px solid transparent;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
         .card:hover { border-color: var(--accent); }
-        .card.locked {
-            border-color: var(--text-faint);
-            background: var(--bg-elevated);
-            cursor: pointer;
-        }
-        .card.locked:hover { border-color: var(--hint); }
+        .card.hl-blue { border-left-color: var(--hl-blue); background: var(--hl-blue-bg); }
+        .card.hl-orange { border-left-color: var(--hl-orange); background: var(--hl-orange-bg); }
+        .card.hl-purple { border-left-color: var(--hl-purple); background: var(--hl-purple-bg); }
+        .card.hl-yellow { border-left-color: var(--hl-yellow); background: var(--hl-yellow-bg); }
+        .card.card-win { border-color: var(--pos); }
+        .card.card-fail { border-color: var(--neg); }
+        .card.card-pinned { box-shadow: 0 0 0 1.5px var(--warn); }
+        .card.card-locked { cursor: pointer; border-left-color: var(--text-faint); }
+        .card.hidden { display: none; }
+        .card.dragging { opacity: 0.35; }
+        .card.drag-over { outline: 2px dashed var(--accent); outline-offset: 2px; }
 
-        /* Top accent bar */
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: transparent;
-            border-radius: 12px 12px 0 0;
-        }
+        .drag-handle { position: absolute; left: 0.35rem; top: 50%; transform: translateY(-50%); color: var(--text-faint); cursor: grab; font-size: 0.7rem; opacity: 0; padding: 0.5rem 0.25rem; letter-spacing: -0.1em; user-select: none; }
+        .card:hover .drag-handle { opacity: 1; }
 
-        /* Highlight styles — left border + top bar + background tint */
-        .card.hl-blue { border-left-color: var(--hl-blue); background: var(--hl-blue-tint); }
-        .card.hl-blue::before { background: var(--hl-blue); }
-        .card.hl-orange { border-left-color: var(--hl-orange); background: var(--hl-orange-tint); }
-        .card.hl-orange::before { background: var(--hl-orange); }
-        .card.hl-purple { border-left-color: var(--hl-purple); background: var(--hl-purple-tint); }
-        .card.hl-purple::before { background: var(--hl-purple); }
-        .card.hl-yellow { border-left-color: var(--hl-yellow); background: var(--hl-yellow-tint); }
-        .card.hl-yellow::before { background: var(--hl-yellow); }
+        /* Card header */
+        .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; gap: 0.5rem; }
+        .card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.93rem; color: var(--text-heading); }
+        .card-meta { font-size: 0.68rem; color: var(--text-muted); display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-top: 0.15rem; }
+        .streak-pill { display: inline-flex; align-items: center; gap: 0.15rem; background: var(--warn-bg); color: var(--warn); padding: 0.08rem 0.4rem; border-radius: 20px; font-size: 0.63rem; font-weight: 700; }
+        .pin-pip { color: var(--warn); font-size: 0.65rem; }
+        .card-btns { display: flex; gap: 0.2rem; flex-shrink: 0; }
 
-        /* Win/fail top bar overrides highlight top bar */
-        .card.win::before { background: var(--win); }
-        .card.fail::before { background: var(--learn); }
+        /* Counters */
+        .counter-area { margin: 0.55rem 0; }
+        .count-big { font-family: 'DM Mono', monospace; font-size: 2.4rem; font-weight: 500; color: var(--accent); line-height: 1; }
+        .count-unit { font-size: 0.8rem; color: var(--text-muted); margin-left: 0.4rem; }
+        .counter-dual { display: flex; gap: 0.6rem; }
+        .cblock { flex: 1; text-align: center; padding: 0.5rem 0.4rem; border-radius: 8px; }
+        .cblock.pos { background: var(--pos-bg); border: 1px solid rgba(34,209,139,0.3); }
+        .cblock.neg { background: var(--neg-bg); border: 1px solid rgba(255,77,103,0.3); }
+        .cblock .clabel { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 0.1rem; }
+        .cblock.pos .clabel { color: var(--pos); }
+        .cblock.neg .clabel { color: var(--neg); }
+        .cblock .cnum { font-family: 'DM Mono', monospace; font-size: 2rem; font-weight: 500; line-height: 1; }
+        .cblock.pos .cnum { color: var(--pos); }
+        .cblock.neg .cnum { color: var(--neg); }
 
-        /* Win/fail border — left stays highlight, perimeter goes status */
-        .card.win { border-color: var(--win); }
-        .card.fail { border-color: var(--learn); }
+        /* Progress */
+        .progress-area { margin: 0.4rem 0 0.55rem; }
+        .prog-track { height: 4px; background: var(--bg-elevated); border-radius: 3px; overflow: hidden; margin-bottom: 0.2rem; }
+        .prog-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
+        .prog-fill.near { background: var(--warn); }
+        .prog-fill.done { background: var(--pos); }
+        .prog-fill.killed { background: var(--neg); }
+        .prog-meta { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+        .kill-line { font-size: 0.65rem; color: var(--text-muted); text-align: center; margin-top: 0.15rem; }
+        .kill-line.danger { color: var(--neg); font-weight: 600; }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.5rem;
-            position: relative;
-            z-index: 1;
-        }
-        .card-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-heading);
-        }
-        .card-meta {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.15rem;
-        }
-        .card-actions-top {
-            display: flex;
-            gap: 0.3rem;
-        }
-        .card-actions-top button {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-faint);
-            padding: 0.25rem 0.45rem;
-            font-size: 0.75rem;
-            line-height: 1;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            filter: grayscale(1) contrast(0.5) opacity(0.6);
-        }
-        .card-actions-top button:hover {
-            background: var(--border-light);
-            color: var(--text);
-            border-color: var(--text-faint);
-            filter: grayscale(0) contrast(1) opacity(1);
-        }
-        .card-actions-top button.delete-btn:hover {
-            color: var(--danger);
-            background: var(--learn-bg);
-            border-color: var(--danger);
-        }
+        /* Status banner */
+        .status-banner { text-align: center; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600; margin-bottom: 0.4rem; }
+        .status-win { background: var(--pos-bg); color: var(--pos); border: 1px solid rgba(34,209,139,0.3); }
+        .status-fail { background: var(--neg-bg); color: var(--neg); border: 1px solid rgba(255,77,103,0.3); }
 
-        .edit-form {
-            display: none;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            transition: background 0.2s;
-        }
-        .edit-form.active { display: block; }
-        .edit-form input {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.4rem 0.6rem;
-            border-radius: 4px;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-            font-size: 0.85rem;
-            transition: background 0.2s, color 0.2s;
-        }
+        /* Edit panel */
+        .edit-panel { display: none; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.35rem; }
+        .edit-panel.open { display: flex; }
+        .edit-panel input, .edit-panel select { flex: 1; min-width: 90px; font-size: 0.78rem; padding: 0.32rem 0.5rem; }
 
-        .counters-row {
-            display: flex;
-            gap: 1rem;
-            margin: 0.5rem 0;
-            flex-wrap: wrap;
-        }
-        .counter-block {
-            flex: 1;
-            min-width: 100px;
-            text-align: center;
-            padding: 0.4rem 0.5rem;
-            border-radius: 6px;
-            background: var(--bg-input);
-            transition: background 0.2s;
-        }
-        .counter-block.positive { border: 1px solid var(--accent-btn); }
-        .counter-block.negative { border: 1px solid var(--danger); }
-        .counter-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.15rem;
-        }
-        .counter-block.positive .counter-label { color: var(--win); }
-        .counter-block.negative .counter-label { color: var(--learn); }
-        .counter-value {
-            font-size: 1.6rem;
-            font-weight: 700;
-        }
-        .counter-block.positive .counter-value { color: var(--win); }
-        .counter-block.negative .counter-value { color: var(--learn); }
+        /* Actions */
+        .action-row { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; margin-top: 0.5rem; }
+        .note-inp { flex: 1; min-width: 130px; font-size: 0.78rem; padding: 0.38rem 0.55rem; }
+        .mood-strip { display: flex; gap: 0.15rem; }
+        .mood-btn { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 5px; padding: 0.22rem 0.38rem; font-size: 0.85rem; cursor: pointer; line-height: 1; transition: transform 0.1s; }
+        .mood-btn:hover { transform: scale(1.18); }
+        .mood-btn:active { transform: scale(0.9); }
 
-        .single-counter {
-            text-align: center;
-            margin: 0.5rem 0;
-        }
-        .single-counter .count-display {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .progress-area { margin: 0.5rem 0; }
-        .progress-bar-bg {
-            background: var(--progress-bg);
-            height: 6px;
-            border-radius: 3px;
-            overflow: hidden;
-            transition: background 0.2s;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-btn), var(--win));
-            border-radius: 3px;
-            transition: width 0.3s ease;
-            min-width: 4px;
-        }
-        .progress-bar-fill.near { background: linear-gradient(90deg, #d29922, #e3b341); }
-        [data-theme="light"] .progress-bar-fill.near { background: linear-gradient(90deg, #9a6700, #bf8700); }
-        .progress-bar-fill.done { background: linear-gradient(90deg, #8957e5, #a371f7); }
-        [data-theme="light"] .progress-bar-fill.done { background: linear-gradient(90deg, #8250df, #a475f9); }
-
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 0.3rem;
-            font-size: 0.75rem;
-        }
-        .target-display { color: var(--text-muted); }
-
-        .actions {
-            display: flex;
-            gap: 0.4rem;
-            margin-top: 0.5rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .actions button { font-size: 0.85rem; padding: 0.4rem 0.9rem; }
-        .actions button.pos-btn { background: var(--accent-btn); }
-        .actions button.neg-btn { background: var(--danger); }
-        .note-input {
-            flex: 1;
-            min-width: 140px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.4rem 0.5rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .mood-buttons {
-            display: flex;
-            gap: 0.2rem;
-            align-items: center;
-        }
-        .mood-btn {
-            background: var(--border-light);
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            padding: 0.3rem 0.5rem;
-            font-size: 0.95rem;
-            cursor: pointer;
-            line-height: 1;
-            transition: all 0.15s ease;
-        }
-        .mood-btn:hover {
-            background: var(--border);
-            border-color: var(--text-faint);
-            transform: scale(1.1);
-        }
-        .mood-btn:active {
-            transform: scale(0.95);
-        }
+        /* Comments */
+        .comments-section { margin-top: 0.55rem; }
+        .comments-toggle { font-size: 0.72rem; color: var(--text-muted); cursor: pointer; user-select: none; display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.15rem 0; }
+        .comments-toggle:hover { color: var(--text); }
+        .chevron { font-size: 0.55rem; transition: transform 0.2s; display: inline-block; }
+        .comments-toggle.open .chevron { transform: rotate(90deg); }
+        .comments-list { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; border-left: 2px solid var(--border); padding-left: 0.7rem; display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.4rem; }
+        .comments-list.open { max-height: 700px; }
+        .c-entry { display: flex; align-items: flex-start; gap: 0.35rem; font-size: 0.76rem; padding: 0.15rem 0; }
+        .c-badge { font-size: 0.59rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.08rem 0.32rem; border-radius: 3px; flex-shrink: 0; margin-top: 0.1rem; }
+        .badge-pos { background: var(--pos-bg); color: var(--pos); }
+        .badge-neg { background: var(--neg-bg); color: var(--neg); }
+        .badge-note { background: var(--bg-elevated); color: var(--text-muted); border: 1px solid var(--border); }
+        .badge-simple { background: var(--accent-dim); color: var(--accent); }
+        .c-time { font-family: 'DM Mono', monospace; color: var(--text-faint); font-size: 0.66rem; white-space: nowrap; flex-shrink: 0; margin-top: 0.12rem; }
+        .c-text { color: var(--text); flex: 1; line-height: 1.4; }
+        .c-actions { display: flex; gap: 0.12rem; opacity: 0; transition: opacity 0.15s; flex-shrink: 0; }
+        .c-entry:hover .c-actions { opacity: 1; }
+        .c-actions button { padding: 0.1rem 0.28rem; font-size: 0.68rem; }
+        .c-edit-form { display: none; flex: 1; gap: 0.25rem; align-items: center; }
+        .c-edit-form.open { display: flex; }
+        .c-edit-form input { flex: 1; font-size: 0.76rem; padding: 0.18rem 0.38rem; }
 
         /* Lock modal */
-        .lock-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: var(--shadow);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-        }
-        .lock-modal-overlay.active {
-            display: flex;
-        }
-        .lock-modal {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 8px 24px var(--shadow);
-            transition: background 0.2s;
-        }
-        .lock-modal h3 {
-            color: var(--text-heading);
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-        .lock-modal input {
-            width: 100%;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.6rem;
-            border-radius: 6px;
-            margin-bottom: 0.75rem;
-            font-size: 0.9rem;
-            transition: background 0.2s, color 0.2s;
-        }
-        .lock-modal .hint-text {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 1rem;
-        }
-        .lock-modal .modal-actions {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: flex-end;
-        }
+        .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+        .modal-bg.open { display: flex; }
+        .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; width: 90%; max-width: 370px; box-shadow: 0 16px 48px rgba(0,0,0,0.5); }
+        .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text-heading); margin-bottom: 0.9rem; }
+        .modal-box input { width: 100%; margin-bottom: 0.45rem; }
+        .modal-hint-txt { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.7rem; }
+        .modal-actions { display: flex; gap: 0.4rem; justify-content: flex-end; }
 
-        /* Locked state display */
-        .locked-content {
-            text-align: center;
-            padding: 1.5rem 1rem;
-        }
-        .locked-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        .locked-text {
-            font-size: 1rem;
-            color: var(--text-faint);
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-        .locked-sub {
-            font-size: 0.8rem;
-            color: var(--text-faint);
-        }
+        /* Locked card */
+        .locked-body { display: flex; align-items: center; gap: 0.7rem; padding: 0.35rem 0; }
+        .locked-icon-big { font-size: 1.4rem; }
+        .locked-name { font-weight: 600; color: var(--text-heading); font-size: 0.88rem; }
+        .locked-sub { font-size: 0.72rem; color: var(--text-muted); }
 
-        .comments-section {
-            margin-top: 0.5rem;
-            border-top: 1px solid var(--border-light);
-            padding-top: 0.5rem;
-        }
-        .comments-header {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 0.4rem;
-            cursor: pointer;
-            user-select: none;
-        }
-        .comments-header:hover { color: var(--accent); }
-        .comments-list {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-        .comments-list.expanded {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .comment-entry {
-            display: flex;
-            gap: 0.5rem;
-            align-items: flex-start;
-            padding: 0.3rem 0;
-            border-bottom: 1px solid var(--border-light);
-            font-size: 0.8rem;
-            position: relative;
-        }
-        .comment-entry:last-child { border-bottom: none; }
-        .comment-badge {
-            display: inline-block;
-            padding: 0.1rem 0.35rem;
-            border-radius: 3px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            flex-shrink: 0;
-            height: fit-content;
-            margin-top: 0.15rem;
-        }
-        .comment-badge.pos { background: var(--win-bg); color: var(--win); }
-        .comment-badge.neg { background: var(--learn-bg); color: var(--learn); }
-        .comment-badge.simple { background: var(--note-bg); color: var(--accent); }
-        .comment-badge.note { background: var(--note-bg); color: var(--text-muted); }
-        .comment-time {
-            color: var(--text-faint);
-            font-size: 0.7rem;
-            white-space: nowrap;
-            margin-top: 0.15rem;
-        }
-        .comment-text {
-            color: var(--text);
-            flex: 1;
-            line-height: 1.4;
-            padding: 0.05rem 0;
-        }
-        .comment-emoji {
-            font-size: 1rem;
-            margin-right: 0.3rem;
-        }
+        /* Footer */
+        .footer-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 1.75rem; padding-top: 1rem; border-top: 1px solid var(--border); }
 
-        .comment-actions {
-            display: flex;
-            gap: 0.2rem;
-            flex-shrink: 0;
-            opacity: 0;
-            transition: opacity 0.15s ease;
-            align-items: center;
-            margin-top: 0.05rem;
-        }
-        .comment-entry:hover .comment-actions {
-            opacity: 1;
-        }
-        .comment-actions button {
-            padding: 0.15rem 0.4rem;
-            font-size: 0.8rem;
-            line-height: 1;
-            min-width: 0;
-            border-radius: 4px;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-faint);
-            cursor: pointer;
-        }
-        .comment-actions button:hover {
-            color: var(--text);
-            background: var(--border-light);
-            border-color: var(--text-faint);
-        }
-        .comment-actions .delete-comment:hover {
-            color: var(--learn);
-            background: var(--learn-bg);
-            border-color: var(--learn);
-        }
+        /* Toast */
+        .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 1rem; font-size: 0.78rem; color: var(--text); box-shadow: 0 8px 28px rgba(0,0,0,0.4); z-index: 400; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
 
-        .comment-edit-form {
-            display: none;
-            flex: 1;
-            gap: 0.3rem;
-            align-items: center;
-        }
-        .comment-edit-form.active {
-            display: flex;
-        }
-        .comment-edit-form input {
-            flex: 1;
-            background: var(--bg-input);
-            border: 1px solid var(--secondary-btn);
-            color: var(--text);
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            transition: background 0.2s, color 0.2s;
-        }
-        .comment-edit-form button {
-            padding: 0.2rem 0.5rem;
-            font-size: 0.75rem;
-        }
+        /* Empty state */
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+        .empty-state .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
 
-        .empty-state {
-            text-align: center;
-            color: var(--text-muted);
-            padding: 3rem 1rem;
-        }
-
-        .export-area {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .export-area button { background: var(--text-faint); }
-        .export-area button:hover { background: var(--text-muted); }
-        .export-area button.restore {
-            background: var(--secondary-btn);
-        }
-        .export-area button.restore:hover {
-            background: var(--secondary-btn-hover);
-        }
-        #restoreInput {
-            display: none;
-        }
-
-        .export-json {
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            padding: 0.75rem;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.5rem;
-            max-height: 150px;
-            overflow: auto;
-            white-space: pre-wrap;
-            word-break: break-all;
-            display: none;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .status-banner {
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 0.5rem;
-            display: none;
-        }
-        .status-banner.win { 
-            display: block; 
-            background: var(--win-bg); 
-            color: var(--win); 
-            border: 1px solid var(--win); 
-        }
-        .status-banner.fail { 
-            display: block; 
-            background: var(--learn-bg); 
-            color: var(--learn); 
-            border: 1px solid var(--learn); 
-        }
-
-        .kill-rule {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-align: center;
-            margin-top: 0.2rem;
-        }
-        .kill-rule.danger {
-            color: var(--learn);
-            font-weight: 600;
-        }
-
-        @media (max-width: 600px) {
-            .counters-row { flex-direction: column; gap: 0.5rem; }
-            .actions { flex-direction: column; align-items: stretch; }
-            .note-input { width: 100%; }
-            .card-header { flex-direction: column; gap: 0.5rem; }
-            .comment-actions { opacity: 1; }
-            .mood-buttons { justify-content: center; }
-            .export-area { flex-direction: column; }
-            .page-header { flex-direction: column; gap: 0.5rem; }
+        /* Responsive */
+        @media (max-width: 580px) {
+            .counter-dual { gap: 0.4rem; }
+            .action-row { gap: 0.3rem; }
+            .c-actions { opacity: 1; }
+            .stats-bar { gap: 0.8rem; }
+            .card-btns { flex-wrap: wrap; }
         }
     </style>
 </head>
 <body>
-    <div class="page-header">
-        <div>
-            <h1>🔧 Project Tally</h1>
-            <p class="subtitle">Track wins, learn from losses. Data stays in your browser.</p>
-        </div>
-        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark">🌙</button>
-    </div>
 
-    <div class="add-new">
-        <div class="add-new-row">
-            <input type="text" id="newName" placeholder="Habit name (e.g., Gave less advice)">
-            <input type="text" id="newTarget" placeholder="Target (e.g., 10)">
-            <input type="text" id="newUnit" value="times" placeholder="Unit">
+<header class="app-header">
+    <div class="header-top">
+        <div class="app-title">Tally<span class="dot">.</span></div>
+        <div class="header-right">
+            <button class="btn-icon" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
         </div>
-        <div class="add-new-row">
+    </div>
+    <div class="stats-bar" id="statsBar"></div>
+    <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" class="search-field" id="searchInput" placeholder="Filter tallies by name…" oninput="filterTallies()">
+    </div>
+</header>
+
+<main class="main">
+    <div class="add-form">
+        <div class="form-row">
+            <input type="text" class="inp-name" id="newName" placeholder="New tally name (e.g. Meditation)">
+            <input type="text" class="inp-target" id="newTarget" placeholder="Target (e.g. 10)">
+            <input type="text" class="inp-unit" id="newUnit" placeholder="Unit" value="times">
+        </div>
+        <div class="form-row" style="margin-top:0.4rem">
             <select id="newType">
                 <option value="simple">Simple counter</option>
                 <option value="dual">Dual (+/−) counter</option>
             </select>
             <select id="newStyle">
-                <option value="default">Default highlight</option>
-                <option value="blue">Blue highlight</option>
-                <option value="orange">Orange highlight</option>
-                <option value="purple">Purple highlight</option>
-                <option value="yellow">Yellow highlight</option>
+                <option value="default">No highlight</option>
+                <option value="blue">🔵 Blue</option>
+                <option value="orange">🟠 Orange</option>
+                <option value="purple">🟣 Purple</option>
+                <option value="yellow">🟡 Yellow</option>
             </select>
-            <button onclick="addTally()">Add Tally</button>
+            <button class="btn-primary" onclick="addTally()">+ Add Tally</button>
         </div>
     </div>
 
-    <div id="tallyList"></div>
+    <div class="tally-list" id="tallyList"></div>
 
-    <div class="export-area">
-        <button onclick="backupData()">💾 Backup (Download JSON)</button>
-        <button class="restore" onclick="triggerRestore()">📂 Restore (Upload JSON)</button>
-        <input type="file" id="restoreInput" accept=".json" onchange="handleRestore(event)">
+    <div class="footer-actions">
+        <button class="btn-secondary" onclick="backupData()">💾 Download Backup</button>
+        <button class="btn-secondary" onclick="triggerRestore()">📂 Restore Backup</button>
+        <button class="btn-secondary" onclick="exportCSV()">📊 Export CSV</button>
+        <input type="file" id="restoreInput" accept=".json" onchange="handleRestore(event)" style="display:none">
     </div>
+</main>
 
-    <!-- Lock/Unlock Modal -->
-    <div class="lock-modal-overlay" id="lockModal">
-        <div class="lock-modal">
-            <h3 id="lockModalTitle">Lock Tally</h3>
-            <input type="password" id="lockModalPassword" placeholder="Enter password">
-            <input type="text" id="lockModalHint" placeholder="Hint (optional) — e.g., 'fruit I ate yesterday'">
-            <div class="hint-text">This hint will be shown when unlocking. Leave blank for no hint.</div>
-            <div class="modal-actions">
-                <button class="ghost" onclick="closeLockModal()">Cancel</button>
-                <button onclick="confirmLockAction()">Confirm</button>
+<div class="modal-bg" id="lockModal">
+    <div class="modal-box">
+        <div class="modal-title" id="modalTitle">🔒 Lock Tally</div>
+        <input type="password" id="modalPw" placeholder="Password">
+        <input type="text" id="modalHint" placeholder="Hint (optional, shown on unlock)">
+        <p class="modal-hint-txt" id="modalHintNote">Hint is visible without a password — keep it vague.</p>
+        <div class="modal-actions">
+            <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+            <button class="btn-primary" onclick="confirmLock()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SK = 'projectTally_v3';
+const TK = 'projectTally_theme';
+const EK = 'projectTally_commentsState';
+let lockIdx = null, lockAct = null, dragSrc = null;
+const pendingEmoji = {};
+
+// ─── THEME ───
+function initTheme() {
+    if (localStorage.getItem(TK) === 'light') {
+        document.documentElement.setAttribute('data-theme','light');
+        document.getElementById('themeBtn').textContent = '☀️';
+    }
+}
+function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem(TK, isDark ? 'light' : 'dark');
+}
+
+// ─── TOAST ───
+let toastTmr;
+function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTmr);
+    toastTmr = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+// ─── STORAGE ───
+function load() {
+    try {
+        const raw = localStorage.getItem(SK);
+        if (!raw) {
+            const old = localStorage.getItem('projectTally_v2');
+            return old ? migrate(JSON.parse(old)) : [];
+        }
+        return migrate(JSON.parse(raw));
+    } catch(e) { return []; }
+}
+function save(d) { localStorage.setItem(SK, JSON.stringify(d)); }
+function loadExp() { try { return JSON.parse(localStorage.getItem(EK)) || {}; } catch(e) { return {}; } }
+function saveExp(s) { localStorage.setItem(EK, JSON.stringify(s)); }
+
+function migrate(items) {
+    if (!Array.isArray(items)) return [];
+    return items.map(item => ({
+        type: 'simple', style: 'default', locked: false,
+        encrypted: null, lockHint: '', pinned: false,
+        ...item,
+        comments: (Array.isArray(item.comments) ? item.comments : []).map(c => ({ counted: true, ...c }))
+    }));
+}
+
+// ─── HELPERS ───
+function parseTarget(s) {
+    if (!s) return { max: 0, kill: 0 };
+    const nums = s.match(/\d+/g);
+    if (!nums) return { max: 0, kill: 0 };
+    const max = parseInt(nums[nums.length - 1]);
+    return { max, kill: Math.ceil(max / 2) };
+}
+function getCounts(item) {
+    const cs = Array.isArray(item.comments) ? item.comments : [];
+    return {
+        pos: cs.filter(c => c && c.type === 'pos' && c.counted).length,
+        neg: cs.filter(c => c && c.type === 'neg' && c.counted).length,
+        simple: cs.filter(c => c && c.type === 'simple' && c.counted).length,
+        total: cs.length
+    };
+}
+function getStreak(item) {
+    const cs = (item.comments || []).filter(c => c && c.date);
+    if (!cs.length) return 0;
+    const days = new Set(cs.map(c => c.date.slice(0, 10)));
+    let streak = 0;
+    const d = new Date();
+    while (true) {
+        const key = d.toISOString().slice(0, 10);
+        if (days.has(key)) { streak++; d.setDate(d.getDate() - 1); }
+        else break;
+    }
+    return streak;
+}
+function fmtDate(iso) {
+    const d = new Date(iso);
+    return `${d.getDate()} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}`;
+}
+function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── STATS BAR ───
+function renderStats() {
+    const data = load();
+    const active = data.filter(d => !d.locked);
+    let entries = 0, wins = 0;
+    active.forEach(item => {
+        const c = getCounts(item);
+        entries += c.pos + c.neg + c.simple;
+        const t = parseTarget(item.target);
+        if (item.type === 'dual' && t.max > 0 && c.pos >= t.max) wins++;
+    });
+    document.getElementById('statsBar').innerHTML = `
+        <div class="stat-item"><span class="stat-dot"></span><strong>${active.length}</strong> tallies</div>
+        <div class="stat-item"><span class="stat-dot" style="background:var(--text-faint)"></span><strong>${entries}</strong> entries</div>
+        ${wins ? `<div class="stat-item"><span class="stat-dot" style="background:var(--pos)"></span><strong>${wins}</strong> ${wins===1?'win':'wins'}</div>` : ''}
+        ${data.length > active.length ? `<div class="stat-item"><span class="stat-dot" style="background:var(--text-faint)"></span><strong>${data.length - active.length}</strong> locked</div>` : ''}
+    `;
+}
+
+// ─── SEARCH ───
+function filterTallies() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    document.querySelectorAll('.card[data-name]').forEach(card => {
+        card.classList.toggle('hidden', q.length > 0 && !card.dataset.name.toLowerCase().includes(q));
+    });
+}
+
+// ─── RENDER ───
+function render() {
+    renderStats();
+    const data = load();
+    const exp = loadExp();
+    const list = document.getElementById('tallyList');
+
+    if (!data.length) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><p>No tallies yet — add your first one above.</p></div>';
+        return;
+    }
+
+    // Sort: pinned first, then original order
+    const ordered = data.map((item, i) => ({ item, i }))
+        .sort((a, b) => (b.item.pinned ? 1 : 0) - (a.item.pinned ? 1 : 0));
+
+    list.innerHTML = ordered.map(({ item, i }) => buildCard(item, i, exp)).join('');
+    filterTallies();
+}
+
+function buildCard(item, idx, exp) {
+    const hlClass = item.style && item.style !== 'default' ? `hl-${item.style}` : '';
+
+    if (item.locked) {
+        return `<div class="card card-locked ${hlClass}" data-name="locked" data-index="${idx}"
+            draggable="true" ondragstart="dStart(event,${idx})" ondragover="dOver(event,${idx})" ondrop="dDrop(event,${idx})" ondragleave="dLeave(event)"
+            onclick="openLock(${idx},'unlock')">
+            <div class="drag-handle">⋮⋮</div>
+            <div class="locked-body">
+                <div class="locked-icon-big">🔒</div>
+                <div><div class="locked-name">Locked</div><div class="locked-sub">Click to unlock</div></div>
+            </div>
+        </div>`;
+    }
+
+    const tgt = parseTarget(item.target);
+    const isDual = item.type === 'dual';
+    const c = getCounts(item);
+    const curr = isDual ? c.pos : c.simple;
+    const pct = tgt.max > 0 ? Math.min((curr / tgt.max) * 100, 100) : 0;
+    const killPct = tgt.kill > 0 ? Math.min((c.neg / tgt.kill) * 100, 100) : 0;
+    const isKilled = isDual && tgt.kill > 0 && c.neg >= tgt.kill;
+    const isWin = isDual && tgt.max > 0 && c.pos >= tgt.max && !isKilled;
+    const streak = getStreak(item);
+
+    // Progress bar class
+    let barClass = '';
+    if (isKilled) barClass = 'killed';
+    else if (pct >= 100) barClass = 'done';
+    else if (pct >= 75) barClass = 'near';
+
+    // Card class
+    let cardClass = `card ${hlClass}`;
+    if (isWin) cardClass += ' card-win';
+    if (isKilled) cardClass += ' card-fail';
+    if (item.pinned) cardClass += ' card-pinned';
+
+    // Status banner
+    const statusHTML = isWin
+        ? `<div class="status-banner status-win">🏆 Goal reached!</div>`
+        : isKilled
+        ? `<div class="status-banner status-fail">💥 Killed — too many losses.</div>`
+        : '';
+
+    // Counter
+    let counterHTML = isDual
+        ? `<div class="counter-dual">
+            <div class="cblock pos"><div class="clabel">Wins</div><div class="cnum">${c.pos}</div></div>
+            <div class="cblock neg"><div class="clabel">Losses</div><div class="cnum">${c.neg}</div></div>
+          </div>`
+        : `<div style="display:flex;align-items:baseline">
+            <div class="count-big">${c.simple}</div>
+            ${tgt.max > 0 ? `<span class="count-unit">/ ${tgt.max} ${esc(item.unit)}</span>` : item.unit ? `<span class="count-unit">${esc(item.unit)}</span>` : ''}
+          </div>`;
+
+    // Progress
+    let progressHTML = '';
+    if (tgt.max > 0) {
+        const barPct = isKilled ? killPct : pct;
+        progressHTML = `<div class="progress-area">
+            <div class="prog-track"><div class="prog-fill ${barClass}" style="width:${barPct}%"></div></div>
+            <div class="prog-meta">
+                <span>${isKilled ? `${c.neg}/${tgt.kill} kills` : `${curr} / ${tgt.max}`}</span>
+                <span>${Math.round(isKilled ? killPct : pct)}%</span>
+            </div>
+            ${isDual && tgt.kill > 0 ? `<div class="kill-line ${c.neg > 0 && !isKilled ? (c.neg >= tgt.kill * 0.7 ? 'danger' : '') : isKilled ? 'danger' : ''}">Kill threshold: ${tgt.kill} losses</div>` : ''}
+        </div>`;
+    }
+
+    // Actions
+    const locked = isWin || isKilled;
+    let actionHTML = '';
+    if (!locked) {
+        const moodBtns = ['😊','😤','😬','🤔','💪']
+            .map(e => `<button class="mood-btn" onclick="setEmoji(${idx},'${e}')" title="${e}">${e}</button>`).join('');
+        if (isDual) {
+            actionHTML = `<div class="action-row">
+                <input type="text" class="note-inp" id="note-${idx}" placeholder="Optional note…">
+                <div class="mood-strip">${moodBtns}</div>
+                <button class="btn-pos" onclick="addEntry(${idx},'pos')">✓ Win</button>
+                <button class="btn-neg" onclick="addEntry(${idx},'neg')">✗ Loss</button>
+                <button class="btn-ghost" onclick="addEntry(${idx},'note-only')" title="Note only, not counted">📝</button>
+                <button class="btn-icon" onclick="undoLast(${idx})" title="Undo last counted entry">↩</button>
+            </div>`;
+        } else {
+            actionHTML = `<div class="action-row">
+                <input type="text" class="note-inp" id="note-${idx}" placeholder="Optional note…">
+                <div class="mood-strip">${moodBtns}</div>
+                <button class="btn-primary" onclick="addEntry(${idx},'simple')">+ Count</button>
+                <button class="btn-ghost" onclick="addEntry(${idx},'note-only')" title="Note only, not counted">📝</button>
+                <button class="btn-icon" onclick="undoLast(${idx})" title="Undo last counted entry">↩</button>
+            </div>`;
+        }
+    }
+
+    // Edit panel
+    const styleOpts = ['default','blue','orange','purple','yellow']
+        .map(s => `<option value="${s}" ${item.style===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('');
+    const editHTML = `<div class="edit-panel" id="ep-${idx}">
+        <input type="text" id="en-${idx}" value="${esc(item.name)}" placeholder="Name">
+        <input type="text" id="et-${idx}" value="${esc(item.target||'')}" placeholder="Target">
+        <input type="text" id="eu-${idx}" value="${esc(item.unit||'')}" placeholder="Unit">
+        <select id="es-${idx}">${styleOpts}</select>
+        <button class="btn-primary" onclick="saveEdit(${idx})">Save</button>
+        <button class="btn-ghost" onclick="closeEdit(${idx})">Cancel</button>
+    </div>`;
+
+    // Comments
+    const comments = Array.isArray(item.comments) ? item.comments : [];
+    const isExpanded = exp[idx] || false;
+    let commentsHTML = '';
+    if (comments.length > 0) {
+        const rows = comments.slice().reverse().map((c, di) => {
+            if (!c) return '';
+            const ai = comments.length - 1 - di;
+            const btype = c.counted === false ? 'note' : (c.type || 'simple');
+            const bcls = btype === 'pos' ? 'badge-pos' : btype === 'neg' ? 'badge-neg' : btype === 'note' || btype === 'note-only' ? 'badge-note' : 'badge-simple';
+            const blabel = btype === 'pos' ? 'Win' : btype === 'neg' ? 'Loss' : 'Note';
+            const emoji = c.emoji ? `${c.emoji} ` : '';
+            return `<div class="c-entry">
+                <span class="c-badge ${bcls}">${blabel}</span>
+                <span class="c-time">${fmtDate(c.date||new Date().toISOString())}</span>
+                <span class="c-text" id="ct-${idx}-${di}">${emoji}${esc(c.text||'')}</span>
+                <div class="c-edit-form" id="cef-${idx}-${di}">
+                    <input type="text" value="${esc(c.text||'')}" id="ci-${idx}-${di}">
+                    <button class="btn-primary" onclick="saveCEdit(${idx},${ai},${di})" style="padding:0.18rem 0.45rem;font-size:0.7rem">✓</button>
+                    <button class="btn-ghost" onclick="cancelCEdit(${idx},${di})">✕</button>
+                </div>
+                <div class="c-actions">
+                    <button class="btn-icon" onclick="startCEdit(${idx},${di})" title="Edit">✎</button>
+                    <button class="btn-icon btn-del" onclick="deleteComment(${idx},${ai})" title="Delete">×</button>
+                </div>
+            </div>`;
+        }).join('');
+        commentsHTML = `<div class="comments-section">
+            <div class="comments-toggle ${isExpanded ? 'open' : ''}" onclick="toggleComments(${idx})">
+                <span class="chevron">▶</span> ${comments.length} comment${comments.length !== 1 ? 's' : ''}
+            </div>
+            <div class="comments-list ${isExpanded ? 'open' : ''}" id="cmts-${idx}">${rows}</div>
+        </div>`;
+    }
+
+    // Meta
+    let metaHTML = '';
+    if (item.created) metaHTML += `<span>Added ${fmtDate(item.created)}</span>`;
+    if (streak > 1) metaHTML += `<span class="streak-pill">🔥 ${streak}d</span>`;
+    if (item.pinned) metaHTML += `<span class="pin-pip">📌</span>`;
+
+    return `<div class="${cardClass}" data-name="${esc(item.name)}" data-index="${idx}"
+        draggable="true"
+        ondragstart="dStart(event,${idx})" ondragover="dOver(event,${idx})" ondrop="dDrop(event,${idx})" ondragleave="dLeave(event)">
+        <div class="drag-handle">⋮⋮</div>
+        <div class="card-head">
+            <div>
+                <div class="card-name">${esc(item.name)}</div>
+                ${metaHTML ? `<div class="card-meta">${metaHTML}</div>` : ''}
+            </div>
+            <div class="card-btns">
+                <button class="btn-icon ${item.pinned ? 'active' : ''}" onclick="togglePin(${idx})" title="Pin to top">📌</button>
+                <button class="btn-icon" onclick="toggleEdit(${idx})" title="Edit">✎</button>
+                <button class="btn-icon" onclick="openLock(${idx},'lock')" title="Lock">🔒</button>
+                <button class="btn-icon btn-del" onclick="deleteTally(${idx})" title="Delete">🗑</button>
             </div>
         </div>
-    </div>
+        ${editHTML}
+        ${statusHTML}
+        <div class="counter-area">${counterHTML}</div>
+        ${progressHTML}
+        ${actionHTML}
+        ${commentsHTML}
+    </div>`;
+}
 
-    <script>
-        const STORAGE_KEY = 'projectTally_v3';
-        const THEME_KEY = 'projectTally_theme';
-        const COMMENTS_STATE_KEY = 'projectTally_commentsState';
-        let currentLockIndex = null;
-        let currentLockAction = null;
+// ─── EMOJI ───
+function setEmoji(idx, e) { pendingEmoji[idx] = e; toast(`${e} queued`); }
 
-        // ===== THEME =====
-        function initTheme() {
-            const saved = localStorage.getItem(THEME_KEY);
-            if (saved === 'light') {
-                document.documentElement.setAttribute('data-theme', 'light');
-                document.getElementById('themeToggle').textContent = '☀️';
-            }
-        }
+// ─── ENTRIES ───
+function addEntry(idx, type) {
+    const data = load();
+    if (!data[idx]) return;
+    const c = getCounts(data[idx]);
+    const t = parseTarget(data[idx].target);
+    if (data[idx].type === 'dual') {
+        if ((t.kill > 0 && c.neg >= t.kill) || (t.max > 0 && c.pos >= t.max)) return;
+    }
+    const noteEl = document.getElementById(`note-${idx}`);
+    const note = noteEl ? noteEl.value.trim() : '';
+    const emoji = pendingEmoji[idx] || '';
+    delete pendingEmoji[idx];
+    if (!data[idx].comments) data[idx].comments = [];
+    const isCounted = type !== 'note-only';
+    data[idx].comments.push({ type: isCounted ? type : 'note', text: note, emoji, counted: isCounted, date: new Date().toISOString() });
+    save(data);
+    if (noteEl) noteEl.value = '';
+    render();
+    toast(type === 'note-only' ? '📝 Note added' : type === 'pos' ? '✓ Win logged' : type === 'neg' ? '✗ Loss logged' : '+ Counted');
+}
 
-        function toggleTheme() {
-            const html = document.documentElement;
-            const btn = document.getElementById('themeToggle');
-            const isDark = html.getAttribute('data-theme') === 'dark';
-            
-            if (isDark) {
-                html.setAttribute('data-theme', 'light');
-                btn.textContent = '☀️';
-                localStorage.setItem(THEME_KEY, 'light');
-            } else {
-                html.setAttribute('data-theme', 'dark');
-                btn.textContent = '🌙';
-                localStorage.setItem(THEME_KEY, 'dark');
-            }
-        }
-
-        // ===== COMMENTS TOGGLE STATE =====
-        function loadCommentsState() {
-            try {
-                const raw = localStorage.getItem(COMMENTS_STATE_KEY);
-                return raw ? JSON.parse(raw) : {};
-            } catch (e) {
-                return {};
-            }
-        }
-
-        function saveCommentsState(state) {
-            localStorage.setItem(COMMENTS_STATE_KEY, JSON.stringify(state));
-        }
-
-        function toggleComments(index) {
-            const el = document.getElementById(`comments-${index}`);
-            if (!el) return;
-            
-            const isExpanded = el.classList.toggle('expanded');
-            const state = loadCommentsState();
-            state[index] = isExpanded;
-            saveCommentsState(state);
-        }
-
-        // ===== CRYPTO =====
-        async function deriveKey(password, salt) {
-            const encoder = new TextEncoder();
-            const keyMaterial = await crypto.subtle.importKey(
-                'raw', encoder.encode(password), { name: 'PBKDF2' }, false, ['deriveKey']
-            );
-            return crypto.subtle.deriveKey(
-                { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
-                keyMaterial,
-                { name: 'AES-GCM', length: 256 },
-                false,
-                ['encrypt', 'decrypt']
-            );
-        }
-
-        async function encryptData(data, password) {
-            const encoder = new TextEncoder();
-            const salt = crypto.getRandomValues(new Uint8Array(16));
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const key = await deriveKey(password, salt);
-            const ciphertext = await crypto.subtle.encrypt(
-                { name: 'AES-GCM', iv }, key, encoder.encode(JSON.stringify(data))
-            );
-            return {
-                salt: Array.from(salt),
-                iv: Array.from(iv),
-                data: Array.from(new Uint8Array(ciphertext))
-            };
-        }
-
-        async function decryptData(encrypted, password) {
-            try {
-                const salt = new Uint8Array(encrypted.salt);
-                const iv = new Uint8Array(encrypted.iv);
-                const data = new Uint8Array(encrypted.data);
-                const key = await deriveKey(password, salt);
-                const decrypted = await crypto.subtle.decrypt(
-                    { name: 'AES-GCM', iv }, key, data
-                );
-                return JSON.parse(new TextDecoder().decode(decrypted));
-            } catch (e) {
-                return null;
-            }
-        }
-
-        // ===== DATA =====
-        function loadData() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (!raw) {
-                    const old = localStorage.getItem('projectTally_v2');
-                    if (old) {
-                        const parsed = JSON.parse(old);
-                        localStorage.setItem(STORAGE_KEY, old);
-                        return migrateItem(parsed);
-                    }
-                    return [];
-                }
-                const parsed = JSON.parse(raw);
-                return migrateItem(parsed);
-            } catch (e) {
-                console.error('loadData error:', e);
-                return [];
-            }
-        }
-
-        function migrateItem(items) {
-            if (!Array.isArray(items)) return [];
-            return items.map(item => {
-                const comments = Array.isArray(item.comments) ? item.comments : [];
-                const migratedComments = comments.map(c => {
-                    if (!c) return c;
-                    if (c.counted === undefined) return { ...c, counted: true };
-                    return c;
-                });
-                return {
-                    ...item,
-                    type: item.type || 'simple',
-                    comments: migratedComments,
-                    locked: item.locked || false,
-                    encrypted: item.encrypted || null,
-                    lockHint: item.lockHint || '',
-                    style: item.style || 'default'
-                };
-            });
-        }
-
-        function saveData(data) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        }
-
-        function parseTarget(targetStr) {
-            if (!targetStr) return { min: 0, max: 0, kill: 0 };
-            const nums = targetStr.match(/\d+/g);
-            if (!nums) return { min: 0, max: 0, kill: 0 };
-            const max = parseInt(nums[nums.length - 1]);
-            return { min: nums.length > 1 ? parseInt(nums[0]) : max, max, kill: Math.ceil(max / 2) };
-        }
-
-        function getCounts(item) {
-            const comments = Array.isArray(item.comments) ? item.comments : [];
-            const pos = comments.filter(c => c && c.type === 'pos' && c.counted === true).length;
-            const neg = comments.filter(c => c && c.type === 'neg' && c.counted === true).length;
-            const simple = comments.filter(c => c && c.type === 'simple' && c.counted === true).length;
-            return { pos, neg, simple, total: comments.length };
-        }
-
-        function formatDate(iso) {
-            const d = new Date(iso);
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            return `${d.getDate()} ${months[d.getMonth()]}`;
-        }
-
-        // ===== LOCK/UNLOCK MODAL =====
-        function openLockModal(index, action) {
-            currentLockIndex = index;
-            currentLockAction = action;
-            const modal = document.getElementById('lockModal');
-            const title = document.getElementById('lockModalTitle');
-            const hintInput = document.getElementById('lockModalHint');
-            
-            if (action === 'lock') {
-                title.textContent = '🔒 Lock Tally';
-                hintInput.style.display = 'block';
-                hintInput.value = '';
-                document.querySelector('.hint-text').style.display = 'block';
-            } else {
-                title.textContent = '🔓 Unlock Tally';
-                hintInput.style.display = 'none';
-                document.querySelector('.hint-text').style.display = 'none';
-                
-                const data = loadData();
-                if (data[index] && data[index].lockHint) {
-                    title.innerHTML = `🔓 Unlock Tally<br><span style="font-size:0.8rem;color:var(--hint);margin-top:0.3rem;display:block;">Hint: ${escapeHtml(data[index].lockHint)}</span>`;
-                }
-            }
-            
-            document.getElementById('lockModalPassword').value = '';
-            modal.classList.add('active');
-            document.getElementById('lockModalPassword').focus();
-        }
-
-        function closeLockModal() {
-            document.getElementById('lockModal').classList.remove('active');
-            currentLockIndex = null;
-            currentLockAction = null;
-        }
-
-        async function confirmLockAction() {
-            const password = document.getElementById('lockModalPassword').value;
-            if (!password) {
-                alert('Password is required');
-                return;
-            }
-
-            const data = loadData();
-            if (!data[currentLockIndex]) return;
-
-            if (currentLockAction === 'lock') {
-                const hint = document.getElementById('lockModalHint').value.trim();
-                const item = data[currentLockIndex];
-                const payload = {
-                    name: item.name,
-                    target: item.target,
-                    unit: item.unit,
-                    type: item.type,
-                    comments: item.comments,
-                    created: item.created,
-                    style: item.style
-                };
-                
-                const encrypted = await encryptData(payload, password);
-                data[currentLockIndex] = {
-                    ...item,
-                    locked: true,
-                    encrypted: encrypted,
-                    lockHint: hint,
-                    name: '🔒 Locked',
-                    comments: [],
-                    target: '',
-                    unit: ''
-                };
-                saveData(data);
-                render();
-                closeLockModal();
-            } else {
-                const item = data[currentLockIndex];
-                if (!item.encrypted) return;
-                
-                const decrypted = await decryptData(item.encrypted, password);
-                if (!decrypted) {
-                    alert('Incorrect password');
-                    return;
-                }
-                
-                data[currentLockIndex] = {
-                    ...item,
-                    locked: false,
-                    encrypted: null,
-                    name: decrypted.name,
-                    target: decrypted.target,
-                    unit: decrypted.unit,
-                    type: decrypted.type,
-                    comments: decrypted.comments,
-                    created: decrypted.created,
-                    style: decrypted.style || 'default'
-                };
-                saveData(data);
-                render();
-                closeLockModal();
-            }
-        }
-
-        // ===== RENDER =====
-        function render() {
-            const list = document.getElementById('tallyList');
-            const data = loadData();
-            const commentsState = loadCommentsState();
-
-            if (!Array.isArray(data) || data.length === 0) {
-                list.innerHTML = '<div class="empty-state">No tallies yet. Add your first habit above.</div>';
-                return;
-            }
-
-            try {
-                const html = data.map((item, index) => {
-                    if (!item || typeof item !== 'object') return '';
-
-                    const styleClass = item.style && item.style !== 'default' ? `hl-${item.style}` : '';
-
-                    // LOCKED STATE
-                    if (item.locked) {
-                        return `
-                        <div class="card locked ${styleClass}" id="card-${index}" onclick="openLockModal(${index}, 'unlock')">
-                            <div class="locked-content">
-                                <div class="locked-icon">🔒</div>
-                                <div class="locked-text">Locked</div>
-                                <div class="locked-sub">Click to unlock</div>
-                            </div>
-                        </div>
-                        `;
-                    }
-
-                    // UNLOCKED STATE
-                    const target = parseTarget(item.target);
-                    const isDual = item.type === 'dual';
-                    const counts = getCounts(item);
-                    const pos = counts.pos;
-                    const neg = counts.neg;
-
-                    const currentCount = isDual ? pos : counts.simple;
-                    const pct = target.max > 0 ? Math.min((currentCount / target.max) * 100, 100) : 0;
-                    const barClass = pct >= 100 ? 'done' : pct >= 75 ? 'near' : '';
-
-                    const killThreshold = target.kill;
-                    const isKilled = isDual && neg >= killThreshold;
-                    const isWin = isDual && pos >= target.max && !isKilled;
-
-                    const comments = Array.isArray(item.comments) ? item.comments : [];
-                    const isCommentsExpanded = commentsState[index] || false;
-                    let commentsHtml = '';
-                    if (comments.length > 0) {
-                        const reversed = comments.slice().reverse();
-                        commentsHtml = `
-                        <div class="comments-section">
-                            <div class="comments-header" onclick="toggleComments(${index})">
-                                💬 ${comments.length} comment${comments.length !== 1 ? 's' : ''}
-                                <span style="color:var(--text-faint)">(click to toggle)</span>
-                            </div>
-                            <div class="comments-list ${isCommentsExpanded ? 'expanded' : ''}" id="comments-${index}">
-                                ${reversed.map((c, displayIdx) => {
-                                    const actualIdx = comments.length - 1 - displayIdx;
-                                    const emojiPrefix = c && c.emoji ? `<span class="comment-emoji">${c.emoji}</span>` : '';
-                                    const badgeType = c && c.counted === false ? 'note' : (c && c.type ? c.type : 'simple');
-                                    return `
-                                    <div class="comment-entry" id="comment-${index}-${displayIdx}">
-                                        <span class="comment-badge ${badgeType}">${badgeType === 'pos' ? 'Win' : badgeType === 'neg' ? 'Learn' : badgeType === 'note' ? 'Note' : 'Note'}</span>
-                                        <span class="comment-time">${formatDate(c && c.date ? c.date : new Date().toISOString())}</span>
-                                        <span class="comment-text" id="comment-text-${index}-${displayIdx}">${emojiPrefix}${escapeHtml(c && c.text ? c.text : '')}</span>
-                                        <div class="comment-edit-form" id="comment-edit-${index}-${displayIdx}">
-                                            <input type="text" value="${escapeHtml(c && c.text ? c.text : '')}" id="comment-input-${index}-${displayIdx}">
-                                            <button class="secondary" onclick="saveCommentEdit(${index}, ${actualIdx}, ${displayIdx})">✓</button>
-                                            <button class="ghost" onclick="cancelCommentEdit(${index}, ${displayIdx})">✕</button>
-                                        </div>
-                                        <div class="comment-actions">
-                                            <button class="edit-comment" onclick="startCommentEdit(${index}, ${displayIdx})" title="Edit">✎</button>
-                                            <button class="delete-comment" onclick="deleteComment(${index}, ${actualIdx})" title="Delete">×</button>
-                                        </div>
-                                    </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-                        `;
-                    }
-
-                    let statusClass = '';
-                    let statusText = '';
-                    if (isWin) {
-                        statusClass = 'win';
-                        statusText = '🏆 Goal reached — WIN';
-                    } else if (isKilled) {
-                        statusClass = 'fail';
-                        statusText = `⚠ Learn count hit ${killThreshold} — GAME OVER`;
-                    }
-
-                    const killText = isDual
-                        ? `Learn limit: ${neg}/${killThreshold}${isKilled ? ' — EXCEEDED' : ''}`
-                        : '';
-
-                    const moodButtons = `
-                    <div class="mood-buttons">
-                        <button class="mood-btn" onclick="addEmojiToInput(${index}, '😊')" title="Good">😊</button>
-                        <button class="mood-btn" onclick="addEmojiToInput(${index}, '😐')" title="Neutral">😐</button>
-                        <button class="mood-btn" onclick="addEmojiToInput(${index}, '😞')" title="Struggle">😞</button>
-                    </div>
-                    `;
-
-                    // Style dropdown options for edit form
-                    const styleOptions = [
-                        { value: 'default', label: 'Default highlight' },
-                        { value: 'blue', label: 'Blue highlight' },
-                        { value: 'orange', label: 'Orange highlight' },
-                        { value: 'purple', label: 'Purple highlight' },
-                        { value: 'yellow', label: 'Yellow highlight' }
-                    ];
-                    const editStyleOptions = styleOptions.map(o => 
-                        `<option value="${o.value}" ${(item.style || 'default') === o.value ? 'selected' : ''}>${o.label}</option>`
-                    ).join('');
-
-                    return `
-                    <div class="card ${statusClass} ${styleClass}" id="card-${index}">
-                        ${statusText ? `<div class="status-banner ${statusClass}">${statusText}</div>` : ''}
-
-                        <div class="card-header">
-                            <div>
-                                <div class="card-title">${escapeHtml(item.name || 'Untitled')}</div>
-                                <div class="card-meta">
-                                    ${isDual ? 'Dual counter' : 'Simple counter'} •
-                                    Goal: ${escapeHtml(item.target || '—')} ${escapeHtml(item.unit || '')}
-                                </div>
-                            </div>
-                            <div class="card-actions-top">
-                                <button onclick="event.stopPropagation(); toggleEdit(${index})" title="Edit">✏️</button>
-                                <button onclick="event.stopPropagation(); openLockModal(${index}, 'lock')" title="Lock">🔒</button>
-                                <button class="delete-btn" onclick="event.stopPropagation(); deleteTally(${index})" title="Delete">×</button>
-                            </div>
-                        </div>
-
-                        <div class="edit-form" id="edit-${index}">
-                            <input type="text" id="edit-name-${index}" value="${escapeHtml(item.name || '')}">
-                            <input type="text" id="edit-target-${index}" value="${escapeHtml(item.target || '')}">
-                            <input type="text" id="edit-unit-${index}" value="${escapeHtml(item.unit || 'times')}">
-                            <select id="edit-style-${index}" style="background:var(--bg-input);border:1px solid var(--border);color:var(--text);padding:0.4rem 0.6rem;border-radius:4px;font-size:0.85rem;margin-right:0.5rem;margin-bottom:0.5rem;">
-                                ${editStyleOptions}
-                            </select>
-                            <button onclick="saveEdit(${index})">Save</button>
-                            <button class="ghost" onclick="toggleEdit(${index})">Cancel</button>
-                        </div>
-
-                        ${isDual ? `
-                        <div class="counters-row">
-                            <div class="counter-block positive">
-                                <div class="counter-label">Win</div>
-                                <div class="counter-value">${pos}</div>
-                            </div>
-                            <div class="counter-block negative">
-                                <div class="counter-label">Learn</div>
-                                <div class="counter-value">${neg}</div>
-                            </div>
-                        </div>
-                        ` : `
-                        <div class="single-counter">
-                            <div class="count-display">${counts.simple}</div>
-                        </div>
-                        `}
-
-                        <div class="progress-area">
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill ${barClass}" style="width: ${isKilled ? 0 : pct}%; ${isKilled ? 'transition: width 0.6s ease;' : ''}"></div>
-                            </div>
-                            <div class="stats">
-                                <span>${isDual ? `Win: ${pos} / ${target.max}` : `Count: ${counts.simple}`}</span>
-                                <span class="target-display">
-                                    ${isKilled ? 'Bar frozen — learn limit hit' : (pct >= 100 ? '✓ Goal reached' : Math.round(pct) + '% to goal')}
-                                </span>
-                            </div>
-                            ${isDual ? `<div class="kill-rule ${isKilled ? 'danger' : ''}">${killText}</div>` : ''}
-                        </div>
-
-                        <div class="actions">
-                            <input type="text" class="note-input" placeholder="Comment + Enter (or click +1)..." id="note-${index}" onkeypress="handleCommentKeypress(event, ${index})">
-                            ${isDual ? `
-                                <button class="pos-btn" onclick="addEntry(${index}, 'pos')" ${isKilled || isWin ? 'disabled style="opacity:0.4;cursor:not-allowed"' : ''}>+1 Win</button>
-                                <button class="neg-btn" onclick="addEntry(${index}, 'neg')" ${isKilled || isWin ? 'disabled style="opacity:0.4;cursor:not-allowed"' : ''}>+1 Learn</button>
-                                ${moodButtons}
-                            ` : `
-                                <button onclick="addEntry(${index}, 'simple')">+1</button>
-                                ${moodButtons}
-                            `}
-                        </div>
-
-                        ${commentsHtml}
-                    </div>
-                    `;
-                }).join('');
-
-                list.innerHTML = html || '<div class="empty-state">Error rendering tallies. Check console.</div>';
-            } catch (e) {
-                console.error('render error:', e);
-                list.innerHTML = '<div class="empty-state">Error rendering. Check console for details.</div>';
-            }
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function addEmojiToInput(index, emoji) {
-            const input = document.getElementById(`note-${index}`);
-            if (!input) return;
-            input.value = (input.value ? input.value + ' ' : '') + emoji;
-            input.focus();
-        }
-
-        function handleCommentKeypress(event, index) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                const input = document.getElementById(`note-${index}`);
-                if (!input || !input.value.trim()) return;
-
-                const data = loadData();
-                if (!data[index]) return;
-
-                const note = input.value.trim();
-
-                if (!Array.isArray(data[index].comments)) {
-                    data[index].comments = [];
-                }
-
-                data[index].comments.push({
-                    type: 'note',
-                    text: note,
-                    counted: false,
-                    date: new Date().toISOString()
-                });
-                saveData(data);
-                render();
-            }
-        }
-
-        function addEntry(index, type) {
-            const data = loadData();
-            if (!data[index]) return;
-
-            const counts = getCounts(data[index]);
-            const target = parseTarget(data[index].target);
-            const isKilled = data[index].type === 'dual' && counts.neg >= target.kill;
-            const isWin = data[index].type === 'dual' && counts.pos >= target.max;
-
-            if (isKilled || isWin) return;
-
-            const noteInput = document.getElementById(`note-${index}`);
-            const note = noteInput ? noteInput.value.trim() : '';
-
-            if (!Array.isArray(data[index].comments)) {
-                data[index].comments = [];
-            }
-
-            data[index].comments.push({
-                type,
-                text: note,
-                counted: true,
-                date: new Date().toISOString()
-            });
-            saveData(data);
+function undoLast(idx) {
+    const data = load();
+    if (!data[idx]) return;
+    const cs = data[idx].comments || [];
+    for (let i = cs.length - 1; i >= 0; i--) {
+        if (cs[i] && cs[i].counted) {
+            cs.splice(i, 1);
+            save(data);
             render();
+            toast('↩ Undone');
+            return;
         }
+    }
+    toast('Nothing to undo');
+}
 
-        function deleteTally(index) {
-            const data = loadData();
-            const name = data[index] && data[index].name ? data[index].name : 'this tally';
-            if (!confirm(`Delete "${name}" permanently?`)) return;
-            const state = loadCommentsState();
-            delete state[index];
-            // Reindex remaining states
-            const newState = {};
-            Object.keys(state).forEach(k => {
-                const numK = parseInt(k);
-                if (numK > index) {
-                    newState[numK - 1] = state[k];
-                } else if (numK < index) {
-                    newState[numK] = state[k];
-                }
-            });
-            saveCommentsState(newState);
-            data.splice(index, 1);
-            saveData(data);
+// ─── TALLY CRUD ───
+function addTally() {
+    const name = document.getElementById('newName').value.trim();
+    if (!name) return;
+    const data = load();
+    data.push({
+        name, target: document.getElementById('newTarget').value.trim(),
+        unit: document.getElementById('newUnit').value.trim() || 'times',
+        type: document.getElementById('newType').value,
+        style: document.getElementById('newStyle').value,
+        comments: [], locked: false, encrypted: null,
+        lockHint: '', pinned: false, created: new Date().toISOString()
+    });
+    save(data);
+    document.getElementById('newName').value = '';
+    document.getElementById('newTarget').value = '';
+    render();
+    toast('✓ Tally added');
+}
+
+function deleteTally(idx) {
+    const data = load();
+    const name = data[idx] ? data[idx].name : 'this tally';
+    if (!confirm(`Delete "${name}"?`)) return;
+    data.splice(idx, 1);
+    save(data);
+    const exp = loadExp();
+    const ne = {};
+    Object.keys(exp).forEach(k => { const n = parseInt(k); if (n < idx) ne[n] = exp[k]; else if (n > idx) ne[n-1] = exp[k]; });
+    saveExp(ne);
+    render();
+    toast('🗑 Deleted');
+}
+
+function togglePin(idx) {
+    const data = load();
+    if (!data[idx]) return;
+    data[idx].pinned = !data[idx].pinned;
+    save(data);
+    render();
+    toast(data[idx].pinned ? '📌 Pinned' : 'Unpinned');
+}
+
+function toggleEdit(idx) { document.getElementById(`ep-${idx}`)?.classList.toggle('open'); }
+function closeEdit(idx) { document.getElementById(`ep-${idx}`)?.classList.remove('open'); }
+function saveEdit(idx) {
+    const data = load();
+    if (!data[idx]) return;
+    data[idx].name = document.getElementById(`en-${idx}`).value.trim() || data[idx].name;
+    data[idx].target = document.getElementById(`et-${idx}`).value.trim();
+    data[idx].unit = document.getElementById(`eu-${idx}`).value.trim();
+    data[idx].style = document.getElementById(`es-${idx}`).value;
+    save(data);
+    render();
+    toast('✓ Saved');
+}
+
+function toggleComments(idx) {
+    const el = document.getElementById(`cmts-${idx}`);
+    const tog = el?.previousElementSibling;
+    if (!el) return;
+    const open = el.classList.toggle('open');
+    tog?.classList.toggle('open', open);
+    const exp = loadExp();
+    exp[idx] = open;
+    saveExp(exp);
+}
+
+function startCEdit(ti, di) {
+    document.getElementById(`ct-${ti}-${di}`).style.display = 'none';
+    document.getElementById(`cef-${ti}-${di}`).classList.add('open');
+    document.getElementById(`ci-${ti}-${di}`).focus();
+}
+function cancelCEdit(ti, di) {
+    document.getElementById(`ct-${ti}-${di}`).style.display = '';
+    document.getElementById(`cef-${ti}-${di}`).classList.remove('open');
+}
+function saveCEdit(ti, ai, di) {
+    const data = load();
+    if (!data[ti]?.comments[ai]) return;
+    data[ti].comments[ai].text = document.getElementById(`ci-${ti}-${di}`).value.trim();
+    save(data);
+    render();
+}
+function deleteComment(ti, ai) {
+    if (!confirm('Delete this comment?')) return;
+    const data = load();
+    data[ti].comments.splice(ai, 1);
+    save(data);
+    render();
+}
+
+// ─── DRAG & DROP ───
+function dStart(e, idx) {
+    dragSrc = idx;
+    e.currentTarget.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+}
+function dOver(e, idx) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over'));
+    if (dragSrc !== idx) e.currentTarget.classList.add('drag-over');
+}
+function dLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function dDrop(e, tgtIdx) {
+    e.preventDefault();
+    document.querySelectorAll('.card').forEach(c => { c.classList.remove('dragging'); c.classList.remove('drag-over'); });
+    if (dragSrc === null || dragSrc === tgtIdx) return;
+    const data = load();
+    const moved = data.splice(dragSrc, 1)[0];
+    data.splice(tgtIdx, 0, moved);
+    save(data);
+    dragSrc = null;
+    render();
+}
+
+// ─── LOCK / UNLOCK ───
+function openLock(idx, action) {
+    lockIdx = idx; lockAct = action;
+    const data = load();
+    const title = document.getElementById('modalTitle');
+    const hint = document.getElementById('modalHint');
+    const hintNote = document.getElementById('modalHintNote');
+    document.getElementById('modalPw').value = '';
+    if (action === 'lock') {
+        title.textContent = '🔒 Lock Tally';
+        hint.style.display = '';
+        hintNote.style.display = '';
+    } else {
+        title.textContent = '🔓 Unlock Tally';
+        hint.style.display = 'none';
+        hintNote.style.display = 'none';
+        if (data[idx]?.lockHint) {
+            title.innerHTML = `🔓 Unlock<br><small style="font-size:0.72rem;color:var(--warn);font-weight:400">Hint: ${esc(data[idx].lockHint)}</small>`;
+        }
+    }
+    document.getElementById('lockModal').classList.add('open');
+    document.getElementById('modalPw').focus();
+}
+function closeModal() {
+    document.getElementById('lockModal').classList.remove('open');
+    lockIdx = null; lockAct = null;
+}
+async function confirmLock() {
+    const pw = document.getElementById('modalPw').value;
+    if (!pw) { toast('Password required'); return; }
+    const data = load();
+    if (!data[lockIdx]) return;
+    if (lockAct === 'lock') {
+        const hint = document.getElementById('modalHint').value.trim();
+        const it = data[lockIdx];
+        const payload = { name: it.name, target: it.target, unit: it.unit, type: it.type, comments: it.comments, created: it.created, style: it.style, pinned: it.pinned };
+        const enc = await encryptData(payload, pw);
+        data[lockIdx] = { ...it, locked: true, encrypted: enc, lockHint: hint, name: '🔒 Locked', comments: [], target: '', unit: '' };
+    } else {
+        const dec = await decryptData(data[lockIdx].encrypted, pw);
+        if (!dec) { toast('❌ Wrong password'); return; }
+        data[lockIdx] = { ...data[lockIdx], locked: false, encrypted: null, ...dec };
+    }
+    save(data);
+    closeModal();
+    render();
+    toast(lockAct === 'lock' ? '🔒 Locked' : '🔓 Unlocked');
+}
+
+// ─── CRYPTO ───
+async function deriveKey(pw, salt) {
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), { name: 'PBKDF2' }, false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' }, km, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+async function encryptData(data, pw) {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await deriveKey(pw, salt);
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(JSON.stringify(data)));
+    return { salt: [...salt], iv: [...iv], data: [...new Uint8Array(ct)] };
+}
+async function decryptData(enc, pw) {
+    try {
+        const key = await deriveKey(pw, new Uint8Array(enc.salt));
+        const dec = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: new Uint8Array(enc.iv) }, key, new Uint8Array(enc.data));
+        return JSON.parse(new TextDecoder().decode(dec));
+    } catch(e) { return null; }
+}
+
+// ─── BACKUP / RESTORE / CSV ───
+function backupData() {
+    const data = load();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `tally-backup-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    toast('💾 Backup downloaded');
+}
+function triggerRestore() { document.getElementById('restoreInput').click(); }
+function handleRestore(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        try {
+            const parsed = JSON.parse(ev.target.result);
+            if (!Array.isArray(parsed)) { alert('Invalid backup file'); return; }
+            if (!confirm(`Restore ${parsed.length} tallies? This will replace your current data.`)) return;
+            save(migrate(parsed));
+            localStorage.removeItem(EK);
             render();
-        }
+            toast('✓ Restored!');
+        } catch(err) { alert('Error: ' + err.message); }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+}
+function exportCSV() {
+    const data = load();
+    const rows = [['Name','Type','Target','Unit','Wins/Count','Losses','Total Entries','Streak','Pinned','Created']];
+    data.forEach(item => {
+        if (item.locked) { rows.push(['[Locked]','','','','','','','','','']); return; }
+        const c = getCounts(item);
+        rows.push([
+            item.name, item.type, item.target||'', item.unit||'',
+            item.type === 'dual' ? c.pos : c.simple,
+            item.type === 'dual' ? c.neg : '',
+            c.total, getStreak(item), item.pinned ? 'Yes' : 'No',
+            item.created ? item.created.slice(0,10) : ''
+        ]);
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `tally-export-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    toast('📊 CSV exported');
+}
 
-        function toggleEdit(index) {
-            const el = document.getElementById(`edit-${index}`);
-            if (el) el.classList.toggle('active');
-        }
+// ─── KEYBOARD ───
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Enter' && document.getElementById('lockModal').classList.contains('open')) {
+        e.preventDefault();
+        confirmLock();
+    }
+});
+document.getElementById('newName').addEventListener('keypress', e => { if (e.key === 'Enter') addTally(); });
 
-        function saveEdit(index) {
-            const data = loadData();
-            if (!data[index]) return;
-
-            const nameEl = document.getElementById(`edit-name-${index}`);
-            const targetEl = document.getElementById(`edit-target-${index}`);
-            const unitEl = document.getElementById(`edit-unit-${index}`);
-            const styleEl = document.getElementById(`edit-style-${index}`);
-
-            if (nameEl) data[index].name = nameEl.value.trim();
-            if (targetEl) data[index].target = targetEl.value.trim();
-            if (unitEl) data[index].unit = unitEl.value.trim();
-            if (styleEl) data[index].style = styleEl.value;
-
-            saveData(data);
-            render();
-        }
-
-        function startCommentEdit(tallyIdx, displayIdx) {
-            const textEl = document.getElementById(`comment-text-${tallyIdx}-${displayIdx}`);
-            const editEl = document.getElementById(`comment-edit-${tallyIdx}-${displayIdx}`);
-            if (textEl) textEl.style.display = 'none';
-            if (editEl) editEl.classList.add('active');
-            const input = document.getElementById(`comment-input-${tallyIdx}-${displayIdx}`);
-            if (input) input.focus();
-        }
-
-        function cancelCommentEdit(tallyIdx, displayIdx) {
-            const textEl = document.getElementById(`comment-text-${tallyIdx}-${displayIdx}`);
-            const editEl = document.getElementById(`comment-edit-${tallyIdx}-${displayIdx}`);
-            if (textEl) textEl.style.display = '';
-            if (editEl) editEl.classList.remove('active');
-        }
-
-        function saveCommentEdit(tallyIdx, actualIdx, displayIdx) {
-            const data = loadData();
-            if (!data[tallyIdx] || !data[tallyIdx].comments[actualIdx]) return;
-
-            const input = document.getElementById(`comment-input-${tallyIdx}-${displayIdx}`);
-            if (!input) return;
-
-            data[tallyIdx].comments[actualIdx].text = input.value.trim();
-            saveData(data);
-            render();
-        }
-
-        function deleteComment(tallyIdx, actualIdx) {
-            if (!confirm('Delete this comment?')) return;
-            const data = loadData();
-            if (!data[tallyIdx] || !data[tallyIdx].comments[actualIdx]) return;
-
-            data[tallyIdx].comments.splice(actualIdx, 1);
-            saveData(data);
-            render();
-        }
-
-        // ===== BACKUP/RESTORE =====
-        function backupData() {
-            const data = loadData();
-            const jsonStr = JSON.stringify(data, null, 2);
-            const blob = new Blob([jsonStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            const dateStr = new Date().toISOString().slice(0, 10);
-            a.download = `tally-backup-${dateStr}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function triggerRestore() {
-            document.getElementById('restoreInput').click();
-        }
-
-        function handleRestore(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const parsed = JSON.parse(e.target.result);
-                    if (!Array.isArray(parsed)) {
-                        alert('Invalid backup file: expected an array of tallies.');
-                        return;
-                    }
-                    if (!confirm(`Restore ${parsed.length} tallies? This will replace current data.`)) {
-                        return;
-                    }
-                    const migrated = migrateItem(parsed);
-                    saveData(migrated);
-                    // Clear comments state on restore to avoid index mismatches
-                    localStorage.removeItem(COMMENTS_STATE_KEY);
-                    render();
-                    alert('Restore complete!');
-                } catch (err) {
-                    alert('Error reading file: ' + err.message);
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
-        function addTally() {
-            const nameEl = document.getElementById('newName');
-            const targetEl = document.getElementById('newTarget');
-            const unitEl = document.getElementById('newUnit');
-            const typeEl = document.getElementById('newType');
-            const styleEl = document.getElementById('newStyle');
-
-            const name = nameEl ? nameEl.value.trim() : '';
-            const target = targetEl ? targetEl.value.trim() : '';
-            const unit = unitEl ? unitEl.value.trim() : '';
-            const type = typeEl ? typeEl.value : 'simple';
-            const style = styleEl ? styleEl.value : 'default';
-
-            if (!name) return;
-
-            const data = loadData();
-            data.push({
-                name, target, unit: unit || 'times', type, style,
-                count: 0, posCount: 0, negCount: 0,
-                comments: [],
-                locked: false,
-                encrypted: null,
-                lockHint: '',
-                created: new Date().toISOString()
-            });
-            saveData(data);
-
-            if (nameEl) nameEl.value = '';
-            if (targetEl) targetEl.value = '';
-            render();
-        }
-
-        document.getElementById('newName').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') addTally();
-        });
-
-        // Global key listeners
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeLockModal();
-            
-            const modal = document.getElementById('lockModal');
-            if (e.key === 'Enter' && modal.classList.contains('active')) {
-                e.preventDefault();
-                confirmLockAction();
-            }
-        });
-
-        // Init
-        initTheme();
-        render();
-    </script>
+// ─── INIT ───
+initTheme();
+render();
+</script>
 </body>
 </html>
