@@ -145,6 +145,15 @@
         .card.dragging { opacity: 0.35; }
         .card.drag-over { outline: 2px dashed var(--accent); outline-offset: 2px; }
 
+        /* Collapse */
+        .card-body { overflow: hidden; max-height: 800px; transition: max-height 0.3s ease, opacity 0.25s ease; opacity: 1; }
+        .card.collapsed .card-body { max-height: 0; opacity: 0; pointer-events: none; }
+        .card.collapsed .card-head { margin-bottom: 0; }
+        .collapse-btn { transition: transform 0.25s ease !important; }
+        .card.collapsed .collapse-btn { transform: rotate(-90deg); }
+        .mini-count { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--text-muted); background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.08rem 0.4rem; border-radius: 4px; display: none; }
+        .card.collapsed .mini-count { display: inline-block; }
+
         .drag-handle { position: absolute; left: 0.35rem; top: 50%; transform: translateY(-50%); color: var(--text-faint); cursor: grab; font-size: 0.7rem; opacity: 0; padding: 0.5rem 0.25rem; letter-spacing: -0.1em; user-select: none; }
         .card:hover .drag-handle { opacity: 1; }
 
@@ -327,6 +336,7 @@
 const SK = 'projectTally_v3';
 const TK = 'projectTally_theme';
 const EK = 'projectTally_commentsState';
+const CK = 'projectTally_collapseState';
 let lockIdx = null, lockAct = null, dragSrc = null;
 const pendingEmoji = {};
 
@@ -368,6 +378,8 @@ function load() {
 function save(d) { localStorage.setItem(SK, JSON.stringify(d)); }
 function loadExp() { try { return JSON.parse(localStorage.getItem(EK)) || {}; } catch(e) { return {}; } }
 function saveExp(s) { localStorage.setItem(EK, JSON.stringify(s)); }
+function loadCollapse() { try { return JSON.parse(localStorage.getItem(CK)) || {}; } catch(e) { return {}; } }
+function saveCollapse(s) { localStorage.setItem(CK, JSON.stringify(s)); }
 
 function migrate(items) {
     if (!Array.isArray(items)) return [];
@@ -449,6 +461,7 @@ function render() {
     renderStats();
     const data = load();
     const exp = loadExp();
+    const col = loadCollapse();
     const list = document.getElementById('tallyList');
 
     if (!data.length) {
@@ -456,16 +469,17 @@ function render() {
         return;
     }
 
-    // Sort: pinned first, then original order
+    // Sort: pinned first
     const ordered = data.map((item, i) => ({ item, i }))
         .sort((a, b) => (b.item.pinned ? 1 : 0) - (a.item.pinned ? 1 : 0));
 
-    list.innerHTML = ordered.map(({ item, i }) => buildCard(item, i, exp)).join('');
+    list.innerHTML = ordered.map(({ item, i }) => buildCard(item, i, exp, col)).join('');
     filterTallies();
 }
 
-function buildCard(item, idx, exp) {
+function buildCard(item, idx, exp, col) {
     const hlClass = item.style && item.style !== 'default' ? `hl-${item.style}` : '';
+    const isCollapsed = col[idx] || false;
 
     if (item.locked) {
         return `<div class="card card-locked ${hlClass}" data-name="locked" data-index="${idx}"
@@ -500,6 +514,7 @@ function buildCard(item, idx, exp) {
     if (isWin) cardClass += ' card-win';
     if (isKilled) cardClass += ' card-fail';
     if (item.pinned) cardClass += ' card-pinned';
+    if (isCollapsed) cardClass += ' collapsed';
 
     // Status banner
     const statusHTML = isWin
@@ -612,28 +627,38 @@ function buildCard(item, idx, exp) {
     if (streak > 1) metaHTML += `<span class="streak-pill">🔥 ${streak}d</span>`;
     if (item.pinned) metaHTML += `<span class="pin-pip">📌</span>`;
 
+    // Mini count shown when collapsed
+    const miniVal = isDual ? `${c.pos}W ${c.neg}L` : `${c.simple}${tgt.max > 0 ? '/' + tgt.max : ''}`;
+    const miniCount = `<span class="mini-count">${miniVal}</span>`;
+
     return `<div class="${cardClass}" data-name="${esc(item.name)}" data-index="${idx}"
         draggable="true"
         ondragstart="dStart(event,${idx})" ondragover="dOver(event,${idx})" ondrop="dDrop(event,${idx})" ondragleave="dLeave(event)">
         <div class="drag-handle">⋮⋮</div>
         <div class="card-head">
-            <div>
-                <div class="card-name">${esc(item.name)}</div>
-                ${metaHTML ? `<div class="card-meta">${metaHTML}</div>` : ''}
+            <div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0">
+                <div>
+                    <div class="card-name">${esc(item.name)}</div>
+                    ${metaHTML ? `<div class="card-meta">${metaHTML}</div>` : ''}
+                </div>
+                ${miniCount}
             </div>
             <div class="card-btns">
+                <button class="btn-icon collapse-btn" onclick="toggleCollapse(${idx})" title="${isCollapsed ? 'Expand' : 'Collapse'}">${isCollapsed ? '▼' : '▲'}</button>
                 <button class="btn-icon ${item.pinned ? 'active' : ''}" onclick="togglePin(${idx})" title="Pin to top">📌</button>
                 <button class="btn-icon" onclick="toggleEdit(${idx})" title="Edit">✎</button>
                 <button class="btn-icon" onclick="openLock(${idx},'lock')" title="Lock">🔒</button>
                 <button class="btn-icon btn-del" onclick="deleteTally(${idx})" title="Delete">🗑</button>
             </div>
         </div>
+        <div class="card-body">
         ${editHTML}
         ${statusHTML}
         <div class="counter-area">${counterHTML}</div>
         ${progressHTML}
         ${actionHTML}
         ${commentsHTML}
+        </div>
     </div>`;
 }
 
@@ -710,6 +735,13 @@ function deleteTally(idx) {
     saveExp(ne);
     render();
     toast('🗑 Deleted');
+}
+
+function toggleCollapse(idx) {
+    const col = loadCollapse();
+    col[idx] = !col[idx];
+    saveCollapse(col);
+    render();
 }
 
 function togglePin(idx) {
