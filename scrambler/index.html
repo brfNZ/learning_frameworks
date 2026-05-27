@@ -21,9 +21,9 @@
         }
 
         body.light {
-            --bg: #f1f5f9;
-            --bg-card: #ffffff;
-            --bg-input: #f8fafc;
+            --bg: #eef2f7 ;
+            --bg-card: #f8fafc;
+            --bg-input: #f1f5f9 ;
             --border: #cbd5e1;
             --border-hover: #94a3b8;
             --text: #0f172a;
@@ -631,7 +631,7 @@
                 complexity: 'High',
                 benefit: 'Each XOR pass is cryptographically independent. Massively increases resistance to key-recovery attacks.',
                 extra: 'SHA-256 has a perfect avalanche effect — any single bit change in the input flips roughly half the output bits unpredictably. It is a one-way function with no known practical attacks. SHA-256 is used in Bitcoin, TLS, and most modern security systems. Automatically disabled when AES mode is on since AES handles its own key derivation internally.',
-                worked: 'Stretched key: "X#mK9p..."\n\nWithout hashing — all passes use same key:\n  Pass 0: text XOR "X#mK9p..."\n  Pass 1: result XOR "X#mK9p..." ← identical key\n  Pass 2: result XOR "X#mK9p..." ← identical key\n\nWith hashing — each pass gets unique key:\n  Pass 0: SHA-256("X#mK9p...pass0") → "a3f8c2d1..."\n  Pass 1: SHA-256("X#mK9p...pass1") → "7k2m9x4q..."\n  Pass 2: SHA-256("X#mK9p...pass2") → "2p5t8v1u..."\n\nBreaking pass 0 reveals nothing about pass 1 or 2.'
+                worked: 'Your key: "mypassword"\nLCG stretches it to: "X#mK9p..."\n\nWITHOUT hashing:\n  Every pass XORs with the same stretched key.\n  Pass 0: text    XOR "X#mK9p..." = result1\n  Pass 1: result1 XOR "X#mK9p..." = result2  \u2190 same key again\n  Pass 2: result2 XOR "X#mK9p..." = final    \u2190 same key again\n\n  Problem: if an attacker figures out "X#mK9p..." from pass 0,\n  they can undo all 3 passes immediately.\n\nWITH hashing:\n  Before each pass, SHA-256 creates a new key by hashing\n  the stretched key + the pass number together.\n\n  pass0_key = SHA-256("X#mK9p..." + "0") \u2192 new 32 chars\n  pass1_key = SHA-256("X#mK9p..." + "1") \u2192 different 32 chars\n  pass2_key = SHA-256("X#mK9p..." + "2") \u2192 different 32 chars\n\n  Each pass now uses a different key.\n  Cracking pass 0 tells you pass0_key only.\n  pass1_key and pass2_key remain unknown.'
             },
             aes: {
                 title: '🔒 AES-256-GCM',
