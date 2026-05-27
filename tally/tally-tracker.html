@@ -126,20 +126,25 @@
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-left: 4px solid transparent;
+            border-left: 2px solid transparent;
             border-radius: var(--radius);
-            padding: 0.9rem 1rem 0.9rem 1.25rem;
+            padding: 0.9rem 1rem 0.9rem 1.1rem;
             position: relative;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
         .card:hover { border-color: var(--accent); }
-        .card.hl-blue { border-left-color: var(--hl-blue); background: var(--hl-blue-bg); }
-        .card.hl-orange { border-left-color: var(--hl-orange); background: var(--hl-orange-bg); }
-        .card.hl-purple { border-left-color: var(--hl-purple); background: var(--hl-purple-bg); }
-        .card.hl-yellow { border-left-color: var(--hl-yellow); background: var(--hl-yellow-bg); }
+        .card.hl-blue { border-color: var(--hl-blue); background: rgba(59,158,255,0.10); }
+        .card.hl-orange { border-color: var(--hl-orange); background: rgba(255,124,53,0.10); }
+        .card.hl-purple { border-color: var(--hl-purple); background: rgba(177,109,247,0.10); }
+        .card.hl-yellow { border-color: var(--hl-yellow); background: rgba(245,200,66,0.10); }
+        [data-theme="light"] .card.hl-blue { background: rgba(37,99,235,0.08); }
+        [data-theme="light"] .card.hl-orange { background: rgba(234,88,12,0.08); }
+        [data-theme="light"] .card.hl-purple { background: rgba(124,58,237,0.08); }
+        [data-theme="light"] .card.hl-yellow { background: rgba(180,83,9,0.08); }
         .card.card-win { border-color: var(--pos); }
         .card.card-fail { border-color: var(--neg); }
-        .card.card-pinned { box-shadow: 0 0 0 1.5px var(--warn); }
+        .card.card-pinned { box-shadow: 0 0 0 1px rgba(0,229,255,0.85), 0 0 22px rgba(0,229,255,0.35); background-color: rgba(0,229,255,0.05); }
+        .card.card-pinned-hot { box-shadow: 0 0 0 1px rgba(240,79,189,0.85), 0 0 22px rgba(240,79,189,0.40); background-color: rgba(240,79,189,0.06); }
         .card.card-locked { cursor: pointer; border-left-color: var(--text-faint); }
         .card.hidden { display: none; }
         .card.dragging { opacity: 0.35; }
@@ -513,7 +518,7 @@ function buildCard(item, idx, exp, col) {
     let cardClass = `card ${hlClass}`;
     if (isWin) cardClass += ' card-win';
     if (isKilled) cardClass += ' card-fail';
-    if (item.pinned) cardClass += ' card-pinned';
+    if (item.pinned) cardClass += item.pinned === 'hot' ? ' card-pinned-hot' : ' card-pinned';
     if (isCollapsed) cardClass += ' collapsed';
 
     // Status banner
@@ -645,7 +650,7 @@ function buildCard(item, idx, exp, col) {
             </div>
             <div class="card-btns">
                 <button class="btn-icon collapse-btn" onclick="toggleCollapse(${idx})" title="${isCollapsed ? 'Expand' : 'Collapse'}">${isCollapsed ? '▼' : '▲'}</button>
-                <button class="btn-icon ${item.pinned ? 'active' : ''}" onclick="togglePin(${idx})" title="Pin to top">📌</button>
+                <button class="btn-icon ${item.pinned ? 'active' : ''}" onclick="togglePin(event,${idx})" title="Pin · Ctrl+click for pink">📌</button>
                 <button class="btn-icon" onclick="toggleEdit(${idx})" title="Edit">✎</button>
                 <button class="btn-icon" onclick="openLock(${idx},'lock')" title="Lock">🔒</button>
                 <button class="btn-icon btn-del" onclick="deleteTally(${idx})" title="Delete">🗑</button>
@@ -663,7 +668,38 @@ function buildCard(item, idx, exp, col) {
 }
 
 // ─── EMOJI ───
-function setEmoji(idx, e) { pendingEmoji[idx] = e; toast(`${e} queued`); }
+function setEmoji(idx, e) {
+    // If a comment edit form is open for this tally, insert at cursor in its input
+    const openEditInput = document.querySelector(`[id^="cef-${idx}-"].open input`);
+    if (openEditInput) {
+        const cval = openEditInput.value;
+        const cs = (openEditInput.selectionStart != null) ? openEditInput.selectionStart : cval.length;
+        const ce = (openEditInput.selectionEnd   != null) ? openEditInput.selectionEnd   : cval.length;
+        openEditInput.value = cval.slice(0, cs) + e + cval.slice(ce);
+        const cp = cs + e.length;
+        openEditInput.setSelectionRange(cp, cp);
+        openEditInput.focus();
+        toast(`${e} added`);
+        return;
+    }
+    // Otherwise insert at cursor position in the note input
+    const noteEl = document.getElementById(`note-${idx}`);
+    if (!noteEl) return;
+    const val = noteEl.value;
+    if (val.length === 0) {
+        // No text: add at start with a trailing space
+        noteEl.value = e + ' ';
+        noteEl.setSelectionRange(e.length + 1, e.length + 1);
+    } else {
+        const start = (noteEl.selectionStart != null) ? noteEl.selectionStart : val.length;
+        const end   = (noteEl.selectionEnd   != null) ? noteEl.selectionEnd   : val.length;
+        noteEl.value = val.slice(0, start) + e + val.slice(end);
+        const newPos = start + e.length;
+        noteEl.setSelectionRange(newPos, newPos);
+    }
+    noteEl.focus();
+    toast(`${e} added`);
+}
 
 // ─── ENTRIES ───
 function addEntry(idx, type) {
@@ -744,13 +780,18 @@ function toggleCollapse(idx) {
     render();
 }
 
-function togglePin(idx) {
+function togglePin(e, idx) {
     const data = load();
     if (!data[idx]) return;
-    data[idx].pinned = !data[idx].pinned;
+    if (data[idx].pinned) {
+        data[idx].pinned = false;
+    } else {
+        data[idx].pinned = e.ctrlKey ? 'hot' : 'cyan';
+    }
+    const pinned = data[idx].pinned;
     save(data);
     render();
-    toast(data[idx].pinned ? '📌 Pinned' : 'Unpinned');
+    toast(pinned === 'hot' ? '📌 Pinned 🌸' : pinned ? '📌 Pinned' : 'Unpinned');
 }
 
 function toggleEdit(idx) { document.getElementById(`ep-${idx}`)?.classList.toggle('open'); }
