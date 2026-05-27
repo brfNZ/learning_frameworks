@@ -520,7 +520,8 @@
                 example: 'Text: "Hello"\nSalt added: "xK9mPqR2nL|Hello"\nEncrypt same text again → completely different output',
                 security: '⭐⭐⭐',
                 complexity: 'Low',
-                benefit: 'Identical messages with the same key always produce different ciphertext. Prevents pattern recognition attacks.'
+                benefit: 'Identical messages with the same key always produce different ciphertext. Prevents pattern recognition attacks.',
+                extra: 'The salt is not secret — it is recoverable after decryption — but it does not need to be secret. Its only job is to be unique. At 10 characters from 62 possible characters, collision probability is 1 in 839 trillion. An attacker collecting many encrypted messages cannot tell two identical messages are identical.'
             },
             lcg: {
                 title: '🔑 LCG Key Stretching',
@@ -528,7 +529,8 @@
                 example: 'Key "password" → stretched: "X#mK9pL2qR8n..."\nKey "passxord" → stretched: "Tz4&vQ1wN7j..." (completely different)',
                 security: '⭐⭐⭐⭐',
                 complexity: 'Low',
-                benefit: 'Small key changes cascade through the entire stretched key. Eliminates weak short-key vulnerability.'
+                benefit: 'Small key changes cascade through the entire stretched key. Eliminates weak short-key vulnerability.',
+                extra: 'Formula: next = (current × 31 + 17) % 256. Every character of your key seeds the generator first, then it runs forward producing the stretched output. Because each value depends on all prior values, a single character change anywhere cascades through the entire sequence. Far superior to simple key repetition or basic XOR mixing.'
             },
             shuffle: {
                 title: '🔀 Position Shuffle',
@@ -536,7 +538,8 @@
                 example: 'Encrypted: "A B C D E F"\nEven(0,2,4): "A C E"\nOdd(1,3,5):  "B D F"\nShuffled: "A C E B D F"',
                 security: '⭐⭐',
                 complexity: 'Low',
-                benefit: 'Adds a transposition layer on top of XOR. Makes frequency analysis harder.'
+                benefit: 'Adds a transposition layer on top of XOR. Makes frequency analysis harder.',
+                extra: 'XOR is a substitution cipher — it replaces each character. Shuffle adds a transposition cipher — it moves characters around. Combined they form a product cipher, which is stronger than either alone. This is the same principle used in modern block ciphers like AES, which alternates substitution and permutation layers.'
             },
             xor: {
                 title: '🔁 Multi-Pass XOR',
@@ -544,7 +547,8 @@
                 example: 'Pass 0: text XOR key⁰ → result₁\nPass 1: result₁ XOR key¹ → result₂\nPass 2: result₂ XOR key² → final',
                 security: '⭐⭐⭐',
                 complexity: 'Medium',
-                benefit: 'Each pass adds another layer of obfuscation. Decrypting requires reversing all passes in correct order.'
+                benefit: 'Each pass adds another layer of obfuscation. Decrypting requires reversing all passes in correct order.',
+                extra: 'XOR is its own inverse — applying the same key twice returns the original. This is why pass count must match exactly between encrypt and decrypt. Each pass also XORs with its pass number (0, 1, 2) ensuring each layer uses a slightly different effective key. Combined with LCG stretching and SHA-256 hashing, multi-pass XOR becomes significantly harder to attack.'
             },
             sha: {
                 title: '#️⃣ SHA-256 Hashing',
@@ -552,7 +556,8 @@
                 example: 'Pass 0 key: SHA-256(stretchedKey + "pass0") → unique 32 chars\nPass 1 key: SHA-256(stretchedKey + "pass1") → different 32 chars\nPass 2 key: SHA-256(stretchedKey + "pass2") → different 32 chars',
                 security: '⭐⭐⭐⭐⭐',
                 complexity: 'High',
-                benefit: 'Each XOR pass is cryptographically independent. Massively increases resistance to key-recovery attacks.'
+                benefit: 'Each XOR pass is cryptographically independent. Massively increases resistance to key-recovery attacks.',
+                extra: 'SHA-256 has a perfect avalanche effect — any single bit change in the input flips roughly half the output bits unpredictably. It is a one-way function with no known practical attacks. SHA-256 is used in Bitcoin, TLS, and most modern security systems. Automatically disabled when AES mode is on since AES handles its own key derivation internally.'
             },
             aes: {
                 title: '🔒 AES-256-GCM',
@@ -560,7 +565,8 @@
                 example: 'Key → SHA-256 → 256-bit AES key\nRandom IV generated per encryption\nAES-GCM encrypts + authenticates\nOutput: AES:[base64]',
                 security: '⭐⭐⭐⭐⭐',
                 complexity: 'High',
-                benefit: 'Military-grade encryption. Wrong key always fails cleanly. Recommended for anything sensitive.'
+                benefit: 'Military-grade encryption. Wrong key always fails cleanly. Recommended for anything sensitive.',
+                extra: 'AES was adopted by the US government in 2001 and is used everywhere from HTTPS to military communications. AES-256 uses a 256-bit key — 2²⁵⁶ possible keys, more than the number of atoms in the observable universe. The random IV (Initialisation Vector) ensures identical messages always produce different ciphertext. The "AES:" prefix in the output enables automatic mode detection so the receiver needs no special settings.'
             }
         };
 
@@ -581,6 +587,10 @@
                 <div class="modal-row">
                     <span class="modal-label">Benefit</span>
                     <span class="modal-value" style="text-align:right; max-width:300px;">${data.benefit}</span>
+                </div>
+                <div style="margin-top:20px; padding-top:16px; border-top:1px solid #334155;">
+                    <div style="font-size:0.75rem; color:#64748b; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;">More Detail</div>
+                    <p style="color:#94a3b8; font-size:0.85rem; line-height:1.7;">${data.extra}</p>
                 </div>
             `;
             const modal = document.getElementById('featureModal');
