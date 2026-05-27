@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Scrambler - Enhanced</title>
+    <title>Text Scrambler - Hashed</title>
     <style>
         * {
             margin: 0;
@@ -12,47 +12,42 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             background: #0f172a;
-            min-height: 100vh;
-            padding: 20px;
             color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
-        h1 {
+        header {
             text-align: center;
-            color: #f1f5f9;
-            margin-bottom: 8px;
+            margin-bottom: 32px;
+            padding: 20px 0;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
             font-size: 2rem;
-            font-weight: 700;
+            margin-bottom: 8px;
+            color: #e2e8f0;
         }
 
         .subtitle {
-            text-align: center;
             color: #94a3b8;
-            margin-bottom: 6px;
             font-size: 0.95rem;
-        }
-
-        .enhanced-badge {
-            text-align: center;
-            color: #10b981;
-            margin-bottom: 24px;
-            font-weight: 600;
-            font-size: 0.85rem;
         }
 
         .card {
             background: #1e293b;
+            border: 1px solid #334155;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
-            border: 1px solid #334155;
         }
 
         label {
@@ -74,43 +69,52 @@
             margin-bottom: 0;
         }
 
-        .btn-clear-input {
-            background: transparent;
-            color: #64748b;
-            border: 1px solid #475569;
-            padding: 4px 12px;
-            font-size: 0.8rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-clear-input:hover {
-            background: #475569;
-            color: #e2e8f0;
-        }
-
         textarea {
             width: 100%;
             padding: 12px;
             background: #0f172a;
-            color: #e2e8f0;
             border: 1px solid #475569;
             border-radius: 8px;
-            font-size: 15px;
-            font-family: inherit;
+            color: #e2e8f0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
             resize: vertical;
-            min-height: 100px;
-            transition: border-color 0.2s;
+            min-height: 120px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        textarea::placeholder {
+            color: #64748b;
         }
 
         textarea:focus {
             outline: none;
             border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-        textarea::placeholder {
-            color: #64748b;
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        #formatIndicator {
+            margin-top: 8px;
+            color: #10b981;
+            font-size: 0.85rem;
         }
 
         .button-group {
@@ -128,11 +132,11 @@
         }
 
         button {
-            padding: 12px 20px;
-            font-size: 15px;
-            font-weight: 600;
+            padding: 12px 24px;
             border: none;
             border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -160,11 +164,41 @@
         .btn-clear {
             background: #64748b;
             color: white;
-            grid-column: 1 / -1;
+            width: 100%;
         }
 
         .btn-clear:hover {
             background: #475569;
+        }
+
+        .btn-advanced {
+            background: transparent;
+            color: #64748b;
+            border: 1px solid #64748b;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .btn-advanced:hover {
+            background: transparent;
+            color: #94a3b8;
+            border-color: #94a3b8;
+        }
+
+        .btn-clear-input {
+            background: transparent;
+            color: #64748b;
+            border: 1px solid #475569;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-clear-input:hover {
+            background: #475569;
+            color: #e2e8f0;
         }
 
         .btn-copy {
@@ -198,65 +232,44 @@
             border: 1px solid #475569;
             color: #cbd5e1;
             white-space: pre-wrap;
+            font-family: 'Monaco', 'Menlo', monospace;
         }
 
-        .info-box {
-            background: #1e293b;
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid #3b82f6;
-            border: 1px solid #334155;
-            margin-bottom: 16px;
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
         }
 
-        .info-box h3 {
-            color: #3b82f6;
-            margin-bottom: 12px;
-            font-size: 1.1rem;
+        .notification.error {
+            background: #ef4444;
         }
 
-        .info-box ul {
-            margin-left: 20px;
-            color: #94a3b8;
-            line-height: 1.8;
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
-        .info-box ul li {
-            margin-bottom: 8px;
-        }
-
-        .info-box strong {
-            color: #cbd5e1;
-        }
-
-        .advanced-toggle {
-            text-align: center;
-            margin-top: 16px;
-        }
-
-        .advanced-toggle button {
-            background: transparent;
-            color: #64748b;
-            border: 1px solid #334155;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            border-radius: 6px;
-        }
-
-        .advanced-toggle button:hover {
-            background: #1e293b;
-            color: #94a3b8;
-            border-color: #475569;
-        }
-
-       .advanced-settings {
+        .advanced-settings {
             display: none;
-            background: #0f172a;  /* Darker */
+            background: #0f172a;
             border-radius: 12px;
             padding: 24px;
             margin-top: 16px;
-            border: 2px solid #f59e0b;  /* Orange border */
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);  /* Subtle glow */
+            border: 2px solid #334155;
         }
 
         .advanced-settings.show {
@@ -264,9 +277,8 @@
         }
 
         .advanced-settings h3 {
-            color: #cbd5e1;
             margin-bottom: 20px;
-            font-size: 1.1rem;
+            color: #cbd5e1;
         }
 
         .setting-group {
@@ -281,22 +293,17 @@
         }
 
         .setting-value {
-            color: #3b82f6;
-            font-weight: 700;
+            color: #94a3b8;
+            font-weight: normal;
+            font-size: 0.85rem;
         }
 
         input[type="range"] {
             width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: #334155;
-            outline: none;
-            -webkit-appearance: none;
+            cursor: pointer;
         }
 
         input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
             width: 18px;
             height: 18px;
             border-radius: 50%;
@@ -314,64 +321,54 @@
         }
 
         .setting-description {
+            font-size: 0.8rem;
             color: #64748b;
-            font-size: 0.85rem;
-            margin-top: 6px;
+            margin-top: 8px;
         }
 
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #10b981;
-            color: white;
-            padding: 14px 22px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 0.3s;
-            pointer-events: none;
-            font-weight: 600;
-            z-index: 1000;
+        .info-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
         }
 
-        .notification.show {
-            opacity: 1;
-            transform: translateY(0);
+        .info-box h3 {
+            color: #cbd5e1;
+            margin-bottom: 12px;
         }
 
-        .notification.error {
-            background: #ef4444;
+        .info-box ul {
+            list-style: none;
+            color: #cbd5e1;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
+        .info-box li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
 
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            .button-group {
-                grid-template-columns: 1fr;
-            }
+        .info-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
         }
     </style>
 </head>
 <body>
-    <div class="notification" id="notification">Copied to clipboard!</div>
-    
     <div class="container">
-        <h1>🔀 Text Scrambler</h1>
-        <p class="subtitle">Enhanced encryption with multi-layer security</p>
-        <p class="enhanced-badge">✨ Salt + Key Stretching + Multi-Pass XOR ✨</p>
+        <header>
+            <h1>🔐 Text Scrambler</h1>
+            <p class="subtitle">Encrypt & decrypt with SHA-256 hashed multi-pass XOR</p>
+        </header>
 
         <div class="card">
             <div class="label-with-clear">
                 <label for="inputText">Enter Your Text:</label>
-                <button class="btn-clear-input" onclick="clearInputText()">Clear</button>
+                <button class="btn-clear-input" id="clearPasteBtn" onclick="toggleClearPaste()">Clear</button>
             </div>
             <textarea id="inputText" placeholder="Type or paste your text here (formatting will be preserved)..."></textarea>
             <input type="hidden" id="htmlContent" value="">
@@ -381,13 +378,23 @@
         </div>
 
         <div class="card">
-            <label for="secretKey">Secret Key (optional):</label>
-            <textarea id="secretKey" placeholder="Enter a secret key for encryption..." style="min-height: 60px;"></textarea>
+            <label for="secretKey">Secret Key:</label>
+            <div style="position: relative;">
+                <input type="text" id="secretKey" placeholder="Enter your secret key (longer = stronger)" autocomplete="off" style="width: 100%; padding-right: 40px;">
+                <button type="button" onclick="toggleKeyVisibility()" id="eyeButton" style="position: absolute; right: 12px; top: 11px; background: none; border: none; color: #64748b; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
         </div>
 
-        <div class="button-group">
-            <button class="btn-primary" onclick="scrambleText()">🔒 Scramble</button>
-            <button class="btn-secondary" onclick="unscrambleText()">🔓 Unscramble</button>
+        <div class="card">
+            <div class="button-group">
+                <button class="btn-primary" onclick="scrambleText()">🔒 Scramble</button>
+                <button class="btn-secondary" onclick="unscrambleText()">🔓 Unscramble</button>
+            </div>
             <button class="btn-clear" onclick="clearAll()">Clear All</button>
         </div>
 
@@ -403,25 +410,28 @@
         <div class="info-box">
             <h3>🛡️ Security Features</h3>
             <ul>
-                <li><strong>Salt:</strong> Each encryption is unique</li>
+                <li><strong>Salt:</strong> Random data ensures unique encryption each time</li>
                 <li><strong>Key Stretching:</strong> Weak keys strengthened to 32+ characters</li>
-                <li><strong>Multi-Pass XOR:</strong> Triple-layer encryption</li>
-                <li><strong>Position Shuffle:</strong> Optional character position scrambling</li>
-                <li><strong>Formatting Preservation:</strong> Copy formatted text from apps like Apple Notes - formatting is preserved through encryption!</li>
+                <li><strong>Position Shuffle:</strong> Characters rearranged by even/odd positions</li>
+                <li><strong>Multi-Pass XOR:</strong> 3-5 layers of encryption with key variation</li>
+                <li><strong>SHA-256 Hashing:</strong> Optional - unique hashed keys per pass (Advanced)</li>
+                <li><strong>Formatting Preservation:</strong> Bold, italic, underline preserved through encryption</li>
             </ul>
         </div>
 
-        <div class="advanced-toggle">
-            <button onclick="toggleAdvanced()">⚙️ Advanced Settings</button>
+        <div style="text-align: center; margin-top: 24px; margin-bottom: 20px;">
+            <button class="btn-advanced" onclick="toggleAdvanced()">⚙️ Advanced Settings</button>
         </div>
 
-        <div class="advanced-settings" id="advancedSettings">            
+        <div class="advanced-settings" id="advancedSettings">
+            <h3>⚙️ Advanced Configuration</h3>
+            
             <div class="setting-group">
                 <label>
                     <span>Salt Length:</span>
-                    <span class="setting-value"><span id="saltValue">8</span> characters</span>
+                    <span class="setting-value"><span id="saltValue">4</span> characters</span>
                 </label>
-                <input type="range" id="saltLength" min="4" max="16" value="8" oninput="updateSaltValue()">
+                <input type="range" id="saltLength" min="4" max="16" value="4" oninput="updateSaltValue()">
                 <div class="setting-description">Random data added before encryption. Longer = more unique.</div>
             </div>
 
@@ -436,13 +446,13 @@
 
             <div class="setting-group">
                 <label style="cursor: pointer;">
-                    <span>Position Shuffle:</span>
+                    <span>SHA-256 Hashing:</span>
                     <span class="setting-value">
-                        <input type="checkbox" id="shuffleToggle" onchange="updateShuffleValue()" style="width: auto; height: auto; cursor: pointer;">
-                        <span id="shuffleValue">Off</span>
+                        <input type="checkbox" id="hashToggle" onchange="updateHashValue()" style="width: auto; height: auto; cursor: pointer;">
+                        <span id="hashValue">Off</span>
                     </span>
                 </label>
-                <div class="setting-description">Shuffles character order (even/odd split) after encryption for added security</div>
+                <div class="setting-description">Uses SHA-256 to generate unique keys for each XOR pass.</div>
             </div>
         </div>
     </div>
@@ -450,12 +460,13 @@
     <script>
         // ===== SETTINGS =====
         let settings = {
-            saltLength: 8,
+            saltLength: 4,
             passCount: 3,
-            shuffle: false
+            useHash: false,
+            shuffle: true
         };
 
-        let decryptedHTML = ''; // Store decrypted HTML for copying
+        let decryptedHTML = '';
 
         function toggleAdvanced() {
             document.getElementById('advancedSettings').classList.toggle('show');
@@ -473,47 +484,51 @@
             settings.passCount = parseInt(value);
         }
 
-        function updateShuffleValue() {
-            const checked = document.getElementById('shuffleToggle').checked;
-            document.getElementById('shuffleValue').textContent = checked ? 'On' : 'Off';
-            settings.shuffle = checked;
+        function updateHashValue() {
+            const checked = document.getElementById('hashToggle').checked;
+            document.getElementById('hashValue').textContent = checked ? 'On' : 'Off';
+            settings.useHash = checked;
         }
 
-        // ===== HTML CLIPBOARD HANDLING =====
 
-        // Listen for paste events to capture HTML
+        // ===== HTML CLIPBOARD HANDLING =====
         document.addEventListener('DOMContentLoaded', function() {
             const inputText = document.getElementById('inputText');
             
             inputText.addEventListener('paste', function(e) {
                 e.preventDefault();
                 
-                // Try to get HTML from clipboard
                 const html = e.clipboardData.getData('text/html');
                 const plainText = e.clipboardData.getData('text/plain');
                 
                 if (html && html.trim()) {
-                    // Store HTML in hidden field
                     document.getElementById('htmlContent').value = html;
-                    // Show plain text in textarea
                     inputText.value = plainText;
-                    // Show indicator
                     document.getElementById('formatIndicator').style.display = 'block';
                 } else {
-                    // No HTML, just plain text
                     document.getElementById('htmlContent').value = '';
                     inputText.value = plainText;
                     document.getElementById('formatIndicator').style.display = 'none';
                 }
             });
 
-            // Clear indicator when typing
             inputText.addEventListener('input', function() {
                 if (!document.getElementById('htmlContent').value) {
                     document.getElementById('formatIndicator').style.display = 'none';
                 }
             });
         });
+
+        // ===== SHA-256 HASHING =====
+        async function hashForPass(key, passNumber) {
+            const text = key + "pass" + passNumber;
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex.substring(0, 32);
+        }
 
         // ===== ENHANCED ENCRYPTION FUNCTIONS =====
 
@@ -584,7 +599,7 @@
             return result;
         }
 
-        function enhancedXOREncrypt(text, key, saltLength, passCount, useShuffle) {
+        async function enhancedXOREncrypt(text, key, saltLength, passCount, useHash, useShuffle) {
             if (!key) return text;
             
             const salt = generateSalt(saltLength);
@@ -595,21 +610,28 @@
             let result = saltedText;
             
             for (let pass = 0; pass < passCount; pass++) {
+                let passKey;
+                
+                if (useHash) {
+                    passKey = await hashForPass(stretchedKey, pass);
+                } else {
+                    passKey = stretchedKey;
+                }
+                
                 let temp = '';
                 
                 for (let i = 0; i < result.length; i++) {
-                    const keyIndex = (i + pass * 7) % stretchedKey.length;
-                    const variedKeyChar = stretchedKey.charCodeAt(keyIndex) + pass;
+                    const keyIndex = i % passKey.length;
+                    const keyChar = passKey.charCodeAt(keyIndex);
                     
                     temp += String.fromCharCode(
-                        result.charCodeAt(i) ^ variedKeyChar ^ pass
+                        result.charCodeAt(i) ^ keyChar ^ pass
                     );
                 }
                 
                 result = temp;
             }
             
-            // Apply shuffle if enabled
             if (useShuffle) {
                 result = alternatePositionShuffle(result);
             }
@@ -617,12 +639,11 @@
             return result;
         }
 
-        function enhancedXORDecrypt(encrypted, key, passCount, useShuffle) {
+        async function enhancedXORDecrypt(encrypted, key, passCount, useHash, useShuffle) {
             if (!key) return encrypted;
             
             let result = encrypted;
             
-            // Undo shuffle if enabled
             if (useShuffle) {
                 result = alternatePositionUnshuffle(result);
             }
@@ -630,14 +651,22 @@
             const stretchedKey = stretchKey(key, Math.max(32, result.length));
             
             for (let pass = passCount - 1; pass >= 0; pass--) {
+                let passKey;
+                
+                if (useHash) {
+                    passKey = await hashForPass(stretchedKey, pass);
+                } else {
+                    passKey = stretchedKey;
+                }
+                
                 let temp = '';
                 
                 for (let i = 0; i < result.length; i++) {
-                    const keyIndex = (i + pass * 7) % stretchedKey.length;
-                    const variedKeyChar = stretchedKey.charCodeAt(keyIndex) + pass;
+                    const keyIndex = i % passKey.length;
+                    const keyChar = passKey.charCodeAt(keyIndex);
                     
                     temp += String.fromCharCode(
-                        result.charCodeAt(i) ^ variedKeyChar ^ pass
+                        result.charCodeAt(i) ^ keyChar ^ pass
                     );
                 }
                 
@@ -652,17 +681,9 @@
             return result;
         }
 
-        // ===== AUTO-COPY FUNCTION =====
-
-        function autoCopy(text) {
-            navigator.clipboard.writeText(text).catch(() => {
-                // Silent fail - we have manual copy buttons
-            });
-        }
-
         // ===== MAIN FUNCTIONS =====
 
-        function scrambleText() {
+        async function scrambleText() {
             const inputText = document.getElementById('inputText').value;
             const htmlContent = document.getElementById('htmlContent').value;
             const secretKey = document.getElementById('secretKey').value;
@@ -678,16 +699,15 @@
                 let textToEncrypt = inputText;
                 let isHTML = false;
 
-                // If HTML content exists, encrypt that instead
                 if (htmlContent && htmlContent.trim()) {
-                    textToEncrypt = '<!--HTML-->' + htmlContent; // Mark as HTML
+                    textToEncrypt = '<!--HTML-->' + htmlContent;
                     isHTML = true;
                 }
                 
                 let processed = textToEncrypt;
                 
                 if (secretKey) {
-                    processed = enhancedXOREncrypt(textToEncrypt, secretKey, settings.saltLength, settings.passCount, settings.shuffle);
+                    processed = await enhancedXOREncrypt(textToEncrypt, secretKey, settings.saltLength, settings.passCount, settings.useHash, settings.shuffle);
                 }
                 
                 const scrambled = btoa(unescape(encodeURIComponent(processed)));
@@ -698,9 +718,9 @@
                 autoCopy(scrambled);
 
                 if (isHTML) {
-                    showNotification('📋 Formatted text encrypted and copied!', true);
+                    showNotification('🔒 Formatted text encrypted!', true);
                 } else {
-                    showNotification('📋 Copied to clipboard!', true);
+                    showNotification('🔒 Text scrambled!', true);
                 }
             } catch (error) {
                 outputBox.textContent = '❌ Error scrambling text. Please try again.';
@@ -708,7 +728,7 @@
             }
         }
 
-        function unscrambleText() {
+        async function unscrambleText() {
             const inputText = document.getElementById('inputText').value;
             const secretKey = document.getElementById('secretKey').value;
             const outputBox = document.getElementById('output');
@@ -723,47 +743,34 @@
                 let unscrambled = decodeURIComponent(escape(atob(inputText)));
                 
                 if (secretKey) {
-                    unscrambled = enhancedXORDecrypt(unscrambled, secretKey, settings.passCount, settings.shuffle);
+                    unscrambled = await enhancedXORDecrypt(unscrambled, secretKey, settings.passCount, settings.useHash, settings.shuffle);
                 }
 
-                // Check if this was HTML content
                 if (unscrambled.startsWith('<!--HTML-->')) {
-                    const htmlContent = unscrambled.substring(11); // Remove marker
-                    decryptedHTML = htmlContent; // Store for copying
+                    const htmlContent = unscrambled.substring(11);
+                    decryptedHTML = htmlContent;
                     
-                    // Create a temp element to extract plain text from HTML
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = htmlContent;
                     
-                    // Remove style and script tags
                     const styleTags = tempDiv.querySelectorAll('style');
                     styleTags.forEach(tag => tag.remove());
                     const scriptTags = tempDiv.querySelectorAll('script');
                     scriptTags.forEach(tag => tag.remove());
                     
-                    // Process ordered lists to add numbers
                     const orderedLists = tempDiv.querySelectorAll('ol');
                     orderedLists.forEach(ol => {
                         const listItems = ol.querySelectorAll('li');
                         listItems.forEach((li, index) => {
-                            // Add the number before the list item content
-                            const number = (index + 1) + '. ';
-                            li.innerHTML = number + li.innerHTML;
+                            li.innerHTML = (index + 1) + '. ' + li.innerHTML;
                         });
                     });
                     
-                    // Preserve line breaks by replacing HTML breaks with newlines
-                    // Replace <br> tags with newlines
                     tempDiv.innerHTML = tempDiv.innerHTML.replace(/<br\s*\/?>/gi, '\n');
-                    // Replace closing p tags with double newlines
                     tempDiv.innerHTML = tempDiv.innerHTML.replace(/<\/p>/gi, '\n\n');
-                    // Replace closing div tags with newlines
                     tempDiv.innerHTML = tempDiv.innerHTML.replace(/<\/div>/gi, '\n');
-                    // Replace closing list items with newlines
                     tempDiv.innerHTML = tempDiv.innerHTML.replace(/<\/li>/gi, '\n');
-                    // Replace closing headings with double newlines
                     tempDiv.innerHTML = tempDiv.innerHTML.replace(/<\/h[1-6]>/gi, '\n\n');
-                    // Replace closing blockquotes with newlines
                     tempDiv.innerHTML = tempDiv.innerHTML.replace(/<\/blockquote>/gi, '\n');
                     
                     const plainText = tempDiv.textContent || tempDiv.innerText;
@@ -771,24 +778,22 @@
                     outputBox.textContent = plainText;
                     outputBox.style.color = '#cbd5e1';
                     
-                    // Show the "Copy with Formatting" button
                     document.getElementById('copyFormattedBtn').style.display = 'block';
                     
                     autoCopy(plainText);
-                    showNotification('📋 Formatted text decrypted!', true);
+                    showNotification('🔓 Formatted text decrypted!', true);
                 } else {
-                    decryptedHTML = ''; // No HTML
+                    decryptedHTML = '';
                     outputBox.textContent = unscrambled;
                     outputBox.style.color = '#cbd5e1';
                     
-                    // Hide the "Copy with Formatting" button
                     document.getElementById('copyFormattedBtn').style.display = 'none';
                     
                     autoCopy(unscrambled);
-                    showNotification('📋 Copied to clipboard!', true);
+                    showNotification('🔓 Text unscrambled!', true);
                 }
             } catch (error) {
-                outputBox.textContent = '❌ Error unscrambling text. Make sure you entered the correct scrambled text and secret key.';
+                outputBox.textContent = '❌ Error unscrambling text. Check your key and try again.';
                 outputBox.style.color = '#ef4444';
                 document.getElementById('copyFormattedBtn').style.display = 'none';
             }
@@ -809,6 +814,70 @@
             document.getElementById('inputText').value = '';
             document.getElementById('htmlContent').value = '';
             document.getElementById('formatIndicator').style.display = 'none';
+            updateClearPasteButton();
+        }
+
+        function pasteFromClipboard() {
+            navigator.clipboard.readText().then(text => {
+                if (!text.trim()) {
+                    showNotification('📋 Clipboard is empty', false);
+                    return;
+                }
+                document.getElementById('inputText').value = text;
+                document.getElementById('htmlContent').value = '';
+                document.getElementById('formatIndicator').style.display = 'none';
+                updateClearPasteButton();
+                showNotification('📋 Pasted from clipboard!', true);
+            }).catch(err => {
+                showNotification('❌ Paste failed - ensure HTTPS or localhost', false);
+            });
+        }
+
+        function toggleClearPaste() {
+            const inputText = document.getElementById('inputText').value;
+            if (inputText.trim()) {
+                clearInputText();
+            } else {
+                pasteFromClipboard();
+            }
+        }
+
+        function updateClearPasteButton() {
+            const btn = document.getElementById('clearPasteBtn');
+            const inputText = document.getElementById('inputText').value;
+            if (inputText.trim()) {
+                btn.textContent = 'Clear';
+            } else {
+                btn.textContent = 'Paste';
+            }
+        }
+
+        // Update button on input change
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('inputText').addEventListener('input', updateClearPasteButton);
+        });
+
+        function toggleKeyVisibility() {
+            const keyInput = document.getElementById('secretKey');
+            const eyeButton = document.getElementById('eyeButton');
+            
+            if (keyInput.type === 'text') {
+                keyInput.type = 'password';
+                // Show crossed-out eye icon
+                eyeButton.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+            } else {
+                keyInput.type = 'text';
+                // Show normal eye icon
+                eyeButton.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+            }
+        }
+
+        function autoCopy(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('📋 Copied to clipboard!', true);
+            }).catch(() => {
+                // Silent fail - user can use copy buttons
+            });
         }
 
         function copyOutputPlain() {
@@ -836,9 +905,7 @@
 
             const plainText = document.getElementById('output').textContent;
             
-            // Try multiple formats for maximum compatibility
             try {
-                // Method 1: Use ClipboardItem with HTML
                 const htmlBlob = new Blob([decryptedHTML], { type: 'text/html' });
                 const textBlob = new Blob([plainText], { type: 'text/plain' });
                 
@@ -850,73 +917,31 @@
                 navigator.clipboard.write([item]).then(() => {
                     showNotification('✨ Formatted text copied!', true);
                 }).catch(err => {
-                    // Fallback: Try just HTML
-                    copyHTMLFallback(decryptedHTML, plainText);
+                    navigator.clipboard.writeText(plainText).then(() => {
+                        showNotification('📋 Text copied (formatting not supported)', true);
+                    }).catch(() => {
+                        showNotification('❌ Failed to copy', false);
+                    });
                 });
             } catch (err) {
-                // Fallback for older browsers
-                copyHTMLFallback(decryptedHTML, plainText);
-            }
-        }
-
-        function copyHTMLFallback(html, plainText) {
-            // Create a temporary element with the HTML
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-            tempDiv.style.position = 'absolute';
-            tempDiv.style.left = '-9999px';
-            document.body.appendChild(tempDiv);
-            
-            // Select the content
-            const range = document.createRange();
-            range.selectNodeContents(tempDiv);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            
-            // Try to copy
-            try {
-                document.execCommand('copy');
-                showNotification('✨ Formatted text copied!', true);
-            } catch (err) {
-                // Last resort: just copy plain text
                 navigator.clipboard.writeText(plainText).then(() => {
-                    showNotification('📋 Plain text copied (formatting not supported)', true);
+                    showNotification('📋 Text copied (formatting not supported)', true);
                 }).catch(() => {
                     showNotification('❌ Failed to copy', false);
                 });
             }
-            
-            // Clean up
-            selection.removeAllRanges();
-            document.body.removeChild(tempDiv);
         }
 
-        function showNotification(message, success) {
-            const notification = document.getElementById('notification');
+        function showNotification(message, isSuccess = true) {
+            const notification = document.createElement('div');
+            notification.className = 'notification' + (isSuccess ? '' : ' error');
             notification.textContent = message;
-            notification.className = 'notification' + (success ? '' : ' error');
-            notification.classList.add('show');
+            document.body.appendChild(notification);
 
             setTimeout(() => {
-                notification.classList.remove('show');
-            }, 2000);
+                notification.remove();
+            }, 3000);
         }
-
-        // Initialize slider positions on load
-        window.addEventListener('load', () => {
-            document.getElementById('saltLength').value = 8;
-            document.getElementById('passCount').value = 3;
-            updateSaltValue();
-            updatePassValue();
-        });
-
-        // Keyboard shortcut
-        document.getElementById('inputText').addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'Enter') {
-                scrambleText();
-            }
-        });
     </script>
 </body>
 </html>
