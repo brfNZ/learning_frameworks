@@ -5,6 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text Scrambler - Hashed</title>
     <style>
+        :root {
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #0f172a;
+            --border: #334155;
+            --border-hover: #475569;
+            --text: #e2e8f0;
+            --text-muted: #cbd5e1;
+            --text-subtle: #94a3b8;
+            --text-faint: #64748b;
+            --output-text: #cbd5e1;
+            --scrollbar: #334155;
+            --scrollbar-hover: #475569;
+        }
+
+        body.light {
+            --bg: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-input: #f8fafc;
+            --border: #cbd5e1;
+            --border-hover: #94a3b8;
+            --text: #0f172a;
+            --text-muted: #1e293b;
+            --text-subtle: #475569;
+            --text-faint: #94a3b8;
+            --output-text: #1e293b;
+            --scrollbar: #cbd5e1;
+            --scrollbar-hover: #94a3b8;
+        }
+
+        .btn-theme {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-subtle);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.2s;
+        }
+
+        .btn-theme:hover {
+            border-color: var(--border-hover);
+            color: var(--text);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,8 +62,8 @@
         }
 
         body {
-            background: #0f172a;
-            color: #e2e8f0;
+            background: var(--bg);
+            color: var(--text);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             padding: 20px;
             min-height: 100vh;
@@ -28,23 +78,23 @@
             text-align: center;
             margin-bottom: 32px;
             padding: 20px 0;
-            border-bottom: 2px solid #334155;
+            border-bottom: 2px solid var(--border);
         }
 
         h1 {
             font-size: 2rem;
             margin-bottom: 8px;
-            color: #e2e8f0;
+            color: var(--text);
         }
 
         .subtitle {
-            color: #94a3b8;
+            color: var(--text-subtle);
             font-size: 0.95rem;
         }
 
         .card {
-            background: #1e293b;
-            border: 1px solid #334155;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
@@ -53,7 +103,7 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #cbd5e1;
+            color: var(--text-muted);
             font-weight: 600;
             font-size: 0.95rem;
         }
@@ -72,10 +122,10 @@
         textarea {
             width: 100%;
             padding: 12px;
-            background: #0f172a;
-            border: 1px solid #475569;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            color: #e2e8f0;
+            color: var(--text);
             font-family: 'Monaco', 'Menlo', monospace;
             font-size: 0.9rem;
             resize: vertical;
@@ -85,7 +135,7 @@
         }
 
         textarea::placeholder {
-            color: #64748b;
+            color: var(--text-faint);
         }
 
         textarea:focus {
@@ -97,10 +147,10 @@
         input[type="text"], input[type="password"] {
             width: 100%;
             padding: 12px;
-            background: #0f172a;
-            border: 1px solid #475569;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            color: #e2e8f0;
+            color: var(--text);
             font-size: 0.9rem;
             margin-bottom: 16px;
         }
@@ -222,15 +272,15 @@
         }
 
         .output-box {
-            background: #0f172a;
+            background: var(--bg-input);
             padding: 16px;
             border-radius: 8px;
             min-height: 100px;
             word-wrap: break-word;
             font-size: 15px;
             line-height: 1.6;
-            border: 1px solid #475569;
-            color: #cbd5e1;
+            border: 1px solid var(--border);
+            color: var(--output-text);
             white-space: pre-wrap;
             font-family: 'Monaco', 'Menlo', monospace;
         }
@@ -265,11 +315,11 @@
 
         .advanced-settings {
             display: none;
-            background: #0f172a;
+            background: var(--bg-input);
             border-radius: 12px;
             padding: 24px;
             margin-top: 16px;
-            border: 2px solid #334155;
+            border: 2px solid var(--border);
         }
 
         .advanced-settings.show {
@@ -278,7 +328,7 @@
 
         .advanced-settings h3 {
             margin-bottom: 20px;
-            color: #cbd5e1;
+            color: var(--text-muted);
         }
 
         .setting-group {
@@ -293,7 +343,7 @@
         }
 
         .setting-value {
-            color: #94a3b8;
+            color: var(--text-subtle);
             font-weight: normal;
             font-size: 0.85rem;
         }
@@ -322,26 +372,26 @@
 
         .setting-description {
             font-size: 0.8rem;
-            color: #64748b;
+            color: var(--text-faint);
             margin-top: 8px;
         }
 
         .info-box {
-            background: #1e293b;
-            border: 1px solid #334155;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 20px;
             margin-top: 20px;
         }
 
         .info-box h3 {
-            color: #cbd5e1;
+            color: var(--text-muted);
             margin-bottom: 12px;
         }
 
         .info-box ul {
             list-style: none;
-            color: #cbd5e1;
+            color: var(--text-muted);
         }
 
         .info-box li {
@@ -365,7 +415,7 @@
             justify-content: space-between;
             margin-bottom: 12px;
             padding-bottom: 12px;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid var(--border);
         }
 
         .modal-row:last-child {
@@ -375,27 +425,44 @@
         }
 
         .modal-label {
-            color: #64748b;
+            color: var(--text-faint);
             font-size: 0.85rem;
             width: 90px;
             flex-shrink: 0;
         }
 
         .modal-value {
-            color: #cbd5e1;
+            color: var(--text-muted);
             font-size: 0.85rem;
             text-align: right;
         }
 
         .modal-what {
-            color: #cbd5e1;
+            color: var(--text-muted);
             font-size: 0.9rem;
             margin-bottom: 20px;
             line-height: 1.6;
         }
 
+        #featureModal > div::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #featureModal > div::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #featureModal > div::-webkit-scrollbar-thumb {
+            background: var(--scrollbar);
+            border-radius: 4px;
+        }
+
+        #featureModal > div::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-hover);
+        }
+
         .modal-example {
-            background: #0f172a;
+            background: var(--bg-input);
             border-radius: 8px;
             padding: 12px;
             font-family: 'Monaco', 'Menlo', monospace;
@@ -403,10 +470,12 @@
             color: #10b981;
             margin-bottom: 20px;
             line-height: 1.6;
+            white-space: pre-wrap;
         }
     </style>
 </head>
 <body>
+    <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
     <div class="container">
         <header>
             <h1>🔐 Text Scrambler</h1>
@@ -472,7 +541,7 @@
 
         <!-- Feature Modal -->
         <div id="featureModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
-            <div style="background:#1e293b; border:1px solid #334155; border-radius:16px; padding:32px; max-width:480px; width:90%; position:relative;">
+            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:32px; max-width:480px; width:90%; position:relative; max-height:85vh; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--scrollbar) transparent;">
                 <button onclick="closeFeatureModal()" style="position:absolute; top:16px; right:16px; background:none; border:none; color:#64748b; font-size:1.4rem; cursor:pointer; padding:0; line-height:1;">×</button>
                 <h3 id="modalTitle" style="color:#e2e8f0; margin-bottom:20px; font-size:1.2rem;"></h3>
                 <div id="modalContent"></div>
@@ -521,7 +590,8 @@
                 security: '⭐⭐⭐',
                 complexity: 'Low',
                 benefit: 'Identical messages with the same key always produce different ciphertext. Prevents pattern recognition attacks.',
-                extra: 'The salt is not secret — it is recoverable after decryption — but it does not need to be secret. Its only job is to be unique. At 10 characters from 62 possible characters, collision probability is 1 in 839 trillion. An attacker collecting many encrypted messages cannot tell two identical messages are identical.'
+                extra: 'The salt is not secret — it is recoverable after decryption — but it does not need to be secret. Its only job is to be unique. At 10 characters from 62 possible characters, collision probability is 1 in 839 trillion. An attacker collecting many encrypted messages cannot tell two identical messages are identical.',
+                worked: 'Encrypt "Hello" with key "abc" three times:\n\nRun 1: salt "xK9mPqR2nL" → encrypts "xK9mPqR2nL|Hello"\nRun 2: salt "Tz4vQ1wN7j" → encrypts "Tz4vQ1wN7j|Hello"\nRun 3: salt "Rp8mK2xL5n" → encrypts "Rp8mK2xL5n|Hello"\n\nThree completely different outputs from identical input.\nOn decrypt: find "|", discard everything before it, return "Hello".'
             },
             lcg: {
                 title: '🔑 LCG Key Stretching',
@@ -530,7 +600,8 @@
                 security: '⭐⭐⭐⭐',
                 complexity: 'Low',
                 benefit: 'Small key changes cascade through the entire stretched key. Eliminates weak short-key vulnerability.',
-                extra: 'Formula: next = (current × 31 + 17) % 256. Every character of your key seeds the generator first, then it runs forward producing the stretched output. Because each value depends on all prior values, a single character change anywhere cascades through the entire sequence. Far superior to simple key repetition or basic XOR mixing.'
+                extra: 'Formula: next = (current × 31 + 17) % 256. Every character of your key seeds the generator first, then it runs forward producing the stretched output. Because each value depends on all prior values, a single character change anywhere cascades through the entire sequence. Far superior to simple key repetition or basic XOR mixing.',
+                worked: 'Key "cat" — seed phase:\n  start:  current = 0\n  c(99):  current = (0×31 + 99) % 256 = 99\n  a(97):  current = (99×31 + 97) % 256 = 144\n  t(116): current = (144×31 + 116) % 256 = 92\n\nGenerate phase from seed 92:\n  current = (92×31 + 17) % 256 = 69  → char 69\n  current = (69×31 + 17) % 256 = 156 → char 156\n  current = (156×31 + 17) % 256 = 53 → char 53\n  ... continues to full key length\n\nChange "cat" to "bat":\n  b(98):  current = (0×31 + 98) % 256 = 98   ← different\n  a(97):  current = (98×31 + 97) % 256 = 113  ← different\n  t(116): current = (113×31 + 116) % 256 = 23 ← different\n\nSeed 23 → completely different stretched key from seed 92.'
             },
             shuffle: {
                 title: '🔀 Position Shuffle',
@@ -539,7 +610,8 @@
                 security: '⭐⭐',
                 complexity: 'Low',
                 benefit: 'Adds a transposition layer on top of XOR. Makes frequency analysis harder.',
-                extra: 'XOR is a substitution cipher — it replaces each character. Shuffle adds a transposition cipher — it moves characters around. Combined they form a product cipher, which is stronger than either alone. This is the same principle used in modern block ciphers like AES, which alternates substitution and permutation layers.'
+                extra: 'XOR is a substitution cipher — it replaces each character. Shuffle adds a transposition cipher — it moves characters around. Combined they form a product cipher, which is stronger than either alone. This is the same principle used in modern block ciphers like AES, which alternates substitution and permutation layers.',
+                worked: 'XOR output (8 chars): "H 3 X q 7 m K p"\nPositions:             0 1 2 3 4 5 6 7\n\nSplit:\n  Even (0,2,4,6): "H X 7 K"\n  Odd  (1,3,5,7): "3 q m p"\n\nConcatenate: "H X 7 K 3 q m p"\n\nOn decrypt — unshuffle:\n  Length 8, even count = 4\n  First half "H X 7 K" → even positions\n  Second half "3 q m p" → odd positions\n  Interleave back: "H 3 X q 7 m K p" → original XOR output'
             },
             xor: {
                 title: '🔁 Multi-Pass XOR',
@@ -548,7 +620,8 @@
                 security: '⭐⭐⭐',
                 complexity: 'Medium',
                 benefit: 'Each pass adds another layer of obfuscation. Decrypting requires reversing all passes in correct order.',
-                extra: 'XOR is its own inverse — applying the same key twice returns the original. This is why pass count must match exactly between encrypt and decrypt. Each pass also XORs with its pass number (0, 1, 2) ensuring each layer uses a slightly different effective key. Combined with LCG stretching and SHA-256 hashing, multi-pass XOR becomes significantly harder to attack.'
+                extra: 'XOR is its own inverse — applying the same key twice returns the original. This is why pass count must match exactly between encrypt and decrypt. Each pass also XORs with its pass number (0, 1, 2) ensuring each layer uses a slightly different effective key. Combined with LCG stretching and SHA-256 hashing, multi-pass XOR becomes significantly harder to attack.',
+                worked: 'Character "H" (72), key char "X" (88):\n\n  Pass 0: 72 XOR 88 XOR 0 = 16\n  Pass 1: 16 XOR 88 XOR 1 = 73\n  Pass 2: 73 XOR 88 XOR 2 = 19\n\nFinal encrypted value: 19\n\nDecrypt reverses in reverse order:\n  Pass 2: 19 XOR 88 XOR 2 = 73\n  Pass 1: 73 XOR 88 XOR 1 = 16\n  Pass 0: 16 XOR 88 XOR 0 = 72 = "H" ✓\n\nNote: XOR with wrong key at any pass produces wrong result at all subsequent passes.'
             },
             sha: {
                 title: '#️⃣ SHA-256 Hashing',
@@ -557,7 +630,8 @@
                 security: '⭐⭐⭐⭐⭐',
                 complexity: 'High',
                 benefit: 'Each XOR pass is cryptographically independent. Massively increases resistance to key-recovery attacks.',
-                extra: 'SHA-256 has a perfect avalanche effect — any single bit change in the input flips roughly half the output bits unpredictably. It is a one-way function with no known practical attacks. SHA-256 is used in Bitcoin, TLS, and most modern security systems. Automatically disabled when AES mode is on since AES handles its own key derivation internally.'
+                extra: 'SHA-256 has a perfect avalanche effect — any single bit change in the input flips roughly half the output bits unpredictably. It is a one-way function with no known practical attacks. SHA-256 is used in Bitcoin, TLS, and most modern security systems. Automatically disabled when AES mode is on since AES handles its own key derivation internally.',
+                worked: 'Stretched key: "X#mK9p..."\n\nWithout hashing — all passes use same key:\n  Pass 0: text XOR "X#mK9p..."\n  Pass 1: result XOR "X#mK9p..." ← identical key\n  Pass 2: result XOR "X#mK9p..." ← identical key\n\nWith hashing — each pass gets unique key:\n  Pass 0: SHA-256("X#mK9p...pass0") → "a3f8c2d1..."\n  Pass 1: SHA-256("X#mK9p...pass1") → "7k2m9x4q..."\n  Pass 2: SHA-256("X#mK9p...pass2") → "2p5t8v1u..."\n\nBreaking pass 0 reveals nothing about pass 1 or 2.'
             },
             aes: {
                 title: '🔒 AES-256-GCM',
@@ -566,7 +640,8 @@
                 security: '⭐⭐⭐⭐⭐',
                 complexity: 'High',
                 benefit: 'Military-grade encryption. Wrong key always fails cleanly. Recommended for anything sensitive.',
-                extra: 'AES was adopted by the US government in 2001 and is used everywhere from HTTPS to military communications. AES-256 uses a 256-bit key — 2²⁵⁶ possible keys, more than the number of atoms in the observable universe. The random IV (Initialisation Vector) ensures identical messages always produce different ciphertext. The "AES:" prefix in the output enables automatic mode detection so the receiver needs no special settings.'
+                extra: 'AES was adopted by the US government in 2001 and is used everywhere from HTTPS to military communications. AES-256 uses a 256-bit key — 2²⁵⁶ possible keys, more than the number of atoms in the observable universe. The random IV (Initialisation Vector) ensures identical messages always produce different ciphertext. The "AES:" prefix in the output enables automatic mode detection so the receiver needs no special settings.',
+                worked: 'Encrypting "Hello" with key "mypassword":\n\n  Step 1: SHA-256("mypassword")\n          → 256-bit key "89e01536ac..."\n\n  Step 2: Generate random 12-byte IV\n          → "f3a8c2d1e9b4..."\n\n  Step 3: AES-256-GCM encrypt + auth tag\n          → ciphertext + 16-byte tag\n\n  Step 4: base64(IV + ciphertext + tag)\n          → "AES:A4bK9mP2..."\n\nDecrypt with wrong key:\n  → SHA-256("wrongpassword") → different 256-bit key\n  → AES-GCM auth tag verification fails immediately\n  → ❌ clean error, no garbage output'
             }
         };
 
@@ -592,11 +667,14 @@
                     <div style="font-size:0.75rem; color:#64748b; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;">More Detail</div>
                     <p style="color:#94a3b8; font-size:0.85rem; line-height:1.7;">${data.extra}</p>
                 </div>
+                <div style="margin-top:20px; padding-top:16px; border-top:1px solid #334155;">
+                    <div style="font-size:0.75rem; color:#64748b; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;">Worked Example</div>
+                    <div class="modal-example">${data.worked}</div>
+                </div>
             `;
             const modal = document.getElementById('featureModal');
             modal.style.display = 'flex';
         }
-
         function closeFeatureModal() {
             document.getElementById('featureModal').style.display = 'none';
         }
@@ -605,6 +683,12 @@
         document.getElementById('featureModal').addEventListener('click', function(e) {
             if (e.target === this) closeFeatureModal();
         });
+
+        // ===== THEME TOGGLE =====
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light');
+            document.getElementById('themeToggle').textContent = isLight ? '☀️' : '🌙';
+        }
 
         // ===== SETTINGS =====
         let settings = {
