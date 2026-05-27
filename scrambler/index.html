@@ -371,7 +371,7 @@
         <div class="card">
             <div class="label-with-clear">
                 <label for="inputText">Enter Your Text:</label>
-                <button class="btn-clear-input" id="clearPasteBtn" onclick="toggleClearPaste()">Clear</button>
+                <button class="btn-clear-input" onclick="clearInputText()">Clear</button>
             </div>
             <textarea id="inputText" placeholder="Type or paste your text here (formatting will be preserved)..."></textarea>
             <input type="hidden" id="htmlContent" value="">
@@ -413,12 +413,12 @@
         <div class="info-box">
             <h3>🛡️ Security Features</h3>
             <ul>
-                <li><strong>Salt:</strong> Random data ensures unique encryption each time</li>
-                <li><strong>Key Stretching:</strong> Weak keys strengthened to 32+ characters</li>
+                <li><strong>Salt:</strong> Random 10-char prefix ensures unique encryption every time</li>
+                <li><strong>LCG Key Stretching:</strong> Small key changes cascade into completely different encryption</li>
                 <li><strong>Position Shuffle:</strong> Characters rearranged by even/odd positions</li>
-                <li><strong>Multi-Pass XOR:</strong> 3-5 layers of encryption with key variation</li>
-                <li><strong>SHA-256 Hashing:</strong> Optional - unique hashed keys per pass (Advanced)</li>
-                <li><strong>Formatting Preservation:</strong> Bold, italic, underline preserved through encryption</li>
+                <li><strong>Multi-Pass XOR:</strong> 3 layers of encryption with key variation</li>
+                <li><strong>SHA-256 Hashing:</strong> Unique cryptographic keys per XOR pass (Advanced)</li>
+                <li><strong>AES-256-GCM:</strong> Military-grade encryption replacing XOR stack (Advanced)</li>
             </ul>
         </div>
 
@@ -430,24 +430,6 @@
             <h3>⚙️ Advanced Configuration</h3>
             
             <div class="setting-group">
-                <label>
-                    <span>Salt Length:</span>
-                    <span class="setting-value"><span id="saltValue">4</span> characters</span>
-                </label>
-                <input type="range" id="saltLength" min="4" max="16" value="4" oninput="updateSaltValue()">
-                <div class="setting-description">Random data added before encryption. Longer = more unique.</div>
-            </div>
-
-            <div class="setting-group">
-                <label>
-                    <span>Encryption Passes:</span>
-                    <span class="setting-value"><span id="passValue">3</span> passes</span>
-                </label>
-                <input type="range" id="passCount" min="3" max="5" value="3" oninput="updatePassValue()">
-                <div class="setting-description">Number of XOR encryption layers. More passes = stronger security.</div>
-            </div>
-
-            <div class="setting-group">
                 <label style="cursor: pointer;">
                     <span>SHA-256 Hashing:</span>
                     <span class="setting-value">
@@ -457,16 +439,28 @@
                 </label>
                 <div class="setting-description">Uses SHA-256 to generate unique keys for each XOR pass.</div>
             </div>
+
+            <div class="setting-group">
+                <label style="cursor: pointer;">
+                    <span>AES-256 Mode:</span>
+                    <span class="setting-value">
+                        <input type="checkbox" id="aesToggle" onchange="updateAesValue()" style="width: auto; height: auto; cursor: pointer;">
+                        <span id="aesValue">Off</span>
+                    </span>
+                </label>
+                <div class="setting-description">Replaces XOR stack with AES-256-GCM. Maximum security. Auto-detected on decrypt.</div>
+            </div>
         </div>
     </div>
 
     <script>
         // ===== SETTINGS =====
         let settings = {
-            saltLength: 4,
+            saltLength: 10,
             passCount: 3,
             useHash: false,
-            shuffle: true
+            shuffle: true,
+            useAES: false
         };
 
         let decryptedHTML = '';
@@ -491,6 +485,25 @@
             const checked = document.getElementById('hashToggle').checked;
             document.getElementById('hashValue').textContent = checked ? 'On' : 'Off';
             settings.useHash = checked;
+        }
+
+        function updateAesValue() {
+            const checked = document.getElementById('aesToggle').checked;
+            document.getElementById('aesValue').textContent = checked ? 'On' : 'Off';
+            settings.useAES = checked;
+            
+            const hashToggle = document.getElementById('hashToggle');
+            const hashLabel = hashToggle.closest('.setting-group');
+            if (checked) {
+                hashToggle.disabled = true;
+                hashToggle.checked = false;
+                settings.useHash = false;
+                document.getElementById('hashValue').textContent = 'Off';
+                hashLabel.style.opacity = '0.4';
+            } else {
+                hashToggle.disabled = false;
+                hashLabel.style.opacity = '1';
+            }
         }
 
 
@@ -521,6 +534,31 @@
                 }
             });
         });
+
+        // ===== AES-256-GCM FUNCTIONS =====
+
+        async function aesEncrypt(text, key) {
+            const encoder = new TextEncoder();
+            const keyData = await crypto.subtle.digest('SHA-256', encoder.encode(key));
+            const cryptoKey = await crypto.subtle.importKey('raw', keyData, 'AES-GCM', false, ['encrypt']);
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, cryptoKey, encoder.encode(text));
+            const combined = new Uint8Array(iv.byteLength + encrypted.byteLength);
+            combined.set(iv, 0);
+            combined.set(new Uint8Array(encrypted), iv.byteLength);
+            return 'AES:' + btoa(String.fromCharCode(...combined));
+        }
+
+        async function aesDecrypt(data, key) {
+            const encoder = new TextEncoder();
+            const combined = Uint8Array.from(atob(data), c => c.charCodeAt(0));
+            const iv = combined.slice(0, 12);
+            const encrypted = combined.slice(12);
+            const keyData = await crypto.subtle.digest('SHA-256', encoder.encode(key));
+            const cryptoKey = await crypto.subtle.importKey('raw', keyData, 'AES-GCM', false, ['decrypt']);
+            const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, cryptoKey, encrypted);
+            return new TextDecoder().decode(decrypted);
+        }
 
         // ===== SHA-256 HASHING =====
         async function hashForPass(key, passNumber) {
@@ -581,25 +619,21 @@
         function stretchKey(key, targetLength = 32) {
             if (!key) return key;
             
-            let result = key;
+            let result = '';
+            let current = 0;
             
-            for (let round = 0; round < 3; round++) {
-                let temp = result;
-                
-                while (temp.length < targetLength) {
-                    temp += result;
-                }
-                
-                result = '';
-                for (let i = 0; i < temp.length; i++) {
-                    const mixed = temp.charCodeAt(i % temp.length) ^ (i + round);
-                    result += String.fromCharCode((mixed % 94) + 33);
-                }
-                
-                result = result.substring(0, targetLength);
+            // Seed with key characters
+            for (let i = 0; i < key.length; i++) {
+                current = (current * 31 + key.charCodeAt(i)) % 256;
             }
             
-            return result;
+            // Generate stretched key using LCG
+            while (result.length < targetLength) {
+                current = (current * 31 + 17) % 256;
+                result += String.fromCharCode((current % 94) + 33);
+            }
+            
+            return result.substring(0, targetLength);
         }
 
         async function enhancedXOREncrypt(text, key, saltLength, passCount, useHash, useShuffle) {
@@ -678,10 +712,13 @@
             
             const separatorIndex = result.indexOf('|');
             if (separatorIndex !== -1) {
-                return result.substring(separatorIndex + 1);
+                const saltPart = result.substring(0, separatorIndex);
+                if (/^[A-Za-z0-9]+$/.test(saltPart)) {
+                    return result.substring(separatorIndex + 1);
+                }
             }
             
-            return result;
+            return '⚠️ Key may be incorrect. Output:\n\n' + result;
         }
 
         // ===== MAIN FUNCTIONS =====
@@ -710,10 +747,14 @@
                 let processed = textToEncrypt;
                 
                 if (secretKey) {
-                    processed = await enhancedXOREncrypt(textToEncrypt, secretKey, settings.saltLength, settings.passCount, settings.useHash, settings.shuffle);
+                    if (settings.useAES) {
+                        processed = await aesEncrypt(textToEncrypt, secretKey);
+                    } else {
+                        processed = await enhancedXOREncrypt(textToEncrypt, secretKey, settings.saltLength, settings.passCount, settings.useHash, settings.shuffle);
+                    }
                 }
                 
-                const scrambled = btoa(unescape(encodeURIComponent(processed)));
+                const scrambled = settings.useAES ? processed : btoa(unescape(encodeURIComponent(processed)));
                 
                 outputBox.textContent = scrambled;
                 outputBox.style.color = '#cbd5e1';
@@ -743,10 +784,16 @@
             }
 
             try {
-                let unscrambled = decodeURIComponent(escape(atob(inputText)));
-                
-                if (secretKey) {
-                    unscrambled = await enhancedXORDecrypt(unscrambled, secretKey, settings.passCount, settings.useHash, settings.shuffle);
+                let unscrambled;
+
+                if (inputText.startsWith('AES:')) {
+                    if (!secretKey) throw new Error('Key required for AES');
+                    unscrambled = await aesDecrypt(inputText.substring(4), secretKey);
+                } else {
+                    unscrambled = decodeURIComponent(escape(atob(inputText)));
+                    if (secretKey) {
+                        unscrambled = await enhancedXORDecrypt(unscrambled, secretKey, settings.passCount, settings.useHash, settings.shuffle);
+                    }
                 }
 
                 if (unscrambled.startsWith('<!--HTML-->')) {
