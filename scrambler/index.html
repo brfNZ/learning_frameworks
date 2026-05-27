@@ -350,11 +350,59 @@
             position: relative;
         }
 
-        .info-box li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
+        .feature-link {
+            cursor: pointer;
+            color: #93c5fd;
+            transition: color 0.2s;
+        }
+
+        .feature-link:hover {
+            color: #60a5fa;
+        }
+
+        .modal-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .modal-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .modal-label {
+            color: #64748b;
+            font-size: 0.85rem;
+            width: 90px;
+            flex-shrink: 0;
+        }
+
+        .modal-value {
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            text-align: right;
+        }
+
+        .modal-what {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-example {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8rem;
             color: #10b981;
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -411,15 +459,24 @@
         </div>
 
         <div class="info-box">
-            <h3>🛡️ Security Features</h3>
+            <h3>🛡️ Security Features <span style="font-size:0.8rem; color:#64748b; font-weight:normal;">— click to learn more</span></h3>
             <ul>
-                <li><strong>Salt:</strong> Random 10-char prefix ensures unique encryption every time</li>
-                <li><strong>LCG Key Stretching:</strong> Small key changes cascade into completely different encryption</li>
-                <li><strong>Position Shuffle:</strong> Characters rearranged by even/odd positions</li>
-                <li><strong>Multi-Pass XOR:</strong> 3 layers of encryption with key variation</li>
-                <li><strong>SHA-256 Hashing:</strong> Unique cryptographic keys per XOR pass (Advanced)</li>
-                <li><strong>AES-256-GCM:</strong> Military-grade encryption replacing XOR stack (Advanced)</li>
+                <li><span class="feature-link" onclick="showFeatureModal('salt')"><strong>Salt</strong> ℹ️</span> Random 10-char prefix ensures unique encryption every time</li>
+                <li><span class="feature-link" onclick="showFeatureModal('lcg')"><strong>LCG Key Stretching</strong> ℹ️</span> Small key changes cascade into completely different encryption</li>
+                <li><span class="feature-link" onclick="showFeatureModal('shuffle')"><strong>Position Shuffle</strong> ℹ️</span> Characters rearranged by even/odd positions</li>
+                <li><span class="feature-link" onclick="showFeatureModal('xor')"><strong>Multi-Pass XOR</strong> ℹ️</span> 3 layers of encryption with key variation</li>
+                <li><span class="feature-link" onclick="showFeatureModal('sha')"><strong>SHA-256 Hashing</strong> ℹ️</span> Unique cryptographic keys per XOR pass (Advanced)</li>
+                <li><span class="feature-link" onclick="showFeatureModal('aes')"><strong>AES-256-GCM</strong> ℹ️</span> Military-grade encryption replacing XOR stack (Advanced)</li>
             </ul>
+        </div>
+
+        <!-- Feature Modal -->
+        <div id="featureModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
+            <div style="background:#1e293b; border:1px solid #334155; border-radius:16px; padding:32px; max-width:480px; width:90%; position:relative;">
+                <button onclick="closeFeatureModal()" style="position:absolute; top:16px; right:16px; background:none; border:none; color:#64748b; font-size:1.4rem; cursor:pointer; padding:0; line-height:1;">×</button>
+                <h3 id="modalTitle" style="color:#e2e8f0; margin-bottom:20px; font-size:1.2rem;"></h3>
+                <div id="modalContent"></div>
+            </div>
         </div>
 
         <div style="text-align: center; margin-top: 24px; margin-bottom: 20px;">
@@ -454,6 +511,91 @@
     </div>
 
     <script>
+        // ===== FEATURE MODAL =====
+
+        const featureData = {
+            salt: {
+                title: '🧂 Salt',
+                what: 'A random 10-character string generated fresh every time you encrypt. It is prepended to your text before encryption begins.',
+                example: 'Text: "Hello"\nSalt added: "xK9mPqR2nL|Hello"\nEncrypt same text again → completely different output',
+                security: '⭐⭐⭐',
+                complexity: 'Low',
+                benefit: 'Identical messages with the same key always produce different ciphertext. Prevents pattern recognition attacks.'
+            },
+            lcg: {
+                title: '🔑 LCG Key Stretching',
+                what: 'Your key is fed into a Linear Congruential Generator — a mathematical sequence where each value depends on the previous one. One character change in your key produces a completely different sequence.',
+                example: 'Key "password" → stretched: "X#mK9pL2qR8n..."\nKey "passxord" → stretched: "Tz4&vQ1wN7j..." (completely different)',
+                security: '⭐⭐⭐⭐',
+                complexity: 'Low',
+                benefit: 'Small key changes cascade through the entire stretched key. Eliminates weak short-key vulnerability.'
+            },
+            shuffle: {
+                title: '🔀 Position Shuffle',
+                what: 'After XOR encryption, characters are split into two groups — even positions and odd positions — then recombined. This breaks up sequential patterns in the encrypted output.',
+                example: 'Encrypted: "A B C D E F"\nEven(0,2,4): "A C E"\nOdd(1,3,5):  "B D F"\nShuffled: "A C E B D F"',
+                security: '⭐⭐',
+                complexity: 'Low',
+                benefit: 'Adds a transposition layer on top of XOR. Makes frequency analysis harder.'
+            },
+            xor: {
+                title: '🔁 Multi-Pass XOR',
+                what: 'XOR encryption is applied 3 times in sequence. Each pass uses the key modified by the pass number, so each layer is slightly different.',
+                example: 'Pass 0: text XOR key⁰ → result₁\nPass 1: result₁ XOR key¹ → result₂\nPass 2: result₂ XOR key² → final',
+                security: '⭐⭐⭐',
+                complexity: 'Medium',
+                benefit: 'Each pass adds another layer of obfuscation. Decrypting requires reversing all passes in correct order.'
+            },
+            sha: {
+                title: '#️⃣ SHA-256 Hashing',
+                what: 'Instead of using the same stretched key for every XOR pass, each pass gets its own unique key derived via SHA-256 hashing. Any input change produces a completely different 256-bit hash.',
+                example: 'Pass 0 key: SHA-256(stretchedKey + "pass0") → unique 32 chars\nPass 1 key: SHA-256(stretchedKey + "pass1") → different 32 chars\nPass 2 key: SHA-256(stretchedKey + "pass2") → different 32 chars',
+                security: '⭐⭐⭐⭐⭐',
+                complexity: 'High',
+                benefit: 'Each XOR pass is cryptographically independent. Massively increases resistance to key-recovery attacks.'
+            },
+            aes: {
+                title: '🔒 AES-256-GCM',
+                what: 'Replaces the entire XOR stack with AES-256-GCM — the global standard for symmetric encryption. Your key is hashed via SHA-256 to produce a 256-bit AES key. GCM mode adds authentication, meaning wrong keys fail immediately with no garbage output.',
+                example: 'Key → SHA-256 → 256-bit AES key\nRandom IV generated per encryption\nAES-GCM encrypts + authenticates\nOutput: AES:[base64]',
+                security: '⭐⭐⭐⭐⭐',
+                complexity: 'High',
+                benefit: 'Military-grade encryption. Wrong key always fails cleanly. Recommended for anything sensitive.'
+            }
+        };
+
+        function showFeatureModal(key) {
+            const data = featureData[key];
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalContent').innerHTML = `
+                <p class="modal-what">${data.what}</p>
+                <div class="modal-example">${data.example}</div>
+                <div class="modal-row">
+                    <span class="modal-label">Security</span>
+                    <span class="modal-value">${data.security}</span>
+                </div>
+                <div class="modal-row">
+                    <span class="modal-label">Complexity</span>
+                    <span class="modal-value">${data.complexity}</span>
+                </div>
+                <div class="modal-row">
+                    <span class="modal-label">Benefit</span>
+                    <span class="modal-value" style="text-align:right; max-width:300px;">${data.benefit}</span>
+                </div>
+            `;
+            const modal = document.getElementById('featureModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeFeatureModal() {
+            document.getElementById('featureModal').style.display = 'none';
+        }
+
+        // Close on backdrop click
+        document.getElementById('featureModal').addEventListener('click', function(e) {
+            if (e.target === this) closeFeatureModal();
+        });
+
         // ===== SETTINGS =====
         let settings = {
             saltLength: 10,
