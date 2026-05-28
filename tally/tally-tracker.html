@@ -297,6 +297,14 @@
         .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
         .empty-state .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
 
+        /* Button theme: solid */
+        [data-btn="solid"] .btn-primary { background: var(--accent); color: #070a0f; border: none; }
+        [data-btn="solid"] .btn-pos { background: #17a884; color: #fff; border: none; }
+        [data-btn="solid"] .btn-neg { background: #c93050; color: #fff; border: none; }
+        [data-btn="solid"] .btn-primary:hover,
+        [data-btn="solid"] .btn-pos:hover,
+        [data-btn="solid"] .btn-neg:hover { filter: brightness(1.12); }
+
         /* Responsive */
         @media (max-width: 580px) {
             .counter-dual { gap: 0.4rem; }
@@ -313,6 +321,7 @@
     <div class="header-top">
         <div class="app-title">Tally<span class="dot">.</span></div>
         <div class="header-right">
+            <button class="btn-icon" id="btnThemeBtn" onclick="toggleBtnTheme()" title="Toggle button style">◈</button>
             <button class="btn-icon" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
         </div>
     </div>
@@ -420,6 +429,7 @@
 <script>
 const SK = 'projectTally_v3';
 const TK = 'projectTally_theme';
+const BK = 'projectTally_btnTheme';
 const EK = 'projectTally_commentsState';
 const CK = 'projectTally_collapseState';
 let lockIdx = null, lockAct = null, dragSrc = null;
@@ -478,6 +488,22 @@ function toggleTheme() {
     document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
     document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
     localStorage.setItem(TK, isDark ? 'light' : 'dark');
+}
+
+// ─── BUTTON THEME ───
+function isSolid() { return localStorage.getItem(BK) === 'solid'; }
+function initBtnTheme() {
+    if (isSolid()) {
+        document.documentElement.setAttribute('data-btn','solid');
+        document.getElementById('btnThemeBtn').style.color = 'var(--accent)';
+    }
+}
+function toggleBtnTheme() {
+    const solid = !isSolid();
+    localStorage.setItem(BK, solid ? 'solid' : 'glass');
+    document.documentElement.setAttribute('data-btn', solid ? 'solid' : 'glass');
+    document.getElementById('btnThemeBtn').style.color = solid ? 'var(--accent)' : '';
+    render();
 }
 
 // ─── TOAST ───
@@ -671,11 +697,11 @@ function buildCard(item, idx, exp, col) {
     };
     const sc = simpleColours[item.simpleStyle || 'default'];
 
-    // Counter
+    const solid = isSolid();
     let counterHTML = isDual
         ? `<div class="counter-dual">
-            <div class="cblock pos" style="background:${dc.pos}18;border-color:${dc.pos}40"><div class="clabel" style="color:${dc.pos}">Wins</div><div class="cnum" style="color:${dc.pos}">${c.pos}</div></div>
-            <div class="cblock neg" style="background:${(dc.negBg||dc.neg)}18;border-color:${(dc.negBg||dc.neg)}40"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
+            <div class="cblock pos" style="background:${solid ? dc.pos+'30' : dc.pos+'18'};border-color:${dc.pos}${solid ? '60' : '40'}"><div class="clabel" style="color:${dc.pos}">Wins</div><div class="cnum" style="color:${dc.pos}">${c.pos}</div></div>
+            <div class="cblock neg" style="background:${solid ? (dc.negBg||dc.neg)+'30' : (dc.negBg||dc.neg)+'18'};border-color:${(dc.negBg||dc.neg)}${solid ? '60' : '40'}"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
           </div>`
         : `<div style="display:flex;align-items:baseline">
             <div class="count-big" style="color:${sc}">${c.simple}</div>
@@ -751,18 +777,22 @@ function buildCard(item, idx, exp, col) {
         const moodBtns = ['😊','😤','😬','🤔','💪']
             .map(e => `<button class="mood-btn" onclick="setEmoji(${idx},'${e}')" title="${e}">${e}</button>`).join('');
         if (isDual) {
+            const solid = isSolid();
+            const posStyle = solid ? `background:${dc.pos};color:#fff` : `background:${dc.pos}20;border:1px solid ${dc.pos}55;color:${dc.pos}`;
+            const negStyle = solid ? `background:${dc.negBg||dc.neg};color:#fff` : `background:${(dc.negBg||dc.neg)}20;border:1px solid ${(dc.negBg||dc.neg)}55;color:${dc.neg}`;
             actionHTML = `<div class="action-row">
                 <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to save)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault()}">
                 <div class="mood-strip">${moodBtns}</div>
-                <button class="btn-pos" style="background:${dc.pos}20;border:1px solid ${dc.pos}55;color:${dc.pos}" onclick="addEntry(${idx},'pos')">✓ Win</button>
-                <button class="btn-neg" style="background:${(dc.negBg||dc.neg)}20;border:1px solid ${(dc.negBg||dc.neg)}55;color:${dc.neg}" onclick="addEntry(${idx},'neg')">✗ Loss</button>
+                <button class="btn-pos" style="${posStyle}" onclick="addEntry(${idx},'pos')">✓ Win</button>
+                <button class="btn-neg" style="${negStyle}" onclick="addEntry(${idx},'neg')">✗ Loss</button>
                 <button class="btn-icon" onclick="undoLast(${idx})" title="Undo last counted entry">↩</button>
             </div>`;
         } else {
+            const countStyle = isSolid() ? `background:${sc};color:#fff` : `background:${sc}20;border:1px solid ${sc}55;color:${sc}`;
             actionHTML = `<div class="action-row">
                 <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to save)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault()}">
                 <div class="mood-strip">${moodBtns}</div>
-                <button class="btn-primary" style="background:${sc}20;border:1px solid ${sc}55;color:${sc}" onclick="addEntry(${idx},'simple')">+ Count</button>
+                <button class="btn-primary" style="${countStyle}" onclick="addEntry(${idx},'simple')">+ Count</button>
                 <button class="btn-icon" onclick="undoLast(${idx})" title="Undo last counted entry">↩</button>
             </div>`;
         }
@@ -1272,6 +1302,7 @@ document.getElementById('newName').addEventListener('keypress', e => { if (e.key
 
 // ─── INIT ───
 initTheme();
+initBtnTheme();
 render();
 </script>
 </body>
