@@ -207,6 +207,10 @@
         .pace-line.over { color: var(--neg); font-weight: 600; }
         .mini-win { color: var(--pos); text-shadow: 0 0 8px rgba(34,209,139,0.5); font-weight: 700; }
         .mini-fail { color: var(--neg); text-shadow: 0 0 8px rgba(255,77,103,0.5); font-weight: 700; }
+        .mini-status { display: none; font-size: 0.6rem; font-weight: 700; padding: 0.06rem 0.35rem; border-radius: 20px; letter-spacing: 0.04em; }
+        .card.collapsed .mini-status { display: inline-flex; align-items: center; gap: 0.15rem; }
+        .mini-status-win { background: var(--pos-bg); color: var(--pos); border: 1px solid rgba(34,209,139,0.3); }
+        .mini-status-fail { background: var(--neg-bg); color: var(--neg); border: 1px solid rgba(255,77,103,0.3); }
         input[type="date"] { color-scheme: dark; }
 
         /* Status banner */
@@ -803,7 +807,8 @@ function buildCard(item, idx, exp, col) {
     // Mini count shown when collapsed
     const miniVal = isDual ? `${c.pos}W ${c.neg}L` : `${c.simple}${tgt.max > 0 ? '/' + tgt.max : ''}`;
     const miniCls = isWin ? 'mini-count mini-win' : isKilled ? 'mini-count mini-fail' : 'mini-count';
-    const miniCount = `<span class="${miniCls}">${miniVal}</span>`;
+    const miniStatus = isWin ? `<span class="mini-status mini-status-win">🏆 Goal</span>` : isKilled ? `<span class="mini-status mini-status-fail">💥 Lost</span>` : '';
+    const miniCount = `<span class="${miniCls}">${miniVal}</span>${miniStatus}`;
 
     return `<div class="${cardClass}" data-name="${esc(item.name)}" data-index="${idx}"
         draggable="true"
