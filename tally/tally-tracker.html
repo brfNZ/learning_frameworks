@@ -349,6 +349,15 @@
                 <option value="purple-amber">Purple / Amber</option>
                 <option value="neutral">Neutral</option>
             </select>
+            <select id="newSimpleStyle" title="Counter colour (simple tallies only)">
+                <option value="default">Default (teal)</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+                <option value="purple">Purple</option>
+                <option value="orange">Orange</option>
+                <option value="pink">Pink</option>
+                <option value="amber">Amber</option>
+            </select>
             <input type="text" id="newDeadline" placeholder="Deadline: DD or DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
             <button class="btn-primary" onclick="addTally()">+ Add Tally</button>
         </div>
@@ -501,7 +510,7 @@ function saveCollapse(s) { localStorage.setItem(CK, JSON.stringify(s)); }
 function migrate(items) {
     if (!Array.isArray(items)) return [];
     return items.map(item => ({
-        type: 'simple', style: 'default', dualStyle: 'default', locked: false,
+        type: 'simple', style: 'default', dualStyle: 'default', simpleStyle: 'default', locked: false,
         encrypted: null, lockHint: '', pinned: false,
         ...item,
         comments: (Array.isArray(item.comments) ? item.comments : []).map(c => ({ counted: true, ...c }))
@@ -650,6 +659,18 @@ function buildCard(item, idx, exp, col) {
     };
     const dc = dualColours[item.dualStyle || 'default'];
 
+    // Simple colour scheme
+    const simpleColours = {
+        'default': '#0fd4b0',
+        'green':   '#22d18b',
+        'blue':    '#3b9eff',
+        'purple':  '#b16df7',
+        'orange':  '#ff7c35',
+        'pink':    '#f04fbd',
+        'amber':   '#f5a623',
+    };
+    const sc = simpleColours[item.simpleStyle || 'default'];
+
     // Counter
     let counterHTML = isDual
         ? `<div class="counter-dual">
@@ -657,7 +678,7 @@ function buildCard(item, idx, exp, col) {
             <div class="cblock neg" style="background:${(dc.negBg||dc.neg)}18;border-color:${(dc.negBg||dc.neg)}40"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
           </div>`
         : `<div style="display:flex;align-items:baseline">
-            <div class="count-big">${c.simple}</div>
+            <div class="count-big" style="color:${sc}">${c.simple}</div>
             ${tgt.max > 0 ? `<span class="count-unit">/ ${tgt.max} ${esc(item.unit)}</span>` : item.unit ? `<span class="count-unit">${esc(item.unit)}</span>` : ''}
           </div>`;
 
@@ -708,8 +729,10 @@ function buildCard(item, idx, exp, col) {
     let progressHTML = '';
     if (tgt.max > 0) {
         const barPct = isKilled ? killPct : pct;
+        const appliedBarClass = isDual ? barClass : (isKilled ? 'killed' : '');
+        const fillStyle = isKilled ? '' : (!isDual ? `background:${sc}` : `background:${dc.pos}`);
         progressHTML = `<div class="progress-area">
-            <div class="prog-track"><div class="prog-fill ${barClass}" style="width:${barPct}%"></div></div>
+            <div class="prog-track"><div class="prog-fill ${appliedBarClass}" style="width:${barPct}%;${fillStyle}"></div></div>
             <div class="prog-meta">
                 <span>${isKilled ? `${c.neg}/${tgt.kill} kills` : `${curr} / ${tgt.max}`}</span>
                 <span>${Math.round(isKilled ? killPct : pct)}%</span>
@@ -721,7 +744,9 @@ function buildCard(item, idx, exp, col) {
 
     // Actions
     const locked = isWin || isKilled;
-    let actionHTML = '';
+    let actionHTML = locked
+        ? `<div style="margin-top:0.4rem;text-align:right"><button class="btn-icon" onclick="undoLast(${idx})" title="Undo last entry">↩ Undo last</button></div>`
+        : '';
     if (!locked) {
         const moodBtns = ['😊','😤','😬','🤔','💪']
             .map(e => `<button class="mood-btn" onclick="setEmoji(${idx},'${e}')" title="${e}">${e}</button>`).join('');
@@ -737,7 +762,7 @@ function buildCard(item, idx, exp, col) {
             actionHTML = `<div class="action-row">
                 <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to save)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault()}">
                 <div class="mood-strip">${moodBtns}</div>
-                <button class="btn-primary" onclick="addEntry(${idx},'simple')">+ Count</button>
+                <button class="btn-primary" style="background:${sc}20;border:1px solid ${sc}55;color:${sc}" onclick="addEntry(${idx},'simple')">+ Count</button>
                 <button class="btn-icon" onclick="undoLast(${idx})" title="Undo last counted entry">↩</button>
             </div>`;
         }
@@ -751,12 +776,18 @@ function buildCard(item, idx, exp, col) {
             const labels = { default:'Default colours', 'blue-orange':'Blue / Orange', 'teal-pink':'Teal / Pink', 'purple-amber':'Purple / Amber', neutral:'Neutral' };
             return `<option value="${s}" ${(item.dualStyle||'default')===s?'selected':''}>${labels[s]}</option>`;
         }).join('');
+    const simpleStyleOpts = ['default','green','blue','purple','orange','pink','amber']
+        .map(s => {
+            const labels = { default:'Default (teal)', green:'Green', blue:'Blue', purple:'Purple', orange:'Orange', pink:'Pink', amber:'Amber' };
+            return `<option value="${s}" ${(item.simpleStyle||'default')===s?'selected':''}>${labels[s]}</option>`;
+        }).join('');
     const editHTML = `<div class="edit-panel" id="ep-${idx}">
         <input type="text" id="en-${idx}" value="${esc(item.name)}" placeholder="Name">
         <input type="text" id="et-${idx}" value="${esc(item.target||'')}" placeholder="Target">
         <input type="text" id="eu-${idx}" value="${esc(item.unit||'')}" placeholder="Unit">
         <select id="es-${idx}">${styleOpts}</select>
         <select id="eds-${idx}" title="Dual button colours">${dualStyleOpts}</select>
+        <select id="ess-${idx}" title="Counter colour (simple tallies)">${simpleStyleOpts}</select>
         <input type="text" id="ed-${idx}" value="${item.deadline||''}" placeholder="DD or DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
         <button class="btn-primary" onclick="saveEdit(${idx})">Save</button>
         <button class="btn-ghost" onclick="closeEdit(${idx})">Cancel</button>
@@ -973,6 +1004,7 @@ function addTally() {
         type: document.getElementById('newType').value,
         style: document.getElementById('newStyle').value,
         dualStyle: document.getElementById('newDualStyle').value,
+        simpleStyle: document.getElementById('newSimpleStyle').value,
         deadline: document.getElementById('newDeadline').value || '',
         comments: [], locked: false, encrypted: null,
         lockHint: '', pinned: false, created: new Date().toISOString()
@@ -1040,6 +1072,7 @@ function saveEdit(idx) {
     data[idx].unit = document.getElementById(`eu-${idx}`).value.trim();
     data[idx].style = document.getElementById(`es-${idx}`).value;
     data[idx].dualStyle = document.getElementById(`eds-${idx}`).value;
+    data[idx].simpleStyle = document.getElementById(`ess-${idx}`).value;
     data[idx].deadline = document.getElementById(`ed-${idx}`).value || '';
     save(data);
     render();
