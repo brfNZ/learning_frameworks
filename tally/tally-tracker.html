@@ -141,8 +141,8 @@
         [data-theme="light"] .card.hl-orange { background: rgba(234,88,12,0.08); }
         [data-theme="light"] .card.hl-purple { background: rgba(124,58,237,0.08); }
         [data-theme="light"] .card.hl-yellow { background: rgba(180,83,9,0.08); }
-        .card.card-win { border-color: var(--pos); }
-        .card.card-fail { border-color: var(--neg); }
+        .card.card-win { border-color: var(--pos); box-shadow: 0 0 0 1px rgba(34,209,139,0.5), 0 0 22px rgba(34,209,139,0.20); background-color: rgba(34,209,139,0.05); }
+        .card.card-fail { border-color: var(--neg); box-shadow: 0 0 0 1px rgba(255,77,103,0.5), 0 0 22px rgba(255,77,103,0.20); background-color: rgba(255,77,103,0.05); }
         .card.card-pinned { box-shadow: 0 0 0 1px rgba(0,229,255,0.85), 0 0 22px rgba(0,229,255,0.35); background-color: rgba(0,229,255,0.05); }
         .card.card-pinned-hot { box-shadow: 0 0 0 1px rgba(240,79,189,0.85), 0 0 22px rgba(240,79,189,0.40); background-color: rgba(240,79,189,0.06); }
         .card.card-locked { cursor: pointer; border-left-color: var(--text-faint); }
@@ -257,9 +257,13 @@
         .modal-actions { display: flex; gap: 0.4rem; justify-content: flex-end; }
 
         /* Info button & modal */
-        .btn-info { background: none; border: 1px solid var(--border); border-radius: 50%; width: 1.25rem; height: 1.25rem; font-size: 0.62rem; color: var(--text-faint); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color 0.15s, color 0.15s; padding: 0; line-height: 1; }
+        .btn-info { background: none; border: 1.5px solid var(--border); border-radius: 50%; width: 1.25rem; height: 1.25rem; font-size: 0.7rem; font-style: italic; font-weight: 700; color: var(--text-faint); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color 0.15s, color 0.15s; padding: 0; line-height: 1; font-family: Georgia, serif; }
         .btn-info:hover { border-color: var(--accent); color: var(--accent); }
-        .info-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; align-items: center; justify-content: center; }
+        .quote-toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.3rem; max-width: 380px; width: 90%; text-align: center; z-index: 300; box-shadow: 0 8px 32px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+        .quote-toast.show { opacity: 1; pointer-events: auto; }
+        .quote-text { font-size: 0.85rem; color: var(--text); line-height: 1.55; font-style: italic; margin-bottom: 0.45rem; }
+        .quote-author { font-size: 0.72rem; color: var(--accent); font-weight: 600; letter-spacing: 0.03em; }
+        .quote-label { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.07em; } background: rgba(0,0,0,0.55); z-index: 200; align-items: center; justify-content: center; }
         .info-modal.open { display: flex; }
         .info-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem 1.5rem; max-width: 340px; width: 90%; box-shadow: 0 16px 48px rgba(0,0,0,0.45); }
         .info-box h3 { margin: 0 0 0.9rem; font-size: 0.95rem; color: var(--text-heading); font-family: 'Syne', sans-serif; }
@@ -330,7 +334,7 @@
                 <option value="purple">🟣 Purple</option>
                 <option value="yellow">🟡 Yellow</option>
             </select>
-            <input type="date" id="newDeadline" title="Deadline (optional)" style="flex:0.6;min-width:110px">
+            <input type="text" id="newDeadline" placeholder="Deadline: DD or DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
             <button class="btn-primary" onclick="addTally()">+ Add Tally</button>
         </div>
     </div>
@@ -341,7 +345,7 @@
         <button class="btn-secondary" onclick="backupData()">💾 Download Backup</button>
         <button class="btn-secondary" onclick="triggerRestore()">📂 Restore Backup</button>
         <button class="btn-secondary" onclick="exportCSV()">📊 Export CSV</button>
-        <button class="btn-info" onclick="openInfo()" title="Help & quick reference" style="width:1.9rem;height:1.9rem;font-size:0.8rem">ⓘ</button>
+        <button class="btn-info" onclick="openInfo()" title="Help & quick reference" style="width:1.9rem;height:1.9rem;font-size:0.85rem">i</button>
         <input type="file" id="restoreInput" accept=".json" onchange="handleRestore(event)" style="display:none">
     </div>
 </main>
@@ -359,8 +363,8 @@
     </div>
 </div>
 
-<div class="info-modal" id="infoModal">
-    <div class="info-box">
+<div class="info-modal" id="infoModal" onclick="closeInfo()">
+    <div class="info-box" onclick="event.stopPropagation()">
         <h3>ⓘ Quick Reference</h3>
         <h4>Mood Emojis</h4>
         <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 0.5rem">Click an emoji to insert it at your cursor in the note field. During comment editing, it inserts at the cursor there too.</p>
@@ -381,6 +385,12 @@
     </div>
 </div>
 
+<div class="quote-toast" id="quoteToast">
+    <div class="quote-label" id="quoteLabel"></div>
+    <div class="quote-text" id="quoteText"></div>
+    <div class="quote-author" id="quoteAuthor"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -390,6 +400,47 @@ const EK = 'projectTally_commentsState';
 const CK = 'projectTally_collapseState';
 let lockIdx = null, lockAct = null, dragSrc = null;
 const pendingEmoji = {};
+
+// ─── QUOTES ─── add your own in { text, author } format
+const QUOTES = {
+    win: [
+        { text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", author: "Aristotle" },
+        { text: "You have power over your mind, not outside events. Realise this, and you will find strength.", author: "Marcus Aurelius" },
+        { text: "The quality of a person's life is in direct proportion to their commitment to excellence.", author: "Vince Lombardi" },
+        { text: "Do not pray for an easy life. Pray for the strength to endure a difficult one.", author: "Bruce Lee" },
+        { text: "Victory is sweetest when you've known defeat.", author: "Malcolm Forbes" },
+        { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+    ],
+    streak: [
+        { text: "First forget inspiration. Habit is more dependable. Habit will sustain you whether you're inspired or not.", author: "Octavia Butler" },
+        { text: "Motivation gets you going, but discipline keeps you growing.", author: "John C. Maxwell" },
+        { text: "Small daily improvements over time lead to stunning results.", author: "Robin Sharma" },
+        { text: "The chains of habit are too light to be felt until they are too heavy to be broken.", author: "Warren Buffett" },
+        { text: "We first make our habits, and then our habits make us.", author: "John Dryden" },
+        { text: "Consistency is the hallmark of the unimaginative.", author: "Oscar Wilde" },
+    ],
+    loss: [
+        { text: "You may encounter many defeats, but you must not be defeated.", author: "Maya Angelou" },
+        { text: "Fall seven times, stand up eight.", author: "Japanese Proverb" },
+        { text: "Difficulties strengthen the mind, as labour does the body.", author: "Seneca" },
+        { text: "The impediment to action advances action. What stands in the way becomes the way.", author: "Marcus Aurelius" },
+        { text: "It's not whether you get knocked down; it's whether you get up.", author: "Vince Lombardi" },
+    ],
+};
+
+let quoteTimer = null;
+function showQuote(category, label) {
+    const pool = QUOTES[category] || QUOTES.win;
+    const q = pool[Math.floor(Math.random() * pool.length)];
+    const el = document.getElementById('quoteToast');
+    document.getElementById('quoteLabel').textContent = label;
+    document.getElementById('quoteText').textContent = `"${q.text}"`;
+    document.getElementById('quoteAuthor').textContent = `— ${q.author}`;
+    el.classList.add('show');
+    if (quoteTimer) clearTimeout(quoteTimer);
+    quoteTimer = setTimeout(() => el.classList.remove('show'), 6500);
+    el.onclick = () => { el.classList.remove('show'); clearTimeout(quoteTimer); };
+}
 
 // ─── THEME ───
 function initTheme() {
@@ -663,7 +714,7 @@ function buildCard(item, idx, exp, col) {
         <input type="text" id="et-${idx}" value="${esc(item.target||'')}" placeholder="Target">
         <input type="text" id="eu-${idx}" value="${esc(item.unit||'')}" placeholder="Unit">
         <select id="es-${idx}">${styleOpts}</select>
-        <input type="date" id="ed-${idx}" value="${item.deadline||''}" title="Deadline (optional)" style="flex:0.6;min-width:110px">
+        <input type="text" id="ed-${idx}" value="${item.deadline||''}" placeholder="DD or DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
         <button class="btn-primary" onclick="saveEdit(${idx})">Save</button>
         <button class="btn-ghost" onclick="closeEdit(${idx})">Cancel</button>
     </div>`;
@@ -708,7 +759,6 @@ function buildCard(item, idx, exp, col) {
     if (item.created) metaHTML += `<span>Added ${fmtDate(item.created)}</span>`;
     if (streak > 1) metaHTML += `<span class="streak-pill">🔥 ${streak}d</span>`;
     if (deadlinePill) metaHTML += deadlinePill;
-    if (item.pinned) metaHTML += `<span class="pin-pip">📌</span>`;
 
     // Mini count shown when collapsed
     const miniVal = isDual ? `${c.pos}W ${c.neg}L` : `${c.simple}${tgt.max > 0 ? '/' + tgt.max : ''}`;
@@ -719,7 +769,7 @@ function buildCard(item, idx, exp, col) {
         ondragstart="dStart(event,${idx})" ondragover="dOver(event,${idx})" ondrop="dDrop(event,${idx})" ondragleave="dLeave(event)">
         <div class="drag-handle">⋮⋮</div>
         <div class="card-head">
-            <div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0" ondblclick="toggleCollapse(${idx})" title="Double-click to expand/collapse">
                 <div>
                     <div class="card-name">${esc(item.name)}</div>
                     ${metaHTML ? `<div class="card-meta">${metaHTML}</div>` : ''}
@@ -745,7 +795,36 @@ function buildCard(item, idx, exp, col) {
     </div>`;
 }
 
-// ─── INFO MODAL ───
+// ─── SMART DATE ───
+function smartDate(e, el) {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const val = el.value.trim();
+    if (!val) return;
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    let iso = '';
+    if (/^\d{1,2}$/.test(val)) {
+        const d = parseInt(val);
+        if (d >= 1 && d <= 31) iso = `${y}-${m}-${String(d).padStart(2,'0')}`;
+    } else {
+        const dm = val.match(/^(\d{1,2})[\/\-\.](\d{1,2})$/);
+        if (dm) {
+            iso = `${y}-${String(parseInt(dm[2])).padStart(2,'0')}-${String(parseInt(dm[1])).padStart(2,'0')}`;
+        } else {
+            const dmy = val.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/);
+            if (dmy) {
+                const yr = dmy[3].length === 2 ? 2000 + parseInt(dmy[3]) : parseInt(dmy[3]);
+                iso = `${yr}-${String(parseInt(dmy[2])).padStart(2,'0')}-${String(parseInt(dmy[1])).padStart(2,'0')}`;
+            } else if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+                iso = val;
+            }
+        }
+    }
+    if (iso) { el.value = iso; toast(`📅 Set to ${iso}`); }
+    else toast('⚠ Use DD, DD/MM, or DD/MM/YYYY');
+}
 function openInfo() { document.getElementById('infoModal').classList.add('open'); }
 function closeInfo() { document.getElementById('infoModal').classList.remove('open'); }
 
@@ -801,6 +880,22 @@ function addEntry(idx, type) {
     data[idx].comments.push({ type: isCounted ? type : 'note', text: note, emoji, counted: isCounted, date: new Date().toISOString() });
     save(data);
     if (noteEl) noteEl.value = '';
+
+    // Quote triggers
+    const item = data[idx];
+    const c2 = getCounts(item);
+    const t2 = parseTarget(item.target);
+    const streak2 = getStreak(item);
+    const justWon = type === 'pos' && t2.max > 0 && c2.pos >= t2.max;
+    const justKilled = type === 'neg' && t2.kill > 0 && c2.neg >= t2.kill;
+    if (justWon) {
+        setTimeout(() => showQuote('win', '🏆 Goal reached!'), 600);
+    } else if (justKilled) {
+        setTimeout(() => showQuote('loss', '💥 Threshold hit'), 600);
+    } else if ([3, 7, 14, 30, 60, 100].includes(streak2)) {
+        setTimeout(() => showQuote('streak', `🔥 ${streak2}-day streak!`), 600);
+    }
+
     render();
     toast(type === 'note-only' ? '📝 Note added' : type === 'pos' ? '✓ Win logged' : type === 'neg' ? '✗ Loss logged' : '+ Counted');
 }
@@ -878,7 +973,17 @@ function togglePin(e, idx) {
     toast(pinned === 'hot' ? '📌 Pinned 🌸' : pinned ? '📌 Pinned' : 'Unpinned');
 }
 
-function toggleEdit(idx) { document.getElementById(`ep-${idx}`)?.classList.toggle('open'); }
+function toggleEdit(idx) {
+    const col = loadCollapse();
+    if (col[idx]) {
+        col[idx] = false;
+        saveCollapse(col);
+        render();
+        setTimeout(() => document.getElementById(`ep-${idx}`)?.classList.add('open'), 0);
+    } else {
+        document.getElementById(`ep-${idx}`)?.classList.toggle('open');
+    }
+}
 function closeEdit(idx) { document.getElementById(`ep-${idx}`)?.classList.remove('open'); }
 function saveEdit(idx) {
     const data = load();
