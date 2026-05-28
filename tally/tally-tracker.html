@@ -107,13 +107,13 @@
         button { font-family: inherit; font-size: 0.82rem; font-weight: 500; border: none; border-radius: 6px; padding: 0.45rem 0.9rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; line-height: 1.2; }
         .btn-primary { background: var(--accent); color: #070a0f; }
         .btn-primary:hover { filter: brightness(1.12); }
-        .btn-pos { background: var(--pos); color: #fff; }
-        .btn-pos:hover { filter: brightness(1.1); }
-        .btn-neg { background: var(--neg); color: #fff; }
-        .btn-neg:hover { filter: brightness(1.1); }
+        .btn-pos { background: var(--pos-bg); border: 1px solid rgba(34,209,139,0.35); color: var(--pos); }
+        .btn-pos:hover { filter: brightness(1.2); background: rgba(34,209,139,0.15); }
+        .btn-neg { background: var(--neg-bg); border: 1px solid rgba(255,77,103,0.35); color: var(--neg); }
+        .btn-neg:hover { filter: brightness(1.2); background: rgba(255,77,103,0.15); }
         .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 0.35rem 0.6rem; font-size: 0.75rem; }
         .btn-ghost:hover { background: var(--bg-elevated); color: var(--text); }
-        .btn-icon { background: transparent; border: 1px solid var(--border); color: var(--text-faint); padding: 0.28rem 0.48rem; font-size: 0.75rem; border-radius: 5px; line-height: 1; }
+        .btn-icon { background: transparent; border: 1px solid var(--border); color: var(--text-faint); padding: 0.32rem 0.55rem; font-size: 0.85rem; border-radius: 5px; line-height: 1; }
         .btn-icon:hover { background: var(--bg-elevated); color: var(--text); border-color: var(--text-faint); }
         .btn-icon.active { color: var(--warn); border-color: var(--warn); background: var(--warn-bg); }
         .btn-del:hover { color: var(--neg) !important; border-color: var(--neg) !important; background: var(--neg-bg) !important; }
@@ -199,11 +199,14 @@
         .deadline-pill.ok { background: var(--accent-dim); color: var(--accent); }
         .deadline-pill.warn { background: var(--warn-bg); color: var(--warn); }
         .deadline-pill.over { background: var(--neg-bg); color: var(--neg); }
+        .deadline-pill.ahead { background: var(--pos-bg); color: var(--pos); }
         .pace-line { font-size: 0.65rem; text-align: right; margin-top: 0.15rem; }
         .pace-line.ahead { color: var(--pos); }
         .pace-line.on { color: var(--accent); }
         .pace-line.behind { color: var(--warn); }
         .pace-line.over { color: var(--neg); font-weight: 600; }
+        .mini-win { color: var(--pos); text-shadow: 0 0 8px rgba(34,209,139,0.5); font-weight: 700; }
+        .mini-fail { color: var(--neg); text-shadow: 0 0 8px rgba(255,77,103,0.5); font-weight: 700; }
         input[type="date"] { color-scheme: dark; }
 
         /* Status banner */
@@ -334,6 +337,13 @@
                 <option value="orange">🟠 Orange</option>
                 <option value="purple">🟣 Purple</option>
                 <option value="yellow">🟡 Yellow</option>
+            </select>
+            <select id="newDualStyle" title="Dual button colours (dual tallies only)">
+                <option value="default">Default colours</option>
+                <option value="blue-orange">Blue / Orange</option>
+                <option value="teal-pink">Teal / Pink</option>
+                <option value="purple-amber">Purple / Amber</option>
+                <option value="neutral">Neutral</option>
             </select>
             <input type="text" id="newDeadline" placeholder="Deadline: DD or DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
             <button class="btn-primary" onclick="addTally()">+ Add Tally</button>
@@ -487,7 +497,7 @@ function saveCollapse(s) { localStorage.setItem(CK, JSON.stringify(s)); }
 function migrate(items) {
     if (!Array.isArray(items)) return [];
     return items.map(item => ({
-        type: 'simple', style: 'default', locked: false,
+        type: 'simple', style: 'default', dualStyle: 'default', locked: false,
         encrypted: null, lockHint: '', pinned: false,
         ...item,
         comments: (Array.isArray(item.comments) ? item.comments : []).map(c => ({ counted: true, ...c }))
@@ -626,11 +636,21 @@ function buildCard(item, idx, exp, col) {
         ? `<div class="status-banner status-fail">💥 Killed — too many losses.</div>`
         : '';
 
+    // Dual colour scheme
+    const dualColours = {
+        'default':      { pos: '#17a884', neg: '#c93050' },
+        'blue-orange':  { pos: '#2563eb', neg: '#ea580c' },
+        'teal-pink':    { pos: '#0fd4b0', neg: '#f04fbd' },
+        'purple-amber': { pos: '#8b5cf6', neg: '#d97706' },
+        'neutral':      { pos: '#5a7080', neg: '#5a7080', negBg: '#3a4a58' },
+    };
+    const dc = dualColours[item.dualStyle || 'default'];
+
     // Counter
     let counterHTML = isDual
         ? `<div class="counter-dual">
-            <div class="cblock pos"><div class="clabel">Wins</div><div class="cnum">${c.pos}</div></div>
-            <div class="cblock neg"><div class="clabel">Losses</div><div class="cnum">${c.neg}</div></div>
+            <div class="cblock pos" style="background:${dc.pos}18;border-color:${dc.pos}40"><div class="clabel" style="color:${dc.pos}">Wins</div><div class="cnum" style="color:${dc.pos}">${c.pos}</div></div>
+            <div class="cblock neg" style="background:${(dc.negBg||dc.neg)}18;border-color:${(dc.negBg||dc.neg)}40"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
           </div>`
         : `<div style="display:flex;align-items:baseline">
             <div class="count-big">${c.simple}</div>
@@ -644,8 +664,22 @@ function buildCard(item, idx, exp, col) {
         const dl = new Date(item.deadline);
         const daysLeft = Math.round((dl - now) / 86400000);
         const overdue = daysLeft < 0;
-        const pillCls = overdue ? 'over' : daysLeft <= 7 ? 'warn' : 'ok';
-        const pillTxt = overdue ? `📅 ${Math.abs(daysLeft)}d overdue` : `📅 ${daysLeft}d left`;
+        let pillCls, pillTxt;
+        if (isWin && item.deadline) {
+            if (daysLeft > 0) {
+                pillCls = 'ahead';
+                pillTxt = `📅 ${daysLeft}d ahead`;
+            } else if (daysLeft === 0) {
+                pillCls = 'ok';
+                pillTxt = `📅 On time`;
+            } else {
+                pillCls = 'over';
+                pillTxt = `📅 ${Math.abs(daysLeft)}d late`;
+            }
+        } else {
+            pillCls = overdue ? 'over' : daysLeft <= 7 ? 'warn' : 'ok';
+            pillTxt = overdue ? `📅 ${Math.abs(daysLeft)}d overdue` : `📅 ${daysLeft}d left`;
+        }
         deadlinePill = `<span class="deadline-pill ${pillCls}">${pillTxt}</span>`;
         if (tgt.max > 0 && !isWin && !isKilled) {
             const created = item.created ? new Date(item.created) : now;
@@ -689,19 +723,17 @@ function buildCard(item, idx, exp, col) {
             .map(e => `<button class="mood-btn" onclick="setEmoji(${idx},'${e}')" title="${e}">${e}</button>`).join('');
         if (isDual) {
             actionHTML = `<div class="action-row">
-                <input type="text" class="note-inp" id="note-${idx}" placeholder="Optional note…">
+                <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to save)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault()}">
                 <div class="mood-strip">${moodBtns}</div>
-                <button class="btn-pos" onclick="addEntry(${idx},'pos')">✓ Win</button>
-                <button class="btn-neg" onclick="addEntry(${idx},'neg')">✗ Loss</button>
-                <button class="btn-ghost" onclick="addEntry(${idx},'note-only')" title="Note only, not counted">📝</button>
+                <button class="btn-pos" style="background:${dc.pos}20;border:1px solid ${dc.pos}55;color:${dc.pos}" onclick="addEntry(${idx},'pos')">✓ Win</button>
+                <button class="btn-neg" style="background:${(dc.negBg||dc.neg)}20;border:1px solid ${(dc.negBg||dc.neg)}55;color:${dc.neg}" onclick="addEntry(${idx},'neg')">✗ Loss</button>
                 <button class="btn-icon" onclick="undoLast(${idx})" title="Undo last counted entry">↩</button>
             </div>`;
         } else {
             actionHTML = `<div class="action-row">
-                <input type="text" class="note-inp" id="note-${idx}" placeholder="Optional note…">
+                <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to save)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault()}">
                 <div class="mood-strip">${moodBtns}</div>
                 <button class="btn-primary" onclick="addEntry(${idx},'simple')">+ Count</button>
-                <button class="btn-ghost" onclick="addEntry(${idx},'note-only')" title="Note only, not counted">📝</button>
                 <button class="btn-icon" onclick="undoLast(${idx})" title="Undo last counted entry">↩</button>
             </div>`;
         }
@@ -710,11 +742,17 @@ function buildCard(item, idx, exp, col) {
     // Edit panel
     const styleOpts = ['default','blue','orange','purple','yellow']
         .map(s => `<option value="${s}" ${item.style===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('');
+    const dualStyleOpts = ['default','blue-orange','teal-pink','purple-amber','neutral']
+        .map(s => {
+            const labels = { default:'Default colours', 'blue-orange':'Blue / Orange', 'teal-pink':'Teal / Pink', 'purple-amber':'Purple / Amber', neutral:'Neutral' };
+            return `<option value="${s}" ${(item.dualStyle||'default')===s?'selected':''}>${labels[s]}</option>`;
+        }).join('');
     const editHTML = `<div class="edit-panel" id="ep-${idx}">
         <input type="text" id="en-${idx}" value="${esc(item.name)}" placeholder="Name">
         <input type="text" id="et-${idx}" value="${esc(item.target||'')}" placeholder="Target">
         <input type="text" id="eu-${idx}" value="${esc(item.unit||'')}" placeholder="Unit">
         <select id="es-${idx}">${styleOpts}</select>
+        <select id="eds-${idx}" title="Dual button colours">${dualStyleOpts}</select>
         <input type="text" id="ed-${idx}" value="${item.deadline||''}" placeholder="DD or DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
         <button class="btn-primary" onclick="saveEdit(${idx})">Save</button>
         <button class="btn-ghost" onclick="closeEdit(${idx})">Cancel</button>
@@ -731,9 +769,10 @@ function buildCard(item, idx, exp, col) {
             const btype = c.counted === false ? 'note' : (c.type || 'simple');
             const bcls = btype === 'pos' ? 'badge-pos' : btype === 'neg' ? 'badge-neg' : btype === 'note' || btype === 'note-only' ? 'badge-note' : 'badge-simple';
             const blabel = btype === 'pos' ? 'Win' : btype === 'neg' ? 'Loss' : 'Note';
+            const badgeStyle = btype === 'pos' ? `style="background:${dc.pos}20;color:${dc.pos}"` : btype === 'neg' ? `style="background:${(dc.negBg||dc.neg)}20;color:${dc.neg}"` : '';
             const emoji = c.emoji ? `${c.emoji} ` : '';
             return `<div class="c-entry">
-                <span class="c-badge ${bcls}">${blabel}</span>
+                <span class="c-badge ${bcls}" ${badgeStyle}>${blabel}</span>
                 <span class="c-time">${fmtDate(c.date||new Date().toISOString())}</span>
                 <span class="c-text" id="ct-${idx}-${di}">${emoji}${esc(c.text||'')}</span>
                 <div class="c-edit-form" id="cef-${idx}-${di}">
@@ -763,7 +802,8 @@ function buildCard(item, idx, exp, col) {
 
     // Mini count shown when collapsed
     const miniVal = isDual ? `${c.pos}W ${c.neg}L` : `${c.simple}${tgt.max > 0 ? '/' + tgt.max : ''}`;
-    const miniCount = `<span class="mini-count">${miniVal}</span>`;
+    const miniCls = isWin ? 'mini-count mini-win' : isKilled ? 'mini-count mini-fail' : 'mini-count';
+    const miniCount = `<span class="${miniCls}">${miniVal}</span>`;
 
     return `<div class="${cardClass}" data-name="${esc(item.name)}" data-index="${idx}"
         draggable="true"
@@ -779,10 +819,10 @@ function buildCard(item, idx, exp, col) {
             </div>
             <div class="card-btns">
                 <button class="btn-icon collapse-btn" onclick="toggleCollapse(${idx})" title="${isCollapsed ? 'Expand' : 'Collapse'}">${isCollapsed ? '▼' : '▲'}</button>
-                <button class="btn-icon ${item.pinned ? 'active' : ''}" onclick="togglePin(event,${idx})" title="Pin · Ctrl+click for pink">📌</button>
+                <button class="btn-icon ${item.pinned ? 'active' : ''}" onclick="togglePin(event,${idx})" title="Pin · Ctrl+click for pink" style="${item.pinned ? '' : 'filter:grayscale(1);opacity:0.6'}">📌</button>
                 <button class="btn-icon" onclick="toggleEdit(${idx})" title="Edit">✎</button>
-                <button class="btn-icon" onclick="openLock(${idx},'lock')" title="Lock">🔒</button>
-                <button class="btn-icon btn-del" onclick="deleteTally(${idx})" title="Delete">🗑</button>
+                <button class="btn-icon" onclick="openLock(${idx},'lock')" title="Lock" style="filter:grayscale(1);opacity:0.6">🔒</button>
+                <button class="btn-icon btn-del" onclick="deleteTally(${idx})" title="Delete">✕</button>
             </div>
         </div>
         <div class="card-body">
@@ -927,6 +967,7 @@ function addTally() {
         unit: document.getElementById('newUnit').value.trim() || 'times',
         type: document.getElementById('newType').value,
         style: document.getElementById('newStyle').value,
+        dualStyle: document.getElementById('newDualStyle').value,
         deadline: document.getElementById('newDeadline').value || '',
         comments: [], locked: false, encrypted: null,
         lockHint: '', pinned: false, created: new Date().toISOString()
@@ -993,6 +1034,7 @@ function saveEdit(idx) {
     data[idx].target = document.getElementById(`et-${idx}`).value.trim();
     data[idx].unit = document.getElementById(`eu-${idx}`).value.trim();
     data[idx].style = document.getElementById(`es-${idx}`).value;
+    data[idx].dualStyle = document.getElementById(`eds-${idx}`).value;
     data[idx].deadline = document.getElementById(`ed-${idx}`).value || '';
     save(data);
     render();
