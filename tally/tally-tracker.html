@@ -155,8 +155,8 @@
         html[data-btn="solid"] .card.hl-red { background: rgba(255,77,103,0.22); }
         .card.card-win { border-color: var(--pos); box-shadow: 0 0 0 1px rgba(34,209,139,0.5), 0 0 22px rgba(34,209,139,0.20); background-color: rgba(34,209,139,0.05); }
         .card.card-fail { border-color: var(--neg); box-shadow: 0 0 0 1px rgba(255,77,103,0.5), 0 0 22px rgba(255,77,103,0.20); background-color: rgba(255,77,103,0.05); }
-        .card.card-pinned { box-shadow: 0 0 0 1px rgba(0,229,255,0.85), 0 0 22px rgba(0,229,255,0.35); background-color: rgba(0,229,255,0.05); }
-        .card.card-pinned-hot { box-shadow: 0 0 0 1px rgba(240,79,189,0.85), 0 0 22px rgba(240,79,189,0.40); background-color: rgba(240,79,189,0.06); }
+        .card.card-pinned { box-shadow: 0 0 0 1px rgba(0,229,255,0.85), 0 0 22px rgba(0,229,255,0.35); }
+        .card.card-pinned-hot { box-shadow: 0 0 0 1px rgba(240,79,189,0.85), 0 0 22px rgba(240,79,189,0.40); }
         .card.card-locked { cursor: pointer; border-left-color: var(--text-faint); }
         .card.hidden { display: none; }
         .card.dragging { opacity: 0.35; }
@@ -671,7 +671,7 @@ function buildCard(item, idx, exp, col) {
     const pct = tgt.max > 0 ? Math.min((curr / tgt.max) * 100, 100) : 0;
     const killPct = tgt.kill > 0 ? Math.min((c.neg / tgt.kill) * 100, 100) : 0;
     const isKilled = isDual && tgt.kill > 0 && c.neg >= tgt.kill;
-    const isWin = isDual && tgt.max > 0 && c.pos >= tgt.max && !isKilled;
+    const isWin = tgt.max > 0 && !isKilled && (isDual ? c.pos >= tgt.max : c.simple >= tgt.max);
     const streak = getStreak(item);
 
     // Progress bar class
@@ -1019,7 +1019,7 @@ function addEntry(idx, type) {
     const c2 = getCounts(item);
     const t2 = parseTarget(item.target);
     const streak2 = getStreak(item);
-    const justWon = type === 'pos' && t2.max > 0 && c2.pos >= t2.max;
+    const justWon = t2.max > 0 && (item.type === 'dual' ? (type === 'pos' && c2.pos >= t2.max) : (type === 'simple' && c2.simple >= t2.max));
     const justKilled = type === 'neg' && t2.kill > 0 && c2.neg >= t2.kill;
     if (justWon) {
         setTimeout(() => showQuote('win', '🏆 Goal reached!'), 600);
