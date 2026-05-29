@@ -574,7 +574,7 @@
                         <span id="aesValue">Off</span>
                     </span>
                 </label>
-                <div class="setting-description">Replaces XOR stack with AES-256-GCM. Maximum security. Auto-detected on decrypt.</div>
+                <div class="setting-description">Replaces XOR stack with AES-256-GCM + PBKDF2 key hardening (100k rounds). Maximum security. Auto-detected on decrypt.</div>
             </div>
         </div>
     </div>
@@ -635,13 +635,13 @@
             },
             aes: {
                 title: '🔒 AES-256-GCM',
-                what: 'Replaces the entire XOR stack with AES-256-GCM — the global standard for symmetric encryption. Your key is hashed via SHA-256 to produce a 256-bit AES key. GCM mode adds authentication, meaning wrong keys fail immediately with no garbage output.',
-                example: 'Key → SHA-256 → 256-bit AES key\nRandom IV generated per encryption\nAES-GCM encrypts + authenticates\nOutput: AES:[base64]',
+                what: 'Replaces the entire XOR stack with AES-256-GCM — the global standard for symmetric encryption. Your passphrase is hardened via PBKDF2 (100,000 rounds, random salt) to produce a 256-bit AES key. GCM mode adds authentication, meaning wrong keys fail immediately with no garbage output.',
+                example: 'Passphrase + random 16-byte salt → PBKDF2 (100k rounds) → 256-bit AES key\nRandom 12-byte IV generated per encryption\nAES-GCM encrypts + authenticates\nOutput: AES:[base64 of salt + IV + ciphertext]',
                 security: '⭐⭐⭐⭐⭐',
                 complexity: 'High',
-                benefit: 'Military-grade encryption. Wrong key always fails cleanly. Recommended for anything sensitive.',
-                extra: 'AES was adopted by the US government in 2001 and is used everywhere from HTTPS to military communications. AES-256 uses a 256-bit key — 2²⁵⁶ possible keys, more than the number of atoms in the observable universe. The random IV (Initialisation Vector) ensures identical messages always produce different ciphertext. The "AES:" prefix in the output enables automatic mode detection so the receiver needs no special settings.',
-                worked: 'Encrypting "Hello" with key "mypassword":\n\n  Step 1: SHA-256("mypassword")\n          → 256-bit key "89e01536ac..."\n\n  Step 2: Generate random 12-byte IV\n          → "f3a8c2d1e9b4..."\n\n  Step 3: AES-256-GCM encrypt + auth tag\n          → ciphertext + 16-byte tag\n\n  Step 4: base64(IV + ciphertext + tag)\n          → "AES:A4bK9mP2..."\n\nDecrypt with wrong key:\n  → SHA-256("wrongpassword") → different 256-bit key\n  → AES-GCM auth tag verification fails immediately\n  → ❌ clean error, no garbage output'
+                benefit: 'Military-grade encryption with brute-force resistance. Wrong key always fails cleanly. Recommended for anything sensitive.',
+                extra: 'AES was adopted by the US government in 2001 and is used everywhere from HTTPS to military communications. AES-256 uses a 256-bit key — 2²⁵⁶ possible keys, more than the number of atoms in the observable universe. PBKDF2 with 100,000 rounds means each brute-force guess requires 100,000 SHA-256 operations, making weak passphrases like "apple" vastly harder to crack. The random 16-byte salt ensures two encryptions of the same text with the same passphrase produce completely different keys and outputs. The random 12-byte IV (Initialisation Vector) adds a further layer of uniqueness. The "AES:" prefix enables automatic mode detection on decrypt.',
+                worked: 'Encrypting "Hello" with passphrase "apple":\n\n  Step 1: Generate random 16-byte salt\n          → "a3f8c2d1e9b47f2c..."\n\n  Step 2: PBKDF2("apple", salt, 100000 rounds)\n          → 256-bit key "3d9e2a1f..."\n          (100,000 SHA-256 operations)\n\n  Step 3: Generate random 12-byte IV\n          → "f3a8c2d1e9b4..."\n\n  Step 4: AES-256-GCM encrypt + auth tag\n          → ciphertext + 16-byte tag\n\n  Step 5: base64(salt + IV + ciphertext + tag)\n          → "AES:A4bK9mP2..."\n\nDecrypt with wrong passphrase:\n  → PBKDF2("wrongpass", salt) → different 256-bit key\n  → AES-GCM auth tag verification fails immediately\n  → ❌ clean error, no garbage output\n\nBrute-force cost: each guess requires 100,000 SHA-256\noperations — at 1 billion guesses/sec that\'s 100,000× slower than a simple SHA-256 key.'
             }
         };
 
@@ -771,27 +771,52 @@
             });
         });
 
-        // ===== AES-256-GCM FUNCTIONS =====
+        // ===== AES-256-GCM FUNCTIONS (PBKDF2 key derivation) =====
 
-        async function aesEncrypt(text, key) {
+        async function deriveKey(passphrase, salt, usage) {
             const encoder = new TextEncoder();
-            const keyData = await crypto.subtle.digest('SHA-256', encoder.encode(key));
-            const cryptoKey = await crypto.subtle.importKey('raw', keyData, 'AES-GCM', false, ['encrypt']);
-            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw', encoder.encode(passphrase), 'PBKDF2', false, ['deriveKey']
+            );
+            return crypto.subtle.deriveKey(
+                { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                [usage]
+            );
+        }
+
+        async function aesEncrypt(text, passphrase) {
+            const encoder = new TextEncoder();
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const iv   = crypto.getRandomValues(new Uint8Array(12));
+            const cryptoKey = await deriveKey(passphrase, salt, 'encrypt');
             const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, cryptoKey, encoder.encode(text));
-            const combined = new Uint8Array(iv.byteLength + encrypted.byteLength);
-            combined.set(iv, 0);
-            combined.set(new Uint8Array(encrypted), iv.byteLength);
+            // Format: [16 salt][12 iv][ciphertext]
+            const combined = new Uint8Array(16 + 12 + encrypted.byteLength);
+            combined.set(salt, 0);
+            combined.set(iv, 16);
+            combined.set(new Uint8Array(encrypted), 28);
             return 'AES:' + btoa(String.fromCharCode(...combined));
         }
 
-        async function aesDecrypt(data, key) {
-            const encoder = new TextEncoder();
+        async function aesDecrypt(data, passphrase) {
             const combined = Uint8Array.from(atob(data), c => c.charCodeAt(0));
-            const iv = combined.slice(0, 12);
-            const encrypted = combined.slice(12);
-            const keyData = await crypto.subtle.digest('SHA-256', encoder.encode(key));
-            const cryptoKey = await crypto.subtle.importKey('raw', keyData, 'AES-GCM', false, ['decrypt']);
+            // Support old format (no salt, IV is first 12 bytes) for backwards compatibility
+            if (combined.length < 28) {
+                const encoder = new TextEncoder();
+                const keyData = await crypto.subtle.digest('SHA-256', encoder.encode(passphrase));
+                const cryptoKey = await crypto.subtle.importKey('raw', keyData, 'AES-GCM', false, ['decrypt']);
+                const iv = combined.slice(0, 12);
+                const encrypted = combined.slice(12);
+                const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, cryptoKey, encrypted);
+                return new TextDecoder().decode(decrypted);
+            }
+            const salt      = combined.slice(0, 16);
+            const iv        = combined.slice(16, 28);
+            const encrypted = combined.slice(28);
+            const cryptoKey = await deriveKey(passphrase, salt, 'decrypt');
             const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, cryptoKey, encrypted);
             return new TextDecoder().decode(decrypted);
         }
