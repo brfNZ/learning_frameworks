@@ -375,7 +375,7 @@
                 <option value="pink">Pink</option>
                 <option value="amber">Amber</option>
             </select>
-            <input type="text" id="newDeadline" placeholder="Deadline: DD or DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
+            <input type="text" id="newDeadline" placeholder="Deadline: 14d, 2w, DD, DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
             <button class="btn-primary" onclick="addTally()">+ Add Tally</button>
         </div>
     </div>
@@ -527,12 +527,12 @@ function toggleBtnTheme() {
 
 // ─── TOAST ───
 let toastTmr;
-function toast(msg) {
+function toast(msg, duration) {
     const el = document.getElementById('toast');
     el.textContent = msg;
     el.classList.add('show');
     clearTimeout(toastTmr);
-    toastTmr = setTimeout(() => el.classList.remove('show'), 2400);
+    toastTmr = setTimeout(() => el.classList.remove('show'), duration || (msg.startsWith('⚠') ? 4500 : 2400));
 }
 
 // ─── STORAGE ───
@@ -938,7 +938,18 @@ function smartDate(e, el) {
     const y = now.getFullYear();
     const m = String(now.getMonth() + 1).padStart(2, '0');
     let iso = '';
-    if (/^\d{1,2}$/.test(val)) {
+
+    // Relative: 14d, 14 days, 2 weeks, 1 month
+    const rel = val.match(/^(\d+)\s*(d|days?|w|weeks?|m|months?)$/i);
+    if (rel) {
+        const n = parseInt(rel[1]);
+        const unit = rel[2].toLowerCase();
+        const d = new Date();
+        if (unit.startsWith('w')) d.setDate(d.getDate() + n * 7);
+        else if (unit.startsWith('m')) d.setMonth(d.getMonth() + n);
+        else d.setDate(d.getDate() + n);
+        iso = d.toISOString().slice(0, 10);
+    } else if (/^\d{1,2}$/.test(val)) {
         const d = parseInt(val);
         if (d >= 1 && d <= 31) iso = `${y}-${m}-${String(d).padStart(2,'0')}`;
     } else {
@@ -956,7 +967,7 @@ function smartDate(e, el) {
         }
     }
     if (iso) { el.value = iso; toast(`📅 Set to ${iso}`); }
-    else toast('⚠ Use DD, DD/MM, or DD/MM/YYYY');
+    else toast('⚠ Try: 14d · 2 weeks · 1 month · 15 · 15/08 · 15/08/2026');
 }
 function openInfo() { document.getElementById('infoModal').classList.add('open'); }
 function closeInfo() { document.getElementById('infoModal').classList.remove('open'); }
