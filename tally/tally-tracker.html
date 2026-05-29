@@ -133,14 +133,18 @@
             transition: border-color 0.2s, box-shadow 0.2s;
         }
         .card:hover { border-color: var(--accent); }
-        .card.hl-blue { border-color: var(--hl-blue); background: rgba(59,158,255,0.10); }
-        .card.hl-orange { border-color: var(--hl-orange); background: rgba(255,124,53,0.10); }
-        .card.hl-purple { border-color: var(--hl-purple); background: rgba(177,109,247,0.10); }
-        .card.hl-yellow { border-color: var(--hl-yellow); background: rgba(245,200,66,0.10); }
+        .card.hl-blue { border-color: var(--hl-blue); background: rgba(59,158,255,0.07); }
+        .card.hl-orange { border-color: var(--hl-orange); background: rgba(255,124,53,0.07); }
+        .card.hl-purple { border-color: var(--hl-purple); background: rgba(177,109,247,0.07); }
+        .card.hl-yellow { border-color: var(--hl-yellow); background: rgba(245,200,66,0.07); }
         [data-theme="light"] .card.hl-blue { background: rgba(37,99,235,0.08); }
         [data-theme="light"] .card.hl-orange { background: rgba(234,88,12,0.08); }
         [data-theme="light"] .card.hl-purple { background: rgba(124,58,237,0.08); }
         [data-theme="light"] .card.hl-yellow { background: rgba(180,83,9,0.08); }
+        html[data-btn="solid"] .card.hl-blue { background: rgba(59,158,255,0.22); }
+        html[data-btn="solid"] .card.hl-orange { background: rgba(255,124,53,0.22); }
+        html[data-btn="solid"] .card.hl-purple { background: rgba(177,109,247,0.22); }
+        html[data-btn="solid"] .card.hl-yellow { background: rgba(245,200,66,0.22); }
         .card.card-win { border-color: var(--pos); box-shadow: 0 0 0 1px rgba(34,209,139,0.5), 0 0 22px rgba(34,209,139,0.20); background-color: rgba(34,209,139,0.05); }
         .card.card-fail { border-color: var(--neg); box-shadow: 0 0 0 1px rgba(255,77,103,0.5), 0 0 22px rgba(255,77,103,0.20); background-color: rgba(255,77,103,0.05); }
         .card.card-pinned { box-shadow: 0 0 0 1px rgba(0,229,255,0.85), 0 0 22px rgba(0,229,255,0.35); background-color: rgba(0,229,255,0.05); }
@@ -304,6 +308,9 @@
         [data-btn="solid"] .btn-primary:hover,
         [data-btn="solid"] .btn-pos:hover,
         [data-btn="solid"] .btn-neg:hover { filter: brightness(1.12); }
+        [data-btn="solid"] .card { background: #111827; border-color: #243044; }
+        [data-btn="solid"] .card:hover { border-color: var(--accent); }
+        [data-theme="light"][data-btn="solid"] .card { background: #f0f4f8; border-color: #b8c8d8; }
 
         /* Responsive */
         @media (max-width: 580px) {
@@ -340,25 +347,18 @@
             <input type="text" class="inp-unit" id="newUnit" placeholder="Unit" value="times">
         </div>
         <div class="form-row" style="margin-top:0.4rem">
-            <select id="newType">
+            <select id="newType" onchange="updateFormSelects()">
                 <option value="simple">Simple counter</option>
                 <option value="dual">Dual (+/−) counter</option>
             </select>
-            <select id="newStyle">
-                <option value="default">No highlight</option>
-                <option value="blue">🔵 Blue</option>
-                <option value="orange">🟠 Orange</option>
-                <option value="purple">🟣 Purple</option>
-                <option value="yellow">🟡 Yellow</option>
-            </select>
-            <select id="newDualStyle" title="Dual button colours (dual tallies only)">
+            <select id="newDualStyle" title="Dual button colours" style="display:none">
                 <option value="default">Default colours</option>
                 <option value="blue-orange">Blue / Orange</option>
                 <option value="teal-pink">Teal / Pink</option>
                 <option value="purple-amber">Purple / Amber</option>
                 <option value="neutral">Neutral</option>
             </select>
-            <select id="newSimpleStyle" title="Counter colour (simple tallies only)">
+            <select id="newSimpleStyle" title="Counter colour">
                 <option value="default">Default (teal)</option>
                 <option value="green">Green</option>
                 <option value="blue">Blue</option>
@@ -392,6 +392,17 @@
         <div class="modal-actions">
             <button class="btn-ghost" onclick="closeModal()">Cancel</button>
             <button class="btn-primary" onclick="confirmLock()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-bg" id="deleteModal">
+    <div class="modal-box">
+        <div class="modal-title">✕ Delete Tally</div>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem" id="deleteModalMsg">Are you sure? This cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-ghost" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn-primary" style="background:var(--neg);color:#fff" onclick="confirmDeleteTally()">Delete</button>
         </div>
     </div>
 </div>
@@ -700,8 +711,8 @@ function buildCard(item, idx, exp, col) {
     const solid = isSolid();
     let counterHTML = isDual
         ? `<div class="counter-dual">
-            <div class="cblock pos" style="background:${solid ? dc.pos+'30' : dc.pos+'18'};border-color:${dc.pos}${solid ? '60' : '40'}"><div class="clabel" style="color:${dc.pos}">Wins</div><div class="cnum" style="color:${dc.pos}">${c.pos}</div></div>
-            <div class="cblock neg" style="background:${solid ? (dc.negBg||dc.neg)+'30' : (dc.negBg||dc.neg)+'18'};border-color:${(dc.negBg||dc.neg)}${solid ? '60' : '40'}"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
+            <div class="cblock pos" style="background:${solid ? dc.pos+'45' : dc.pos+'18'};border-color:${dc.pos}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.pos}">Wins</div><div class="cnum" style="color:${dc.pos}">${c.pos}</div></div>
+            <div class="cblock neg" style="background:${solid ? (dc.negBg||dc.neg)+'45' : (dc.negBg||dc.neg)+'18'};border-color:${(dc.negBg||dc.neg)}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
           </div>`
         : `<div style="display:flex;align-items:baseline">
             <div class="count-big" style="color:${sc}">${c.simple}</div>
@@ -781,7 +792,7 @@ function buildCard(item, idx, exp, col) {
             const posStyle = solid ? `background:${dc.pos};color:#fff` : `background:${dc.pos}20;border:1px solid ${dc.pos}55;color:${dc.pos}`;
             const negStyle = solid ? `background:${dc.negBg||dc.neg};color:#fff` : `background:${(dc.negBg||dc.neg)}20;border:1px solid ${(dc.negBg||dc.neg)}55;color:${dc.neg}`;
             actionHTML = `<div class="action-row">
-                <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to save)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault()}">
+                <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to submit)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault();this.blur()}">
                 <div class="mood-strip">${moodBtns}</div>
                 <button class="btn-pos" style="${posStyle}" onclick="addEntry(${idx},'pos')">✓ Win</button>
                 <button class="btn-neg" style="${negStyle}" onclick="addEntry(${idx},'neg')">✗ Loss</button>
@@ -790,7 +801,7 @@ function buildCard(item, idx, exp, col) {
         } else {
             const countStyle = isSolid() ? `background:${sc};color:#fff` : `background:${sc}20;border:1px solid ${sc}55;color:${sc}`;
             actionHTML = `<div class="action-row">
-                <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to save)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault()}">
+                <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to submit)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault();this.blur()}">
                 <div class="mood-strip">${moodBtns}</div>
                 <button class="btn-primary" style="${countStyle}" onclick="addEntry(${idx},'simple')">+ Count</button>
                 <button class="btn-icon" onclick="undoLast(${idx})" title="Undo last counted entry">↩</button>
@@ -816,8 +827,10 @@ function buildCard(item, idx, exp, col) {
         <input type="text" id="et-${idx}" value="${esc(item.target||'')}" placeholder="Target">
         <input type="text" id="eu-${idx}" value="${esc(item.unit||'')}" placeholder="Unit">
         <select id="es-${idx}">${styleOpts}</select>
-        <select id="eds-${idx}" title="Dual button colours">${dualStyleOpts}</select>
-        <select id="ess-${idx}" title="Counter colour (simple tallies)">${simpleStyleOpts}</select>
+        ${isDual
+            ? `<select id="eds-${idx}" title="Dual button colours">${dualStyleOpts}</select>`
+            : `<select id="ess-${idx}" title="Counter colour">${simpleStyleOpts}</select>`
+        }
         <input type="text" id="ed-${idx}" value="${item.deadline||''}" placeholder="DD or DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
         <button class="btn-primary" onclick="saveEdit(${idx})">Save</button>
         <button class="btn-ghost" onclick="closeEdit(${idx})">Cancel</button>
@@ -841,7 +854,8 @@ function buildCard(item, idx, exp, col) {
                 <span class="c-time">${fmtDate(c.date||new Date().toISOString())}</span>
                 <span class="c-text" id="ct-${idx}-${di}">${emoji}${esc(c.text||'')}</span>
                 <div class="c-edit-form" id="cef-${idx}-${di}">
-                    <input type="text" value="${esc(c.text||'')}" id="ci-${idx}-${di}">
+                    <input type="text" value="${esc(c.text||'')}" id="ci-${idx}-${di}" onkeydown="if(event.key==='Enter'){saveCEdit(${idx},${ai},${di});event.preventDefault()}">
+                    <input type="date" id="cd-${idx}-${di}" value="${(c.date||'').slice(0,10)}" style="font-size:0.68rem;flex:0 0 auto;width:110px;color-scheme:dark">
                     <button class="btn-primary" onclick="saveCEdit(${idx},${ai},${di})" style="padding:0.18rem 0.45rem;font-size:0.7rem">✓</button>
                     <button class="btn-ghost" onclick="cancelCEdit(${idx},${di})">✕</button>
                 </div>
@@ -888,7 +902,7 @@ function buildCard(item, idx, exp, col) {
                 <button class="btn-icon ${item.pinned ? 'active' : ''}" onclick="togglePin(event,${idx})" title="Pin · Ctrl+click for pink" style="${item.pinned ? '' : 'filter:grayscale(1);opacity:0.6'}">📌</button>
                 <button class="btn-icon" onclick="toggleEdit(${idx})" title="Edit">✎</button>
                 <button class="btn-icon" onclick="openLock(${idx},'lock')" title="Lock" style="filter:grayscale(1);opacity:0.6">🔒</button>
-                <button class="btn-icon btn-del" onclick="deleteTally(${idx})" title="Delete">✕</button>
+                <button class="btn-icon btn-del" onclick="openDeleteModal(${idx})" title="Delete">✕</button>
             </div>
         </div>
         <div class="card-body">
@@ -902,7 +916,11 @@ function buildCard(item, idx, exp, col) {
     </div>`;
 }
 
-// ─── SMART DATE ───
+function updateFormSelects() {
+    const isDual = document.getElementById('newType').value === 'dual';
+    document.getElementById('newDualStyle').style.display = isDual ? '' : 'none';
+    document.getElementById('newSimpleStyle').style.display = isDual ? 'none' : '';
+}
 function smartDate(e, el) {
     if (e.key !== 'Enter') return;
     e.preventDefault();
@@ -986,7 +1004,7 @@ function addEntry(idx, type) {
     const isCounted = type !== 'note-only';
     data[idx].comments.push({ type: isCounted ? type : 'note', text: note, emoji, counted: isCounted, date: new Date().toISOString() });
     save(data);
-    if (noteEl) noteEl.value = '';
+    if (noteEl) { noteEl.value = ''; }
 
     // Quote triggers
     const item = data[idx];
@@ -1011,16 +1029,11 @@ function undoLast(idx) {
     const data = load();
     if (!data[idx]) return;
     const cs = data[idx].comments || [];
-    for (let i = cs.length - 1; i >= 0; i--) {
-        if (cs[i] && cs[i].counted) {
-            cs.splice(i, 1);
-            save(data);
-            render();
-            toast('↩ Undone');
-            return;
-        }
-    }
-    toast('Nothing to undo');
+    if (!cs.length) { toast('Nothing to undo'); return; }
+    cs.splice(cs.length - 1, 1);
+    save(data);
+    render();
+    toast('↩ Undone');
 }
 
 // ─── TALLY CRUD ───
@@ -1032,7 +1045,7 @@ function addTally() {
         name, target: document.getElementById('newTarget').value.trim(),
         unit: document.getElementById('newUnit').value.trim() || 'times',
         type: document.getElementById('newType').value,
-        style: document.getElementById('newStyle').value,
+        style: 'default',
         dualStyle: document.getElementById('newDualStyle').value,
         simpleStyle: document.getElementById('newSimpleStyle').value,
         deadline: document.getElementById('newDeadline').value || '',
@@ -1049,8 +1062,8 @@ function addTally() {
 
 function deleteTally(idx) {
     const data = load();
-    const name = data[idx] ? data[idx].name : 'this tally';
-    if (!confirm(`Delete "${name}"?`)) return;
+    if (!data[idx]) return;
+    const name = data[idx].name;
     data.splice(idx, 1);
     save(data);
     const exp = loadExp();
@@ -1058,7 +1071,24 @@ function deleteTally(idx) {
     Object.keys(exp).forEach(k => { const n = parseInt(k); if (n < idx) ne[n] = exp[k]; else if (n > idx) ne[n-1] = exp[k]; });
     saveExp(ne);
     render();
-    toast('🗑 Deleted');
+    toast(`✕ "${name}" deleted`);
+}
+
+let pendingDeleteIdx = null;
+function openDeleteModal(idx) {
+    const data = load();
+    pendingDeleteIdx = idx;
+    const name = data[idx]?.name || 'this tally';
+    document.getElementById('deleteModalMsg').textContent = `Delete "${name}"? This cannot be undone.`;
+    document.getElementById('deleteModal').classList.add('open');
+}
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('open');
+    pendingDeleteIdx = null;
+}
+function confirmDeleteTally() {
+    if (pendingDeleteIdx !== null) deleteTally(pendingDeleteIdx);
+    closeDeleteModal();
 }
 
 function toggleCollapse(idx) {
@@ -1101,8 +1131,8 @@ function saveEdit(idx) {
     data[idx].target = document.getElementById(`et-${idx}`).value.trim();
     data[idx].unit = document.getElementById(`eu-${idx}`).value.trim();
     data[idx].style = document.getElementById(`es-${idx}`).value;
-    data[idx].dualStyle = document.getElementById(`eds-${idx}`).value;
-    data[idx].simpleStyle = document.getElementById(`ess-${idx}`).value;
+    data[idx].dualStyle = document.getElementById(`eds-${idx}`)?.value || data[idx].dualStyle;
+    data[idx].simpleStyle = document.getElementById(`ess-${idx}`)?.value || data[idx].simpleStyle;
     data[idx].deadline = document.getElementById(`ed-${idx}`).value || '';
     save(data);
     render();
@@ -1133,15 +1163,23 @@ function saveCEdit(ti, ai, di) {
     const data = load();
     if (!data[ti]?.comments[ai]) return;
     data[ti].comments[ai].text = document.getElementById(`ci-${ti}-${di}`).value.trim();
+    const dtVal = document.getElementById(`cd-${ti}-${di}`)?.value;
+    if (dtVal) {
+        const orig = new Date(data[ti].comments[ai].date || new Date());
+        const [y,m,d] = dtVal.split('-').map(Number);
+        orig.setFullYear(y, m-1, d);
+        data[ti].comments[ai].date = orig.toISOString();
+    }
     save(data);
     render();
 }
 function deleteComment(ti, ai) {
-    if (!confirm('Delete this comment?')) return;
     const data = load();
+    if (!data[ti]?.comments) return;
     data[ti].comments.splice(ai, 1);
     save(data);
     render();
+    toast('Comment deleted');
 }
 
 // ─── DRAG & DROP ───
@@ -1256,13 +1294,12 @@ function handleRestore(e) {
     reader.onload = ev => {
         try {
             const parsed = JSON.parse(ev.target.result);
-            if (!Array.isArray(parsed)) { alert('Invalid backup file'); return; }
-            if (!confirm(`Restore ${parsed.length} tallies? This will replace your current data.`)) return;
+            if (!Array.isArray(parsed)) { toast('⚠ Invalid backup file'); return; }
             save(migrate(parsed));
             localStorage.removeItem(EK);
             render();
-            toast('✓ Restored!');
-        } catch(err) { alert('Error: ' + err.message); }
+            toast(`✓ Restored ${parsed.length} tallies`);
+        } catch(err) { toast('⚠ Error: ' + err.message); }
     };
     reader.readAsText(file);
     e.target.value = '';
@@ -1292,7 +1329,7 @@ function exportCSV() {
 
 // ─── KEYBOARD ───
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeInfo(); }
+    if (e.key === 'Escape') { closeModal(); closeInfo(); closeDeleteModal(); }
     if (e.key === 'Enter' && document.getElementById('lockModal').classList.contains('open')) {
         e.preventDefault();
         confirmLock();
