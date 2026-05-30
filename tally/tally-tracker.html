@@ -219,6 +219,10 @@
         .pace-line.over { color: var(--neg); font-weight: 600; }
         .mini-win { color: var(--pos); text-shadow: 0 0 8px rgba(34,209,139,0.5); font-weight: 700; }
         .mini-fail { color: var(--neg); text-shadow: 0 0 8px rgba(255,77,103,0.5); font-weight: 700; }
+        .tag-summary { display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.5rem 0 0.25rem; }
+        .tag-pill { font-family: 'DM Mono', monospace; display: inline-flex; align-items: center; gap: 0.2rem; padding: 0.08rem 0.4rem; border-radius: 4px; font-size: 0.67rem; background: var(--bg-elevated); color: var(--text-muted); border: 1px solid var(--border); }
+        .tag-pill .tag-count { font-weight: 700; }
+        .hash-tag { color: var(--text-muted); font-weight: 500; }
         .mini-status { display: none; font-size: 0.6rem; font-weight: 700; padding: 0.06rem 0.35rem; border-radius: 20px; letter-spacing: 0.04em; }
         .card.collapsed .mini-status { display: inline-flex; align-items: center; gap: 0.15rem; }
         .mini-status-win { background: var(--pos-bg); color: var(--pos); border: 1px solid rgba(34,209,139,0.3); }
@@ -879,10 +883,11 @@ function buildCard(item, idx, exp, col) {
             const blabel = btype === 'pos' ? 'Win' : btype === 'neg' ? 'Loss' : 'Note';
             const badgeStyle = btype === 'pos' ? `style="background:${dc.pos}20;color:${dc.pos}"` : btype === 'neg' ? `style="background:${(dc.negBg||dc.neg)}20;color:${dc.neg}"` : '';
             const emoji = c.emoji ? `${c.emoji} ` : '';
+            const tagText = esc(c.text||'').replace(/#(\w+)/g, '<span class="hash-tag">#$1</span>');
             return `<div class="c-entry">
                 <span class="c-badge ${bcls}" ${badgeStyle}>${blabel}</span>
                 <span class="c-time">${fmtDate(c.date||new Date().toISOString())}</span>
-                <span class="c-text" id="ct-${idx}-${di}">${emoji}${esc(c.text||'')}</span>
+                <span class="c-text" id="ct-${idx}-${di}" ondblclick="startCEdit(${idx},${di})" style="cursor:default" title="Double-click to edit">${emoji}${tagText}</span>
                 <div class="c-edit-form" id="cef-${idx}-${di}">
                     <input type="text" value="${esc(c.text||'')}" id="ci-${idx}-${di}" onkeydown="if(event.key==='Enter'){saveCEdit(${idx},${ai},${di});event.preventDefault()}">
                     <input type="date" id="cd-${idx}-${di}" value="${(c.date||'').slice(0,10)}" style="font-size:0.68rem;flex:0 0 auto;width:110px;color-scheme:dark">
@@ -902,6 +907,16 @@ function buildCard(item, idx, exp, col) {
             <div class="comments-list ${isExpanded ? 'open' : ''}" id="cmts-${idx}">${rows}</div>
         </div>`;
     }
+
+    // Tag breakdown
+    const tagCounts = {};
+    (item.comments || []).forEach(c => {
+        if (!c?.text) return;
+        (c.text.match(/#\w+/g) || []).forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1; });
+    });
+    const themeColor = isDual ? dc.pos : sc;
+    const tagKeys = Object.keys(tagCounts);
+    const tagSummaryHTML = tagKeys.length ? `<div class="tag-summary">${tagKeys.sort().map(t => `<span class="tag-pill">${t} <span class="tag-count">${tagCounts[t]}</span></span>`).join('')}</div>` : '';
 
     // Meta
     let metaHTML = '';
@@ -935,6 +950,7 @@ function buildCard(item, idx, exp, col) {
                 <button class="btn-icon btn-del" onclick="openDeleteModal(${idx})" title="Delete">✕</button>
             </div>
         </div>
+        ${tagSummaryHTML}
         <div class="card-body">
         ${editHTML}
         ${statusHTML}
@@ -1214,6 +1230,16 @@ function toggleComments(idx) {
 }
 
 function startCEdit(ti, di) {
+    // Close any other open comment edits first
+    document.querySelectorAll('.c-edit-form.open').forEach(el => {
+        const parts = el.id.split('-');
+        const oti = parts[1], odi = parts[2];
+        el.classList.remove('open');
+        const ct = document.getElementById(`ct-${oti}-${odi}`);
+        if (ct) ct.style.display = '';
+        const ca = document.getElementById(`ca-${oti}-${odi}`);
+        if (ca) ca.style.display = '';
+    });
     document.getElementById(`ct-${ti}-${di}`).style.display = 'none';
     document.getElementById(`cef-${ti}-${di}`).classList.add('open');
     const ca = document.getElementById(`ca-${ti}-${di}`);
