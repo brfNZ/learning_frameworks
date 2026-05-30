@@ -329,7 +329,9 @@
         [data-btn="solid"] .card:hover { border-color: var(--accent); }
         [data-theme="light"][data-btn="solid"] .card { background: #f0f4f8; border-color: #b8c8d8; }
 
-        /* Responsive */
+        .tag-ac { position: fixed; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.35); z-index: 999; min-width: 140px; overflow: hidden; }
+        .tag-ac-item { display: block; width: 100%; text-align: left; padding: 0.4rem 0.7rem; font-size: 0.78rem; color: var(--text-dim); background: none; border: none; cursor: pointer; font-family: 'DM Mono', monospace; }
+        .tag-ac-item:hover, .tag-ac-item.active { background: var(--bg-card); color: var(--accent); }
         @media (max-width: 580px) {
             .counter-dual { gap: 0.4rem; }
             .action-row { gap: 0.3rem; }
@@ -828,7 +830,10 @@ function buildCard(item, idx, exp, col) {
             const posStyle = solid ? `background:${dc.pos};color:#fff` : `background:${dc.pos}20;border:1px solid ${dc.pos}55;color:${dc.pos}`;
             const negStyle = solid ? `background:${dc.negBg||dc.neg};color:#fff` : `background:${(dc.negBg||dc.neg)}20;border:1px solid ${(dc.negBg||dc.neg)}55;color:${dc.neg}`;
             actionHTML = `<div class="action-row">
-                <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to submit)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault();this.blur()}">
+                <div style="position:relative;flex:1;min-width:130px">
+                    <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to submit)" style="width:100%" onkeydown="noteKeydown(event,${idx})" oninput="noteInput(event,${idx})">
+                    <div class="tag-ac" id="tag-ac-${idx}" style="display:none"></div>
+                </div>
                 <div class="mood-strip">${moodBtns}</div>
                 <button class="btn-pos" style="${posStyle}" onclick="addEntry(${idx},'pos')">✓ Win</button>
                 <button class="btn-neg" style="${negStyle}" onclick="addEntry(${idx},'neg')">✗ Loss</button>
@@ -836,7 +841,10 @@ function buildCard(item, idx, exp, col) {
         } else {
             const countStyle = isSolid() ? `background:${sc};color:#fff` : `background:${sc}20;border:1px solid ${sc}55;color:${sc}`;
             actionHTML = `<div class="action-row">
-                <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to submit)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault();this.blur()}">
+                <div style="position:relative;flex:1;min-width:130px">
+                    <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to submit)" style="width:100%" onkeydown="noteKeydown(event,${idx})" oninput="noteInput(event,${idx})">
+                    <div class="tag-ac" id="tag-ac-${idx}" style="display:none"></div>
+                </div>
                 <div class="mood-strip">${moodBtns}</div>
                 <button class="btn-primary" style="${countStyle}" onclick="addEntry(${idx},'simple')">+ Count</button>
             </div>`;
@@ -889,7 +897,10 @@ function buildCard(item, idx, exp, col) {
                 <span class="c-time">${fmtDate(c.date||new Date().toISOString())}</span>
                 <span class="c-text" id="ct-${idx}-${di}">${emoji}${tagText}</span>
                 <div class="c-edit-form" id="cef-${idx}-${di}">
-                    <input type="text" value="${esc(c.text||'')}" id="ci-${idx}-${di}" onkeydown="if(event.key==='Enter'){saveCEdit(${idx},${ai},${di});event.preventDefault()}">
+                    <div style="position:relative;flex:1;min-width:0">
+                        <input type="text" value="${esc(c.text||'')}" id="ci-${idx}-${di}" style="width:100%" oninput="noteInput(event,${idx},'ci-${idx}-${di}')" onkeydown="ciKeydown(event,${idx},${ai},${di})">
+                        <div class="tag-ac" id="tag-ac-ci-${idx}-${di}" style="display:none"></div>
+                    </div>
                     <input type="date" id="cd-${idx}-${di}" value="${(c.date||'').slice(0,10)}" style="font-size:0.68rem;flex:0 0 auto;width:110px;color-scheme:dark">
                     <button class="btn-primary" onclick="saveCEdit(${idx},${ai},${di})" style="padding:0.18rem 0.45rem;font-size:0.7rem">✓</button>
                     <button class="btn-ghost" onclick="cancelCEdit(${idx},${di})">✕</button>
@@ -1084,7 +1095,119 @@ function addEntry(idx, type) {
     showEntryUndoToast(idx, label, isCountedEntry);
 }
 
-// ─── ENTRY UNDO TOAST ───
+// ─── TAG AUTOCOMPLETE ───
+let tagAcIdx = null;
+let tagAcInputId = null;
+
+function getTags(idx) {
+    const data = load();
+    const counts = {};
+    (data[idx]?.comments || []).forEach(c => {
+        (c.text?.match(/#\w+/g) || []).forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+    });
+    return Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+}
+
+function getHashPrefix(val, pos) {
+    const before = val.slice(0, pos);
+    const m = before.match(/#(\w*)$/);
+    return m ? m[1] : null;
+}
+
+function noteInput(e, idx, inputId) {
+    const el = e.target;
+    const acId = inputId ? `tag-ac-${inputId}` : `tag-ac-${idx}`;
+    const prefix = getHashPrefix(el.value, el.selectionStart);
+    const ac = document.getElementById(acId);
+    if (!ac || prefix === null) { if (ac) ac.style.display = 'none'; tagAcIdx = null; return; }
+    const tags = getTags(idx).filter(t => t.slice(1).toLowerCase().startsWith(prefix.toLowerCase()));
+    if (!tags.length) { ac.style.display = 'none'; tagAcIdx = null; return; }
+    tagAcIdx = idx;
+    tagAcInputId = inputId || null;
+    ac.innerHTML = tags.map(t => `<button class="tag-ac-item" onmousedown="insertTag(event,${idx},'${t}','${inputId || ''}')">${t}</button>`).join('');
+    ac.style.display = 'block';
+    // Position using fixed coords to avoid any overflow clipping
+    const inputRect = e.target.getBoundingClientRect();
+    const acHeight = ac.offsetHeight || 120;
+    const spaceBelow = window.innerHeight - inputRect.bottom - 8;
+    if (spaceBelow < acHeight) {
+        ac.style.top = `${inputRect.top - acHeight - 4}px`;
+    } else {
+        ac.style.top = `${inputRect.bottom + 4}px`;
+    }
+    ac.style.left = `${inputRect.left}px`;
+    ac.style.bottom = 'auto';
+}
+
+function insertTag(e, idx, tag, inputId) {
+    e.preventDefault();
+    const elId = inputId || `note-${idx}`;
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const pos = el.selectionStart;
+    const val = el.value;
+    const before = val.slice(0, pos);
+    const after = val.slice(pos);
+    const start = before.lastIndexOf('#');
+    el.value = before.slice(0, start) + tag + ' ' + after;
+    const newPos = start + tag.length + 1;
+    el.setSelectionRange(newPos, newPos);
+    el.focus();
+    const acId = inputId ? `tag-ac-${inputId}` : `tag-ac-${idx}`;
+    const ac = document.getElementById(acId);
+    if (ac) ac.style.display = 'none';
+    tagAcIdx = null; tagAcInputId = null;
+}
+
+function acNavigate(e, acId, insertFn) {
+    const ac = document.getElementById(acId);
+    if (!ac || ac.style.display === 'none') return false;
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        const items = ac.querySelectorAll('.tag-ac-item');
+        const active = ac.querySelector('.tag-ac-item.active');
+        if (active) {
+            active.dispatchEvent(new MouseEvent('mousedown'));
+        } else if (items[0]) {
+            items[0].dispatchEvent(new MouseEvent('mousedown'));
+        }
+        return true;
+    }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const items = ac.querySelectorAll('.tag-ac-item');
+        const active = ac.querySelector('.tag-ac-item.active');
+        const next = e.key === 'ArrowDown'
+            ? (active ? (active.nextElementSibling || items[0]) : items[0])
+            : (active ? (active.previousElementSibling || items[items.length-1]) : items[items.length-1]);
+        if (active) active.classList.remove('active');
+        if (next) next.classList.add('active');
+        return true;
+    }
+    if (e.key === 'Enter') {
+        const active = ac.querySelector('.tag-ac-item.active');
+        if (active) { active.dispatchEvent(new MouseEvent('mousedown')); e.preventDefault(); return true; }
+    }
+    if (e.key === 'Escape') { ac.style.display = 'none'; tagAcIdx = null; return true; }
+    return false;
+}
+
+function noteKeydown(e, idx) {
+    if (acNavigate(e, `tag-ac-${idx}`)) return;
+    if (e.key === 'Enter') { addEntry(idx, 'note-only'); e.preventDefault(); e.target.blur(); }
+}
+
+function ciKeydown(e, idx, ai, di) {
+    if (acNavigate(e, `tag-ac-ci-${idx}-${di}`)) return;
+    if (e.key === 'Enter') { saveCEdit(idx, ai, di); e.preventDefault(); }
+}
+
+document.addEventListener('click', e => {
+    document.querySelectorAll('.tag-ac').forEach(ac => {
+        if (!ac.contains(e.target)) ac.style.display = 'none';
+    });
+    tagAcIdx = null; tagAcInputId = null;
+});
 let entryUndoCache = null;
 let entryUndoTimer = null;
 function showEntryUndoToast(idx, label, isCountedEntry) {
