@@ -884,10 +884,10 @@ function buildCard(item, idx, exp, col) {
             const badgeStyle = btype === 'pos' ? `style="background:${dc.pos}20;color:${dc.pos}"` : btype === 'neg' ? `style="background:${(dc.negBg||dc.neg)}20;color:${dc.neg}"` : '';
             const emoji = c.emoji ? `${c.emoji} ` : '';
             const tagText = esc(c.text||'').replace(/#(\w+)/g, '<span class="hash-tag">#$1</span>');
-            return `<div class="c-entry">
+            return `<div class="c-entry" ondblclick="startCEdit(${idx},${di})" title="Double-click to edit">
                 <span class="c-badge ${bcls}" ${badgeStyle}>${blabel}</span>
                 <span class="c-time">${fmtDate(c.date||new Date().toISOString())}</span>
-                <span class="c-text" id="ct-${idx}-${di}" ondblclick="startCEdit(${idx},${di})" style="cursor:default" title="Double-click to edit">${emoji}${tagText}</span>
+                <span class="c-text" id="ct-${idx}-${di}">${emoji}${tagText}</span>
                 <div class="c-edit-form" id="cef-${idx}-${di}">
                     <input type="text" value="${esc(c.text||'')}" id="ci-${idx}-${di}" onkeydown="if(event.key==='Enter'){saveCEdit(${idx},${ai},${di});event.preventDefault()}">
                     <input type="date" id="cd-${idx}-${di}" value="${(c.date||'').slice(0,10)}" style="font-size:0.68rem;flex:0 0 auto;width:110px;color-scheme:dark">
