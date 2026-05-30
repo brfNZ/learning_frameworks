@@ -386,6 +386,7 @@
         <button class="btn-secondary" onclick="backupData()">💾 Download Backup</button>
         <button class="btn-secondary" onclick="triggerRestore()">📂 Restore Backup</button>
         <button class="btn-secondary" onclick="exportCSV()">📊 Export CSV</button>
+        <button class="btn-secondary" onclick="openClipModal()">📋 Clipboard</button>
         <button class="btn-info" onclick="openInfo()" title="Help & quick reference" style="width:1.9rem;height:1.9rem;font-size:0.85rem">i</button>
         <input type="file" id="restoreInput" accept=".json" onchange="handleRestore(event)" style="display:none">
     </div>
@@ -400,6 +401,21 @@
         <div class="modal-actions">
             <button class="btn-ghost" onclick="closeModal()">Cancel</button>
             <button class="btn-primary" onclick="confirmLock()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-bg" id="clipModal" onclick="closeClipModal()">
+    <div class="modal-box" style="max-width:480px" onclick="event.stopPropagation()">
+        <div class="modal-title">📋 Backup &amp; Restore</div>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 0.4rem">Your data — select all and copy to save:</p>
+        <textarea id="clipExportBox" readonly style="width:100%;height:120px;font-size:0.65rem;font-family:monospace;resize:none;margin-bottom:0.5rem;color:var(--text-dim)"></textarea>
+        <button class="btn-primary" style="width:100%;margin-bottom:1rem" onclick="copyClipboard()">📋 Copy to Clipboard</button>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 0.4rem">Paste a backup here to restore:</p>
+        <textarea id="clipImportBox" placeholder="Paste JSON backup here…" style="width:100%;height:100px;font-size:0.65rem;font-family:monospace;resize:none;margin-bottom:0.5rem"></textarea>
+        <div class="modal-actions">
+            <button class="btn-ghost" onclick="closeClipModal()">Cancel</button>
+            <button class="btn-primary" onclick="importClipboard()">📥 Import</button>
         </div>
     </div>
 </div>
@@ -1346,9 +1362,45 @@ function exportCSV() {
     toast('📊 CSV exported');
 }
 
-// ─── KEYBOARD ───
+// ─── CLIPBOARD BACKUP ───
+function openClipModal() {
+    const json = JSON.stringify(load(), null, 2);
+    const box = document.getElementById('clipExportBox');
+    box.value = json;
+    document.getElementById('clipImportBox').value = '';
+    document.getElementById('clipModal').classList.add('open');
+    setTimeout(() => { box.select(); box.setSelectionRange(0, 99999); }, 100);
+}
+function closeClipModal() {
+    document.getElementById('clipModal').classList.remove('open');
+}
+async function copyClipboard() {
+    const box = document.getElementById('clipExportBox');
+    try {
+        await navigator.clipboard.writeText(box.value);
+        toast('📋 Copied to clipboard!');
+    } catch {
+        box.select();
+        box.setSelectionRange(0, 99999);
+        toast('📋 Select all + copy manually');
+    }
+}
+function importClipboard() {
+    const raw = document.getElementById('clipImportBox').value.trim();
+    if (!raw) { toast('⚠ Nothing to import'); return; }
+    try {
+        const data = JSON.parse(raw);
+        if (!Array.isArray(data)) throw new Error();
+        save(migrate(data));
+        closeClipModal();
+        render();
+        toast('✓ Data imported');
+    } catch {
+        toast('⚠ Invalid JSON — check your paste');
+    }
+}
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeInfo(); closeDeleteModal(); }
+    if (e.key === 'Escape') { closeModal(); closeInfo(); closeDeleteModal(); closeClipModal(); }
     if (e.key === 'Enter' && document.getElementById('lockModal').classList.contains('open')) {
         e.preventDefault();
         confirmLock();
