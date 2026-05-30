@@ -300,6 +300,11 @@
 
         /* Footer */
         .footer-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 1.75rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .dropdown-wrap { position: relative; }
+        .dropdown-menu { display: none; position: absolute; bottom: calc(100% + 6px); left: 0; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); z-index: 100; }
+        .dropdown-menu.open { display: block; }
+        .dropdown-item { display: block; width: 100%; text-align: left; padding: 0.55rem 0.85rem; font-size: 0.78rem; color: var(--text-dim); background: none; border: none; cursor: pointer; transition: background 0.15s; }
+        .dropdown-item:hover { background: var(--bg-card); color: var(--text); }
 
         /* Toast */
         .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 1rem; font-size: 0.78rem; color: var(--text); box-shadow: 0 8px 28px rgba(0,0,0,0.4); z-index: 400; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; }
@@ -383,8 +388,13 @@
     <div class="tally-list" id="tallyList"></div>
 
     <div class="footer-actions">
-        <button class="btn-secondary" onclick="backupData()">💾 Download Backup</button>
-        <button class="btn-secondary" onclick="triggerRestore()">📂 Restore Backup</button>
+        <div class="dropdown-wrap">
+            <button class="btn-secondary" onclick="toggleBackupMenu(event)">💾 Backup ▾</button>
+            <div class="dropdown-menu" id="backupMenu">
+                <button class="dropdown-item" onclick="backupData();closeBackupMenu()">⬇ Download file</button>
+                <button class="dropdown-item" onclick="triggerRestore();closeBackupMenu()">📂 Restore from file</button>
+            </div>
+        </div>
         <button class="btn-secondary" onclick="exportCSV()">📊 Export CSV</button>
         <button class="btn-secondary" onclick="openClipModal()">📋 Clipboard</button>
         <button class="btn-info" onclick="openInfo()" title="Help & quick reference" style="width:1.9rem;height:1.9rem;font-size:0.85rem">i</button>
@@ -805,9 +815,7 @@ function buildCard(item, idx, exp, col) {
 
     // Actions
     const locked = isWin || isKilled;
-    let actionHTML = locked
-        ? `<div style="margin-top:0.4rem;text-align:right"><button class="btn-icon" onclick="undoLast(${idx})" title="Undo last entry">↩ Undo last</button></div>`
-        : '';
+    let actionHTML = locked ? '' : '';
     if (!locked) {
         const moodBtns = ['😊','😤','😬','🤔','💪']
             .map(e => `<button class="mood-btn" onclick="setEmoji(${idx},'${e}')" title="${e}">${e}</button>`).join('');
@@ -820,7 +828,6 @@ function buildCard(item, idx, exp, col) {
                 <div class="mood-strip">${moodBtns}</div>
                 <button class="btn-pos" style="${posStyle}" onclick="addEntry(${idx},'pos')">✓ Win</button>
                 <button class="btn-neg" style="${negStyle}" onclick="addEntry(${idx},'neg')">✗ Loss</button>
-                <button class="btn-icon" onclick="undoLast(${idx})" title="Undo last counted entry">↩</button>
             </div>`;
         } else {
             const countStyle = isSolid() ? `background:${sc};color:#fff` : `background:${sc}20;border:1px solid ${sc}55;color:${sc}`;
@@ -828,7 +835,6 @@ function buildCard(item, idx, exp, col) {
                 <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to submit)" onkeydown="if(event.key==='Enter'){addEntry(${idx},'note-only');event.preventDefault();this.blur()}">
                 <div class="mood-strip">${moodBtns}</div>
                 <button class="btn-primary" style="${countStyle}" onclick="addEntry(${idx},'simple')">+ Count</button>
-                <button class="btn-icon" onclick="undoLast(${idx})" title="Undo last counted entry">↩</button>
             </div>`;
         }
     }
@@ -883,7 +889,7 @@ function buildCard(item, idx, exp, col) {
                     <button class="btn-primary" onclick="saveCEdit(${idx},${ai},${di})" style="padding:0.18rem 0.45rem;font-size:0.7rem">✓</button>
                     <button class="btn-ghost" onclick="cancelCEdit(${idx},${di})">✕</button>
                 </div>
-                <div class="c-actions">
+                <div class="c-actions" id="ca-${idx}-${di}">
                     <button class="btn-icon" onclick="startCEdit(${idx},${di})" title="Edit">✎</button>
                     <button class="btn-icon btn-del" onclick="deleteComment(${idx},${ai})" title="Delete">×</button>
                 </div>
@@ -1057,18 +1063,40 @@ function addEntry(idx, type) {
     }
 
     render();
-    toast(type === 'note-only' ? '📝 Note added' : type === 'pos' ? '✓ Win logged' : type === 'neg' ? '✗ Loss logged' : '+ Counted');
+    const label = type === 'note-only' ? '📝 Note added' : type === 'pos' ? '✓ Win logged' : type === 'neg' ? '✗ Loss logged' : '+ Counted';
+    const isCountedEntry = type !== 'note-only';
+    showEntryUndoToast(idx, label, isCountedEntry);
 }
 
-function undoLast(idx) {
+// ─── ENTRY UNDO TOAST ───
+let entryUndoCache = null;
+let entryUndoTimer = null;
+function showEntryUndoToast(idx, label, isCountedEntry) {
     const data = load();
-    if (!data[idx]) return;
-    const cs = data[idx].comments || [];
-    if (!cs.length) { toast('Nothing to undo'); return; }
-    cs.splice(cs.length - 1, 1);
+    const ai = (data[idx]?.comments || []).length - 1;
+    if (ai < 0) return;
+    entryUndoCache = { idx, ai };
+    clearTimeout(entryUndoTimer);
+    clearTimeout(toastTmr);
+    const el = document.getElementById('toast');
+    el.classList.remove('show');
+    void el.offsetWidth; // force reflow to restart transition
+    el.innerHTML = `${label} &nbsp;<span onclick="undoLastEntry()" style="color:var(--accent);cursor:pointer;font-weight:700;text-decoration:underline">Undo</span>`;
+    el.classList.add('show');
+    const duration = isCountedEntry ? 8000 : 3000;
+    entryUndoTimer = setTimeout(() => { el.classList.remove('show'); entryUndoCache = null; }, duration);
+}
+function undoLastEntry() {
+    if (!entryUndoCache) return;
+    clearTimeout(entryUndoTimer);
+    const { idx, ai } = entryUndoCache;
+    const data = load();
+    if (!data[idx]?.comments[ai]) return;
+    data[idx].comments.splice(ai, 1);
     save(data);
+    entryUndoCache = null;
     render();
-    toast('↩ Undone');
+    toast('↩ Entry removed');
 }
 
 // ─── TALLY CRUD ───
@@ -1188,15 +1216,52 @@ function toggleComments(idx) {
 function startCEdit(ti, di) {
     document.getElementById(`ct-${ti}-${di}`).style.display = 'none';
     document.getElementById(`cef-${ti}-${di}`).classList.add('open');
+    const ca = document.getElementById(`ca-${ti}-${di}`);
+    if (ca) ca.style.display = 'none';
     document.getElementById(`ci-${ti}-${di}`).focus();
 }
 function cancelCEdit(ti, di) {
     document.getElementById(`ct-${ti}-${di}`).style.display = '';
     document.getElementById(`cef-${ti}-${di}`).classList.remove('open');
+    const ca = document.getElementById(`ca-${ti}-${di}`);
+    if (ca) ca.style.display = '';
+}
+
+let deletedCommentCache = null;
+let deletedCommentTimer = null;
+function deleteComment(ti, ai) {
+    const data = load();
+    if (!data[ti]?.comments) return;
+    deletedCommentCache = { ti, ai, comment: JSON.parse(JSON.stringify(data[ti].comments[ai])) };
+    data[ti].comments.splice(ai, 1);
+    save(data);
+    render();
+    showUndoToast();
+}
+function showUndoToast() {
+    clearTimeout(deletedCommentTimer);
+    clearTimeout(toastTmr);
+    const el = document.getElementById('toast');
+    el.classList.remove('show');
+    void el.offsetWidth;
+    el.innerHTML = `Comment deleted &nbsp;<span onclick="undoDeleteComment()" style="color:var(--accent);cursor:pointer;font-weight:700;text-decoration:underline">Undo</span>`;
+    el.classList.add('show');
+    deletedCommentTimer = setTimeout(() => { el.classList.remove('show'); deletedCommentCache = null; }, 4500);
+}
+function undoDeleteComment() {
+    if (!deletedCommentCache) return;
+    clearTimeout(deletedCommentTimer);
+    const data = load();
+    const { ti, ai, comment } = deletedCommentCache;
+    if (!data[ti]) return;
+    data[ti].comments.splice(ai, 0, comment);
+    save(data);
+    deletedCommentCache = null;
+    render();
+    toast('↩ Comment restored');
 }
 function saveCEdit(ti, ai, di) {
     const data = load();
-    if (!data[ti]?.comments[ai]) return;
     data[ti].comments[ai].text = document.getElementById(`ci-${ti}-${di}`).value.trim();
     const dtVal = document.getElementById(`cd-${ti}-${di}`)?.value;
     if (dtVal) {
@@ -1207,14 +1272,6 @@ function saveCEdit(ti, ai, di) {
     }
     save(data);
     render();
-}
-function deleteComment(ti, ai) {
-    const data = load();
-    if (!data[ti]?.comments) return;
-    data[ti].comments.splice(ai, 1);
-    save(data);
-    render();
-    toast('Comment deleted');
 }
 
 // ─── DRAG & DROP ───
@@ -1362,7 +1419,15 @@ function exportCSV() {
     toast('📊 CSV exported');
 }
 
-// ─── CLIPBOARD BACKUP ───
+// ─── BACKUP DROPDOWN ───
+function toggleBackupMenu(e) {
+    e.stopPropagation();
+    document.getElementById('backupMenu').classList.toggle('open');
+}
+function closeBackupMenu() {
+    document.getElementById('backupMenu').classList.remove('open');
+}
+document.addEventListener('click', () => closeBackupMenu());
 function openClipModal() {
     const json = JSON.stringify(load(), null, 2);
     const box = document.getElementById('clipExportBox');
