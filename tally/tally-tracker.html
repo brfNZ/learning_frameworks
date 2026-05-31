@@ -243,9 +243,10 @@
         .mini-win { color: var(--pos); text-shadow: 0 0 8px rgba(34,209,139,0.5); font-weight: 700; }
         .mini-fail { color: var(--neg); text-shadow: 0 0 8px rgba(255,77,103,0.5); font-weight: 700; }
         .tally-grid { margin: 0.5rem 0 0.25rem; }
-        .tally-row { display: flex; gap: 3px; margin-bottom: 3px; flex-wrap: wrap; }
-        .tally-sq { width: 26px; height: 26px; border-radius: 3px; border: 1px solid transparent; flex-shrink: 0; transition: background 0.15s; }
+        .tally-row { display: flex; gap: 2px; margin-bottom: 3px; flex-wrap: wrap; align-items: center; }
+        .tally-sq { width: 16px; height: 16px; border-radius: 3px; border: 1px solid transparent; flex-shrink: 0; transition: background 0.15s; }
         .tally-sq.filled { border-color: transparent; }
+        .tally-spacer { width: 3px; flex-shrink: 0; }
         .tag-pill { font-family: 'DM Mono', monospace; display: inline-flex; align-items: center; gap: 0.2rem; padding: 0.08rem 0.4rem; border-radius: 4px; font-size: 0.67rem; background: var(--bg-elevated); color: var(--text-muted); border: 1px solid var(--border); }
         .tag-pill .tag-count { font-weight: 700; }
         .hash-tag { color: var(--text-muted); font-weight: 500; }
@@ -930,7 +931,7 @@ function buildCard(item, idx, exp, col) {
     // Challenge mode: segmented tally grid
     if (item.deadline && !tgt.max && !tgt.kill) {
         const total = curr;
-        const perRow = 10;
+        const perRow = 18;
         const fullRows = Math.floor(total / perRow);
         const remainder = total % perRow;
         const rowCount = total === 0 ? 0 : fullRows + (remainder > 0 ? 1 : 0);
@@ -940,6 +941,7 @@ function buildCard(item, idx, exp, col) {
             squaresHTML += '<div class="tally-row">';
             for (let col = 0; col < count; col++) {
                 squaresHTML += '<span class="tally-sq filled" style="background:' + themeColor + '"></span>';
+                if ((col + 1) % 3 === 0 && col + 1 < perRow) squaresHTML += '<span class="tally-spacer"></span>';
             }
             squaresHTML += '</div>';
         }
