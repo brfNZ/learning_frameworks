@@ -97,7 +97,8 @@
         .stat-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 
         .search-wrap { position: relative; margin-top: 0.55rem; }
-        .period-pills { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-top: 0.4rem; }
+        .badge-note-pinned { font-weight: 700; }
+        .c-entry.pinned-note { }
         .period-pill { padding: 0.18rem 0.6rem; border-radius: 20px; font-size: 0.72rem; border: 1px solid var(--border); color: var(--text-muted); background: none; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
         .period-pill:hover { border-color: var(--accent); color: var(--accent); }
         .period-pill.active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); font-weight: 600; }
@@ -175,6 +176,8 @@
         html[data-btn="solid"] .card.hl-lime { background: rgba(132,204,22,0.22); }
         .card.card-win { border-color: var(--pos); box-shadow: 0 0 0 1px rgba(34,209,139,0.5), 0 0 22px rgba(34,209,139,0.20); background-color: rgba(34,209,139,0.05); }
         .card.card-fail { border-color: var(--neg); box-shadow: 0 0 0 1px rgba(255,77,103,0.5), 0 0 22px rgba(255,77,103,0.20); background-color: rgba(255,77,103,0.05); }
+        .card.card-challenge { border-color: #f59e0b; box-shadow: 0 0 0 1px rgba(245,158,11,0.5), 0 0 20px rgba(245,158,11,0.18); background-color: rgba(245,158,11,0.04); }
+        .status-challenge { background: rgba(245,158,11,0.12); color: #f59e0b; border-color: rgba(245,158,11,0.3); }
         .card.card-pinned { box-shadow: 0 0 0 1px rgba(0,229,255,0.85), 0 0 22px rgba(0,229,255,0.35); }
         .card.card-pinned-hot { box-shadow: 0 0 0 1px rgba(240,79,189,0.85), 0 0 22px rgba(240,79,189,0.40); }
         .card.card-locked { cursor: pointer; border-left-color: var(--text-faint); }
@@ -371,6 +374,7 @@
     <div class="header-top">
         <div class="app-title">Tally<span class="dot">.</span></div>
         <div class="header-right">
+            <button class="btn-icon" id="collapseAllBtn" onclick="toggleCollapseAll()" title="Collapse / expand all">⊟</button>
             <button class="btn-icon" id="btnThemeBtn" onclick="toggleBtnTheme()" title="Toggle button style">◈</button>
             <button class="btn-icon" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
         </div>
@@ -378,8 +382,7 @@
     <div class="stats-bar" id="statsBar"></div>
     <div class="search-wrap">
         <span class="search-icon">⌕</span>
-        <input type="text" class="search-field" id="searchInput" placeholder="Filter tallies by name…" oninput="filterTallies()">
-    </div>
+        <input type="text" class="search-field" id="searchInput" placeholder="Filter tallies by name…" oninput="filterTallies()">    </div>
     <div class="period-pills">
         <button class="period-pill active" data-period="all"     onclick="setPeriod(this)">All</button>
         <button class="period-pill"        data-period="today"   onclick="setPeriod(this)">Today</button>
@@ -514,6 +517,7 @@ const TK = 'projectTally_theme';
 const BK = 'projectTally_btnTheme';
 const EK = 'projectTally_commentsState';
 const CK = 'projectTally_collapseState';
+const FK = 'projectTally_filter';
 let lockIdx = null, lockAct = null, dragSrc = null;
 const pendingEmoji = {};
 
@@ -693,7 +697,28 @@ let activePeriod = 'all';
 function setPeriod(btn) {
     activePeriod = btn.dataset.period;
     document.querySelectorAll('.period-pill').forEach(p => p.classList.toggle('active', p === btn));
+    saveFilter();
     filterTallies();
+}
+
+function saveFilter() {
+    localStorage.setItem(FK, JSON.stringify({
+        q: document.getElementById('searchInput')?.value || '',
+        period: activePeriod
+    }));
+}
+
+function initFilter() {
+    try {
+        const f = JSON.parse(localStorage.getItem(FK) || '{}');
+        if (f.q) document.getElementById('searchInput').value = f.q;
+        if (f.period && f.period !== 'all') {
+            activePeriod = f.period;
+            document.querySelectorAll('.period-pill').forEach(p => {
+                p.classList.toggle('active', p.dataset.period === f.period);
+            });
+        }
+    } catch(e) {}
 }
 
 function filterTallies() {
@@ -716,6 +741,18 @@ function filterTallies() {
         }
         card.classList.toggle('hidden', !nameMatch || !dateMatch);
     });
+    saveFilter();
+}
+
+function toggleCollapseAll() {
+    const data = load();
+    const col = loadCollapse();
+    const anyExpanded = data.some((_, i) => !col[i]);
+    data.forEach((_, i) => { col[i] = anyExpanded; });
+    saveCollapse(col);
+    const btn = document.getElementById('collapseAllBtn');
+    if (btn) btn.textContent = anyExpanded ? '⊞' : '⊟';
+    render();
 }
 
 // ─── RENDER ───
@@ -765,6 +802,7 @@ function buildCard(item, idx, exp, col) {
     const killPct = tgt.kill > 0 ? Math.min((c.neg / tgt.kill) * 100, 100) : 0;
     const isKilled = isDual && tgt.kill > 0 && c.neg >= tgt.kill;
     const isWin = tgt.max > 0 && !isKilled && (isDual ? c.pos >= tgt.max : c.simple >= tgt.max);
+    const isChallengeDone = !!(item.deadline && !tgt.max && !tgt.kill && new Date(item.deadline) < new Date());
     const streak = getStreak(item);
 
     // Progress bar class
@@ -777,14 +815,22 @@ function buildCard(item, idx, exp, col) {
     let cardClass = `card ${hlClass}`;
     if (isWin) cardClass += ' card-win';
     if (isKilled) cardClass += ' card-fail';
+    if (isChallengeDone) cardClass += ' card-challenge';
     if (item.pinned) cardClass += item.pinned === 'hot' ? ' card-pinned-hot' : ' card-pinned';
     if (isCollapsed) cardClass += ' collapsed';
 
     // Status banner
+    const challengeDays = isChallengeDone ? (() => {
+        const dl = new Date(item.deadline);
+        const cr = new Date(item.created || item.deadline);
+        return Math.max(1, Math.round((dl - cr) / 86400000));
+    })() : 0;
     const statusHTML = isWin
         ? `<div class="status-banner status-win">🏆 Goal reached!</div>`
         : isKilled
         ? `<div class="status-banner status-fail">💥 Killed — too many losses.</div>`
+        : isChallengeDone
+        ? `<div class="status-banner status-challenge">🏁 Challenge done — ${curr} ${esc(item.unit||'times')} in ${challengeDays} days</div>`
         : '';
 
     // Dual colour scheme
@@ -845,10 +891,17 @@ function buildCard(item, idx, exp, col) {
                 pillTxt = `📅 ${Math.abs(daysLeft)}d late`;
             }
         } else {
+            const isChallenge = !tgt.max && !tgt.kill;
             pillCls = overdue ? 'over' : daysLeft <= 7 ? 'warn' : 'ok';
-            pillTxt = overdue ? `📅 ${Math.abs(daysLeft)}d overdue` : `📅 ${daysLeft}d left`;
+            pillTxt = overdue
+                ? (isChallenge ? `🏁 Challenge ended` : `📅 ${Math.abs(daysLeft)}d overdue`)
+                : (isChallenge ? `🎯 ${daysLeft}d to go` : `📅 ${daysLeft}d left`);
         }
         deadlinePill = `<span class="deadline-pill ${pillCls}">${pillTxt}</span>`;
+        // Challenge mode pace line (no count target, deadline active)
+        if (!tgt.max && !tgt.kill && !overdue && !isWin) {
+            paceLine = `<div class="pace-line on">🎯 ${daysLeft}d challenge — log as many as you can!</div>`;
+        }
         if (tgt.max > 0 && !isWin && !isKilled) {
             const created = item.created ? new Date(item.created) : now;
             created.setHours(0,0,0,0);
@@ -886,7 +939,7 @@ function buildCard(item, idx, exp, col) {
     }
 
     // Actions
-    const locked = isWin || isKilled;
+    const locked = isWin || isKilled || isChallengeDone;
     let actionHTML = locked ? '' : '';
     if (!locked) {
         const moodBtns = ['😊','😤','😬','🤔','💪']
@@ -954,21 +1007,27 @@ function buildCard(item, idx, exp, col) {
     </div>`;
 
     // Comments
+    const themeColor = isDual ? dc.pos : sc;
     const comments = Array.isArray(item.comments) ? item.comments : [];
     const isExpanded = exp[idx] || false;
     let commentsHTML = '';
     if (comments.length > 0) {
         const sortedComments = [...comments].sort((a,b) => new Date(a.date||0) - new Date(b.date||0));
-        const rows = sortedComments.slice().reverse().map((c, di) => {
+        const displayComments = [...sortedComments.reverse()];
+        displayComments.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+        const rows = displayComments.map((c, di) => {
             const ai = comments.indexOf(c);
             if (!c) return '';
             const btype = c.counted === false ? 'note' : (c.type || 'simple');
-            const bcls = btype === 'pos' ? 'badge-pos' : btype === 'neg' ? 'badge-neg' : btype === 'note' || btype === 'note-only' ? 'badge-note' : 'badge-simple';
-            const blabel = btype === 'pos' ? 'Win' : btype === 'neg' ? 'Loss' : 'Note';
-            const badgeStyle = btype === 'pos' ? `style="background:${dc.pos}20;color:${dc.pos}"` : btype === 'neg' ? `style="background:${(dc.negBg||dc.neg)}20;color:${dc.neg}"` : '';
+            const isNote = btype === 'note' || btype === 'note-only';
+            const bcls = btype === 'pos' ? 'badge-pos' : btype === 'neg' ? 'badge-neg' : isNote ? `badge-note${c.pinned ? ' badge-note-pinned' : ''}` : 'badge-simple';
+            const blabel = btype === 'pos' ? 'Win' : btype === 'neg' ? 'Loss' : c.pinned ? '📌 Note' : 'Note';
+            const notePin = c.pinned ? `background:${themeColor}20;color:${themeColor};border:1px solid ${themeColor}55` : '';
+            const badgeStyle = btype === 'pos' ? `style="background:${dc.pos}20;color:${dc.pos}"` : btype === 'neg' ? `style="background:${(dc.negBg||dc.neg)}20;color:${dc.neg}"` : (c.pinned ? `style="${notePin}"` : '');
             const emoji = c.emoji ? `${c.emoji} ` : '';
             const tagText = esc(c.text||'').replace(/#(\w+)/g, '<span class="hash-tag">#$1</span>');
-            return `<div class="c-entry" ondblclick="startCEdit(${idx},${di})" title="Double-click to edit">
+            const pinBtn = isNote ? `<button class="btn-icon${c.pinned?' active':''}" onclick="pinComment(${idx},${ai})" title="${c.pinned?'Unpin':'Pin to top'}">📌</button>` : '';
+            return `<div class="c-entry${c.pinned?' pinned-note':''}" ondblclick="startCEdit(${idx},${di})" title="Double-click to edit">
                 <span class="c-badge ${bcls}" ${badgeStyle}>${blabel}</span>
                 <span class="c-time">${fmtDate(c.date||new Date().toISOString())}</span>
                 <span class="c-text" id="ct-${idx}-${di}">${emoji}${tagText}</span>
@@ -982,6 +1041,7 @@ function buildCard(item, idx, exp, col) {
                     <button class="btn-ghost" onclick="cancelCEdit(${idx},${di})">✕</button>
                 </div>
                 <div class="c-actions" id="ca-${idx}-${di}">
+                    ${pinBtn}
                     <button class="btn-icon" onclick="startCEdit(${idx},${di})" title="Edit">✎</button>
                     <button class="btn-icon btn-del" onclick="deleteComment(${idx},${ai})" title="Delete">×</button>
                 </div>
@@ -1001,7 +1061,6 @@ function buildCard(item, idx, exp, col) {
         if (!c?.text) return;
         (c.text.match(/#\w+/g) || []).forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1; });
     });
-    const themeColor = isDual ? dc.pos : sc;
     const tagKeys = Object.keys(tagCounts);
     const tagSummaryHTML = tagKeys.length ? `<div class="tag-summary">${tagKeys.sort().map(t => `<span class="tag-pill">${t} <span class="tag-count">${tagCounts[t]}</span></span>`).join('')}</div>` : '';
 
@@ -1013,8 +1072,8 @@ function buildCard(item, idx, exp, col) {
 
     // Mini count shown when collapsed
     const miniVal = isDual ? `${c.pos}W ${c.neg}L` : `${c.simple}${tgt.max > 0 ? '/' + tgt.max : ''}`;
-    const miniCls = isWin ? 'mini-count mini-win' : isKilled ? 'mini-count mini-fail' : 'mini-count';
-    const miniStatus = isWin ? `<span class="mini-status mini-status-win">🏆 Goal</span>` : isKilled ? `<span class="mini-status mini-status-fail">💥 Lost</span>` : '';
+    const miniCls = isWin ? 'mini-count mini-win' : isKilled ? 'mini-count mini-fail' : isChallengeDone ? 'mini-count' : 'mini-count';
+    const miniStatus = isWin ? `<span class="mini-status mini-status-win">🏆 Goal</span>` : isKilled ? `<span class="mini-status mini-status-fail">💥 Lost</span>` : isChallengeDone ? `<span class="mini-status mini-status-win" style="color:#f59e0b;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3)">🏁 Done</span>` : '';
     const miniCount = `<span class="${miniCls}">${miniVal}</span>${miniStatus}`;
 
     return `<div class="${cardClass}" data-name="${esc(item.name)}" data-index="${idx}"
@@ -1459,6 +1518,15 @@ function toggleComments(idx) {
     saveExp(exp);
 }
 
+function pinComment(ti, ai) {
+    const data = load();
+    if (!data[ti]?.comments[ai]) return;
+    data[ti].comments[ai].pinned = !data[ti].comments[ai].pinned;
+    save(data);
+    render();
+    toast(data[ti].comments[ai].pinned ? '📌 Note pinned' : 'Note unpinned');
+}
+
 function startCEdit(ti, di) {
     // Close any other open comment edits first
     document.querySelectorAll('.c-edit-form.open').forEach(el => {
@@ -1733,6 +1801,7 @@ document.getElementById('newName').addEventListener('keypress', e => { if (e.key
 initTheme();
 initBtnTheme();
 render();
+initFilter();
 </script>
 </body>
 </html>
