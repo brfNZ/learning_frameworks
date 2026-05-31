@@ -242,7 +242,10 @@
         .pace-line.over { color: var(--neg); font-weight: 600; }
         .mini-win { color: var(--pos); text-shadow: 0 0 8px rgba(34,209,139,0.5); font-weight: 700; }
         .mini-fail { color: var(--neg); text-shadow: 0 0 8px rgba(255,77,103,0.5); font-weight: 700; }
-        .tag-summary { display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.5rem 0 0.25rem; }
+        .tally-grid { margin: 0.5rem 0 0.25rem; }
+        .tally-row { display: flex; gap: 3px; margin-bottom: 3px; flex-wrap: wrap; }
+        .tally-sq { width: 26px; height: 26px; border-radius: 3px; border: 1px solid transparent; flex-shrink: 0; transition: background 0.15s; }
+        .tally-sq.filled { border-color: transparent; }
         .tag-pill { font-family: 'DM Mono', monospace; display: inline-flex; align-items: center; gap: 0.2rem; padding: 0.08rem 0.4rem; border-radius: 4px; font-size: 0.67rem; background: var(--bg-elevated); color: var(--text-muted); border: 1px solid var(--border); }
         .tag-pill .tag-count { font-weight: 700; }
         .hash-tag { color: var(--text-muted); font-weight: 500; }
@@ -922,8 +925,26 @@ function buildCard(item, idx, exp, col) {
     }
 
     // Progress
+    const themeColor = isDual ? dc.pos : sc;
     let progressHTML = '';
-    if (tgt.max > 0) {
+    // Challenge mode: segmented tally grid
+    if (item.deadline && !tgt.max && !tgt.kill) {
+        const total = curr;
+        const perRow = 10;
+        const fullRows = Math.floor(total / perRow);
+        const remainder = total % perRow;
+        const rowCount = total === 0 ? 0 : fullRows + (remainder > 0 ? 1 : 0);
+        let squaresHTML = '';
+        for (let row = 0; row < rowCount; row++) {
+            const count = row < fullRows ? perRow : remainder;
+            squaresHTML += '<div class="tally-row">';
+            for (let col = 0; col < count; col++) {
+                squaresHTML += '<span class="tally-sq filled" style="background:' + themeColor + '"></span>';
+            }
+            squaresHTML += '</div>';
+        }
+        progressHTML = total > 0 ? '<div class="tally-grid">' + squaresHTML + '</div>' : '';
+    } else if (tgt.max > 0) {
         const barPct = isKilled ? killPct : pct;
         const appliedBarClass = isDual ? barClass : (isKilled ? 'killed' : '');
         const fillStyle = isKilled ? '' : (!isDual ? `background:${sc}` : `background:${dc.pos}`);
@@ -1007,7 +1028,6 @@ function buildCard(item, idx, exp, col) {
     </div>`;
 
     // Comments
-    const themeColor = isDual ? dc.pos : sc;
     const comments = Array.isArray(item.comments) ? item.comments : [];
     const isExpanded = exp[idx] || false;
     let commentsHTML = '';
@@ -1103,7 +1123,6 @@ function buildCard(item, idx, exp, col) {
         ${statusHTML}
         <div class="counter-area">${counterHTML}</div>
         ${progressHTML}
-        ${!tgt.max ? paceLine : ''}
         ${actionHTML}
         ${commentsHTML}
         </div>
