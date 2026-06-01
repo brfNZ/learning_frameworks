@@ -1109,7 +1109,7 @@ function buildCard(item, idx, exp, col) {
         ondragstart="dStart(event,${idx})" ondragover="dOver(event,${idx})" ondrop="dDrop(event,${idx})" ondragleave="dLeave(event)">
         <div class="drag-handle">⋮⋮</div>
         <div class="card-head">
-            <div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0" ondblclick="toggleCollapse(${idx})" title="Double-click to expand/collapse">
+            <div style="display:flex;align-items:flex-start;gap:0.5rem;flex:1;min-width:0" ondblclick="toggleCollapse(${idx})" title="Double-click to expand/collapse">
                 <div>
                     <div class="card-name">${esc(item.name)}</div>
                     ${metaHTML ? `<div class="card-meta">${metaHTML}</div>` : ''}
