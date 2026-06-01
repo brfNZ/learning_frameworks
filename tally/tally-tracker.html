@@ -389,6 +389,8 @@
         <input type="text" class="search-field" id="searchInput" placeholder="Filter tallies by name…" oninput="filterTallies()">    </div>
     <div class="period-pills">
         <button class="period-pill active" data-period="all"     onclick="setPeriod(this)">All</button>
+        <button class="period-pill"        data-period="active"  onclick="setPeriod(this)">Active</button>
+        <button class="period-pill"        data-period="done"    onclick="setPeriod(this)">Done</button>
         <button class="period-pill"        data-period="today"   onclick="setPeriod(this)">Today</button>
         <button class="period-pill"        data-period="week"    onclick="setPeriod(this)">Week</button>
         <button class="period-pill"        data-period="month"   onclick="setPeriod(this)">Month</button>
@@ -733,8 +735,11 @@ function filterTallies() {
         const idx = parseInt(card.dataset.index);
         const item = data[idx];
         const nameMatch = !q || (card.dataset.name||'').toLowerCase().includes(q);
+        const activeMatch = activePeriod === 'active' ? card.dataset.completed !== '1'
+            : activePeriod === 'done' ? card.dataset.completed === '1'
+            : true;
         let dateMatch = true;
-        if (activePeriod !== 'all' && item?.created) {
+        if (activePeriod !== 'all' && activePeriod !== 'active' && activePeriod !== 'done' && item?.created) {
             const created = new Date(item.created);
             const start = new Date(now);
             if (activePeriod === 'today') { start.setHours(0,0,0,0); }
@@ -743,7 +748,7 @@ function filterTallies() {
             else if (activePeriod === 'year') { start.setFullYear(now.getFullYear() - 1); }
             dateMatch = created >= start;
         }
-        card.classList.toggle('hidden', !nameMatch || !dateMatch);
+        card.classList.toggle('hidden', !nameMatch || !dateMatch || !activeMatch);
     });
     saveFilter();
 }
@@ -1099,7 +1104,7 @@ function buildCard(item, idx, exp, col) {
     const miniStatus = isWin ? `<span class="mini-status mini-status-win">🏆 Goal</span>` : isKilled ? `<span class="mini-status mini-status-fail">💥 Lost</span>` : isChallengeDone ? `<span class="mini-status mini-status-win" style="color:#f59e0b;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3)">🏁 Done</span>` : '';
     const miniCount = `<span class="${miniCls}">${miniVal}</span>${miniStatus}`;
 
-    return `<div class="${cardClass}" data-name="${esc(item.name)}" data-index="${idx}"
+    return `<div class="${cardClass}" data-name="${esc(item.name)}" data-index="${idx}" data-completed="${isWin || isKilled || isChallengeDone ? '1' : '0'}"
         draggable="true"
         ondragstart="dStart(event,${idx})" ondragover="dOver(event,${idx})" ondrop="dDrop(event,${idx})" ondragleave="dLeave(event)">
         <div class="drag-handle">⋮⋮</div>
