@@ -1570,6 +1570,7 @@ function startCEdit(ti, di) {
     document.getElementById(`cef-${ti}-${di}`).classList.add('open');
     const ca = document.getElementById(`ca-${ti}-${di}`);
     if (ca) ca.style.display = 'none';
+    void document.body.offsetHeight; // force repaint — prevents compositing grey-out
     document.getElementById(`ci-${ti}-${di}`).focus();
 }
 function cancelCEdit(ti, di) {
