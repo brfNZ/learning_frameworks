@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tally Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Grotesk:wght@700&family=Outfit:wght@700&family=Epilogue:wght@700&family=Bricolage+Grotesque:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #070a0f;
@@ -40,6 +40,7 @@
             --hl-teal: #0fd4b0;
             --hl-lime: #84cc16;
             --radius: 10px;
+            --font-card-name: 'Syne', sans-serif;
         }
         [data-theme="light"] {
             --bg: #eef1f5;
@@ -87,7 +88,7 @@
             position: sticky; top: 0; z-index: 50;
         }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
-        .app-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.35rem; color: var(--text-heading); letter-spacing: -0.03em; }
+        .app-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.35rem; color: var(--text-heading); letter-spacing: -0.03em; line-height: 1.4; padding-bottom: 0.15em; overflow: visible; }
         .app-title .dot { color: var(--accent); }
         .header-right { display: flex; gap: 0.35rem; align-items: center; }
 
@@ -147,6 +148,7 @@
             border-radius: var(--radius);
             padding: 0.9rem 1rem 0.9rem 1.1rem;
             position: relative;
+            overflow: visible;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
         .card:hover { border-color: var(--accent); }
@@ -199,8 +201,11 @@
 
         /* Card header */
         .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; gap: 0.5rem; }
-        .card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.93rem; color: var(--text-heading); line-height: 1.35; padding-bottom: 0.1rem; overflow: visible; }
-        .card-meta { font-size: 0.68rem; color: var(--text-muted); display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-top: 0.15rem; }
+        .card-head-left { flex: 1; overflow: visible; cursor: default; }
+        .card-name { font-family: var(--font-card-name); font-weight: 700; font-size: 0.93rem; color: var(--text-heading); line-height: 1.4; display: block; overflow-wrap: break-word; word-break: break-word; margin-bottom: 0.2rem; }
+        .card-name-wrap { overflow: visible; min-width: 0; }
+        .card-meta { font-size: 0.68rem; color: var(--text-muted); display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+        .card-meta-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-top: 0.12rem; }
         .streak-pill { display: inline-flex; align-items: center; gap: 0.15rem; background: var(--warn-bg); color: var(--warn); padding: 0.08rem 0.4rem; border-radius: 20px; font-size: 0.63rem; font-weight: 700; }
         .pin-pip { color: var(--warn); font-size: 0.65rem; }
         .card-btns { display: flex; gap: 0.2rem; flex-shrink: 0; }
@@ -301,7 +306,7 @@
         .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
         .modal-bg.open { display: flex; }
         .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; width: 90%; max-width: 370px; box-shadow: 0 16px 48px rgba(0,0,0,0.5); }
-        .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text-heading); margin-bottom: 0.9rem; }
+        .modal-title { font-family: var(--font-card-name); font-weight: 700; font-size: 1rem; color: var(--text-heading); margin-bottom: 0.9rem; }
         .modal-box input { width: 100%; margin-bottom: 0.45rem; }
         .modal-hint-txt { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.7rem; }
         .modal-actions { display: flex; gap: 0.4rem; justify-content: flex-end; }
@@ -371,13 +376,14 @@
             .card-btns { flex-wrap: wrap; }
         }
     </style>
-</head>
+    </head>
 <body>
 
 <header class="app-header">
     <div class="header-top">
         <div class="app-title">Tally<span class="dot">.</span></div>
         <div class="header-right">
+            <button class="btn-icon" id="fontBtn" onclick="cycleFont()" title="Change font">Aa</button>
             <button class="btn-icon" id="collapseAllBtn" onclick="toggleCollapseAll()" title="Collapse / expand all">⊟</button>
             <button class="btn-icon" id="btnThemeBtn" onclick="toggleBtnTheme()" title="Toggle button style">◈</button>
             <button class="btn-icon" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
@@ -566,6 +572,33 @@ function showQuote(category, label) {
     if (quoteTimer) clearTimeout(quoteTimer);
     quoteTimer = setTimeout(() => el.classList.remove('show'), 6500);
     el.onclick = () => { el.classList.remove('show'); clearTimeout(quoteTimer); };
+}
+
+const FK2 = 'projectTally_font';
+const FONTS = [
+    { key: 'syne',      label: 'Syne',               value: "'Syne', sans-serif" },
+    { key: 'grotesk',   label: 'Space Grotesk',       value: "'Space Grotesk', sans-serif" },
+    { key: 'outfit',    label: 'Outfit',               value: "'Outfit', sans-serif" },
+    { key: 'epilogue',  label: 'Epilogue',             value: "'Epilogue', sans-serif" },
+    { key: 'bricolage', label: 'Bricolage Grotesque',  value: "'Bricolage Grotesque', sans-serif" },
+];
+function initFont() {
+    const saved = localStorage.getItem(FK2) || 'syne';
+    applyFont(saved, false);
+}
+function applyFont(key, save = true) {
+    const f = FONTS.find(f => f.key === key) || FONTS[0];
+    document.documentElement.style.setProperty('--font-card-name', f.value);
+    const btn = document.getElementById('fontBtn');
+    if (btn) { btn.title = `Font: ${f.label} (click to change)`; btn.style.fontFamily = f.value; }
+    if (save) localStorage.setItem(FK2, key);
+}
+function cycleFont() {
+    const cur = localStorage.getItem(FK2) || 'syne';
+    const idx = FONTS.findIndex(f => f.key === cur);
+    const next = FONTS[(idx + 1) % FONTS.length];
+    applyFont(next.key);
+    toast(`Font: ${next.label}`);
 }
 
 // ─── THEME ───
@@ -1109,12 +1142,9 @@ function buildCard(item, idx, exp, col) {
         ondragstart="dStart(event,${idx})" ondragover="dOver(event,${idx})" ondrop="dDrop(event,${idx})" ondragleave="dLeave(event)">
         <div class="drag-handle">⋮⋮</div>
         <div class="card-head">
-            <div style="display:flex;align-items:flex-start;gap:0.5rem;flex:1;min-width:0" ondblclick="toggleCollapse(${idx})" title="Double-click to expand/collapse">
-                <div>
-                    <div class="card-name">${esc(item.name)}</div>
-                    ${metaHTML ? `<div class="card-meta">${metaHTML}</div>` : ''}
-                </div>
-                ${miniCount}
+            <div class="card-head-left" ondblclick="toggleCollapse(${idx})" title="Double-click to expand/collapse">
+                <div class="card-name">${esc(item.name)}</div>
+                ${metaHTML || miniCount ? `<div class="card-meta-row">${metaHTML ? `<span class="card-meta">${metaHTML}</span>` : ''}${miniCount}</div>` : ''}
             </div>
             <div class="card-btns">
                 <button class="btn-icon collapse-btn" onclick="toggleCollapse(${idx})" title="${isCollapsed ? 'Expand' : 'Collapse'}">${isCollapsed ? '▼' : '▲'}</button>
@@ -1826,7 +1856,9 @@ document.addEventListener('keydown', e => {
 });
 document.getElementById('newName').addEventListener('keypress', e => { if (e.key === 'Enter') addTally(); });
 
+
 // ─── INIT ───
+initFont();
 initTheme();
 initBtnTheme();
 initFilter();
