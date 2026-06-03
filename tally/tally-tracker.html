@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tally Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Grotesk:wght@700&family=Outfit:wght@700&family=Epilogue:wght@700&family=Bricolage+Grotesque:wght@700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Josefin+Sans:wght@700&family=Orbitron:wght@700&family=Epilogue:wght@700&family=Bricolage+Grotesque:opsz,wght@12..60,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #070a0f;
@@ -195,6 +195,11 @@
         .card.collapsed .collapse-btn { transform: rotate(-90deg); }
         .mini-count { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--text-muted); background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.08rem 0.4rem; border-radius: 4px; display: none; }
         .card.collapsed .mini-count { display: inline-block; }
+        .mini-extra { display: none; font-size: 0.65rem; font-weight: 600; padding: 0.08rem 0.4rem; border-radius: 4px; font-family: 'DM Mono', monospace; }
+        .card.collapsed .mini-extra { display: inline-flex; align-items: center; gap: 0.2rem; }
+        .mini-extra.ahead { background: var(--pos-bg); color: var(--pos); border: 1px solid rgba(34,209,139,0.3); }
+        .mini-extra.on    { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(15,212,176,0.3); }
+        .mini-extra.behind { background: var(--warn-bg); color: var(--warn); border: 1px solid rgba(245,166,35,0.3); }
 
         .drag-handle { position: absolute; left: 0.35rem; top: 50%; transform: translateY(-50%); color: var(--text-faint); cursor: grab; font-size: 0.7rem; opacity: 0; padding: 0.5rem 0.25rem; letter-spacing: -0.1em; user-select: none; }
         .card:hover .drag-handle { opacity: 1; }
@@ -577,8 +582,8 @@ function showQuote(category, label) {
 const FK2 = 'projectTally_font';
 const FONTS = [
     { key: 'syne',      label: 'Syne',               value: "'Syne', sans-serif" },
-    { key: 'grotesk',   label: 'Space Grotesk',       value: "'Space Grotesk', sans-serif" },
-    { key: 'outfit',    label: 'Outfit',               value: "'Outfit', sans-serif" },
+    { key: 'josefin',   label: 'Josefin Sans',         value: "'Josefin Sans', sans-serif" },
+    { key: 'orbitron',  label: 'Orbitron',             value: "'Orbitron', sans-serif" },
     { key: 'epilogue',  label: 'Epilogue',             value: "'Epilogue', sans-serif" },
     { key: 'bricolage', label: 'Bricolage Grotesque',  value: "'Bricolage Grotesque', sans-serif" },
 ];
@@ -1134,8 +1139,21 @@ function buildCard(item, idx, exp, col) {
     // Mini count shown when collapsed
     const miniVal = isDual ? `${c.pos}W ${c.neg}L` : `${c.simple}${tgt.max > 0 ? '/' + tgt.max : ''}`;
     const miniCls = isWin ? 'mini-count mini-win' : isKilled ? 'mini-count mini-fail' : isChallengeDone ? 'mini-count' : 'mini-count';
+    // % and pace for collapsed view
+    let miniExtra = '';
+    if (tgt.max > 0 && !isWin && !isKilled) {
+        const pctRound = Math.round(pct);
+        let paceCls = '', paceIcon = '';
+        if (paceLine.includes('Ahead') || paceLine.includes('ahead')) { paceCls = 'ahead'; paceIcon = '↑'; }
+        else if (paceLine.includes('behind') || paceLine.includes('Behind')) { paceCls = 'behind'; paceIcon = '↓'; }
+        else if (paceLine.includes('On pace') || paceLine.includes('on pace') || paceLine.includes('✓')) { paceCls = 'on'; paceIcon = '✓'; }
+        else if (paceLine.includes('passed')) { paceCls = 'behind'; paceIcon = '⚠'; }
+        miniExtra = `<span class="mini-extra${paceCls ? ' ' + paceCls : ''}">${pctRound}%${paceIcon ? ' ' + paceIcon : ''}</span>`;
+    } else if (isChallengeDone) {
+        miniExtra = `<span class="mini-extra on">🏁 ${curr}</span>`;
+    }
     const miniStatus = isWin ? `<span class="mini-status mini-status-win">🏆 Goal</span>` : isKilled ? `<span class="mini-status mini-status-fail">💥 Lost</span>` : isChallengeDone ? `<span class="mini-status mini-status-win" style="color:#f59e0b;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3)">🏁 Done</span>` : '';
-    const miniCount = `<span class="${miniCls}">${miniVal}</span>${miniStatus}`;
+    const miniCount = `<span class="${miniCls}">${miniVal}</span>${miniStatus}${miniExtra}`;
 
     return `<div class="${cardClass}" data-name="${esc(item.name)}" data-index="${idx}" data-completed="${isWin || isKilled || isChallengeDone ? '1' : '0'}"
         draggable="true"
