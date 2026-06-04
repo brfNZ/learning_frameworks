@@ -111,7 +111,14 @@
         .main { max-width: 860px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
 
         /* ─── ADD FORM ─── */
-        .add-form { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem; margin-bottom: 1.1rem; }
+        .add-form { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1.1rem; overflow: hidden; }
+        .add-form-toggle { display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.1rem; cursor: pointer; color: var(--text-muted); font-size: 0.82rem; user-select: none; transition: color 0.15s; }
+        .add-form-toggle:hover { color: var(--text); }
+        .add-form-toggle .af-icon { color: var(--accent); font-size: 1rem; line-height: 1; transition: transform 0.25s; }
+        .add-form-toggle .af-chevron { font-size: 0.55rem; color: var(--text-faint); transition: transform 0.25s; margin-left: auto; }
+        .add-form.open .af-chevron { transform: rotate(90deg); }
+        .add-form-body { padding: 0 1.1rem 1.1rem; display: none; }
+        .add-form.open .add-form-body { display: block; }
         .form-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
         .form-row + .form-row { margin-top: 0.4rem; }
         input, select { background: var(--bg-input); border: 1px solid var(--border); color: var(--text); padding: 0.45rem 0.7rem; border-radius: 6px; font-size: 0.83rem; font-family: inherit; outline: none; transition: border-color 0.15s; }
@@ -196,9 +203,9 @@
         .card.collapsed .card-head { margin-bottom: 0; }
         .collapse-btn { transition: transform 0.25s ease !important; }
         .card.collapsed .collapse-btn { transform: rotate(-90deg); }
-        .mini-count { font-family: 'DM Mono', monospace; font-size: 0.84rem; color: var(--text-muted); background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.12rem 0.55rem; border-radius: 4px; display: none; }
+        .mini-count { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--text-muted); background: var(--bg-elevated); border: 1px solid var(--border); padding: 0.1rem 0.5rem; border-radius: 4px; display: none; }
         .card.collapsed .mini-count { display: inline-block; }
-        .mini-extra { display: none; font-size: 0.80rem; font-weight: 600; padding: 0.12rem 0.55rem; border-radius: 4px; font-family: 'DM Mono', monospace; }
+        .mini-extra { display: none; font-size: 0.73rem; font-weight: 600; padding: 0.1rem 0.5rem; border-radius: 4px; font-family: 'DM Mono', monospace; }
         .card.collapsed .mini-extra { display: inline-flex; align-items: center; gap: 0.2rem; }
         .mini-extra.ahead  { background: var(--bg-elevated); color: var(--pos);    border: 1px solid var(--border); }
         .mini-extra.on     { background: var(--bg-elevated); color: var(--accent); border: 1px solid var(--border); }
@@ -212,9 +219,9 @@
         .card-head-left { flex: 1; overflow: visible; cursor: default; }
         .card-name { font-family: var(--font-card-name); font-weight: 700; font-size: 0.93rem; color: var(--text-heading); line-height: 1.4; display: block; overflow-wrap: break-word; word-break: break-word; margin-bottom: 0.2rem; }
         .card-name-wrap { overflow: visible; min-width: 0; }
-        .card-meta { font-size: 0.80rem; color: var(--text-muted); display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+        .card-meta { font-size: 0.74rem; color: var(--text-muted); display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
         .card-meta-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-top: 0.12rem; }
-        .streak-pill { display: inline-flex; align-items: center; gap: 0.15rem; background: var(--warn-bg); color: var(--warn); padding: 0.1rem 0.5rem; border-radius: 20px; font-size: 0.76rem; font-weight: 700; background: var(--bg-elevated); border: 1px solid var(--border); }
+        .streak-pill { display: inline-flex; align-items: center; gap: 0.15rem; background: var(--warn-bg); color: var(--warn); padding: 0.1rem 0.5rem; border-radius: 20px; font-size: 0.70rem; font-weight: 700; background: var(--bg-elevated); border: 1px solid var(--border); }
         .pin-pip { color: var(--warn); font-size: 0.65rem; }
         .card-btns { display: flex; gap: 0.2rem; flex-shrink: 0; }
 
@@ -243,7 +250,7 @@
         .prog-meta { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
         .kill-line { font-size: 0.65rem; color: var(--text-muted); text-align: center; margin-top: 0.15rem; }
         .kill-line.danger { color: var(--neg); font-weight: 600; }
-        .deadline-pill { display: inline-flex; align-items: center; gap: 0.15rem; padding: 0.08rem 0.4rem; border-radius: 20px; font-size: 0.76rem; font-weight: 700; background: var(--bg-elevated); border: 1px solid var(--border); }
+        .deadline-pill { display: inline-flex; align-items: center; gap: 0.15rem; padding: 0.08rem 0.4rem; border-radius: 20px; font-size: 0.70rem; font-weight: 700; background: var(--bg-elevated); border: 1px solid var(--border); }
         .deadline-pill.ok { color: var(--accent); }
         .deadline-pill.warn { color: var(--warn); }
         .deadline-pill.over { color: var(--neg); }
@@ -260,10 +267,10 @@
         .tally-sq { width: 16px; height: 16px; border-radius: 3px; border: 1px solid transparent; flex-shrink: 0; transition: background 0.15s; }
         .tally-sq.filled { border-color: transparent; }
         .tally-spacer { width: 3px; flex-shrink: 0; }
-        .tag-pill { font-family: 'DM Mono', monospace; display: inline-flex; align-items: center; gap: 0.2rem; padding: 0.08rem 0.4rem; border-radius: 4px; font-size: 0.79rem; background: var(--bg-elevated); color: var(--text-muted); border: 1px solid var(--border); }
+        .tag-pill { font-family: 'DM Mono', monospace; display: inline-flex; align-items: center; gap: 0.2rem; padding: 0.08rem 0.4rem; border-radius: 4px; font-size: 0.73rem; background: var(--bg-elevated); color: var(--text-muted); border: 1px solid var(--border); }
         .tag-pill .tag-count { font-weight: 700; }
         .hash-tag { color: var(--text-muted); font-weight: 500; }
-        .mini-status { display: none; font-size: 0.76rem; font-weight: 700; padding: 0.12rem 0.5rem; border-radius: 20px; letter-spacing: 0.04em; }
+        .mini-status { display: none; font-size: 0.68rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 20px; letter-spacing: 0.04em; }
         .card.collapsed .mini-status { display: inline-flex; align-items: center; gap: 0.15rem; }
         .mini-status-win { background: var(--bg-elevated); color: var(--pos); border: 1px solid var(--border); }
         .mini-status-fail { background: var(--bg-elevated); color: var(--neg); border: 1px solid var(--border); }
@@ -327,14 +334,18 @@
         .quote-text { font-size: 0.85rem; color: var(--text); line-height: 1.55; font-style: italic; margin-bottom: 0.45rem; }
         .quote-author { font-size: 0.72rem; color: var(--accent); font-weight: 600; letter-spacing: 0.03em; }
         .quote-label { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.07em; }
-        .info-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; align-items: center; justify-content: center; }
+        .info-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
         .info-modal.open { display: flex; }
-        .info-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem 1.5rem; max-width: 340px; width: 90%; box-shadow: 0 16px 48px rgba(0,0,0,0.45); }
-        .info-box h3 { margin: 0 0 0.9rem; font-size: 0.95rem; color: var(--text-heading); font-family: 'Syne', sans-serif; }
+        .info-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); max-width: 340px; width: 100%; box-shadow: 0 16px 48px rgba(0,0,0,0.45); display: flex; flex-direction: column; max-height: 85vh; }
+        .info-box-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem 0.7rem; flex-shrink: 0; border-bottom: 1px solid var(--border-light); }
+        .info-box-header h3 { margin: 0; font-size: 0.95rem; color: var(--text-heading); font-family: var(--font-card-name); }
+        .info-box-close { background: none; border: none; color: var(--text-faint); font-size: 1.2rem; line-height: 1; padding: 0.35rem 0.5rem; cursor: pointer; border-radius: 4px; }
+        .info-box-close:hover { color: var(--text); background: var(--bg-elevated); }
+        .info-box-content { overflow-y: auto; padding: 0.8rem 1.5rem 1.2rem; -webkit-overflow-scrolling: touch; flex: 1; }
         .info-box h4 { margin: 0.85rem 0 0.4rem; font-size: 0.7rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
         .info-row { display: flex; align-items: flex-start; gap: 0.55rem; margin-bottom: 0.4rem; font-size: 0.8rem; color: var(--text-dim); line-height: 1.4; }
         .info-row .ei { font-size: 0.95rem; flex-shrink: 0; width: 1.4rem; text-align: center; margin-top: 0.05rem; }
-        .info-close { margin-top: 1.1rem; text-align: right; }
+        .info-close { display: none; }
 
         /* Locked card */
         .locked-body { display: flex; align-items: center; gap: 0.7rem; padding: 0.35rem 0; }
@@ -413,7 +424,13 @@
 </header>
 
 <main class="main">
-    <div class="add-form">
+    <div class="add-form" id="addForm">
+        <div class="add-form-toggle" onclick="toggleAddForm()">
+            <span class="af-icon">＋</span>
+            <span>New tally…</span>
+            <span class="af-chevron">▶</span>
+        </div>
+        <div class="add-form-body">
         <div class="form-row">
             <input type="text" class="inp-name" id="newName" placeholder="New tally name (e.g. Meditation)">
             <input type="text" class="inp-target" id="newTarget" placeholder="Target (e.g. 10)">
@@ -442,6 +459,7 @@
             </select>
             <input type="text" id="newDeadline" placeholder="7d, 2w, 1m, DD, DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
             <button class="btn-primary" onclick="addTally()">+ Add Tally</button>
+        </div>
         </div>
     </div>
 
@@ -503,7 +521,11 @@
 
 <div class="info-modal" id="infoModal" onclick="closeInfo()">
     <div class="info-box" onclick="event.stopPropagation()">
-        <h3>ⓘ Quick Reference</h3>
+        <div class="info-box-header">
+            <h3>ⓘ Quick Reference</h3>
+            <button class="info-box-close" onclick="closeInfo()" title="Close">✕</button>
+        </div>
+        <div class="info-box-content">
         <h4>Mood Emojis</h4>
         <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 0.5rem">Click an emoji to insert it at your cursor in the note field. During comment editing, it inserts at the cursor there too.</p>
         <div class="info-row"><span class="ei">😊</span><span>Happy / good session</span></div>
@@ -519,7 +541,7 @@
         <div class="info-row"><span class="ei">🃏</span><span>Shown on a collapsed card — a quick score summary. <strong>W</strong> = wins (positive entries), <strong>L</strong> = losses (negative entries). Simple counter tallies show as <strong>12/20</strong> or just <strong>12</strong>.</span></div>
         <h4>📅 Deadline</h4>
         <div class="info-row"><span class="ei">📅</span><span>Optional. Set when adding or editing a tally. Shows days remaining as a pill in the card header — <strong>green</strong> = plenty of time, <strong>amber</strong> = 7 days or less, <strong>red</strong> = overdue. When a count target is also set, a <strong>pace line</strong> appears below the progress bar showing whether you're ahead, on track, or behind.</span></div>
-        <div class="info-close"><button class="btn-ghost" onclick="closeInfo()">Close</button></div>
+        </div>
     </div>
 </div>
 
@@ -607,6 +629,20 @@ function cycleFont() {
     const next = FONTS[(idx + 1) % FONTS.length];
     applyFont(next.key);
     toast(`Font: ${next.label}`);
+}
+
+const AFK = 'projectTally_addForm';
+function toggleAddForm() {
+    const el = document.getElementById('addForm');
+    const open = el.classList.toggle('open');
+    localStorage.setItem(AFK, open ? '1' : '0');
+}
+function initAddForm() {
+    const saved = localStorage.getItem(AFK);
+    // Default open on first visit, closed thereafter if user closed it
+    if (saved === null || saved === '1') {
+        document.getElementById('addForm')?.classList.add('open');
+    }
 }
 
 // ─── THEME ───
@@ -1494,6 +1530,9 @@ function addTally() {
     document.getElementById('newName').value = '';
     document.getElementById('newTarget').value = '';
     document.getElementById('newDeadline').value = '';
+    // Collapse add form after adding
+    document.getElementById('addForm')?.classList.remove('open');
+    localStorage.setItem(AFK, '0');
     render();
     toast('✓ Tally added');
 }
@@ -1882,6 +1921,7 @@ document.getElementById('newName').addEventListener('keypress', e => { if (e.key
 initFont();
 initTheme();
 initBtnTheme();
+initAddForm();
 initFilter();
 render();
 </script>
