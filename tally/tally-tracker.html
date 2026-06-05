@@ -360,6 +360,12 @@
         .dropdown-menu.open { display: block; }
         .dropdown-item { display: block; width: 100%; text-align: left; padding: 0.55rem 0.85rem; font-size: 0.78rem; color: var(--text-dim); background: none; border: none; cursor: pointer; transition: background 0.15s; }
         .dropdown-item:hover { background: var(--bg-card); color: var(--text); }
+        .dropdown-section { padding: 0.8rem 1rem 0.6rem; }
+        .dropdown-section-title { font-weight: 700; font-size: 0.78rem; color: var(--text-heading); margin-bottom: 0.2rem; }
+        .dropdown-section-desc { font-size: 0.70rem; color: var(--text-muted); margin-bottom: 0.6rem; line-height: 1.4; }
+        .dropdown-section-btns { display: flex; gap: 0.4rem; }
+        .dropdown-section-btns .btn-ghost { flex: 1; font-size: 0.75rem; padding: 0.38rem 0.5rem; text-align: center; }
+        .dropdown-divider { border-top: 1px solid var(--border); margin: 0; }
 
         /* Toast */
         .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(150px); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 1.1rem; font-size: 0.84rem; color: var(--text); box-shadow: 0 8px 28px rgba(0,0,0,0.4); z-index: 400; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; }
@@ -469,13 +475,27 @@
     <div class="footer-actions">
         <div class="dropdown-wrap">
             <button class="btn-secondary" onclick="toggleBackupMenu(event)">💾 Backup ▾</button>
-            <div class="dropdown-menu" id="backupMenu">
-                <button class="dropdown-item" onclick="backupData();closeBackupMenu()">⬇ Download file</button>
-                <button class="dropdown-item" onclick="triggerRestore();closeBackupMenu()">📂 Restore from file</button>
+            <div class="dropdown-menu" id="backupMenu" style="min-width:270px">
+                <div class="dropdown-section">
+                    <div class="dropdown-section-title">Export Backup</div>
+                    <div class="dropdown-section-desc">Backup all tallies as JSON file or copy to clipboard</div>
+                    <div class="dropdown-section-btns">
+                        <button class="btn-ghost" onclick="backupData();closeBackupMenu()">💾 Export to file</button>
+                        <button class="btn-ghost" onclick="copyBackupJSON();closeBackupMenu()">📋 Copy JSON</button>
+                    </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-section">
+                    <div class="dropdown-section-title">Restore Backup</div>
+                    <div class="dropdown-section-desc">Restore from JSON file or paste JSON. Single tally JSON always appends — multiple tallies uses checkbox.</div>
+                    <div class="dropdown-section-btns">
+                        <button class="btn-ghost" onclick="triggerRestore();closeBackupMenu()">📂 Import from file</button>
+                        <button class="btn-ghost" onclick="closeBackupMenu();openPasteModal()">📋 Paste JSON</button>
+                    </div>
+                </div>
             </div>
         </div>
-        <button class="btn-secondary" onclick="exportCSV()">📊 Export CSV</button>
-        <button class="btn-secondary" onclick="openClipModal()">📋 Clipboard</button>
+        <button class="btn-secondary" onclick="exportFullCSV()">📊 Export CSV</button>
         <button class="btn-info" onclick="openInfo()" title="Help & quick reference" style="width:1.9rem;height:1.9rem;font-size:0.85rem">i</button>
         <input type="file" id="restoreInput" accept=".json" onchange="handleRestore(event)" style="display:none">
     </div>
@@ -496,15 +516,18 @@
 
 <div class="modal-bg" id="clipModal" onclick="closeClipModal()">
     <div class="modal-box" style="max-width:480px" onclick="event.stopPropagation()">
-        <div class="modal-title">📋 Backup &amp; Restore</div>
-        <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 0.4rem">Your data — select all and copy to save:</p>
-        <textarea id="clipExportBox" readonly style="width:100%;height:120px;font-size:0.65rem;font-family:monospace;resize:none;margin-bottom:0.5rem;color:var(--text-dim)"></textarea>
-        <button class="btn-primary" style="width:100%;margin-bottom:1rem" onclick="copyClipboard()">📋 Copy to Clipboard</button>
-        <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 0.4rem">Paste a backup here to restore:</p>
-        <textarea id="clipImportBox" placeholder="Paste JSON backup here…" style="width:100%;height:100px;font-size:0.65rem;font-family:monospace;resize:none;margin-bottom:0.5rem"></textarea>
-        <div class="modal-actions">
-            <button class="btn-ghost" onclick="closeClipModal()">Cancel</button>
-            <button class="btn-primary" onclick="importClipboard()">📥 Import</button>
+        <div class="modal-title">📋 Paste JSON to Restore</div>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 0.4rem">Paste a JSON backup here to restore:</p>
+        <div id="pasteArea">
+            <textarea id="clipImportBox" placeholder="Paste JSON backup here…" style="width:100%;height:120px;font-size:0.65rem;font-family:monospace;resize:none;margin-bottom:0.5rem"></textarea>
+            <p style="text-align:left;margin:0 0 0.7rem"><input type="checkbox" id="clipAppend" style="cursor:pointer;width:auto"> <label for="clipAppend" style="font-size:0.72rem;color:var(--text-muted);cursor:pointer">Append to existing tallies (don't replace)</label></p>
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="closeClipModal()">Cancel</button>
+                <button class="btn-primary" onclick="importClipboard()">📥 Import</button>
+            </div>
+        </div>
+        <div id="noPasteActions" style="display:none" class="modal-actions">
+            <button class="btn-ghost" onclick="closeClipModal()">Close</button>
         </div>
     </div>
 </div>
@@ -519,6 +542,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="info-modal" id="infoModal" onclick="closeInfo()">
     <div class="info-box" onclick="event.stopPropagation()">
@@ -1110,6 +1134,7 @@ function buildCard(item, idx, exp, col) {
         <input type="text" id="ed-${idx}" value="${item.deadline||''}" placeholder="7d, 1m, DD, DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
         <button class="btn-primary" onclick="saveEdit(${idx})">Save</button>
         <button class="btn-ghost" onclick="closeEdit(${idx})">Cancel</button>
+        <button class="btn-ghost" onclick="exportTally(${idx})" title="Export this tally as JSON">📤 Export</button>
     </div>`;
 
     // Comments
@@ -1841,10 +1866,20 @@ function handleRestore(e) {
         try {
             const parsed = JSON.parse(ev.target.result);
             if (!Array.isArray(parsed)) { toast('⚠ Invalid backup file'); return; }
-            save(migrate(parsed));
-            localStorage.removeItem(EK);
-            render();
-            toast(`✓ Restored ${parsed.length} tallies`);
+            const existing = load();
+            // Auto-detect: fewer tallies than current = single/partial restore → append
+            // Single tally export → always append; multiple → use checkbox
+            const shouldAppend = parsed.length === 1 || document.getElementById('clipAppend')?.checked;
+            if (shouldAppend) {
+                save(migrate([...existing, ...parsed]));
+                render();
+                toast(`✓ ${parsed.length} tall${parsed.length===1?'y':'ies'} appended`);
+            } else {
+                save(migrate(parsed));
+                localStorage.removeItem(EK);
+                render();
+                toast(`✓ Restored ${parsed.length} tallies`);
+            }
         } catch(err) { toast('⚠ Error: ' + err.message); }
     };
     reader.readAsText(file);
@@ -1882,41 +1917,91 @@ function closeBackupMenu() {
     document.getElementById('backupMenu').classList.remove('open');
 }
 document.addEventListener('click', () => closeBackupMenu());
-function openClipModal() {
-    const json = JSON.stringify(load(), null, 2);
-    const box = document.getElementById('clipExportBox');
-    box.value = json;
+function openClipModal() { openPasteModal(); }
+function openPasteModal() {
     document.getElementById('clipImportBox').value = '';
+    document.getElementById('clipAppend').checked = false;
+    document.getElementById('pasteArea').style.display = 'block';
+    document.getElementById('noPasteActions').style.display = 'none';
     document.getElementById('clipModal').classList.add('open');
-    setTimeout(() => { box.select(); box.setSelectionRange(0, 99999); }, 100);
+    setTimeout(() => document.getElementById('clipImportBox').focus(), 50);
 }
 function closeClipModal() {
     document.getElementById('clipModal').classList.remove('open');
 }
-async function copyClipboard() {
-    const box = document.getElementById('clipExportBox');
+async function copyBackupJSON() {
+    const json = JSON.stringify(load(), null, 2);
     try {
-        await navigator.clipboard.writeText(box.value);
-        toast('📋 Copied to clipboard!');
+        await navigator.clipboard.writeText(json);
+        toast('📋 JSON copied to clipboard');
     } catch {
-        box.select();
-        box.setSelectionRange(0, 99999);
-        toast('📋 Select all + copy manually');
+        toast('⚠ Copy failed — use Export to file instead');
     }
 }
+async function copyClipboard() { copyBackupJSON(); }
 function importClipboard() {
     const raw = document.getElementById('clipImportBox').value.trim();
     if (!raw) { toast('⚠ Nothing to import'); return; }
     try {
-        const data = JSON.parse(raw);
-        if (!Array.isArray(data)) throw new Error();
-        save(migrate(data));
-        closeClipModal();
-        render();
-        toast('✓ Data imported');
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) throw new Error();
+        const append = document.getElementById('clipAppend')?.checked;
+        if (append) {
+            const existing = load();
+            save(migrate([...existing, ...parsed]));
+            closeClipModal();
+            render();
+            toast(`✓ ${parsed.length} tall${parsed.length===1?'y':'ies'} appended`);
+        } else {
+            save(migrate(parsed));
+            closeClipModal();
+            render();
+            toast('✓ Data imported');
+        }
     } catch {
         toast('⚠ Invalid JSON — check your paste');
     }
+}
+
+function exportTally(idx) {
+    const data = load();
+    if (!data[idx]) return;
+    const blob = new Blob([JSON.stringify([data[idx]], null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    const safeName = (data[idx].name || 'tally').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    a.download = `tally-${safeName}-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    toast(`📤 "${data[idx].name}" exported`);
+}
+
+function exportFullCSV() {
+    const data = load();
+    const rows = [['Tally Name','Tally Type','Target','Unit','Entry Type','Date','Note','Tags','Emoji']];
+    data.forEach(item => {
+        if (item.locked) return;
+        const comments = Array.isArray(item.comments) ? item.comments : [];
+        if (!comments.length) {
+            rows.push([item.name, item.type, item.target||'', item.unit||'', '', '', '', '', '']);
+        } else {
+            comments.forEach(c => {
+                const tags = (c.text||'').match(/#\w+/g)?.join(' ') || '';
+                const text = (c.text||'').replace(/#\w+/g, '').trim();
+                rows.push([
+                    item.name, item.type, item.target||'', item.unit||'',
+                    c.type||'note', c.date ? c.date.slice(0,10) : '',
+                    text, tags, c.emoji||''
+                ]);
+            });
+        }
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `tally-full-export-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    toast('📊 Full CSV exported');
 }
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { closeModal(); closeInfo(); closeDeleteModal(); closeClipModal(); }
