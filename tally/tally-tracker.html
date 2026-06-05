@@ -345,6 +345,8 @@
         .info-box h4 { margin: 0.85rem 0 0.4rem; font-size: 0.7rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
         .info-row { display: flex; align-items: flex-start; gap: 0.55rem; margin-bottom: 0.4rem; font-size: 0.8rem; color: var(--text-dim); line-height: 1.4; }
         .info-row .ei { font-size: 0.95rem; flex-shrink: 0; width: 1.4rem; text-align: center; margin-top: 0.05rem; }
+        .info-row-compact { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.2rem; font-size: 0.75rem; color: var(--text-dim); }
+        .info-row-compact .ei { font-size: 0.8rem; flex-shrink: 0; width: 1.2rem; text-align: center; }
         .info-close { display: none; }
 
         /* Locked card */
@@ -487,9 +489,10 @@
                 <div class="dropdown-divider"></div>
                 <div class="dropdown-section">
                     <div class="dropdown-section-title">Restore Backup</div>
-                    <div class="dropdown-section-desc">Restore from JSON file or paste JSON. Single tally JSON always appends — multiple tallies uses checkbox.</div>
+                    <div class="dropdown-section-desc">Single tally JSON always appends automatically.</div>
+                    <p style="margin:0.4rem 0 0.6rem;font-size:0.71rem;color:var(--text-muted);text-align:left" onclick="event.stopPropagation()"><input type="checkbox" id="restoreAppend" style="cursor:pointer;width:auto;vertical-align:middle"> <label for="restoreAppend" style="cursor:pointer;vertical-align:middle">Append to existing tallies (don't replace)</label></p>
                     <div class="dropdown-section-btns">
-                        <button class="btn-ghost" onclick="triggerRestore();closeBackupMenu()">📂 Import from file</button>
+                        <button class="btn-ghost" onclick="triggerRestore()">📂 Import from file</button>
                         <button class="btn-ghost" onclick="closeBackupMenu();openPasteModal()">📋 Paste JSON</button>
                     </div>
                 </div>
@@ -520,7 +523,7 @@
         <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 0.4rem">Paste a JSON backup here to restore:</p>
         <div id="pasteArea">
             <textarea id="clipImportBox" placeholder="Paste JSON backup here…" style="width:100%;height:120px;font-size:0.65rem;font-family:monospace;resize:none;margin-bottom:0.5rem"></textarea>
-            <p style="text-align:left;margin:0 0 0.7rem"><input type="checkbox" id="clipAppend" style="cursor:pointer;width:auto"> <label for="clipAppend" style="font-size:0.72rem;color:var(--text-muted);cursor:pointer">Append to existing tallies (don't replace)</label></p>
+            
             <div class="modal-actions">
                 <button class="btn-ghost" onclick="closeClipModal()">Cancel</button>
                 <button class="btn-primary" onclick="importClipboard()">📥 Import</button>
@@ -552,20 +555,25 @@
         </div>
         <div class="info-box-content">
         <h4>Mood Emojis</h4>
-        <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 0.5rem">Click an emoji to insert it at your cursor in the note field. During comment editing, it inserts at the cursor there too.</p>
-        <div class="info-row"><span class="ei">😊</span><span>Happy / good session</span></div>
-        <div class="info-row"><span class="ei">😤</span><span>Frustrated — pushed through anyway</span></div>
-        <div class="info-row"><span class="ei">😬</span><span>Nervous / uncertain</span></div>
-        <div class="info-row"><span class="ei">🤔</span><span>Thoughtful / questioning</span></div>
-        <div class="info-row"><span class="ei">💪</span><span>Strong effort</span></div>
+        <div class="info-row-compact"><span class="ei">😊</span><span>Happy / good session</span></div>
+        <div class="info-row-compact"><span class="ei">😤</span><span>Frustrated — pushed through anyway</span></div>
+        <div class="info-row-compact"><span class="ei">😬</span><span>Nervous / uncertain</span></div>
+        <div class="info-row-compact"><span class="ei">🤔</span><span>Thoughtful / questioning</span></div>
+        <div class="info-row-compact"><span class="ei">💪</span><span>Strong effort</span></div>
         <h4>🔥 Streak</h4>
-        <div class="info-row"><span class="ei">🔥</span><span>Appears when you've logged entries on consecutive calendar days. Shows the current run — e.g. <strong>🔥 3d</strong> means 3 days in a row. Miss a day and it resets.</span></div>
+        <div class="info-row"><span class="ei">🔥</span><span>Consecutive calendar days logged. <strong>🔥 3d</strong> = 3 days in a row. Miss a day and it resets.</span></div>
         <h4>📌 Pin</h4>
-        <div class="info-row"><span class="ei">📌</span><span>Click to pin a tally to the top. <strong>Ctrl+click</strong> pins with hot pink glow instead of cyan.</span></div>
+        <div class="info-row"><span class="ei">📌</span><span>Click to pin a tally to the top. <strong>Ctrl+click</strong> pins with hot pink glow.</span></div>
         <h4>12W 3L</h4>
-        <div class="info-row"><span class="ei">🃏</span><span>Shown on a collapsed card — a quick score summary. <strong>W</strong> = wins (positive entries), <strong>L</strong> = losses (negative entries). Simple counter tallies show as <strong>12/20</strong> or just <strong>12</strong>.</span></div>
+        <div class="info-row"><span class="ei">🃏</span><span>Collapsed card summary. <strong>W</strong> = wins, <strong>L</strong> = losses. Also shows % completion and pace when a target is set.</span></div>
         <h4>📅 Deadline</h4>
-        <div class="info-row"><span class="ei">📅</span><span>Optional. Set when adding or editing a tally. Shows days remaining as a pill in the card header — <strong>green</strong> = plenty of time, <strong>amber</strong> = 7 days or less, <strong>red</strong> = overdue. When a count target is also set, a <strong>pace line</strong> appears below the progress bar showing whether you're ahead, on track, or behind.</span></div>
+        <div class="info-row"><span class="ei">📅</span><span>Set when adding or editing. <strong>Green</strong> = time to spare, <strong>amber</strong> = 7 days or less, <strong>red</strong> = overdue. Pace line shows ahead / on track / behind when a target is set.</span></div>
+        <h4>💾 Backup &amp; Restore</h4>
+        <div class="info-row"><span class="ei">💾</span><span><strong>Export to file</strong> — full JSON backup of all tallies.</span></div>
+        <div class="info-row"><span class="ei">📋</span><span><strong>Copy JSON</strong> — copies all data to clipboard.</span></div>
+        <div class="info-row"><span class="ei">📂</span><span><strong>Import from file</strong> — restores from JSON. Single tally always appends; multiple tallies uses the Append checkbox in the dropdown.</span></div>
+        <div class="info-row"><span class="ei">📋</span><span><strong>Paste JSON</strong> — paste a backup to restore. Tick Append in the dropdown before importing to add without replacing.</span></div>
+        <div class="info-row"><span class="ei">📤</span><span><strong>Per-tally export</strong> — open Edit on any card and tap Export to save just that tally. Reimport via Import from file — it appends automatically.</span></div>
         </div>
     </div>
 </div>
@@ -1869,7 +1877,7 @@ function handleRestore(e) {
             const existing = load();
             // Auto-detect: fewer tallies than current = single/partial restore → append
             // Single tally export → always append; multiple → use checkbox
-            const shouldAppend = parsed.length === 1 || document.getElementById('clipAppend')?.checked;
+            const shouldAppend = parsed.length === 1 || document.getElementById('restoreAppend')?.checked;
             if (shouldAppend) {
                 save(migrate([...existing, ...parsed]));
                 render();
@@ -1920,7 +1928,8 @@ document.addEventListener('click', () => closeBackupMenu());
 function openClipModal() { openPasteModal(); }
 function openPasteModal() {
     document.getElementById('clipImportBox').value = '';
-    document.getElementById('clipAppend').checked = false;
+    const cb = document.getElementById('restoreAppend');
+    if (cb) cb.checked = false;
     document.getElementById('pasteArea').style.display = 'block';
     document.getElementById('noPasteActions').style.display = 'none';
     document.getElementById('clipModal').classList.add('open');
@@ -1945,7 +1954,7 @@ function importClipboard() {
     try {
         const parsed = JSON.parse(raw);
         if (!Array.isArray(parsed)) throw new Error();
-        const append = document.getElementById('clipAppend')?.checked;
+        const append = parsed.length === 1 || document.getElementById('restoreAppend')?.checked;
         if (append) {
             const existing = load();
             save(migrate([...existing, ...parsed]));
