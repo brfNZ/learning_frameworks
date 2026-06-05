@@ -329,8 +329,8 @@
         /* Info button & modal */
         .btn-info { background: none; border: 1.5px solid var(--border); border-radius: 50%; width: 1.25rem; height: 1.25rem; font-size: 0.7rem; font-style: italic; font-weight: 700; color: var(--text-faint); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color 0.15s, color 0.15s; padding: 0; line-height: 1; font-family: Georgia, serif; }
         .btn-info:hover { border-color: var(--accent); color: var(--accent); }
-        .quote-toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.3rem; max-width: 380px; width: 90%; text-align: center; z-index: 300; box-shadow: 0 8px 32px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
-        .quote-toast.show { opacity: 1; pointer-events: auto; }
+        .quote-toast { position: fixed; top: 5rem; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.3rem; max-width: 380px; width: 90%; text-align: center; z-index: 300; box-shadow: 0 8px 32px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.4s, transform 0.4s; pointer-events: none; }
+        .quote-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
         .quote-text { font-size: 0.85rem; color: var(--text); line-height: 1.55; font-style: italic; margin-bottom: 0.45rem; }
         .quote-author { font-size: 0.72rem; color: var(--accent); font-weight: 600; letter-spacing: 0.03em; }
         .quote-label { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.07em; }
