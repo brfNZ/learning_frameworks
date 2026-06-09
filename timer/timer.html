@@ -7,15 +7,15 @@
     <style>
     :root {
         /* ── THEME: Cyan · Light (default) ── */
-        --t-primary:        #009999;
-        --t-primary-hover:  #007777;
+        --t-primary:        #007777;
+        --t-primary-hover:  #005555;
         --t-bg:             #f0f0f0;
         --t-text:           #000;
         --t-digital-bg:     #000;
         --t-digital-text:   #fff;
-        --t-accent-rgb:     0,153,153;
+        --t-accent-rgb:     0,119,119;
         --t-red-rgb:        237,77,102;
-        --t-block-full:     #009999;
+        --t-block-full:     #007777;
         --t-block-empty:    #d0d0d0;
         --t-block-border:   #f0f0f0;
     }
@@ -48,15 +48,15 @@
 
     /* ── THEME: Ember ── */
     body.theme-ember {
-        --t-primary:       #c0580a;
-        --t-primary-hover: #9a420a;
+        --t-primary:       #ba4810;
+        --t-primary-hover: #943808;
         --t-bg:            #fdf4ec;
         --t-text:          #1a0a00;
         --t-digital-bg:    #1a0a00;
         --t-digital-text:  #f5dfc0;
-        --t-accent-rgb:    192,88,10;
-        --t-red-rgb:       210,50,30;
-        --t-block-full:    #c0580a;
+        --t-accent-rgb:    186,72,16;
+        --t-red-rgb:       210,30,20;
+        --t-block-full:    #ba4810;
         --t-block-empty:   #e8cdb0;
         --t-block-border:  #fdf4ec;
     }
@@ -182,7 +182,7 @@
             background-color: var(--digital-bg);
             color: var(--digital-text);
             border-radius: 12px;
-            padding: 8px 60px 20px 60px;
+            padding: 20px 60px 16px 60px;
             font-size: 120px;
             font-weight: bold;
             font-family: 'Arial', sans-serif;
@@ -1255,11 +1255,16 @@
 
             // Restore canvas dimensions when switching to circular
             if (mode === 'circular') {
-                const sz = currentSize === 'small' ? 236 : currentSize === 'medium' ? 300 : 360;
-                canvas.width = sz;
-                canvas.height = sz;
-                canvas.style.width = sz + 'px';
-                canvas.style.height = sz + 'px';
+                // Reset to medium size to avoid mismatch from other modes
+                currentSize = 'medium';
+                canvas.width = 300;
+                canvas.height = 300;
+                canvas.style.width = '300px';
+                canvas.style.height = '300px';
+                radius = 100;
+                centerX = 150;
+                centerY = 150;
+                timerContainer.style.width = '320px';
             }
             
             // Show the selected mode's element
@@ -1376,15 +1381,15 @@
                 if (currentSize === 'small') {
                     numberDiv.style.fontSize = '60px';
                     minutesLabel.style.fontSize = '14px';
-                    digitalDisplay.style.padding = '8px 40px 15px 40px';
+                    digitalDisplay.style.padding = '24px 40px 8px 40px';
                 } else if (currentSize === 'medium') {
                     numberDiv.style.fontSize = '100px';
                     minutesLabel.style.fontSize = '18px';
-                    digitalDisplay.style.padding = '10px 50px 18px 50px';
+                    digitalDisplay.style.padding = '32px 50px 10px 50px';
                 } else { // large
                     numberDiv.style.fontSize = '160px';
                     minutesLabel.style.fontSize = '24px';
-                    digitalDisplay.style.padding = '12px 70px 25px 70px';
+                    digitalDisplay.style.padding = '40px 70px 12px 70px';
                 }
                 
                 minutesLabel.style.display = 'block';
