@@ -519,22 +519,6 @@
     .block-cell.expired {
         animation: blockAura 1.8s ease-in-out infinite;
     }
-    #blocksTimesUp {
-        display: none;
-        position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 13px;
-        font-weight: bold;
-        letter-spacing: 2px;
-        color: var(--t-block-full, #009999);
-        pointer-events: none;
-        white-space: nowrap;
-        z-index: 10;
-        background: var(--bg-color);
-        padding: 2px 8px;
-        border-radius: 4px;
-    }
     #blocksLabel {
         margin-top: 10px;
         font-size: 14px;
@@ -542,6 +526,12 @@
         opacity: 0.6;
         letter-spacing: 1px;
         text-transform: uppercase;
+        transition: color 0.3s, opacity 0.3s;
+    }
+    #blocksLabel.expired {
+        color: var(--t-primary);
+        opacity: 1;
+        font-weight: bold;
     }
     #timerNameDisplayBlocks {
         font-size: 12px;
@@ -574,7 +564,6 @@
             <div id="timerNameDisplayBlocks" onclick="openNameModal()"></div>
             <div style="position:relative; display:inline-block;">
                 <div id="blocksGrid"></div>
-                <div id="blocksTimesUp">TIME'S UP!</div>
             </div>
             <div id="blocksLabel">minutes remaining</div>
         </div>
@@ -942,13 +931,13 @@
                 startButton.setAttribute('disabled', 'true');
                 timeInput.setAttribute('disabled', 'true');
             } else if (isRunning && isPaused) {
-                startButton.disabled = true;
+                startButton.disabled = false;
+                startButton.removeAttribute('disabled');
                 timeInput.disabled = true;
                 smallButton.disabled = false;
                 randomButton.disabled = false;
                 resetButton.disabled = false;
                 controls.style.visibility = 'visible';
-                startButton.setAttribute('disabled', 'true');
                 timeInput.setAttribute('disabled', 'true');
             }
         }
@@ -1374,8 +1363,6 @@
                 }
             }
 
-            var timesUpEl = document.getElementById('blocksTimesUp');
-
             var cells = grid.querySelectorAll('.block-cell');
             var cellCount2 = cells.length;
             cells.forEach(function(cell, i) {
@@ -1407,18 +1394,27 @@
                 }
             });
 
-            // Times-up overlay
-            if (timesUpEl) timesUpEl.style.display = isExpired ? 'block' : 'none';
-
-            // Label — always shows original total
-            if (isPaused) {
+            // Label
+            if (isExpired) {
+                label.textContent = 'TIME\'S UP!';
+                label.classList.add('expired');
+            } else if (isPaused) {
                 label.textContent = totalMinutes + ' minute' + (totalMinutes !== 1 ? 's' : '') + ' — PAUSED';
+                label.classList.remove('expired');
             } else {
                 label.textContent = totalMinutes + ' minute' + (totalMinutes !== 1 ? 's' : '');
+                label.classList.remove('expired');
             }
         }
 
         function startTimer() {
+            // If paused, resume instead of restarting
+            if (isPaused) {
+                isPaused = false;
+                updateButtonStates();
+                drawTimer();
+                return;
+            }
             if (timerInterval) clearInterval(timerInterval);
             if (isRunning) return;
 
@@ -1502,8 +1498,8 @@
             remainingTime = 0;
             // Clear blocks expired state
             document.querySelectorAll('.block-cell.expired').forEach(function(c) { c.classList.remove('expired'); });
-            var tup = document.getElementById('blocksTimesUp');
-            if (tup) tup.style.display = 'none';
+            var bl = document.getElementById('blocksLabel');
+            if (bl) bl.classList.remove('expired');
             if (randomChimeSelected) {
                 timerSound.src = defaultChime;
                 timerSound.load();
@@ -1664,8 +1660,6 @@
         }
         
         // Restore saved display mode and resize window on first load
-        var tup = document.getElementById('blocksTimesUp');
-        if (tup) tup.style.display = 'none'; // always hide on load regardless of saved state
         const savedDisplayMode = localStorage.getItem('displayMode');
         if (savedDisplayMode && displayModes[savedDisplayMode]) {
             setDisplayMode(savedDisplayMode);
