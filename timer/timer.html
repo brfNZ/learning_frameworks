@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Countdown Timer</title>
+    
     <style>
     :root {
         /* ── THEME: Cyan · Light (default) ── */
@@ -65,6 +66,7 @@
         --t-text:         #f5dfc0;
         --t-digital-bg:   #f0d0a0;
         --t-digital-text: #1a0a00;
+        --t-block-full:   #e07030;
         --t-block-empty:  #4a2a10;
         --t-block-border: #1e0e04;
     }
@@ -88,6 +90,7 @@
         --t-text:         #b8e6b8;
         --t-digital-bg:   #b8e6b8;
         --t-digital-text: #0a1a0a;
+        --t-block-full:   #4caf50;
         --t-block-empty:  #1e3a1e;
         --t-block-border: #0a160a;
     }
@@ -111,6 +114,7 @@
         --t-text:         #b8cde4;
         --t-digital-bg:   #b8cde4;
         --t-digital-text: #0d1520;
+        --t-block-full:   #5a9ae0;
         --t-block-empty:  #1a2a3a;
         --t-block-border: #0a0f18;
     }
@@ -148,392 +152,14 @@
         transition: all 0.2s ease;
     }
 
-
-
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            font-family: Arial, sans-serif;
-            background-color: var(--bg-color);
-            transition: background-color 0.3s ease;
-        }
-        #timerContainer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            overflow: visible;
-            position: relative;
-            padding-top: 10px;
-            min-height: 0;
-        }
-        #timerCanvas {
-            display: none;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            cursor: pointer;
-        }
-        #digitalDisplay {
-            background-color: var(--digital-bg);
-            color: var(--digital-text);
-            border-radius: 12px;
-            padding: 20px 60px 16px 60px;
-            font-size: 120px;
-            font-weight: bold;
-            font-family: 'Arial', sans-serif;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            cursor: pointer;
-            display: none;
-            user-select: none;
-            text-align: center;
-            line-height: 1;
-            position: relative;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        #digitalDisplay .minutes-label {
-            font-size: 24px;
-            font-weight: normal;
-            color: var(--text-color);
-            opacity: 0.6;
-            margin-top: 5px;
-            display: block;
-        }
-        /* Pulse dot in bottom-right corner */
-        #digitalDisplay .pulse-dot {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 8px;
-            height: 8px;
-            background-color: var(--digital-text);
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        #digitalDisplay .pulse-dot.flash {
-            opacity: 0.5;
-        }
-        #controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #inputButtonContainer {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            gap: 3px;
-        }
-        #timeInput {
-            font-size: 16px;
-            width: 80px;
-            height: 36px;
-            text-align: center;
-            border: 2px solid var(--primary-cyan);
-            box-sizing: border-box;
-        }
-        #timeInput:disabled {
-            background-color: var(--t-block-empty);
-            border-color: var(--t-primary);
-            color: var(--text-color);
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        #startButton {
-            font-size: 16px;
-            width: 80px;
-            height: 36px;
-            cursor: pointer;
-            background-color: var(--primary-cyan);
-            color: white;
-            border: 2px solid var(--primary-cyan);
-            box-sizing: border-box;
-        }
-        #startButton:hover:not(:disabled) {
-            background-color: var(--primary-cyan-hover);
-        }
-        #startButton:disabled {
-            background-color: var(--t-block-empty);
-            border-color: var(--t-block-empty);
-            color: var(--text-color);
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        #timerNameDisplay {
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--text-color);
-            text-align: center;
-            padding: 2px 8px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            min-height: 24px;
-            min-width: 160px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s, box-shadow 0.2s;
-            margin-bottom: 10px;
-            display: block;
-        }
-        #timerNameDisplay:hover {
-            background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.12);
-            box-shadow: inset 0 0 0 1px rgba(var(--t-accent-rgb, 0,153,153), 0.25);
-        }
-        #timerNameDisplay.digital-mode {
-            color: var(--text-color);
-            opacity: 0.6;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        #timerNameDisplay.digital-mode:hover {
-            background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.1);
-            box-shadow: none;
-        }
-        /* For circular mode, position name above canvas */
-        #timerNameDisplay.circular-mode {
-            position: absolute;
-            top: 5px;
-            width: 50%;
-            max-width: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 18px;
-            display: block;
-        }
-        #timerNameDisplay {
-            display: none; /* Hidden by default, shown only in circular mode */
-        }
-        #timerNameDisplayDigital, #timerNameDisplayBlocks {
-            font-size: 12px;
-            font-weight: bold;
-            text-align: center;
-            padding: 2px 8px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            min-height: 20px;
-            min-width: 120px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s, box-shadow 0.2s;
-            margin-bottom: 8px;
-            line-height: 1;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: block;
-        }
-        #timerNameDisplayDigital {
-            color: var(--text-color);
-            opacity: 0.4;
-            margin-bottom: 5px;
-        }
-        #timerNameDisplayDigital:hover {
-            background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.1);
-            box-shadow: none;
-        }
-        #timerNameDisplayBlocks {
-            color: var(--text-color);
-            opacity: 0.5;
-        }
-        #timerNameDisplayBlocks:hover {
-            background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.1);
-        }
-        #timerNameDisplayDigital:hover, #timerNameDisplayBlocks:hover {
-            background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.1);
-        }
-        #minutesLabel {
-            margin-top: 10px;
-            margin-bottom: 7px;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        #sizeButtonContainer {
-            display: flex;
-            justify-content: center;
-            margin-top: 5px;
-            gap: 2px;
-        }
-        #inputButtonContainer {
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-            align-items: center;
-        }
-
-        #sizeButtonContainer {
-            display: flex;
-            justify-content: center;
-            gap: 2px;
-            margin-top: 5px;
-            width: 100%;
-        }
-        #smallButton, #randomButton, #resetButton, #historyButton, #displayModeButton, #colorThemeButton, #themeToggleButton {
-            font-size: 14px;
-            padding: 4px 0;
-            background-color: var(--primary-cyan);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            flex: 1;
-            min-width: 0;
-        }
-        #smallButton:hover, #randomButton:hover, #resetButton:hover, #historyButton:hover, #displayModeButton:hover, #colorThemeButton:hover, #themeToggleButton:hover {
-            background-color: var(--primary-cyan-hover);
-        }
-        #randomButton.active {
-            background-color: var(--primary-red-active);
-        }
-
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-
-        .modal-content {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 10% auto;
-            padding: 20px;
-            border: 1px solid var(--t-primary);
-            width: 400px;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-            max-height: 75vh;
-            overflow-y: auto;
-        }
-
-        .modal-content h3 {
-            color: var(--t-primary);
-        }
-
-        .modal-button {
-            padding: 6px 12px;
-            margin: 5px 1px 5px 0;
-            font-size: 14px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            background-color: transparent;
-            color: var(--text-color);
-            border: 1px solid var(--secondary-gray);
-        }
-
-        .modal-button.primary {
-            color: var(--t-primary);
-            border: 1px solid var(--t-primary);
-        }
-
-        .modal-button.primary:hover {
-            background-color: var(--t-primary);
-            color: white;
-        }
-
-        .modal-button:hover {
-            border-color: var(--text-color) !important;
-            color: var(--text-color) !important;
-        }
-
-        .modal-button.secondary {
-            background-color: var(--t-block-empty);
-            color: var(--text-color);
-            border-color: transparent;
-        }
-
-        .modal-button.secondary:hover {
-            opacity: 0.8;
-        }
-
-        #nameModal .modal-content {
-            width: 300px;
-        }
-
-        .emoji-button:hover {
-            transform: scale(1.1);
-            border-color: var(--t-primary) !important;
-        }
-
-        .emoji-button.selected {
-            border-color: var(--t-primary) !important;
-            background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.15) !important;
-        }
-
-        #timerNameInput {
-            width: 100%;
-            padding: 8px;
-            margin: 10px 0;
-            border: 2px solid var(--t-primary);
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-        #saveNameButton, #cancelNameButton {
-            padding: 8px 16px;
-            margin: 5px 10px 5px 0;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-        }
-        #saveNameButton {
-            background-color: var(--primary-cyan);
-            color: white;
-        }
-        #saveNameButton:hover {
-            background-color: var(--primary-cyan-hover);
-        }
-        #cancelNameButton {
-            background-color: var(--t-block-empty);
-            color: var(--text-color);
-        }
-        #cancelNameButton:hover {
-            opacity: 0.8;
-        }
-
-        @media (max-width: 600px) {
-        #timerContainer {
-            width: 100% !important;
-            max-width: 380px;
-            padding: 0 10px;
-            box-sizing: border-box;
-        }
-    
-    .modal-content {
-        width: 90% !important;
-        max-width: 340px;
-        margin: 10% auto;
-    }
-    
-    #historyModal .modal-content {
-        width: 95% !important;
-    }
-}
-
-    /* Blocks display mode */
+    /* ── Blocks display mode ── */
     #blocksDisplay {
         display: none;
         padding: 24px 20px 16px 20px;
         cursor: pointer;
         user-select: none;
         text-align: center;
-        background-color: var(--bg-color);
+        background-color: var(--t-bg);
         transition: background-color 0.3s ease;
         position: relative;
         width: 100%;
@@ -559,16 +185,16 @@
         left: 0; top: 0;
         width: 100%;
         height: 100%;
-        background-color: var(--block-color, var(--t-block-full, #009999));
+        background-color: var(--t-block-full);
         border-radius: 8px;
+    }
+    .block-cell.expired {
+        animation: blockAura 1.8s ease-in-out infinite;
     }
     @keyframes blockAura {
         0%   { box-shadow: 0 0 4px 1px rgba(var(--t-accent-rgb, 0,153,153), 0.4); }
         50%  { box-shadow: 0 0 12px 4px rgba(var(--t-accent-rgb, 0,153,153), 0.8); }
         100% { box-shadow: 0 0 4px 1px rgba(var(--t-accent-rgb, 0,153,153), 0.4); }
-    }
-    .block-cell.expired {
-        animation: blockAura 1.8s ease-in-out infinite;
     }
     #blocksLabel {
         margin-top: 10px;
@@ -598,9 +224,365 @@
         cursor: pointer;
     }
 
-    #weekChart { margin-bottom: 25px !important; }
+    /* ── Rest of your existing styles ── */
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        font-family: Arial, sans-serif;
+        background-color: var(--bg-color);
+        transition: background-color 0.3s ease;
+    }
+    #timerContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        overflow: visible;
+        position: relative;
+        padding-top: 10px;
+        min-height: 0;
+    }
+    #timerCanvas {
+        display: none;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        cursor: pointer;
+    }
+    #digitalDisplay {
+        background-color: var(--digital-bg);
+        color: var(--digital-text);
+        border-radius: 12px;
+        padding: 20px 60px 16px 60px;
+        font-size: 120px;
+        font-weight: bold;
+        font-family: 'Arial', sans-serif;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        cursor: pointer;
+        display: none;
+        user-select: none;
+        text-align: center;
+        line-height: 1;
+        position: relative;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    #digitalDisplay .minutes-label {
+        font-size: 24px;
+        font-weight: normal;
+        color: var(--text-color);
+        opacity: 0.6;
+        margin-top: 5px;
+        display: block;
+    }
+    #digitalDisplay .pulse-dot {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 8px;
+        height: 8px;
+        background-color: var(--digital-text);
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    #digitalDisplay .pulse-dot.flash {
+        opacity: 0.5;
+    }
+    #controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    #inputButtonContainer {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 3px;
+    }
+    #timeInput {
+        font-size: 16px;
+        width: 80px;
+        height: 36px;
+        text-align: center;
+        border: 2px solid var(--primary-cyan);
+        box-sizing: border-box;
+    }
+    #timeInput:disabled {
+        background-color: var(--t-block-empty);
+        border-color: var(--t-primary);
+        color: var(--text-color);
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    #startButton {
+        font-size: 16px;
+        width: 80px;
+        height: 36px;
+        cursor: pointer;
+        background-color: var(--primary-cyan);
+        color: white;
+        border: 2px solid var(--primary-cyan);
+        box-sizing: border-box;
+    }
+    #startButton:hover:not(:disabled) {
+        background-color: var(--primary-cyan-hover);
+    }
+    #startButton:disabled {
+        background-color: var(--t-block-empty);
+        border-color: var(--t-block-empty);
+        color: var(--text-color);
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    #timerNameDisplay {
+        font-size: 14px;
+        font-weight: bold;
+        color: var(--text-color);
+        text-align: center;
+        padding: 2px 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-height: 24px;
+        min-width: 160px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s, box-shadow 0.2s;
+        margin-bottom: 10px;
+        display: block;
+    }
+    #timerNameDisplay:hover {
+        background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.12);
+        box-shadow: inset 0 0 0 1px rgba(var(--t-accent-rgb, 0,153,153), 0.25);
+    }
+    #timerNameDisplay.digital-mode {
+        color: var(--text-color);
+        opacity: 0.6;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    #timerNameDisplay.digital-mode:hover {
+        background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.1);
+        box-shadow: none;
+    }
+    #timerNameDisplay.circular-mode {
+        position: absolute;
+        top: 5px;
+        width: 50%;
+        max-width: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 18px;
+        display: block;
+    }
+    #timerNameDisplay {
+        display: none;
+    }
+    #timerNameDisplayDigital, #timerNameDisplayBlocks {
+        font-size: 12px;
+        font-weight: bold;
+        text-align: center;
+        padding: 2px 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-height: 20px;
+        min-width: 120px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s, box-shadow 0.2s;
+        margin-bottom: 8px;
+        line-height: 1;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: block;
+    }
+    #timerNameDisplayDigital {
+        color: var(--text-color);
+        opacity: 0.4;
+        margin-bottom: 5px;
+    }
+    #timerNameDisplayDigital:hover {
+        background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.1);
+        box-shadow: none;
+    }
+    #timerNameDisplayBlocks:hover {
+        background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.1);
+    }
+    #timerNameDisplayDigital:hover, #timerNameDisplayBlocks:hover {
+        background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.1);
+    }
+    #minutesLabel {
+        margin-top: 10px;
+        margin-bottom: 7px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    #sizeButtonContainer {
+        display: flex;
+        justify-content: center;
+        margin-top: 5px;
+        gap: 2px;
+    }
+    #inputButtonContainer {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        align-items: center;
+    }
+    #sizeButtonContainer {
+        display: flex;
+        justify-content: center;
+        gap: 2px;
+        margin-top: 5px;
+        width: 100%;
+    }
+    #smallButton, #randomButton, #resetButton, #historyButton, #displayModeButton, #colorThemeButton, #themeToggleButton {
+        font-size: 14px;
+        padding: 4px 0;
+        background-color: var(--primary-cyan);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        flex: 1;
+        min-width: 0;
+    }
+    #smallButton:hover, #randomButton:hover, #resetButton:hover, #historyButton:hover, #displayModeButton:hover, #colorThemeButton:hover, #themeToggleButton:hover {
+        background-color: var(--primary-cyan-hover);
+    }
+    #randomButton.active {
+        background-color: var(--primary-red-active);
+    }
 
-    </style>
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 100;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid var(--t-primary);
+        width: 400px;
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+    .modal-content h3 {
+        color: var(--t-primary);
+    }
+    .modal-button {
+        padding: 6px 12px;
+        margin: 5px 1px 5px 0;
+        font-size: 14px;
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+        background-color: transparent;
+        color: var(--text-color);
+        border: 1px solid var(--secondary-gray);
+    }
+    .modal-button.primary {
+        color: var(--t-primary);
+        border: 1px solid var(--t-primary);
+    }
+    .modal-button.primary:hover {
+        background-color: var(--t-primary);
+        color: white;
+    }
+    .modal-button:hover {
+        border-color: var(--text-color) !important;
+        color: var(--text-color) !important;
+    }
+    .modal-button.secondary {
+        background-color: var(--t-block-empty);
+        color: var(--text-color);
+        border-color: transparent;
+    }
+    .modal-button.secondary:hover {
+        opacity: 0.8;
+    }
+    #nameModal .modal-content {
+        width: 300px;
+    }
+    .emoji-button:hover {
+        transform: scale(1.1);
+        border-color: var(--t-primary) !important;
+    }
+    .emoji-button.selected {
+        border-color: var(--t-primary) !important;
+        background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.15) !important;
+    }
+    #timerNameInput {
+        width: 100%;
+        padding: 8px;
+        margin: 10px 0;
+        border: 2px solid var(--t-primary);
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+    #saveNameButton, #cancelNameButton {
+        padding: 8px 16px;
+        margin: 5px 10px 5px 0;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+    }
+    #saveNameButton {
+        background-color: var(--primary-cyan);
+        color: white;
+    }
+    #saveNameButton:hover {
+        background-color: var(--primary-cyan-hover);
+    }
+    #cancelNameButton {
+        background-color: var(--t-block-empty);
+        color: var(--text-color);
+    }
+    #cancelNameButton:hover {
+        opacity: 0.8;
+    }
+
+    @media (max-width: 600px) {
+        #timerContainer {
+            width: 100% !important;
+            max-width: 380px;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+        .modal-content {
+            width: 90% !important;
+            max-width: 340px;
+            margin: 10% auto;
+        }
+        #historyModal .modal-content {
+            width: 95% !important;
+        }
+    }
+
+    #weekChart { margin-bottom: 25px !important; }
+</style>
+
 </head>
 <body>
     <div id="timerContainer">
@@ -1417,15 +1399,10 @@
             label.style.margin = '10px auto 8px auto';
             label.style.textAlign = 'center';
             label.style.display = 'block';
-            label.style.color = '#999';
-            label.style.opacity = '1';
 
             // Active block fill: shrinks by 1 sliver per second (60 slivers per minute)
-            var secsLeft = remainingTime > 0 ? ((remainingTime - 1) % 60) + 1 : 0; // 60→1 within the minute
+            var secsLeft = remainingTime > 0 ? ((remainingTime - 1) % 60) + 1 : 0;
             var activeFillPct = (secsLeft / 60) * 100;
-
-            // Set block colour via CSS custom property on the grid — more reliable than inline bg
-            grid.style.setProperty('--block-color', getComputedStyle(document.body).getPropertyValue('--t-block-full').trim() || '#009999');
 
             // Rebuild grid when count or size changes
             var cellCount = Math.ceil(totalMinutes / 5) * 5;
@@ -1442,13 +1419,10 @@
                     fill.className = 'block-fill';
                     fill.style.height = blockPx + 'px';
                     fill.style.borderRadius = '6px';
-                    fill.style.backgroundColor = 'var(--block-color)';
                     cell.appendChild(fill);
                     grid.appendChild(cell);
                 }
             }
-
-            // Refresh fill colour on every draw (theme may have changed) - already handled via --block-color on grid
 
             var cells = grid.querySelectorAll('.block-cell');
             var cellCount2 = cells.length;
@@ -1466,7 +1440,6 @@
                 cell.style.visibility = 'visible';
 
                 if (isExpired) {
-                    // All blocks restored with aura
                     fill.style.width = '100%';
                     cell.classList.add('expired');
                 } else {
@@ -1481,7 +1454,7 @@
                 }
             });
 
-            // Label — only show when paused or expired
+            // Label
             if (isExpired) {
                 label.textContent = 'TIME\'S UP!';
                 label.style.visibility = 'visible';
