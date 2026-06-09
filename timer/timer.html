@@ -489,6 +489,7 @@
         text-align: center;
         background-color: var(--bg-color);
         transition: background-color 0.3s ease;
+        position: relative;
     }
     #blocksGrid {
         display: grid;
@@ -509,6 +510,25 @@
         left: 0; top: 0; bottom: 0;
         background-color: var(--t-block-full, #009999);
         border-radius: 5px;
+    }
+    @keyframes blockAura {
+        0%   { box-shadow: 0 0 4px 1px rgba(var(--t-accent-rgb, 0,153,153), 0.4); }
+        50%  { box-shadow: 0 0 12px 4px rgba(var(--t-accent-rgb, 0,153,153), 0.8); }
+        100% { box-shadow: 0 0 4px 1px rgba(var(--t-accent-rgb, 0,153,153), 0.4); }
+    }
+    .block-cell.expired {
+        animation: blockAura 1.8s ease-in-out infinite;
+    }
+    #blocksTimesUp {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        color: var(--t-block-full, #009999);
+        pointer-events: none;
+        white-space: nowrap;
     }
     #blocksLabel {
         margin-top: 10px;
@@ -547,7 +567,10 @@
         </div>
         <div id="blocksDisplay">
             <div id="timerNameDisplayBlocks" onclick="openNameModal()"></div>
-            <div id="blocksGrid"></div>
+            <div style="position:relative; display:inline-block;">
+                <div id="blocksGrid"></div>
+                <div id="blocksTimesUp" style="display:none;">TIME'S UP!</div>
+            </div>
             <div id="blocksLabel">minutes remaining</div>
         </div>
         <div id="controls">
@@ -1265,6 +1288,7 @@
         function drawBlocksTimer() {
             var grid = document.getElementById('blocksGrid');
             var label = document.getElementById('blocksLabel');
+            if (!grid || !label) return;
 
             var totalMinutes = totalTime > 0 ? Math.round(totalTime / 60) : (parseInt(document.getElementById('timeInput').value) || 25);
             var remainMinutes = remainingTime > 0 ? Math.ceil(remainingTime / 60) : (isExpired ? 0 : totalMinutes);
@@ -1296,6 +1320,8 @@
                 }
             }
 
+            var timesUpEl = document.getElementById('blocksTimesUp');
+
             var cells = grid.querySelectorAll('.block-cell');
             var cellCount2 = cells.length;
             cells.forEach(function(cell, i) {
@@ -1306,26 +1332,32 @@
 
                 if (blockNum > totalMinutes || blockNum < 1) {
                     cell.style.visibility = 'hidden';
+                    cell.classList.remove('expired');
                     return;
                 }
                 cell.style.visibility = 'visible';
 
-                if (isExpired || blockNum > remainMinutes) {
-                    // Elapsed — empty
-                    fill.style.width = '0%';
-                } else if (blockNum === remainMinutes && isRunning && !isPaused) {
-                    // Active block — depleting right-to-left
-                    fill.style.width = activeFillPct.toFixed(1) + '%';
-                } else {
-                    // Future block — fully filled
+                if (isExpired) {
+                    // All blocks restored with aura
                     fill.style.width = '100%';
+                    cell.classList.add('expired');
+                } else {
+                    cell.classList.remove('expired');
+                    if (blockNum > remainMinutes) {
+                        fill.style.width = '0%';
+                    } else if (blockNum === remainMinutes && isRunning && !isPaused) {
+                        fill.style.width = activeFillPct.toFixed(1) + '%';
+                    } else {
+                        fill.style.width = '100%';
+                    }
                 }
             });
 
+            // Times-up overlay
+            if (timesUpEl) timesUpEl.style.display = isExpired ? 'block' : 'none';
+
             // Label — always shows original total
-            if (isExpired) {
-                label.textContent = "TIME'S UP!";
-            } else if (isPaused) {
+            if (isPaused) {
                 label.textContent = totalMinutes + ' minute' + (totalMinutes !== 1 ? 's' : '') + ' — PAUSED';
             } else {
                 label.textContent = totalMinutes + ' minute' + (totalMinutes !== 1 ? 's' : '');
@@ -1413,6 +1445,10 @@
             startAngle = null;
             totalTime = 0;
             remainingTime = 0;
+            // Clear blocks expired state
+            document.querySelectorAll('.block-cell.expired').forEach(function(c) { c.classList.remove('expired'); });
+            var tup = document.getElementById('blocksTimesUp');
+            if (tup) tup.style.display = 'none';
             if (randomChimeSelected) {
                 timerSound.src = defaultChime;
                 timerSound.load();
