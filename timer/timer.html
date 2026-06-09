@@ -861,6 +861,54 @@
         ];
         const defaultChime = 'timer-sounds/clear-announce-tones-2861.wav';
 
+        // Web Audio beep patterns — used as fallback if .wav files are missing
+        const beepPatterns = [
+            [{f:880,d:0.15},{f:1100,d:0.15},{f:1320,d:0.3}],           // ascending trio
+            [{f:660,d:0.4},{f:660,d:0.1},{f:880,d:0.4}],               // bell-like
+            [{f:523,d:0.2},{f:659,d:0.2},{f:784,d:0.2},{f:1047,d:0.4}],// ding dong
+            [{f:1047,d:0.15},{f:880,d:0.15},{f:784,d:0.3}],            // descending
+            [{f:660,d:0.1},{f:660,d:0.1},{f:660,d:0.4}],               // triple beep
+            [{f:784,d:0.2},{f:1047,d:0.5}],                            // two-tone up
+            [{f:880,d:0.08},{f:1100,d:0.08},{f:880,d:0.08},{f:1100,d:0.3}], // flutter
+            [{f:523,d:0.15},{f:784,d:0.15},{f:1047,d:0.15},{f:784,d:0.15},{f:1047,d:0.3}], // fanfare
+            [{f:880,d:0.05},{f:880,d:0.05},{f:880,d:0.05},{f:880,d:0.05},{f:880,d:0.05}],  // countdown
+            [{f:1047,d:0.6}],                                           // single clear tone
+        ];
+        let audioCtx = null;
+
+        function playBeepPattern(pattern) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            let time = audioCtx.currentTime;
+            pattern.forEach(({f, d}) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = f;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.35, time);
+                gain.gain.exponentialRampToValueAtTime(0.001, time + d);
+                osc.start(time);
+                osc.stop(time + d);
+                time += d + 0.05;
+            });
+        }
+
+        function playChime(chimeIndex) {
+            const audio = document.getElementById('timerSound');
+            // Try the WAV file; if it errors (missing folder) fall back to beeps
+            audio.onerror = null;
+            audio.src = chimeIndex === -1 ? defaultChime : chimes[chimeIndex] || defaultChime;
+            const patternIndex = chimeIndex === -1 ? 0 : (chimeIndex % beepPatterns.length);
+            const playPromise = audio.play();
+            if (playPromise) {
+                playPromise.catch(() => {
+                    // WAV failed — use beep fallback
+                    playBeepPattern(beepPatterns[patternIndex]);
+                });
+            }
+        }
+
         // Initial setup for the default (medium) timer size
         canvas.width = 300;
         canvas.height = 300;
@@ -1029,6 +1077,7 @@
         if (randomChimeSelected) {
             const randomIndex = Math.floor(Math.random() * chimes.length);
             timerSound.src = chimes[randomIndex];
+            timerSound.dataset.chimeIndex = randomIndex;
             timerSound.load();
         } else {
             timerSound.src = defaultChime;
@@ -1425,7 +1474,8 @@
                         updateButtonStates();
                         drawTimer();
                         timerSound.volume = 0.5;
-                        timerSound.play().catch(error => console.error('Error playing sound:', error));
+                        const idx = parseInt(timerSound.dataset.chimeIndex ?? '-1');
+                        playChime(idx);
                         addSessionToHistory();
                     }
                 }
@@ -1657,8 +1707,7 @@
             
             let html = '';
             sessions.forEach(session => {
-                const date = new Date(session.timestamp);
-                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const dateStr = toNZT(session.timestamp).display;
                 const scoreEmoji = session.score === 1 ? '😊' : session.score === 0 ? '😐' : session.score === -1 ? '😞' : '';
                 
                 html += `
@@ -1706,7 +1755,7 @@
                 document.getElementById('reviewSessionInfo').innerHTML = 
                     `<div style="display: flex; justify-content: space-between;">
                         <div><span style="color: #999;">${session.duration} minute${session.duration !== 1 ? 's' : ''}</span></div>
-                        <span style="color: #999; font-size: 12px;">${new Date(session.timestamp).toLocaleString()}</span>
+                        <span style="color: #999; font-size: 12px;">${toNZT(session.timestamp).display}</span>
                     </div>`;
                 // If session already has a review, load it
                 if (session.score !== undefined) {
@@ -1755,6 +1804,29 @@
         }
 
         // Helper Functions
+        // NZT helper — returns a Date object shifted to NZ local time, and a formatted string
+        function toNZT(isoString) {
+            const d = new Date(isoString);
+            // Use Intl to get the correct NZ offset (handles NZST/NZDT automatically)
+            const nzStr = d.toLocaleString('en-NZ', { timeZone: 'Pacific/Auckland' });
+            return {
+                date: new Date(d.toLocaleString('en-US', { timeZone: 'Pacific/Auckland' })),
+                display: d.toLocaleString('en-NZ', {
+                    timeZone: 'Pacific/Auckland',
+                    day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', hour12: true
+                })
+            };
+        }
+
+        // Get current NZT offset in hours (for chart day bucketing)
+        function getNZOffsetHours() {
+            const now = new Date();
+            const utc = now.getTime();
+            const nzDate = new Date(now.toLocaleString('en-US', { timeZone: 'Pacific/Auckland' }));
+            return Math.round((nzDate - now) / 3600000);
+        }
+
         function getSessionHistory() {
             const history = localStorage.getItem('timerSessions');
             return history ? JSON.parse(history) : [];
@@ -1794,9 +1866,9 @@
         /* ---------- 14-day chart ---------- */
        function renderWeekChart() {
     const sessions = getSessionHistory();
-    const nzOffset = 13; // NZDT
+    const nzOffset = getNZOffsetHours();
     const now = new Date();
-    const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset * 60) * 60000);
+    const nzToday = new Date(now.toLocaleString('en-US', { timeZone: 'Pacific/Auckland' }));
     nzToday.setHours(0, 0, 0, 0);
     const dayOfWeek = nzToday.getDay();
     const daysSinceMonday = (dayOfWeek + 6) % 7;
@@ -1811,9 +1883,8 @@
     };
 
     sessions.forEach(s => {
-        const pieces = s.timestamp.split(/[-T:.Z]/);
-        const utcDate = new Date(+pieces[0], pieces[1]-1, +pieces[2], +pieces[3], +pieces[4], +pieces[5]);
-        const nzSession = new Date(utcDate.getTime() + (nzOffset * 60 * 60 * 1000)); // SAME AS CSV
+        const nzSession = toNZT(s.timestamp).date;
+        nzSession.setHours(0, 0, 0, 0);
         const dayDiffThis = Math.floor((nzSession - thisMon) / 86400000);
         const dayDiffLast = Math.floor((nzSession - lastMon) / 86400000);
         if (dayDiffThis >= 0 && dayDiffThis < 7) counts.this[dayDiffThis]++;
@@ -1838,10 +1909,8 @@
             return;
         }
 
-        // NZ time offset (NZDT = UTC+13 in November)
-        const nzOffset = 13;
         const now = new Date();
-        const nzToday = new Date(now.getTime() + (now.getTimezoneOffset() + nzOffset * 60) * 60000);
+        const nzToday = new Date(now.toLocaleString('en-US', { timeZone: 'Pacific/Auckland' }));
         nzToday.setHours(0, 0, 0, 0);
         const dayOfWeek = nzToday.getDay();
         const daysSinceMonday = (dayOfWeek + 6) % 7;
@@ -1858,36 +1927,29 @@
             ['Week', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
             ['This'],
             ['Last'],
-            [''], // separator
-            ['Date (NZ)', 'Time (NZ)', 'Name', 'Minutes', 'Score', 'Comment']
+            [''],
+            ['Date (NZT)', 'Time (NZT)', 'Name', 'Minutes', 'Score', 'Comment']
         ];
 
         sessions
             .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
             .forEach(s => {
-                // Parse stored UTC timestamp
-                const pieces = s.timestamp.split(/[-T:.Z]/);
-                const utcDate = new Date(+pieces[0], pieces[1]-1, +pieces[2], +pieces[3], +pieces[4], +pieces[5]);
+                const nz = toNZT(s.timestamp);
+                const nzDate = nz.date;
+                const nzDay = new Date(nzDate); nzDay.setHours(0,0,0,0);
+                const dateNZ = nzDate.toLocaleDateString('en-NZ');
+                const timeNZ = nzDate.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit' });
 
-                // Convert to NZ time
-                const nzDate = new Date(utcDate.getTime() + (nzOffset * 60 * 60 * 1000));
-                const dateNZ = nzDate.toLocaleDateString('en-NZ'); // e.g., 6/11/2025
-                const timeNZ = nzDate.toLocaleTimeString('en-NZ', { hour: '2-digit', minute: '2-digit' }); // e.g., 03:45 PM
-
-                // Heat map bucket (same logic as renderWeekChart)
-                const dayDiffThis = Math.floor((nzDate - thisMon) / 86400000);
-                const dayDiffLast = Math.floor((nzDate - lastMon) / 86400000);
+                const dayDiffThis = Math.floor((nzDay - thisMon) / 86400000);
+                const dayDiffLast = Math.floor((nzDay - lastMon) / 86400000);
                 if (dayDiffThis >= 0 && dayDiffThis < 7) thisWeek[dayDiffThis]++;
                 else if (dayDiffLast >= 0 && dayDiffLast < 7) lastWeek[dayDiffLast]++;
 
-                // Add row
                 const scoreText = s.score === 1 ? 'Happy' : s.score === 0 ? 'Neutral' : s.score === -1 ? 'Sad' : '';
                 rows.push([
-                    dateNZ,
-                    timeNZ,
+                    dateNZ, timeNZ,
                     s.name || 'Untitled Session',
-                    s.duration,
-                    scoreText,
+                    s.duration, scoreText,
                     (s.comment || '').replace(/\n/g, ' ').replace(/"/g, '""')
                 ]);
             });
