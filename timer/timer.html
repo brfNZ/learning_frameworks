@@ -5,57 +5,150 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Countdown Timer</title>
     <style>
-     :root {
-        --primary-cyan: #009999;
-        --primary-cyan-hover: #007777;
-        --primary-cyan-outline: #009999;
-        --primary-cyan-outline-hover: #006666;
-        --secondary-gray: #999;
-        --secondary-gray-hover: #333;
-        --primary-red: #ed4d66;
-        --primary-red-active: #ff4444;
-        
-        /* Theme colors - light mode (default) */
-        --bg-color: #f0f0f0;
-        --text-color: #000;
-        --digital-bg: #000;
-        --digital-text: #fff;
-
+    :root {
+        /* ── THEME: Cyan · Light (default) ── */
+        --t-primary:        #009999;
+        --t-primary-hover:  #007777;
+        --t-bg:             #f0f0f0;
+        --t-text:           #000;
+        --t-digital-bg:     #000;
+        --t-digital-text:   #fff;
+        --t-accent-rgb:     0,153,153;
+        --t-red-rgb:        237,77,102;
+        --t-block-full:     #009999;
+        --t-block-empty:    #d0d0d0;
+        --t-block-border:   #f0f0f0;
     }
-    
-    /* Dark mode theme */
+
+    /* Semantic aliases on body so dark-mode/theme overrides resolve in same scope */
+    body {
+        --primary-cyan:              var(--t-primary);
+        --primary-cyan-hover:        var(--t-primary-hover);
+        --primary-cyan-outline:      var(--t-primary);
+        --primary-cyan-outline-hover:var(--t-primary-hover);
+        --secondary-gray:      #999;
+        --secondary-gray-hover:#333;
+        --primary-red:         #ed4d66;
+        --primary-red-active:  #ff4444;
+        --bg-color:     var(--t-bg);
+        --text-color:   var(--t-text);
+        --digital-bg:   var(--t-digital-bg);
+        --digital-text: var(--t-digital-text);
+    }
+
+    /* ────────── DARK variants ────────── */
     body.dark-mode {
-        --bg-color: #404040;
-        --text-color: #fff;
-        --digital-bg: #dbd8d8;
-        --digital-text: #000;
-
+        --t-bg:           #303030;
+        --t-text:         #fff;
+        --t-digital-bg:   #dbd8d8;
+        --t-digital-text: #000;
+        --t-block-empty:  #555;
+        --t-block-border: #303030;
     }
 
-    /* Circular mode – cyan */
+    /* ── THEME: Ember ── */
+    body.theme-ember {
+        --t-primary:       #c0580a;
+        --t-primary-hover: #9a420a;
+        --t-bg:            #fdf4ec;
+        --t-text:          #1a0a00;
+        --t-digital-bg:    #1a0a00;
+        --t-digital-text:  #f5dfc0;
+        --t-accent-rgb:    192,88,10;
+        --t-red-rgb:       210,50,30;
+        --t-block-full:    #c0580a;
+        --t-block-empty:   #e8cdb0;
+        --t-block-border:  #fdf4ec;
+    }
+    body.theme-ember.dark-mode {
+        --t-bg:           #1e0e04;
+        --t-text:         #f5dfc0;
+        --t-digital-bg:   #f0d0a0;
+        --t-digital-text: #1a0a00;
+        --t-block-empty:  #4a2a10;
+        --t-block-border: #1e0e04;
+    }
+
+    /* ── THEME: Forest ── */
+    body.theme-forest {
+        --t-primary:       #2e7d32;
+        --t-primary-hover: #1b5e20;
+        --t-bg:            #f1f7f1;
+        --t-text:          #0a1a0a;
+        --t-digital-bg:    #0a1a0a;
+        --t-digital-text:  #b8e6b8;
+        --t-accent-rgb:    46,125,50;
+        --t-red-rgb:       180,40,40;
+        --t-block-full:    #2e7d32;
+        --t-block-empty:   #c8dec8;
+        --t-block-border:  #f1f7f1;
+    }
+    body.theme-forest.dark-mode {
+        --t-bg:           #0a160a;
+        --t-text:         #b8e6b8;
+        --t-digital-bg:   #b8e6b8;
+        --t-digital-text: #0a1a0a;
+        --t-block-empty:  #1e3a1e;
+        --t-block-border: #0a160a;
+    }
+
+    /* ── THEME: Slate ── */
+    body.theme-slate {
+        --t-primary:       #3a6ea8;
+        --t-primary-hover: #2a527e;
+        --t-bg:            #eef1f5;
+        --t-text:          #0d1520;
+        --t-digital-bg:    #0d1520;
+        --t-digital-text:  #b8cde4;
+        --t-accent-rgb:    58,110,168;
+        --t-red-rgb:       190,50,70;
+        --t-block-full:    #3a6ea8;
+        --t-block-empty:   #c4d3e6;
+        --t-block-border:  #eef1f5;
+    }
+    body.theme-slate.dark-mode {
+        --t-bg:           #0a0f18;
+        --t-text:         #b8cde4;
+        --t-digital-bg:   #b8cde4;
+        --t-digital-text: #0d1520;
+        --t-block-empty:  #1a2a3a;
+        --t-block-border: #0a0f18;
+    }
+
+    /* ── THEME: Ink ── */
+    body.theme-ink {
+        --t-primary:       #888888;
+        --t-primary-hover: #aaaaaa;
+        --t-bg:            #f5f5f5;
+        --t-text:          #111;
+        --t-digital-bg:    #111;
+        --t-digital-text:  #eee;
+        --t-accent-rgb:    100,100,100;
+        --t-red-rgb:       200,60,60;
+        --t-block-full:    #555;
+        --t-block-empty:   #ddd;
+        --t-block-border:  #f5f5f5;
+    }
+    body.theme-ink.dark-mode {
+        --t-bg:           #111;
+        --t-text:         #eee;
+        --t-digital-bg:   #ddd;
+        --t-digital-text: #111;
+        --t-block-full:   #aaa;
+        --t-block-empty:  #333;
+        --t-block-border: #111;
+    }
+
+    /* Random-active — uses current theme primary */
     .random-active {
-        background: #007777;
+        background: var(--t-primary-hover, #007777) !important;
         color: white;
         transform: scale(1.06);
-        box-shadow: 0 0 10px rgba(0,153,153,0.6);
+        box-shadow: 0 0 10px rgba(var(--t-accent-rgb, 0,153,153),0.6);
         transition: all 0.2s ease;
     }
 
-    body.dark-mode .random-active {
-        background: #00cccc;
-        box-shadow: 0 0 12px rgba(0,204,204,0.7);
-    }
 
-    /* Digital mode – grey override */
-    #digitalDisplay[style*="display: block"] ~ #controls #randomButton.random-active {
-        background: #777 !important;
-        box-shadow: 0 0 8px rgba(255,255,255,0.3) !important;
-    }
-
-    body.dark-mode #digitalDisplay[style*="display: block"] ~ #controls #randomButton.random-active {
-        background: #666 !important;
-        box-shadow: 0 0 8px rgba(0,0,0,0.4) !important;
-    }
 
         body {
             display: flex;
@@ -248,7 +341,7 @@
             justify-content: center;
             gap: 2px;
         }
-        #smallButton, #randomButton, #resetButton, #historyButton, #displayModeButton, #themeToggleButton {
+        #smallButton, #randomButton, #resetButton, #historyButton, #displayModeButton, #colorThemeButton, #themeToggleButton {
             font-size: 14px;
             padding: 4px 7px;
             background-color: var(--primary-cyan);
@@ -257,7 +350,7 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        #smallButton:hover, #randomButton:hover, #resetButton:hover, #historyButton:hover, #displayModeButton:hover, #themeToggleButton:hover {
+        #smallButton:hover, #randomButton:hover, #resetButton:hover, #historyButton:hover, #displayModeButton:hover, #colorThemeButton:hover, #themeToggleButton:hover {
             background-color: var(--primary-cyan-hover);
         }
         #randomButton.active {
@@ -387,6 +480,57 @@
     }
 }
 
+    /* Blocks display mode */
+    #blocksDisplay {
+        display: none;
+        padding: 16px 20px 12px 20px;
+        cursor: pointer;
+        user-select: none;
+        text-align: center;
+        background-color: var(--bg-color);
+        transition: background-color 0.3s ease;
+    }
+    #blocksGrid {
+        display: grid;
+        grid-template-columns: repeat(5, 44px);
+        gap: 6px;
+        justify-content: center;
+    }
+    .block-cell {
+        width: 44px;
+        height: 44px;
+        border-radius: 5px;
+        overflow: hidden;
+        background-color: transparent;
+        position: relative;
+    }
+    .block-fill {
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        background-color: var(--t-block-full, #009999);
+        border-radius: 5px;
+    }
+    #blocksLabel {
+        margin-top: 10px;
+        font-size: 14px;
+        color: var(--text-color);
+        opacity: 0.6;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+    #timerNameDisplayBlocks {
+        font-size: 12px;
+        font-weight: bold;
+        color: var(--text-color);
+        opacity: 0.5;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        min-height: 16px;
+        cursor: pointer;
+    }
+
     #weekChart { margin-bottom: 25px !important; }
 
     </style>
@@ -401,6 +545,11 @@
             <span class="minutes-label">minutes</span>
             <div class="pulse-dot"></div>
         </div>
+        <div id="blocksDisplay">
+            <div id="timerNameDisplayBlocks" onclick="openNameModal()"></div>
+            <div id="blocksGrid"></div>
+            <div id="blocksLabel">minutes remaining</div>
+        </div>
         <div id="controls">
             <div id="minutesLabel">MINUTES REMAINING</div>
             <div id="inputButtonContainer">
@@ -410,6 +559,7 @@
             <div id="sizeButtonContainer">
                 <button id="smallButton" onclick="toggleSize()">Size ◯</button>
                 <button id="displayModeButton" onclick="toggleDisplayMode()">Display ⊡</button>
+                <button id="colorThemeButton" onclick="cycleColorTheme()">Color ◈</button>
                 <button id="themeToggleButton" onclick="toggleTheme()">☾ ☀</button>
                 <button id="randomButton" onclick="toggleRandomChime()">Random ♬</button>
                 <button id="resetButton" onclick="resetTimer()">Reset ⟳</button>
@@ -550,13 +700,26 @@
         const reviewModal = document.getElementById('reviewModal');
         const historyModal = document.getElementById('historyModal');
 
-        // Define colors to match CSS variables
-        const colors = {
-            primaryCyan: 'rgba(0, 153, 153, 0.5)',
-            primaryCyanOpaque: 'rgba(0, 153, 153, 0.8)',
-            primaryCyanPulse: 'rgba(0, 153, 153, ',
-            primaryRed: 'rgba(237, 77, 102, 0.8)',
-            primaryRedLight: 'rgba(237, 77, 102, 0.4)',
+        // Color helpers — read from CSS custom properties so they respond to theme changes
+        function getThemeColors() {
+            const style = getComputedStyle(document.documentElement);
+            const rgb = (style.getPropertyValue('--t-accent-rgb') || '0,153,153').replace(/\s/g, '');
+            const redRGB = (style.getPropertyValue('--t-red-rgb') || '237,77,102').replace(/\s/g, '');
+            return {
+                primaryCyan:      'rgba(' + rgb + ',0.5)',
+                primaryCyanOpaque:'rgba(' + rgb + ',0.8)',
+                primaryCyanPulse: 'rgba(' + rgb + ',',
+                primaryRed:       'rgba(' + redRGB + ',0.8)',
+                primaryRedLight:  'rgba(' + redRGB + ',0.4)',
+            };
+        }
+        // colors object — call getThemeColors() fresh each draw so theme changes apply
+        var colors = {
+            get primaryCyan()       { return getThemeColors().primaryCyan; },
+            get primaryCyanOpaque() { return getThemeColors().primaryCyanOpaque; },
+            get primaryCyanPulse()  { return getThemeColors().primaryCyanPulse; },
+            get primaryRed()        { return getThemeColors().primaryRed; },
+            get primaryRedLight()   { return getThemeColors().primaryRedLight; },
         };
 
         let radius = 120;
@@ -632,11 +795,29 @@
                     background: '#000',
                     color: '#ddd'
                 }
+            },
+            blocks: {
+                name: 'Blocks',
+                element: 'blocksDisplay',
+                supportsSize: true,
+                drawFunction: 'drawBlocksTimer',
+                clickHandler: handleTimerClick,
+                nameDisplayClass: 'blocks-mode',
+                containerWidth: '360px',
+                containerHeight: '460px',
+                windowWidth: 400,
+                windowHeight: 440,
+                buttonStyle: {
+                    background: 'var(--t-primary)',
+                    color: 'white',
+                    backgroundHover: 'var(--t-primary-hover)'
+                },
+                inputStyle: {
+                    borderColor: 'var(--t-primary)',
+                    background: '#fff',
+                    color: '#000'
+                }
             }
-            // Future modes can be added here:
-            // analog: { ... },
-            // progress: { ... },
-            // minimal: { ... }
         };
 
         const chimes = [
@@ -888,6 +1069,15 @@
                     currentSize = 'large';
                 }
             }
+            else if (currentDisplayMode === 'blocks') {
+                if (currentSize === 'large') {
+                    currentSize = 'medium';
+                } else if (currentSize === 'medium') {
+                    currentSize = 'small';
+                } else {
+                    currentSize = 'large';
+                }
+            }
             
             drawTimer();
         }
@@ -924,6 +1114,25 @@
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
+        // ── Color theme cycling ──
+        const colorThemes = ['', 'theme-ember', 'theme-forest', 'theme-slate', 'theme-ink'];
+        const colorThemeLabels = ['Cyan', 'Ember', 'Forest', 'Slate', 'Ink'];
+        let currentColorThemeIndex = 0;
+
+        function cycleColorTheme() {
+            // Remove current color theme class
+            if (colorThemes[currentColorThemeIndex]) {
+                document.body.classList.remove(colorThemes[currentColorThemeIndex]);
+            }
+            currentColorThemeIndex = (currentColorThemeIndex + 1) % colorThemes.length;
+            if (colorThemes[currentColorThemeIndex]) {
+                document.body.classList.add(colorThemes[currentColorThemeIndex]);
+            }
+            localStorage.setItem('colorTheme', currentColorThemeIndex);
+            // Redraw so canvas colours update immediately
+            drawTimer();
+        }
+
         function setDisplayMode(mode) {
             if (!displayModes[mode]) return;
             
@@ -940,12 +1149,19 @@
             // Show/hide the correct name display
             const circularName = document.getElementById('timerNameDisplay');
             const digitalName = document.getElementById('timerNameDisplayDigital');
+            const blocksName = document.getElementById('timerNameDisplayBlocks');
             if (mode === 'circular') {
                 circularName.style.display = 'block';
                 if (digitalName) digitalName.style.display = 'none';
+                if (blocksName) blocksName.style.display = 'none';
             } else if (mode === 'digital') {
                 circularName.style.display = 'none';
                 if (digitalName) digitalName.style.display = 'block';
+                if (blocksName) blocksName.style.display = 'none';
+            } else if (mode === 'blocks') {
+                circularName.style.display = 'none';
+                if (digitalName) digitalName.style.display = 'none';
+                if (blocksName) blocksName.style.display = 'block';
             }
             
             // Save to localStorage
@@ -1043,6 +1259,76 @@
                 minutesLabel.style.display = 'block';
                 // Show PAUSED instead of 'minutes' when paused
                 minutesLabel.textContent = isPaused ? 'PAUSED' : 'minutes';
+            }
+        }
+
+        function drawBlocksTimer() {
+            var grid = document.getElementById('blocksGrid');
+            var label = document.getElementById('blocksLabel');
+
+            var totalMinutes = totalTime > 0 ? Math.round(totalTime / 60) : (parseInt(document.getElementById('timeInput').value) || 25);
+            var remainMinutes = remainingTime > 0 ? Math.ceil(remainingTime / 60) : (isExpired ? 0 : totalMinutes);
+
+            // Block size based on currentSize
+            var blockPx = currentSize === 'small' ? 28 : currentSize === 'medium' ? 36 : 44;
+            var gapPx   = currentSize === 'small' ? 4  : currentSize === 'medium' ? 5  : 6;
+            grid.style.gridTemplateColumns = 'repeat(5, ' + blockPx + 'px)';
+            grid.style.gap = gapPx + 'px';
+
+            // Active block fill: shrinks by 1 sliver per second (60 slivers per minute)
+            var secsLeft = remainingTime > 0 ? ((remainingTime - 1) % 60) + 1 : 0; // 60→1 within the minute
+            var activeFillPct = (secsLeft / 60) * 100;
+
+            // Rebuild grid when count or size changes
+            var cellCount = Math.ceil(totalMinutes / 5) * 5;
+            if (grid.children.length !== cellCount || grid.dataset.blockPx !== String(blockPx)) {
+                grid.dataset.blockPx = blockPx;
+                grid.innerHTML = '';
+                for (var i = 0; i < cellCount; i++) {
+                    var cell = document.createElement('div');
+                    cell.className = 'block-cell';
+                    cell.style.width  = blockPx + 'px';
+                    cell.style.height = blockPx + 'px';
+                    var fill = document.createElement('div');
+                    fill.className = 'block-fill';
+                    cell.appendChild(fill);
+                    grid.appendChild(cell);
+                }
+            }
+
+            var cells = grid.querySelectorAll('.block-cell');
+            var cellCount2 = cells.length;
+            cells.forEach(function(cell, i) {
+                var row = Math.floor(i / 5);
+                var col = i % 5;
+                var blockNum = cellCount2 - (row * 5 + (4 - col));
+                var fill = cell.querySelector('.block-fill');
+
+                if (blockNum > totalMinutes || blockNum < 1) {
+                    cell.style.visibility = 'hidden';
+                    return;
+                }
+                cell.style.visibility = 'visible';
+
+                if (isExpired || blockNum > remainMinutes) {
+                    // Elapsed — empty
+                    fill.style.width = '0%';
+                } else if (blockNum === remainMinutes && isRunning && !isPaused) {
+                    // Active block — depleting right-to-left
+                    fill.style.width = activeFillPct.toFixed(1) + '%';
+                } else {
+                    // Future block — fully filled
+                    fill.style.width = '100%';
+                }
+            });
+
+            // Label — always shows original total
+            if (isExpired) {
+                label.textContent = "TIME'S UP!";
+            } else if (isPaused) {
+                label.textContent = totalMinutes + ' minute' + (totalMinutes !== 1 ? 's' : '') + ' — PAUSED';
+            } else {
+                label.textContent = totalMinutes + ' minute' + (totalMinutes !== 1 ? 's' : '');
             }
         }
 
@@ -1196,6 +1482,10 @@
             if (digitalNameDisplay) {
                 digitalNameDisplay.textContent = displayText;
             }
+            const blocksNameDisplay = document.getElementById('timerNameDisplayBlocks');
+            if (blocksNameDisplay) {
+                blocksNameDisplay.textContent = displayText;
+            }
         }
 
         window.onclick = function(event) {
@@ -1234,6 +1524,7 @@
 
         canvas.addEventListener('click', handleTimerClick);
         document.getElementById('digitalDisplay').addEventListener('click', handleTimerClick);
+        document.getElementById('blocksDisplay').addEventListener('click', handleTimerClick);
 
         // Add hover listeners for mode-specific button styling
         document.querySelectorAll('#sizeButtonContainer button').forEach(button => {
@@ -1272,6 +1563,13 @@
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
+        }
+
+        // Restore saved color theme
+        const savedColorTheme = parseInt(localStorage.getItem('colorTheme') || '0');
+        if (!isNaN(savedColorTheme) && savedColorTheme > 0 && savedColorTheme < colorThemes.length) {
+            currentColorThemeIndex = savedColorTheme;
+            document.body.classList.add(colorThemes[savedColorTheme]);
         }
         
         // Restore saved display mode and resize window on first load
