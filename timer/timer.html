@@ -520,6 +520,7 @@
         animation: blockAura 1.8s ease-in-out infinite;
     }
     #blocksTimesUp {
+        display: none;
         position: absolute;
         top: 50%; left: 50%;
         transform: translate(-50%, -50%);
@@ -569,7 +570,7 @@
             <div id="timerNameDisplayBlocks" onclick="openNameModal()"></div>
             <div style="position:relative; display:inline-block;">
                 <div id="blocksGrid"></div>
-                <div id="blocksTimesUp" style="display:none;">TIME'S UP!</div>
+                <div id="blocksTimesUp">TIME'S UP!</div>
             </div>
             <div id="blocksLabel">minutes remaining</div>
         </div>
@@ -1609,18 +1610,14 @@
         }
         
         // Restore saved display mode and resize window on first load
+        var tup = document.getElementById('blocksTimesUp');
+        if (tup) tup.style.display = 'none'; // always hide on load regardless of saved state
         const savedDisplayMode = localStorage.getItem('displayMode');
         if (savedDisplayMode && displayModes[savedDisplayMode]) {
             setDisplayMode(savedDisplayMode);
-            // Resize window to match the display mode (only on first load)
             const config = displayModes[savedDisplayMode];
             if (config.windowWidth && config.windowHeight) {
-                try {
-                    window.resizeTo(config.windowWidth, config.windowHeight);
-                } catch (e) {
-                    // Window resize may fail in some browsers/contexts
-                    console.log('Window resize not available');
-                }
+                try { window.resizeTo(config.windowWidth, config.windowHeight); } catch(e) {}
             }
         } else {
             // Default to circular
