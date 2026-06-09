@@ -154,8 +154,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             margin: 0;
+            padding: 0;
+            width: 100%;
             font-family: Arial, sans-serif;
             background-color: var(--bg-color);
             transition: background-color 0.3s ease;
@@ -165,12 +167,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            transition: width 0.3s, height 0.3s;
             overflow: visible;
             position: relative;
             padding-top: 10px;
+            min-height: 0;
         }
         #timerCanvas {
+            display: none;
             margin-top: 10px;
             margin-bottom: 5px;
             cursor: pointer;
@@ -196,7 +199,8 @@
         #digitalDisplay .minutes-label {
             font-size: 24px;
             font-weight: normal;
-            color: #999;
+            color: var(--text-color);
+            opacity: 0.6;
             margin-top: 5px;
             display: block;
         }
@@ -235,9 +239,10 @@
             box-sizing: border-box;
         }
         #timeInput:disabled {
-            background-color: #E0E0E0;
-            border-color: #a9a9a9;
-            color: #666;
+            background-color: var(--t-block-empty);
+            border-color: var(--t-primary);
+            color: var(--text-color);
+            opacity: 0.5;
             cursor: not-allowed;
         }
         #startButton {
@@ -254,15 +259,17 @@
             background-color: var(--primary-cyan-hover);
         }
         #startButton:disabled {
-            background-color: #E0E0E0;
-            border-color: #a9a9a9;
-            color: #666;
+            background-color: var(--t-block-empty);
+            border-color: var(--t-block-empty);
+            color: var(--text-color);
+            opacity: 0.5;
             cursor: not-allowed;
         }
         #timerNameDisplay {
             font-size: 14px;
             font-weight: bold;
-            color: #575757;
+            color: var(--text-color);
+            opacity: 0.7;
             text-align: center;
             padding: 2px 8px;
             overflow: hidden;
@@ -275,17 +282,18 @@
             margin-bottom: 10px;
         }
         #timerNameDisplay:hover {
-            background-color: rgba(0, 153, 153, 0.15);
-            box-shadow: inset 0 0 0 1px rgba(0, 153, 153, 0.3);
+            background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.15);
+            box-shadow: inset 0 0 0 1px rgba(var(--t-accent-rgb, 0,153,153), 0.3);
         }
         #timerNameDisplay.digital-mode {
-            color: #888;
+            color: var(--text-color);
+            opacity: 0.6;
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         #timerNameDisplay.digital-mode:hover {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.1);
             box-shadow: none;
         }
         /* For circular mode, position name above canvas */
@@ -305,7 +313,8 @@
         #timerNameDisplayDigital {
             font-size: 12px;
             font-weight: bold;
-            color: #888;
+            color: var(--text-color);
+            opacity: 0.6;
             text-align: center;
             padding: 2px 8px;
             overflow: hidden;
@@ -337,18 +346,53 @@
             gap: 2px;
         }
         #digitalButtonContainer {
+        #inputButtonContainer {
             display: flex;
             justify-content: center;
-            gap: 2px;
+            gap: 4px;
+            align-items: center;
+        }
+        #gearButton {
+            font-size: 16px;
+            padding: 4px 8px;
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--primary-cyan);
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s, background 0.2s;
+            line-height: 1;
+        }
+        #gearButton:hover { opacity: 1; background: var(--primary-cyan); color: white; }
+        #gearButton.open  { opacity: 1; background: var(--primary-cyan); color: white; }
+
+        #sizeButtonContainer {
+            display: flex;
+            justify-content: center;
+            gap: 3px;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.25s ease, opacity 0.2s ease, margin 0.25s ease;
+            margin-top: 0;
+            width: 100%;
+        }
+        #sizeButtonContainer.open {
+            max-height: 40px;
+            opacity: 1;
+            margin-top: 5px;
         }
         #smallButton, #randomButton, #resetButton, #historyButton, #displayModeButton, #colorThemeButton, #themeToggleButton {
             font-size: 14px;
-            padding: 4px 7px;
+            padding: 4px 0;
             background-color: var(--primary-cyan);
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            flex: 1;
+            min-width: 0;
         }
         #smallButton:hover, #randomButton:hover, #resetButton:hover, #historyButton:hover, #displayModeButton:hover, #colorThemeButton:hover, #themeToggleButton:hover {
             background-color: var(--primary-cyan-hover);
@@ -366,19 +410,24 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0,0,0,0.5);
         }
 
         .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 10% auto;
             padding: 20px;
-            border: 1px solid #888;
+            border: 1px solid var(--t-primary);
             width: 400px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            max-height: 70vh;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            max-height: 75vh;
             overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            color: var(--t-primary);
         }
 
         .modal-button {
@@ -388,31 +437,34 @@
             cursor: pointer;
             border: none;
             border-radius: 4px;
-        }
-        
-        .modal-button.primary {
             background-color: transparent;
-            color: var(--primary-cyan-outline);
-            border: 1px solid var(--primary-cyan-outline);
+            color: var(--text-color);
+            border: 1px solid var(--secondary-gray);
+        }
+
+        .modal-button.primary {
+            color: var(--t-primary);
+            border: 1px solid var(--t-primary);
         }
 
         .modal-button.primary:hover {
-            color: var(--primary-cyan-outline-hover);
-            border-color: var(--primary-cyan-outline-hover);
+            background-color: var(--t-primary);
+            color: white;
         }
 
         .modal-button:hover {
-            color: var(--secondary-gray-hover) !important;
-            border-color: var(--secondary-gray-hover) !important;
+            border-color: var(--text-color) !important;
+            color: var(--text-color) !important;
         }
 
         .modal-button.secondary {
-            background-color: #e0e0e0;
-            color: #333;
+            background-color: var(--t-block-empty);
+            color: var(--text-color);
+            border-color: transparent;
         }
 
         .modal-button.secondary:hover {
-            background-color: #c0c0c0;
+            opacity: 0.8;
         }
 
         #nameModal .modal-content {
@@ -421,22 +473,24 @@
 
         .emoji-button:hover {
             transform: scale(1.1);
-            border-color: var(--primary-cyan) !important;
+            border-color: var(--t-primary) !important;
         }
 
         .emoji-button.selected {
-            border-color: var(--primary-cyan) !important;
-            background-color: rgba(0, 153, 153, 0.1) !important;
+            border-color: var(--t-primary) !important;
+            background-color: rgba(var(--t-accent-rgb, 0,153,153), 0.15) !important;
         }
 
         #timerNameInput {
             width: 100%;
             padding: 8px;
             margin: 10px 0;
-            border: 2px solid var(--primary-cyan);
+            border: 2px solid var(--t-primary);
             border-radius: 4px;
             font-size: 16px;
             box-sizing: border-box;
+            background-color: var(--bg-color);
+            color: var(--text-color);
         }
         #saveNameButton, #cancelNameButton {
             padding: 8px 16px;
@@ -454,11 +508,11 @@
             background-color: var(--primary-cyan-hover);
         }
         #cancelNameButton {
-            background-color: #e0e0e0;
-            color: #333;
+            background-color: var(--t-block-empty);
+            color: var(--text-color);
         }
         #cancelNameButton:hover {
-            background-color: #c0c0c0;
+            opacity: 0.8;
         }
 
         @media (max-width: 600px) {
@@ -483,19 +537,22 @@
     /* Blocks display mode */
     #blocksDisplay {
         display: none;
-        padding: 16px 20px 12px 20px;
+        padding: 20px 20px 14px 20px;
         cursor: pointer;
         user-select: none;
         text-align: center;
         background-color: var(--bg-color);
         transition: background-color 0.3s ease;
         position: relative;
+        width: 100%;
+        box-sizing: border-box;
     }
     #blocksGrid {
         display: grid;
         grid-template-columns: repeat(5, 44px);
         gap: 6px;
-        justify-content: center;
+        width: 244px;
+        margin: 10px auto 0 auto;
     }
     .block-cell {
         width: 44px;
@@ -507,7 +564,9 @@
     }
     .block-fill {
         position: absolute;
-        left: 0; top: 0; bottom: 0;
+        left: 0; top: 0;
+        width: 100%;
+        height: 100%;
         background-color: var(--t-block-full, #009999);
         border-radius: 5px;
     }
@@ -520,13 +579,16 @@
         animation: blockAura 1.8s ease-in-out infinite;
     }
     #blocksLabel {
-        margin-top: 10px;
+        margin-top: 14px;
+        margin-bottom: 4px;
         font-size: 14px;
         color: var(--text-color);
         opacity: 0.6;
         letter-spacing: 1px;
         text-transform: uppercase;
         transition: color 0.3s, opacity 0.3s;
+        text-align: center;
+        width: 100%;
     }
     #blocksLabel.expired {
         color: var(--t-primary);
@@ -553,18 +615,16 @@
 <body>
     <div id="timerContainer">
         <div id="timerNameDisplay" class="circular-mode" onclick="openNameModal()"></div>
-        <canvas id="timerCanvas"></canvas>
-        <div id="digitalDisplay">
+        <canvas id="timerCanvas" style="display:none"></canvas>
+        <div id="digitalDisplay" style="display:none">
             <div id="timerNameDisplayDigital" class="digital-mode" onclick="openNameModal()"></div>
             <div class="number">25</div>
             <span class="minutes-label">minutes</span>
             <div class="pulse-dot"></div>
         </div>
-        <div id="blocksDisplay">
+        <div id="blocksDisplay" style="display:none">
             <div id="timerNameDisplayBlocks" onclick="openNameModal()"></div>
-            <div style="position:relative; display:inline-block;">
-                <div id="blocksGrid"></div>
-            </div>
+            <div id="blocksGrid" style="display:grid;grid-template-columns:repeat(5,36px);gap:5px;width:204px;margin:0 auto;"></div>
             <div id="blocksLabel">minutes remaining</div>
         </div>
         <div id="controls">
@@ -572,15 +632,16 @@
             <div id="inputButtonContainer">
                 <input type="number" id="timeInput" value="25" min="1">
                 <button id="startButton" onclick="startTimer()">Start</button>
+                <button id="gearButton" onclick="toggleControlPanel()" title="Settings">⚙</button>
             </div>
             <div id="sizeButtonContainer">
-                <button id="smallButton" onclick="toggleSize()">Size ◯</button>
-                <button id="displayModeButton" onclick="toggleDisplayMode()">Display ⊡</button>
-                <button id="colorThemeButton" onclick="cycleColorTheme()">Color ◈</button>
-                <button id="themeToggleButton" onclick="toggleTheme()">☾ ☀</button>
-                <button id="randomButton" onclick="toggleRandomChime()">Random ♬</button>
-                <button id="resetButton" onclick="resetTimer()">Reset ⟳</button>
-                <button id="historyButton" onclick="openHistoryModal()">History ⌕</button>
+                <button id="smallButton"       onclick="toggleSize()"         title="Size">◯</button>
+                <button id="displayModeButton" onclick="toggleDisplayMode()"  title="Display">⊡</button>
+                <button id="colorThemeButton"  onclick="cycleColorTheme()"    title="Color theme">◈</button>
+                <button id="themeToggleButton" onclick="toggleTheme()"        title="Light / Dark">☾</button>
+                <button id="randomButton"      onclick="toggleRandomChime()"  title="Random chime">♬</button>
+                <button id="resetButton"       onclick="resetTimer()"         title="Reset">⟳</button>
+                <button id="historyButton"     onclick="openHistoryModal()"   title="History">⌕</button>
             </div>
             <div id="digitalButtonContainer" style="display: none; margin-top: 5px; gap: 2px;">
                 <!-- Future digital-specific controls can go here -->
@@ -589,10 +650,10 @@
     </div>
     <audio id="timerSound" src="timer-sounds/clear-announce-tones-2861.wav" preload="auto"></audio>
 
-    <div id="nameModal" class="modal">
+    <div id="nameModal" class="modal" style="display:none">
         <div class="modal-content">
             <h3>Edit Timer Name</h3>
-            <p style="font-size: 14px; color: #666; margin: 10px 0;">Click on the timer name at the top to edit anytime</p>
+            <p style="font-size: 14px; color: var(--text-color); opacity: 0.6; margin: 10px 0;">Click on the timer name at the top to edit anytime</p>
             <input type="text" id="timerNameInput" placeholder="Enter timer name" maxlength="30">
             <div>
                 <button id="saveNameButton" onclick="saveTimerName()">Save</button>
@@ -602,7 +663,7 @@
     </div>
 
     <!-- History Modal -->
-    <div id="historyModal" class="modal">
+    <div id="historyModal" class="modal" style="display:none">
         <div class="modal-content">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;">
             <button type="button"
@@ -620,14 +681,14 @@
                     onclick="closeHistoryModal()"
                     aria-label="Close session history"
                     title="Close"
-                    style="background:none;border:none;font-size:20px;cursor:pointer;color:#777;padding:4px 8px;">
+                    style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-color);opacity:0.5;padding:4px 8px;">
                 ×    <!-- Multiplication glyph/sign as close icon -->
             </button>
         </div>
 
 
             <!-- 2-week mini-chart – THIS week on TOP -->
-                <div id="weekChart" style="margin-bottom:25px;font-size:13px;color:#575757; text-align:center">
+                <div id="weekChart" style="margin-bottom:25px;font-size:13px;color:var(--text-color);opacity:0.7;text-align:center">
 
                 <!-- THIS WEEK -->
                 <div class="weekRow">
@@ -674,11 +735,11 @@
     </div>
 
     <!-- Review Modal -->
-    <div id="reviewModal" class="modal">
+    <div id="reviewModal" class="modal" style="display:none">
         <div class="modal-content" style="width: 340px;">
         <h3 style="margin-top: 0; margin-bottom: 12px;">Review</h3>
-            <div style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 14px;">
-                <input type="text" id="reviewSessionName" style="width: 100%; padding: 4px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; font-weight: bold; box-sizing: border-box;">
+            <div style="background-color: var(--t-block-empty); padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 14px;">
+                <input type="text" id="reviewSessionName" style="width: 100%; padding: 4px; margin-bottom: 8px; border: 1px solid var(--t-primary); border-radius: 4px; font-size: 14px; font-weight: bold; box-sizing: border-box; background: var(--bg-color); color: var(--text-color);">
                 <div id="reviewSessionInfo"></div>
             </div>  
             <div style="display: flex; justify-content: space-around; margin: 4px 0 6px 0;">
@@ -687,13 +748,13 @@
                 <button class="emoji-button" onclick="selectReviewScore(1)" style="font-size: 20px; background: none; border: 3px solid transparent; border-radius: 6px; cursor: pointer; padding: 3px;">😊</button>
             </div>
             
-            <div style="display: flex; justify-content: space-around; margin-bottom: 14px; font-size: 12px; color: #ababab;">
+            <div style="display: flex; justify-content: space-around; margin-bottom: 14px; font-size: 12px; color: var(--text-color); opacity: 0.5;">
                 <span>Not useful</span>
                 <span>Neutral</span>
                 <span>Very useful</span>
             </div>
             
-            <textarea id="reviewComment" placeholder="Optional comment..." style="width: 100%; padding: 8px; border: 2px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; resize: vertical; min-height: 60px;"></textarea>
+            <textarea id="reviewComment" placeholder="Optional comment..." style="width: 100%; padding: 8px; border: 2px solid var(--t-primary); border-radius: 4px; font-size: 14px; box-sizing: border-box; resize: vertical; min-height: 60px; background: var(--bg-color); color: var(--text-color);"></textarea>
             
             <div style="margin-top: 10px;">
                 <button class="modal-button primary" onclick="saveReview()">Save</button>
@@ -716,6 +777,7 @@
         const timerNameInput = document.getElementById('timerNameInput');
         const reviewModal = document.getElementById('reviewModal');
         const historyModal = document.getElementById('historyModal');
+        const smallButton = document.getElementById('smallButton');
 
         // Color helpers — read from CSS custom properties so they respond to theme changes
         function getThemeColors() {
@@ -771,8 +833,7 @@
                 sizes: ['small', 'medium', 'large'],
                 defaultSize: 'large',
                 drawFunction: 'drawCircularTimer',
-                clickHandler: handleTimerClick,
-                nameDisplayClass: 'circular-mode',  // Position above canvas
+                clickHandler: 'handleTimerClick',  // Position above canvas
                 containerWidth: '380px',
                 containerHeight: '500px',
                 windowWidth: 420,
@@ -784,8 +845,8 @@
                 },
                 inputStyle: {
                     borderColor: 'var(--primary-cyan)',
-                    background: '#fff',
-                    color: '#000'
+                    background: 'var(--bg-color)',
+                    color: 'var(--text-color)'
                 }
             },
             digital: {
@@ -795,7 +856,7 @@
                 sizes: ['small', 'medium', 'large'],
                 defaultSize: 'large',
                 drawFunction: 'updateDigitalDisplay',
-                clickHandler: handleTimerClick,
+                clickHandler: 'handleTimerClick',
                 nameDisplayClass: 'digital-mode',  // Inside black box
                 containerWidth: '300px',
                 containerHeight: '380px',
@@ -818,7 +879,7 @@
                 element: 'blocksDisplay',
                 supportsSize: true,
                 drawFunction: 'drawBlocksTimer',
-                clickHandler: handleTimerClick,
+                clickHandler: 'handleTimerClick',
                 nameDisplayClass: 'blocks-mode',
                 containerWidth: '360px',
                 containerHeight: '460px',
@@ -831,8 +892,8 @@
                 },
                 inputStyle: {
                     borderColor: 'var(--t-primary)',
-                    background: '#fff',
-                    color: '#000'
+                    background: 'var(--bg-color)',
+                    color: 'var(--text-color)'
                 }
             }
         };
@@ -901,13 +962,10 @@
         // Initial setup for the default (medium) timer size
         canvas.width = 300;
         canvas.height = 300;
-        canvas.style.width = '300px';
-        canvas.style.height = '300px';
         radius = 100;
         centerX = canvas.width / 2;
         centerY = canvas.height / 2;
         timerContainer.style.width = '320px';
-        timerContainer.style.height = '460px';
         timerNameDisplay.style.fontSize = '14.4px';
 
         
@@ -943,13 +1001,12 @@
         }
 
         function drawTimer() {
-            // Universal draw function - delegates to mode-specific function
-            const config = displayModes[currentDisplayMode];
-            if (config && config.drawFunction) {
-                // Call function by name
-                if (typeof window[config.drawFunction] === 'function') {
-                    window[config.drawFunction]();
-                }
+            if (currentDisplayMode === 'circular') {
+                drawCircularTimer();
+            } else if (currentDisplayMode === 'digital') {
+                updateDigitalDisplay();
+            } else if (currentDisplayMode === 'blocks') {
+                drawBlocksTimer();
             }
         }
 
@@ -1077,6 +1134,14 @@
         randomButton.classList.toggle('random-active', randomChimeSelected);
     }
 
+        function toggleControlPanel() {
+            const panel = document.getElementById('sizeButtonContainer');
+            const gear  = document.getElementById('gearButton');
+            const open  = panel.classList.toggle('open');
+            gear.classList.toggle('open', open);
+            localStorage.setItem('controlPanelOpen', open ? '1' : '0');
+        }
+
         function toggleSize() {
             const config = displayModes[currentDisplayMode];
             if (!config.supportsSize) return; // Do nothing if mode doesn't support sizing
@@ -1093,7 +1158,7 @@
                     centerX = canvas.width / 2;
                     centerY = canvas.height / 2;
                     timerContainer.style.width = '320px';
-                    timerContainer.style.height = '460px';
+                    timerContainer.style.height = 'auto';
                     timerNameDisplay.style.fontSize = '14.4px';
                     currentSize = 'medium';
                 } else if (currentSize === 'medium') {
@@ -1106,7 +1171,7 @@
                     centerX = canvas.width / 2;
                     centerY = canvas.height / 2 - 5;
                     timerContainer.style.width = '256px';
-                    timerContainer.style.height = '396px';
+                    timerContainer.style.height = 'auto';
                     timerNameDisplay.style.fontSize = '10.8px';
                     currentSize = 'small';
                 } else {
@@ -1119,7 +1184,7 @@
                     centerX = canvas.width / 2;
                     centerY = canvas.height / 2;
                     timerContainer.style.width = '380px';
-                    timerContainer.style.height = '500px';
+                    timerContainer.style.height = 'auto';
                     timerNameDisplay.style.fontSize = '18px';
                     currentSize = 'large';
                 }
@@ -1157,7 +1222,7 @@
             centerX = canvas.width / 2;
             centerY = canvas.height / 2;
             timerContainer.style.width = '380px';
-            timerContainer.style.height = '500px';
+            timerContainer.style.height = 'auto';
             timerNameDisplay.style.fontSize = '18px';
             currentSize = 'large';
             drawTimer();
@@ -1206,11 +1271,22 @@
             Object.values(displayModes).forEach(config => {
                 document.getElementById(config.element).style.display = 'none';
             });
+
+            // Restore canvas dimensions when switching to circular
+            if (mode === 'circular') {
+                const sz = currentSize === 'small' ? 236 : currentSize === 'medium' ? 300 : 360;
+                canvas.width = sz;
+                canvas.height = sz;
+                canvas.style.width = sz + 'px';
+                canvas.style.height = sz + 'px';
+            }
             
             // Show the selected mode's element
             currentDisplayMode = mode;
             const config = displayModes[mode];
             document.getElementById(config.element).style.display = 'block';
+            // Canvas is only shown in circular mode
+            canvas.style.display = mode === 'circular' ? 'block' : 'none';
             
             // Show/hide the correct name display
             const circularName = document.getElementById('timerNameDisplay');
@@ -1233,13 +1309,9 @@
             // Save to localStorage
             localStorage.setItem('displayMode', mode);
             
-            // Update the display
-            if (config.drawFunction) {
-                // Call function by name
-                if (typeof window[config.drawFunction] === 'function') {
-                    window[config.drawFunction]();
-                }
-            }
+            // Draw immediately then again after layout settles
+            drawTimer();
+            setTimeout(drawTimer, 50);
             
             // Update button states based on mode capabilities
             updateModeSpecificButtons();
@@ -1249,6 +1321,10 @@
             const config = displayModes[currentDisplayMode];
             const sizeButton = document.getElementById('smallButton');
             
+            // Apply container sizing for this mode
+            if (config.containerWidth) timerContainer.style.width = config.containerWidth;
+            timerContainer.style.height = 'auto';
+
             // Show/hide size button based on mode support
             if (config.supportsSize) {
                 sizeButton.style.display = 'inline-block';
@@ -1339,8 +1415,12 @@
             // Block size based on currentSize
             var blockPx = currentSize === 'small' ? 28 : currentSize === 'medium' ? 36 : 44;
             var gapPx   = currentSize === 'small' ? 4  : currentSize === 'medium' ? 5  : 6;
+            var gridWidth = 5 * blockPx + 4 * gapPx;
             grid.style.gridTemplateColumns = 'repeat(5, ' + blockPx + 'px)';
             grid.style.gap = gapPx + 'px';
+            grid.style.width = gridWidth + 'px';
+            label.style.width = gridWidth + 'px';
+            label.style.textAlign = 'center';
 
             // Active block fill: shrinks by 1 sliver per second (60 slivers per minute)
             var secsLeft = remainingTime > 0 ? ((remainingTime - 1) % 60) + 1 : 0; // 60→1 within the minute
@@ -1358,6 +1438,8 @@
                     cell.style.height = blockPx + 'px';
                     var fill = document.createElement('div');
                     fill.className = 'block-fill';
+                    fill.style.height = blockPx + 'px';
+                    fill.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--t-block-full').trim() || '#009999';
                     cell.appendChild(fill);
                     grid.appendChild(cell);
                 }
@@ -1659,6 +1741,12 @@
             document.body.classList.add(colorThemes[savedColorTheme]);
         }
         
+        // Restore control panel state
+        if (localStorage.getItem('controlPanelOpen') === '1') {
+            document.getElementById('sizeButtonContainer').classList.add('open');
+            document.getElementById('gearButton').classList.add('open');
+        }
+
         // Restore saved display mode and resize window on first load
         const savedDisplayMode = localStorage.getItem('displayMode');
         if (savedDisplayMode && displayModes[savedDisplayMode]) {
@@ -1674,7 +1762,8 @@
         
         drawTimer();
         updateButtonStates();
-        updateModeSpecificButtons(); // Initialize button styling
+        updateModeSpecificButtons();
+        setTimeout(drawTimer, 100);
 
         // History Modal Functions
         function openHistoryModal() {
@@ -1692,7 +1781,7 @@
             const sessions = getSessionHistory();
             
             if (sessions.length === 0) {
-                historyList.innerHTML = '<p style="text-align: center; color: #999;">No session history yet.</p>';
+                historyList.innerHTML = '<p style="text-align: center; color: var(--text-color); opacity:0.5;">No session history yet.</p>';
                 return;
             }
             
@@ -1705,21 +1794,21 @@
                 const scoreEmoji = session.score === 1 ? '😊' : session.score === 0 ? '😐' : session.score === -1 ? '😞' : '';
                 
                 html += `
-                    <div style="border: 1px solid #ddd; border-radius: 4px; padding: 12px; margin-bottom: 10px;">
+                    <div style="border: 1px solid var(--t-primary); opacity:0.6; border-radius: 4px; padding: 12px; margin-bottom: 10px;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <div style="color: #575757; font-size: 14px;"><strong>${session.name}</strong> <span style="color: #999; font-weight: normal;">— ${session.duration} minute${session.duration !== 1 ? 's' : ''}</span></div>
-                        <span style="color: #999; font-size: 12px;">${dateStr}</span>
+                        <div style="color: var(--text-color); font-size: 14px;"><strong>${session.name}</strong> <span style="opacity:0.6; font-weight: normal;">— ${session.duration} minute${session.duration !== 1 ? 's' : ''}</span></div>
+                        <span style="color: var(--text-color); opacity:0.5; font-size: 12px;">${dateStr}</span>
                     </div>
                     <div style="display: flex; align-items: center; justify-content: space-between;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             ${scoreEmoji ? `<span style="font-size: 20px;">${scoreEmoji}</span>` : ''}
-                            ${session.comment ? `<span style="color: #555; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
+                            ${session.comment ? `<span style="color: var(--text-color); opacity:0.7; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
                         </div>
                             <div style="display: flex; gap: 2px; flex-wrap: wrap;">
                                 <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px;">
                                     ${session.score !== undefined ? 'Edit' : 'Review'}
                                 </button>
-                                <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: transparent; color: #333; border: 1px solid #666; font-size: 14px; padding: 4px 8px;">×</button>
+                                <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: transparent; color: var(--text-color); border: 1px solid var(--t-primary); opacity:0.5; font-size: 14px; padding: 4px 8px;">×</button>
                             </div>
                         </div>
                     </div>
@@ -1748,8 +1837,8 @@
                 document.getElementById('reviewSessionName').value = session.name || 'Untitled Session';
                 document.getElementById('reviewSessionInfo').innerHTML = 
                     `<div style="display: flex; justify-content: space-between;">
-                        <div><span style="color: #999;">${session.duration} minute${session.duration !== 1 ? 's' : ''}</span></div>
-                        <span style="color: #999; font-size: 12px;">${toNZT(session.timestamp).display}</span>
+                        <div><span style="color: var(--t-primary); opacity:0.7;">${session.duration} minute${session.duration !== 1 ? 's' : ''}</span></div>
+                        <span style="color: var(--text-color); opacity:0.5; font-size: 12px;">${toNZT(session.timestamp).display}</span>
                     </div>`;
                 // If session already has a review, load it
                 if (session.score !== undefined) {
