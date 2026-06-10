@@ -1767,21 +1767,21 @@
                 const scoreEmoji = session.score === 1 ? '😊' : session.score === 0 ? '😐' : session.score === -1 ? '😞' : '';
                 
                 html += `
-                    <div style="border: 1px solid var(--t-primary); opacity:0.6; border-radius: 4px; padding: 12px; margin-bottom: 10px;">
+                    <div style="border: 1px solid var(--t-primary); border-radius: 4px; padding: 12px; margin-bottom: 10px;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <div style="color: var(--text-color); font-size: 14px;"><strong>${session.name}</strong> <span style="opacity:0.6; font-weight: normal;">— ${session.duration} minute${session.duration !== 1 ? 's' : ''}</span></div>
-                        <span style="color: var(--text-color); opacity:0.5; font-size: 12px;">${dateStr}</span>
+                        <div style="color: var(--text-color); font-size: 14px;"><strong>${session.name}</strong> <span style="color: var(--text-color); opacity:0.6; font-weight: normal;">— ${session.duration} minute${session.duration !== 1 ? 's' : ''}</span></div>
+                        <span style="color: var(--text-color); opacity:0.6; font-size: 12px;">${dateStr}</span>
                     </div>
                     <div style="display: flex; align-items: center; justify-content: space-between;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             ${scoreEmoji ? `<span style="font-size: 20px;">${scoreEmoji}</span>` : ''}
-                            ${session.comment ? `<span style="color: var(--text-color); opacity:0.7; font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
+                            ${session.comment ? `<span style="color: var(--text-color); font-size: 13px; font-style: italic;">"${session.comment}"</span>` : ''}
                         </div>
                             <div style="display: flex; gap: 2px; flex-wrap: wrap;">
                                 <button class="modal-button primary" onclick="openReviewModal('${session.id}')" style="font-size: 12px; padding: 4px 8px;">
                                     ${session.score !== undefined ? 'Edit' : 'Review'}
                                 </button>
-                                <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: transparent; color: var(--text-color); border: 1px solid var(--t-primary); opacity:0.5; font-size: 14px; padding: 4px 8px;">×</button>
+                                <button class="modal-button" onclick="deleteSession('${session.id}')" style="background-color: transparent; color: var(--text-color); border: 1px solid var(--t-primary); font-size: 14px; padding: 4px 8px;">×</button>
                             </div>
                         </div>
                     </div>
