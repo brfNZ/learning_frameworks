@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timer Storage Manager</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: Arial, sans-serif;
+        background: #f0f0f0;
+        color: #000;
+        padding: 20px;
+        max-width: 620px;
+        margin: 0 auto;
+    }
+    h1 { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: #007777; }
+    .section {
+        background: #fff;
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+        border: 1px solid #ddd;
+    }
+    .section-title {
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #007777;
+        margin-bottom: 10px;
+    }
+    .key-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 13px;
+    }
+    .key-row:last-child { border-bottom: none; }
+    .key-name { color: #888; font-family: monospace; font-size: 12px; min-width: 100px; }
+    .key-value { color: #000; flex: 1; padding: 0 10px; }
+    .key-value.empty { color: #bbb; font-style: italic; }
+    .btn {
+        padding: 5px 12px;
+        font-size: 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background: #007777;
+        color: white;
+        white-space: nowrap;
+    }
+    .btn:hover { background: #005555; }
+    .btn.danger { background: transparent; color: #c00; border: 1px solid #c00; }
+    .btn.danger:hover { background: #c00; color: white; }
+    .btn.secondary { background: transparent; color: #007777; border: 1px solid #007777; }
+    .btn.secondary:hover { background: #007777; color: white; }
+    .btn.armed { background: #c00; color: white; border: none; }
+    .actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .sessions-table { width: 100%; font-size: 12px; border-collapse: collapse; }
+    .sessions-table th {
+        text-align: left; padding: 4px 6px;
+        color: #777; font-weight: normal; border-bottom: 1px solid #eee;
+    }
+    .sessions-table td {
+        padding: 5px 6px; border-bottom: 1px solid #f5f5f5; vertical-align: middle;
+    }
+    .sessions-table tr:last-child td { border-bottom: none; }
+    .confirm-zone {
+        display: none; background: #fff3f3; border: 1px solid #fcc;
+        border-radius: 6px; padding: 10px; margin-top: 10px; font-size: 13px;
+    }
+    .confirm-zone input {
+        border: 1px solid #ccc; border-radius: 4px; padding: 4px 8px;
+        font-size: 13px; width: 120px; margin: 6px 4px 0 0;
+    }
+    .count-badge {
+        background: #007777; color: white; border-radius: 10px;
+        padding: 1px 7px; font-size: 11px; margin-left: 6px;
+    }
+    textarea.io-area {
+        width: 100%; height: 100px; font-size: 11px; font-family: monospace;
+        border: 1px solid #ccc; border-radius: 4px; padding: 6px;
+        resize: vertical; margin-top: 8px; background: #fafafa;
+    }
+    .io-block { margin-top: 12px; }
+    .io-label { font-size: 12px; color: #777; margin-bottom: 4px; }
+    .status {
+        font-size: 12px; padding: 4px 10px; border-radius: 4px;
+        margin-top: 8px; display: none;
+    }
+    .status.ok { background: #e6f4f1; color: #007777; display: block; }
+    .status.err { background: #fff0f0; color: #c00; display: block; }
+    .divider { border: none; border-top: 1px solid #eee; margin: 12px 0; }
+</style>
+</head>
+<body>
+
+<h1>Timer Storage Manager</h1>
+
+<!-- Settings overview (read-only) -->
+<div class="section">
+    <div class="section-title">Current Settings</div>
+    <div class="key-row"><span class="key-name">theme</span><span class="key-value" id="val-theme">—</span></div>
+    <div class="key-row"><span class="key-name">colorTheme</span><span class="key-value" id="val-colorTheme">—</span></div>
+    <div class="key-row"><span class="key-name">displayMode</span><span class="key-value" id="val-displayMode">—</span></div>
+    <div class="key-row"><span class="key-name">timerName</span><span class="key-value" id="val-timerName">—</span></div>
+</div>
+
+<!-- Sessions -->
+<div class="section">
+    <div class="section-title">
+        Session History
+        <span class="count-badge" id="session-count">0</span>
+    </div>
+
+    <div id="sessions-table-wrap"></div>
+
+    <hr class="divider">
+
+    <!-- Export -->
+    <div class="io-block">
+        <div class="io-label">Export</div>
+        <div class="actions">
+            <button class="btn" onclick="exportFile()">↓ Save JSON File</button>
+            <button class="btn secondary" onclick="exportCopy()">⎘ Copy to Clipboard</button>
+        </div>
+        <textarea class="io-area" id="export-area" readonly placeholder="Click Copy to Clipboard to populate..."></textarea>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Import -->
+    <div class="io-block">
+        <div class="io-label">Import — paste JSON or load a file (merges, no duplicates)</div>
+        <div class="actions">
+            <button class="btn secondary" onclick="document.getElementById('import-file').click()">↑ Load JSON File</button>
+            <input type="file" id="import-file" accept=".json" style="display:none" onchange="importFile(event)">
+            <button class="btn" onclick="importPaste()">Import from Paste</button>
+        </div>
+        <textarea class="io-area" id="import-area" placeholder="Paste JSON here then click Import from Paste..."></textarea>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Delete All -->
+    <div class="actions">
+        <button class="btn danger" onclick="toggleDeletePanel()">Delete All ▾</button>
+    </div>
+    <div id="delete-panel" style="display:none; margin-top:10px;">
+
+        <!-- Delete Sessions -->
+        <div style="background:#fff8f8;border:1px solid #fdd;border-radius:6px;padding:10px;margin-bottom:8px;">
+            <div style="font-size:12px;font-weight:bold;margin-bottom:6px;color:#c00;">Delete All Sessions</div>
+            <div style="font-size:12px;color:#999;margin-bottom:8px;">Removes session history only. Settings are kept.</div>
+            <button class="btn danger" onclick="toggleDeleteAll()">Delete All Sessions</button>
+            <div class="confirm-zone" id="delete-all-zone" style="margin-top:8px;">
+                Type DELETE to confirm:
+                <input type="text" id="delete-confirm-input" placeholder="DELETE">
+                <button class="btn danger" onclick="confirmDeleteAll()">Confirm</button>
+                <button class="btn secondary" onclick="toggleDeleteAll()" style="margin-left:4px;">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Nuke -->
+        <div style="background:#fff8f8;border:1px solid #fdd;border-radius:6px;padding:10px;">
+            <div style="font-size:12px;font-weight:bold;margin-bottom:6px;color:#c00;">Nuke All Timer Data</div>
+            <div style="font-size:12px;color:#999;margin-bottom:8px;">Removes everything — sessions, settings, name, theme, display mode.</div>
+            <button class="btn danger" onclick="toggleNuke()">Nuke All Timer Data</button>
+            <div class="confirm-zone" id="nuke-zone" style="margin-top:8px;">
+                Type DELETE to confirm:
+                <input type="text" id="nuke-confirm-input" placeholder="DELETE">
+                <button class="btn danger" onclick="confirmNuke()">Confirm</button>
+                <button class="btn secondary" onclick="toggleNuke()" style="margin-left:4px;">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="status" id="status-msg"></div>
+</div>
+
+<script>
+    const TIMER_KEYS = ['theme','colorTheme','displayMode','timerName','timerSessions'];
+    const COLOR_LABELS = ['Cyan','Ember','Forest','Slate','Ink'];
+
+    function toNZT(iso) {
+        return new Date(iso).toLocaleString('en-NZ', {
+            timeZone: 'Pacific/Auckland',
+            day:'2-digit', month:'2-digit', year:'numeric',
+            hour:'2-digit', minute:'2-digit', hour12:true
+        });
+    }
+
+    function showStatus(msg, isErr) {
+        const el = document.getElementById('status-msg');
+        el.textContent = msg;
+        el.className = 'status ' + (isErr ? 'err' : 'ok');
+        setTimeout(() => el.style.display = 'none', 3000);
+    }
+
+    function getSessions() {
+        try { return JSON.parse(localStorage.getItem('timerSessions') || '[]'); }
+        catch(e) { return []; }
+    }
+
+    function saveSessions(sessions) {
+        localStorage.setItem('timerSessions', JSON.stringify(sessions));
+    }
+
+    function refresh() {
+        // Settings (read-only display)
+        ['theme','colorTheme','displayMode','timerName'].forEach(k => {
+            const el = document.getElementById('val-' + k);
+            const v = localStorage.getItem(k);
+            if (v === null) { el.textContent = 'not set'; el.className = 'key-value empty'; }
+            else {
+                el.textContent = k === 'colorTheme' ? (COLOR_LABELS[+v] || v) : v;
+                el.className = 'key-value';
+            }
+        });
+
+        // Sessions table
+        const sessions = getSessions();
+        document.getElementById('session-count').textContent = sessions.length;
+        const wrap = document.getElementById('sessions-table-wrap');
+        if (!sessions.length) {
+            wrap.innerHTML = '<p style="color:#bbb;font-size:13px;padding:4px 0;">No sessions yet.</p>';
+            return;
+        }
+        const sorted = [...sessions].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+        let html = '<table class="sessions-table"><thead><tr><th>Date (NZT)</th><th>Name</th><th>Min</th><th>Score</th><th></th></tr></thead><tbody>';
+        sorted.forEach(s => {
+            const score = s.score === 1 ? '😊' : s.score === 0 ? '😐' : s.score === -1 ? '😞' : '—';
+            html += `<tr>
+                <td>${toNZT(s.timestamp)}</td>
+                <td>${(s.name||'Untitled').substring(0,22)}</td>
+                <td>${s.duration}</td>
+                <td>${score}</td>
+                <td><button class="btn danger" id="del-${s.id}" onclick="armDelete('${s.id}')">×</button></td>
+            </tr>`;
+        });
+        html += '</tbody></table>';
+        wrap.innerHTML = html;
+    }
+
+    // Two-click delete: first click arms (turns red + "Sure?"), second confirms
+    function armDelete(id) {
+        const btn = document.getElementById('del-' + id);
+        if (!btn) return;
+        if (btn.dataset.armed === '1') {
+            const sessions = getSessions().filter(s => s.id !== id);
+            saveSessions(sessions);
+            refresh();
+            showStatus('Session deleted');
+        } else {
+            btn.dataset.armed = '1';
+            btn.textContent = 'Sure?';
+            btn.className = 'btn armed';
+            setTimeout(() => {
+                if (btn && btn.dataset.armed === '1') {
+                    btn.dataset.armed = '0';
+                    btn.textContent = '×';
+                    btn.className = 'btn danger';
+                }
+            }, 3000);
+        }
+    }
+
+    // Export
+    function exportFile() {
+        const raw = localStorage.getItem('timerSessions') || '[]';
+        if (JSON.parse(raw).length === 0) { showStatus('No sessions to export', true); return; }
+        const blob = new Blob([raw], {type:'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'timer-sessions.json';
+        a.click();
+        URL.revokeObjectURL(a.href);
+        showStatus('Downloaded');
+    }
+
+    function exportCopy() {
+        const raw = localStorage.getItem('timerSessions') || '[]';
+        if (JSON.parse(raw).length === 0) { showStatus('No sessions to export', true); return; }
+        const pretty = JSON.stringify(JSON.parse(raw), null, 2);
+        document.getElementById('export-area').value = pretty;
+        navigator.clipboard.writeText(pretty).then(() => showStatus('Copied to clipboard'))
+            .catch(() => showStatus('Copy failed — select text above manually', true));
+    }
+
+    // Import
+    function mergeImport(text) {
+        try {
+            const data = JSON.parse(text);
+            if (!Array.isArray(data)) throw new Error('Expected a JSON array');
+            const existing = getSessions();
+            const ids = new Set(existing.map(s => s.id));
+            const added = data.filter(s => !ids.has(s.id));
+            saveSessions([...existing, ...added]);
+            refresh();
+            showStatus('Imported ' + added.length + ' new sessions (' + (existing.length + added.length) + ' total)');
+            return true;
+        } catch(e) {
+            showStatus('Invalid JSON: ' + e.message, true);
+            return false;
+        }
+    }
+
+    function importFile(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => mergeImport(ev.target.result);
+        reader.readAsText(file);
+        e.target.value = '';
+    }
+
+    function importPaste() {
+        const text = document.getElementById('import-area').value.trim();
+        if (!text) { showStatus('Paste JSON first', true); return; }
+        if (mergeImport(text)) document.getElementById('import-area').value = '';
+    }
+
+    function toggleDeletePanel() {
+        const p = document.getElementById('delete-panel');
+        const btn = event.target;
+        const open = p.style.display === 'none';
+        p.style.display = open ? 'block' : 'none';
+        btn.textContent = open ? 'Delete All ▴' : 'Delete All ▾';
+    }
+
+    // Delete all sessions
+    function toggleDeleteAll() {
+        const z = document.getElementById('delete-all-zone');
+        z.style.display = z.style.display === 'none' ? 'block' : 'none';
+        document.getElementById('delete-confirm-input').value = '';
+    }
+    function confirmDeleteAll() {
+        if (document.getElementById('delete-confirm-input').value !== 'DELETE') { showStatus('Type DELETE to confirm', true); return; }
+        localStorage.removeItem('timerSessions');
+        toggleDeleteAll();
+        refresh();
+        showStatus('All sessions deleted');
+    }
+
+    // Nuke
+    function toggleNuke() {
+        const z = document.getElementById('nuke-zone');
+        z.style.display = z.style.display === 'none' ? 'block' : 'none';
+        document.getElementById('nuke-confirm-input').value = '';
+    }
+    function confirmNuke() {
+        if (document.getElementById('nuke-confirm-input').value !== 'DELETE') { showStatus('Type DELETE to confirm', true); return; }
+        TIMER_KEYS.forEach(k => localStorage.removeItem(k));
+        toggleNuke();
+        refresh();
+        showStatus('All timer data cleared');
+    }
+
+    refresh();
+</script>
+</body>
+</html>
