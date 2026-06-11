@@ -618,7 +618,7 @@
                 <button id="displayModeButton" onclick="toggleDisplayMode()"  title="Display">⊡</button>
                 <button id="colorThemeButton"  onclick="cycleColorTheme()"    title="Color theme">◈</button>
                 <button id="themeToggleButton" onclick="toggleTheme()"        title="Light / Dark">☾</button>
-                <button id="randomButton" onclick="toggleMusicEnd(); this.blur();" oncontextmenu="openAlertMenu(event)" title="Random music at end (right-click for options)">♬</button>
+                <button id="randomButton" onclick="openAlertMenu(event); this.blur();" title="Sound &amp; pattern">♬</button>
                 <button id="resetButton"       onclick="resetTimer()"         title="Reset">⟳</button>
                 <button id="historyButton"     onclick="openHistoryModal()"   title="History">⌕</button>
             </div>
@@ -627,16 +627,13 @@
             </div>
         </div>
     </div>
-    <!-- Alert mode context menu -->
-    <div id="alertMenu" style="display:none;position:fixed;z-index:999;background:var(--bg-color);border:1px solid var(--t-primary);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);padding:4px 0;min-width:190px;">
-        <div style="font-size:11px;color:var(--text-color);opacity:0.5;padding:4px 12px 2px;text-transform:uppercase;letter-spacing:1px;">Alert pattern</div>
-        <div class="alert-menu-item" data-pattern="end" data-label="End only" onclick="setAlertPattern('end')">○ End only</div>
-        <div class="alert-menu-item" data-pattern="se" data-label="Start + End" onclick="setAlertPattern('se')">○ Start + End</div>
-        <div class="alert-menu-item" data-pattern="sme" data-label="Start + Mid + End" onclick="setAlertPattern('sme')">○ Start + Mid + End</div>
+    <!-- Alert menu -->
+    <div id="alertMenu" style="display:none;position:fixed;z-index:999;background:var(--bg-color);border:1px solid var(--t-primary);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);padding:6px 0;min-width:180px;">
+        <div style="font-size:11px;color:var(--text-color);opacity:0.5;padding:2px 12px;text-transform:uppercase;letter-spacing:1px;">Sound</div>
+        <div class="alert-menu-item" id="soundCycleBtn" onclick="cycleSoundSource()"></div>
         <div style="border-top:1px solid var(--t-primary);opacity:0.2;margin:4px 0;"></div>
-        <div class="alert-menu-item" data-pattern="music-end" data-label="♬ End only" onclick="setAlertPattern('music-end')">○ ♬ End only</div>
-        <div class="alert-menu-item" data-pattern="music-se" data-label="♬ Start + End" onclick="setAlertPattern('music-se')">○ ♬ Start + End</div>
-        <div class="alert-menu-item" data-pattern="music-sme" data-label="♬ Start + Mid + End" onclick="setAlertPattern('music-sme')">○ ♬ Start + Mid + End</div>
+        <div style="font-size:11px;color:var(--text-color);opacity:0.5;padding:2px 12px;text-transform:uppercase;letter-spacing:1px;">Pattern</div>
+        <div class="alert-menu-item" id="patternCycleBtn" onclick="cycleAlertPattern()"></div>
     </div>
 
     <audio id="timerSound" src="timer-sounds/clear-announce-tones-2861.wav" preload="auto"></audio>
@@ -1109,29 +1106,33 @@
         }
 
     // ── Alert mode system ──
-    // alertPattern: 'end', 'se', 'sme' — persists independently of music on/off
-    let alertPattern = localStorage.getItem('alertPattern') || 'end';
-    let randomMusicOn = localStorage.getItem('randomMusic') === '1';
+    // soundSource: 'default' | 'random' | 'beep'  (cycles ♬ → ♬~ → b)
+    // alertPattern: 'end' | 'se' | 'sme'
+    var soundSources = ['default', 'random', 'beep'];
+    var soundLabels  = ['♬ Default', '♬ Random', 'b Beep'];
+    var patternKeys   = ['end', 'se', 'sme'];
+    var patternLabels = ['End only', 'Start + End', 'Start + Mid + End'];
+
+    var soundSource  = localStorage.getItem('soundSource')  || 'default';
+    var alertPattern = localStorage.getItem('alertPattern') || 'end';
 
     function updateAlertButton() {
-        const isMusic = alertPattern.startsWith('music');
-        randomButton.textContent = '♬';
-        randomButton.classList.toggle('random-active', isMusic);
-        randomChimeSelected = isMusic;
+        randomButton.textContent = soundSource === 'beep' ? 'b' : '♬';
+        randomButton.classList.toggle('random-active', soundSource === 'random');
+        randomChimeSelected = soundSource !== 'beep';
+        // Update menu labels if open
+        var sc = document.getElementById('soundCycleBtn');
+        var pc = document.getElementById('patternCycleBtn');
+        if (sc) sc.textContent = soundLabels[soundSources.indexOf(soundSource)];
+        if (pc) pc.textContent = patternLabels[patternKeys.indexOf(alertPattern)];
     }
 
-    function toggleMusicEnd() {
-        // Left-click: toggle between music-end and end (preserving pattern suffix)
-        if (alertPattern.startsWith('music')) {
-            // Switch to beep equivalent
-            alertPattern = alertPattern.replace('music-', '');
-        } else {
-            // Switch to music equivalent
-            alertPattern = 'music-' + alertPattern;
-        }
-        localStorage.setItem('alertPattern', alertPattern);
-        if (alertPattern.startsWith('music')) {
-            const randomIndex = Math.floor(Math.random() * chimes.length);
+    function cycleSoundSource() {
+        var idx = soundSources.indexOf(soundSource);
+        soundSource = soundSources[(idx + 1) % soundSources.length];
+        localStorage.setItem('soundSource', soundSource);
+        if (soundSource === 'random') {
+            var randomIndex = Math.floor(Math.random() * chimes.length);
             timerSound.src = chimes[randomIndex];
             timerSound.dataset.chimeIndex = randomIndex;
             timerSound.load();
@@ -1140,43 +1141,31 @@
             timerSound.dataset.chimeIndex = '-1';
             timerSound.load();
         }
+        updateAlertButton();
+    }
+
+    function cycleAlertPattern() {
+        var idx = patternKeys.indexOf(alertPattern);
+        alertPattern = patternKeys[(idx + 1) % patternKeys.length];
+        localStorage.setItem('alertPattern', alertPattern);
         updateAlertButton();
     }
 
     function openAlertMenu(e) {
         e.preventDefault();
-        const menu = document.getElementById('alertMenu');
-        menu.querySelectorAll('.alert-menu-item').forEach(item => {
-            const pat = item.getAttribute('data-pattern');
-            const isActive = pat === alertPattern;
-            item.textContent = (isActive ? '● ' : '○ ') + item.getAttribute('data-label');
-            item.classList.toggle('active', isActive);
-        });
+        e.stopPropagation();
+        var menu = document.getElementById('alertMenu');
+        updateAlertButton();
         menu.style.display = 'block';
         menu.style.left = Math.min(e.clientX, window.innerWidth - 200) + 'px';
-        menu.style.top = Math.min(e.clientY, window.innerHeight - 220) + 'px';
+        menu.style.top = Math.min(e.clientY, window.innerHeight - 160) + 'px';
     }
 
-    function setAlertPattern(pattern) {
-        alertPattern = pattern;
-        localStorage.setItem('alertPattern', pattern);
-        document.getElementById('alertMenu').style.display = 'none';
-        if (pattern.startsWith('music')) {
-            const randomIndex = Math.floor(Math.random() * chimes.length);
-            timerSound.src = chimes[randomIndex];
-            timerSound.dataset.chimeIndex = randomIndex;
-            timerSound.load();
-        } else {
-            timerSound.src = defaultChime;
-            timerSound.dataset.chimeIndex = '-1';
-            timerSound.load();
+    document.addEventListener('click', function(e) {
+        var menu = document.getElementById('alertMenu');
+        if (menu && !menu.contains(e.target) && e.target !== randomButton) {
+            menu.style.display = 'none';
         }
-        updateAlertButton();
-    }
-
-    document.addEventListener('click', function() {
-        const menu = document.getElementById('alertMenu');
-        if (menu) menu.style.display = 'none';
     });
 
     function playBeepTriple() {
@@ -1185,14 +1174,17 @@
     function playAlertStart() { playBeepPattern([{f:660,d:0.2}]); }
     function playAlertMid()   { playBeepPattern([{f:880,d:0.3}]); }
     function playAlertEnd() {
-        if (alertPattern.startsWith('music')) {
-            const idx = parseInt(timerSound.dataset.chimeIndex ?? '-1');
+        if (soundSource === 'beep') {
+            playBeepPattern(beepPatterns[Math.floor(Math.random() * beepPatterns.length)]);
+        } else if (soundSource === 'random') {
+            var idx = parseInt(timerSound.dataset.chimeIndex ?? '-1');
             playChime(idx);
         } else {
-            playBeepTriple();
+            // default chime
+            playChime(-1);
         }
     }
-    function toggleRandomChime() { toggleMusicEnd(); }
+    function toggleRandomChime() { cycleSoundSource(); }
 
         function toggleSize() {
             const config = displayModes[currentDisplayMode];
@@ -1592,7 +1584,7 @@
             drawTimer();
 
             // Start beep if pattern includes start
-            const patSuffix = alertPattern.replace('music-', '');
+            var patSuffix = alertPattern;
             if (patSuffix === 'se' || patSuffix === 'sme') {
                 playAlertStart();
             }
@@ -1816,13 +1808,14 @@
             document.body.classList.add(colorThemes[savedColorTheme]);
         }
         
-        // Restore alert mode
+        // Restore alert settings
+        soundSource  = localStorage.getItem('soundSource')  || 'default';
         alertPattern = localStorage.getItem('alertPattern') || 'end';
         updateAlertButton();
-        if (alertPattern.startsWith('music')) {
-            const randomIndex = Math.floor(Math.random() * chimes.length);
-            timerSound.src = chimes[randomIndex];
-            timerSound.dataset.chimeIndex = randomIndex;
+        if (soundSource === 'random') {
+            var ri = Math.floor(Math.random() * chimes.length);
+            timerSound.src = chimes[ri];
+            timerSound.dataset.chimeIndex = ri;
             timerSound.load();
         }
 
