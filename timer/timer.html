@@ -633,6 +633,10 @@
         <div class="alert-menu-item" data-pattern="end" data-label="End only" onclick="setAlertPattern('end')">○ End only</div>
         <div class="alert-menu-item" data-pattern="se" data-label="Start + End" onclick="setAlertPattern('se')">○ Start + End</div>
         <div class="alert-menu-item" data-pattern="sme" data-label="Start + Mid + End" onclick="setAlertPattern('sme')">○ Start + Mid + End</div>
+        <div style="border-top:1px solid var(--t-primary);opacity:0.2;margin:4px 0;"></div>
+        <div class="alert-menu-item" data-pattern="music-end" data-label="♬ End only" onclick="setAlertPattern('music-end')">○ ♬ End only</div>
+        <div class="alert-menu-item" data-pattern="music-se" data-label="♬ Start + End" onclick="setAlertPattern('music-se')">○ ♬ Start + End</div>
+        <div class="alert-menu-item" data-pattern="music-sme" data-label="♬ Start + Mid + End" onclick="setAlertPattern('music-sme')">○ ♬ Start + Mid + End</div>
     </div>
 
     <audio id="timerSound" src="timer-sounds/clear-announce-tones-2861.wav" preload="auto"></audio>
@@ -1110,15 +1114,23 @@
     let randomMusicOn = localStorage.getItem('randomMusic') === '1';
 
     function updateAlertButton() {
+        const isMusic = alertPattern.startsWith('music');
         randomButton.textContent = '♬';
-        randomButton.classList.toggle('random-active', randomMusicOn);
-        randomChimeSelected = randomMusicOn;
+        randomButton.classList.toggle('random-active', isMusic);
+        randomChimeSelected = isMusic;
     }
 
     function toggleMusicEnd() {
-        randomMusicOn = !randomMusicOn;
-        localStorage.setItem('randomMusic', randomMusicOn ? '1' : '0');
-        if (randomMusicOn) {
+        // Left-click: toggle between music-end and end (preserving pattern suffix)
+        if (alertPattern.startsWith('music')) {
+            // Switch to beep equivalent
+            alertPattern = alertPattern.replace('music-', '');
+        } else {
+            // Switch to music equivalent
+            alertPattern = 'music-' + alertPattern;
+        }
+        localStorage.setItem('alertPattern', alertPattern);
+        if (alertPattern.startsWith('music')) {
             const randomIndex = Math.floor(Math.random() * chimes.length);
             timerSound.src = chimes[randomIndex];
             timerSound.dataset.chimeIndex = randomIndex;
@@ -1149,6 +1161,17 @@
         alertPattern = pattern;
         localStorage.setItem('alertPattern', pattern);
         document.getElementById('alertMenu').style.display = 'none';
+        if (pattern.startsWith('music')) {
+            const randomIndex = Math.floor(Math.random() * chimes.length);
+            timerSound.src = chimes[randomIndex];
+            timerSound.dataset.chimeIndex = randomIndex;
+            timerSound.load();
+        } else {
+            timerSound.src = defaultChime;
+            timerSound.dataset.chimeIndex = '-1';
+            timerSound.load();
+        }
+        updateAlertButton();
     }
 
     document.addEventListener('click', function() {
@@ -1162,7 +1185,7 @@
     function playAlertStart() { playBeepPattern([{f:660,d:0.2}]); }
     function playAlertMid()   { playBeepPattern([{f:880,d:0.3}]); }
     function playAlertEnd() {
-        if (randomMusicOn) {
+        if (alertPattern.startsWith('music')) {
             const idx = parseInt(timerSound.dataset.chimeIndex ?? '-1');
             playChime(idx);
         } else {
@@ -1569,7 +1592,8 @@
             drawTimer();
 
             // Start beep if pattern includes start
-            if (alertPattern === 'se' || alertPattern === 'sme') {
+            const patSuffix = alertPattern.replace('music-', '');
+            if (patSuffix === 'se' || patSuffix === 'sme') {
                 playAlertStart();
             }
 
@@ -1587,7 +1611,7 @@
                     }
 
                     // Midpoint beep
-                    if (alertPattern === 'sme' && remainingTime === Math.round(totalTime / 2)) {
+                    if (patSuffix === 'sme' && remainingTime === Math.round(totalTime / 2)) {
                         playAlertMid();
                     }
 
@@ -1794,9 +1818,8 @@
         
         // Restore alert mode
         alertPattern = localStorage.getItem('alertPattern') || 'end';
-        randomMusicOn = localStorage.getItem('randomMusic') === '1';
         updateAlertButton();
-        if (randomMusicOn) {
+        if (alertPattern.startsWith('music')) {
             const randomIndex = Math.floor(Math.random() * chimes.length);
             timerSound.src = chimes[randomIndex];
             timerSound.dataset.chimeIndex = randomIndex;
