@@ -1002,7 +1002,8 @@ function buildCard(item, idx, exp, col) {
     // Deadline
     let deadlinePill = '', paceLine = '';
     if (item.deadline) {
-        const daysLeft = _deadlineDaysLeft !== null ? _deadlineDaysLeft : Math.round((new Date(item.deadline) - (() => { const n = new Date(); n.setHours(0,0,0,0); return n; })()) / 86400000);
+        const dl = new Date(item.deadline);
+        const daysLeft = _deadlineDaysLeft !== null ? _deadlineDaysLeft : Math.round((dl - (() => { const n = new Date(); n.setHours(0,0,0,0); return n; })()) / 86400000);
         const overdue = daysLeft < 0;
         let pillCls, pillTxt;
         if (isWin && item.deadline) {
