@@ -923,8 +923,10 @@ function buildCard(item, idx, exp, col) {
     const isWin = tgt.max > 0 && !isKilled && (isDual ? c.pos >= tgt.max : c.simple >= tgt.max);
     // Pre-calculate daysLeft for consistent timezone handling
     const _deadlineDaysLeft = item.deadline ? (() => {
+        const d = new Date(item.deadline);
+        if (isNaN(d.getTime())) return null;
         const now = new Date(); now.setHours(0,0,0,0);
-        return Math.round((new Date(item.deadline) - now) / 86400000);
+        return Math.round((d - now) / 86400000);
     })() : null;
     const isChallengeDone = !!(item.deadline && !tgt.max && !tgt.kill && _deadlineDaysLeft !== null && _deadlineDaysLeft < 0);
     const isExpired = !!(item.deadline && tgt.max > 0 && !isWin && !isKilled && _deadlineDaysLeft !== null && _deadlineDaysLeft < 0);
@@ -1669,7 +1671,7 @@ function saveEdit(idx) {
     data[idx].style = document.getElementById(`es-${idx}`).value;
     data[idx].dualStyle = document.getElementById(`eds-${idx}`)?.value || data[idx].dualStyle;
     data[idx].simpleStyle = document.getElementById(`ess-${idx}`)?.value || data[idx].simpleStyle;
-    data[idx].deadline = document.getElementById(`ed-${idx}`).value || '';
+    data[idx].deadline = parseDeadline(document.getElementById(`ed-${idx}`).value) || '';
     const ecVal = document.getElementById(`ec-${idx}`)?.value;
     if (ecVal) { const orig = new Date(data[idx].created||new Date()); const [ey,em,ed] = ecVal.split('-').map(Number); orig.setFullYear(ey,em-1,ed); data[idx].created = orig.toISOString(); }
     save(data);
