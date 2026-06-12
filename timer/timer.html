@@ -1535,11 +1535,15 @@
                 }
             });
 
-            // Label
+            // Label — show PAUSED or TIME'S UP!
             if (isExpired) {
                 label.textContent = 'TIME\'S UP!';
                 label.style.visibility = 'visible';
                 label.classList.add('expired');
+            } else if (isPaused) {
+                label.textContent = 'PAUSED';
+                label.style.visibility = 'visible';
+                label.classList.remove('expired');
             } else {
                 label.textContent = '';
                 label.style.visibility = 'hidden';
