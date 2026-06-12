@@ -185,6 +185,8 @@
         html[data-btn="solid"] .card.hl-lime { background: rgba(132,204,22,0.22); }
         .card.card-win { border-color: var(--pos); box-shadow: 0 0 0 1px rgba(34,209,139,0.5), 0 0 22px rgba(34,209,139,0.20); background-color: rgba(34,209,139,0.05); }
         .card.card-fail { border-color: var(--neg); box-shadow: 0 0 0 1px rgba(255,77,103,0.5), 0 0 22px rgba(255,77,103,0.20); background-color: rgba(255,77,103,0.05); }
+        .card.card-expired { border-color: var(--hl-grey); box-shadow: 0 0 0 1px rgba(148,163,184,0.4); background-color: rgba(148,163,184,0.04); }
+        .card.collapsed.card-expired { box-shadow: 0 0 0 1px rgba(148,163,184,0.4); }
         .card.card-challenge { border-color: #f59e0b; box-shadow: 0 0 0 1px rgba(245,158,11,0.5), 0 0 20px rgba(245,158,11,0.18); background-color: rgba(245,158,11,0.04); }
         .card.collapsed.card-win { box-shadow: 0 0 0 1px rgba(34,209,139,0.5); }
         .card.collapsed.card-fail { box-shadow: 0 0 0 1px rgba(255,77,103,0.5); }
@@ -555,11 +557,9 @@
         </div>
         <div class="info-box-content">
         <h4>Mood Emojis</h4>
-        <div class="info-row-compact"><span class="ei">😊</span><span>Happy / good session</span></div>
-        <div class="info-row-compact"><span class="ei">😤</span><span>Frustrated — pushed through anyway</span></div>
-        <div class="info-row-compact"><span class="ei">😬</span><span>Nervous / uncertain</span></div>
-        <div class="info-row-compact"><span class="ei">🤔</span><span>Thoughtful / questioning</span></div>
-        <div class="info-row-compact"><span class="ei">💪</span><span>Strong effort</span></div>
+        <div class="info-row-compact"><span class="ei">😊</span><span>Good session</span></div>
+        <div class="info-row-compact"><span class="ei">😐</span><span>Neutral / okay</span></div>
+        <div class="info-row-compact"><span class="ei">😞</span><span>Tough session</span></div>
         <h4>🔥 Streak</h4>
         <div class="info-row"><span class="ei">🔥</span><span>Consecutive calendar days logged. <strong>🔥 3d</strong> = 3 days in a row. Miss a day and it resets.</span></div>
         <h4>📌 Pin</h4>
@@ -921,7 +921,13 @@ function buildCard(item, idx, exp, col) {
     const killPct = tgt.kill > 0 ? Math.min((c.neg / tgt.kill) * 100, 100) : 0;
     const isKilled = isDual && tgt.kill > 0 && c.neg >= tgt.kill;
     const isWin = tgt.max > 0 && !isKilled && (isDual ? c.pos >= tgt.max : c.simple >= tgt.max);
-    const isChallengeDone = !!(item.deadline && !tgt.max && !tgt.kill && new Date(item.deadline) < new Date());
+    // Pre-calculate daysLeft for consistent timezone handling
+    const _deadlineDaysLeft = item.deadline ? (() => {
+        const now = new Date(); now.setHours(0,0,0,0);
+        return Math.round((new Date(item.deadline) - now) / 86400000);
+    })() : null;
+    const isChallengeDone = !!(item.deadline && !tgt.max && !tgt.kill && _deadlineDaysLeft !== null && _deadlineDaysLeft < 0);
+    const isExpired = !!(item.deadline && tgt.max > 0 && !isWin && !isKilled && _deadlineDaysLeft !== null && _deadlineDaysLeft < 0);
     const streak = getStreak(item);
 
     // Progress bar class
@@ -935,6 +941,7 @@ function buildCard(item, idx, exp, col) {
     if (isWin) cardClass += ' card-win';
     if (isKilled) cardClass += ' card-fail';
     if (isChallengeDone) cardClass += ' card-challenge';
+    if (isExpired) cardClass += ' card-expired';
     if (item.pinned) cardClass += item.pinned === 'hot' ? ' card-pinned-hot' : ' card-pinned';
     if (isCollapsed) cardClass += ' collapsed';
 
@@ -950,6 +957,8 @@ function buildCard(item, idx, exp, col) {
         ? `<div class="status-banner status-fail">💥 Killed — too many losses.</div>`
         : isChallengeDone
         ? `<div class="status-banner status-challenge">🏁 Challenge done — ${curr} ${esc(item.unit||'times')} in ${challengeDays} days</div>`
+        : isExpired
+        ? `<div class="status-banner" style="background:rgba(148,163,184,0.1);color:var(--hl-grey);border:1px solid rgba(148,163,184,0.3)">⏰ Time expired — ${curr}/${tgt.max} ${esc(item.unit||'')}</div>`
         : '';
 
     // Dual colour scheme
@@ -993,9 +1002,7 @@ function buildCard(item, idx, exp, col) {
     // Deadline
     let deadlinePill = '', paceLine = '';
     if (item.deadline) {
-        const now = new Date(); now.setHours(0,0,0,0);
-        const dl = new Date(item.deadline);
-        const daysLeft = Math.round((dl - now) / 86400000);
+        const daysLeft = _deadlineDaysLeft !== null ? _deadlineDaysLeft : Math.round((new Date(item.deadline) - (() => { const n = new Date(); n.setHours(0,0,0,0); return n; })()) / 86400000);
         const overdue = daysLeft < 0;
         let pillCls, pillTxt;
         if (isWin && item.deadline) {
@@ -1077,10 +1084,10 @@ function buildCard(item, idx, exp, col) {
     }
 
     // Actions
-    const locked = isWin || isKilled || isChallengeDone;
+    const locked = isWin || isKilled || isChallengeDone || isExpired;
     let actionHTML = locked ? '' : '';
     if (!locked) {
-        const moodBtns = ['😊','😤','😬','🤔','💪']
+        const moodBtns = ['😊','😐','😞']
             .map(e => `<button class="mood-btn" onclick="setEmoji(${idx},'${e}')" title="${e}">${e}</button>`).join('');
         if (isDual) {
             const solid = isSolid();
@@ -1225,10 +1232,10 @@ function buildCard(item, idx, exp, col) {
     } else if (isChallengeDone) {
         miniExtra = `<span class="mini-extra on">🏁 ${curr}</span>`;
     }
-    const miniStatus = isWin ? `<span class="mini-status mini-status-win">🏆 Goal</span>` : isKilled ? `<span class="mini-status mini-status-fail">💥 Lost</span>` : isChallengeDone ? `<span class="mini-status mini-status-win" style="color:#f59e0b;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3)">🏁 Done</span>` : '';
+    const miniStatus = isWin ? `<span class="mini-status mini-status-win">🏆 Goal</span>` : isKilled ? `<span class="mini-status mini-status-fail">💥 Lost</span>` : isChallengeDone ? `<span class="mini-status mini-status-win" style="color:#f59e0b;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3)">🏁 Done</span>` : isExpired ? `<span class="mini-status" style="color:var(--hl-grey);background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3)">⏰ Expired</span>` : '';
     const miniCount = `<span class="${miniCls}">${miniVal}</span>${miniStatus}${miniExtra}`;
 
-    return `<div class="${cardClass}" data-name="${esc(item.name)}" data-index="${idx}" data-completed="${isWin || isKilled || isChallengeDone ? '1' : '0'}"
+    return `<div class="${cardClass}" data-name="${esc(item.name)}" data-index="${idx}" data-completed="${isWin || isKilled || isChallengeDone || isExpired ? '1' : '0'}"
         draggable="true"
         ondragstart="dStart(event,${idx})" ondragover="dOver(event,${idx})" ondrop="dDrop(event,${idx})" ondragleave="dLeave(event)">
         <div class="drag-handle">⋮⋮</div>
