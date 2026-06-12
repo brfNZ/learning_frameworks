@@ -1141,16 +1141,16 @@ function buildCard(item, idx, exp, col) {
     const simpleStyleOpts = ['default','green','blue','purple','orange','pink','amber','gold','coral','indigo']
         .map(s => { const labels = { default:'Default (teal)', green:'Green', blue:'Blue', purple:'Purple', orange:'Orange', pink:'Pink', amber:'Amber', gold:'Gold', coral:'Coral', indigo:'Indigo' }; return `<option value="${s}" ${(item.simpleStyle||'default')===s?'selected':''}>${labels[s]||s}</option>`; }).join('');
     const editHTML = `<div class="edit-panel" id="ep-${idx}">
-        <input type="text" id="en-${idx}" value="${esc(item.name)}" placeholder="Name">
-        <input type="text" id="et-${idx}" value="${esc(item.target||'')}" placeholder="Target">
-        <input type="text" id="eu-${idx}" value="${esc(item.unit||'')}" placeholder="Unit">
+        <input type="text" id="en-${idx}" value="${esc(item.name)}" placeholder="Name" onkeydown="if(event.key==='Enter'){saveEdit(${idx});event.preventDefault()}">
+        <input type="text" id="et-${idx}" value="${esc(item.target||'')}" placeholder="Target" onkeydown="if(event.key==='Enter'){saveEdit(${idx});event.preventDefault()}">
+        <input type="text" id="eu-${idx}" value="${esc(item.unit||'')}" placeholder="Unit" onkeydown="if(event.key==='Enter'){saveEdit(${idx});event.preventDefault()}">
         ${swatchHTML}
         ${isDual
             ? `<select id="eds-${idx}" title="Dual button colours">${dualStyleOpts}</select>`
             : `<select id="ess-${idx}" title="Counter colour">${simpleStyleOpts}</select>`
         }
         <input type="date" id="ec-${idx}" value="${toLocalDateStr(item.created)}" title="Click to edit date added" readonly onclick="this.removeAttribute('readonly')" onkeydown="if(event.key==='Enter'){saveEdit(${idx});event.preventDefault()}" style="flex:0 0 auto;width:130px;color-scheme:dark;font-size:0.72rem;opacity:0.45;cursor:pointer" onfocus="this.style.opacity='1'" onblur="if(!this.value||this.value===this.defaultValue){this.setAttribute('readonly','');this.style.opacity='0.45';}">
-        <input type="text" id="ed-${idx}" value="${item.deadline||''}" placeholder="7d, 1m, DD, DD/MM/YYYY" onkeydown="smartDate(event,this)" title="Deadline (optional)" style="flex:0.8;min-width:140px">
+        <input type="text" id="ed-${idx}" value="${item.deadline||''}" placeholder="7d, 1m, DD, DD/MM/YYYY" onkeydown="if(event.key==='Enter'){saveEdit(${idx});event.preventDefault()}" title="Deadline (optional)" style="flex:0.8;min-width:140px">
         <button class="btn-primary" onclick="saveEdit(${idx})">Save</button>
         <button class="btn-ghost" onclick="closeEdit(${idx})">Cancel</button>
         <button class="btn-ghost" onclick="exportTally(${idx})" title="Export this tally as JSON">📤 Export</button>
