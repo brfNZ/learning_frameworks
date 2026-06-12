@@ -21,6 +21,19 @@
         --t-block-border:   #f0f0f0;
     }
 
+    /* Hide scrollbar - Chrome/Safari/Opera */
+    body::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar - Firefox */
+    body {
+        scrollbar-width: none;
+    }
+    /* Hide scrollbar - IE/Edge */
+    body {
+        -ms-overflow-style: none;
+    }
+
     /* Semantic aliases on body so dark-mode/theme overrides resolve in same scope */
     body {
         --primary-cyan:              var(--t-primary);
