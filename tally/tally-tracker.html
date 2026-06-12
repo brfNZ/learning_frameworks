@@ -232,7 +232,7 @@
         .count-big { font-family: 'DM Mono', monospace; font-size: 2.4rem; font-weight: 500; color: var(--accent); line-height: 1; }
         .count-unit { font-size: 0.8rem; color: var(--text-muted); margin-left: 0.4rem; }
         .counter-dual { display: flex; gap: 0.6rem; }
-        .cblock { flex: 1; text-align: center; padding: 0.5rem 0.4rem; border-radius: 8px; cursor: pointer; user-select: none; transition: filter 0.12s, transform 0.1s; }
+        .cblock { flex: 1; text-align: center; padding: 0.5rem 0.4rem; border-radius: 8px; cursor: pointer; user-select: none; transition: filter 0.12s, transform 0.1s; min-width: 3rem; }
         .cblock:hover { filter: brightness(1.15); }
         .cblock:active { transform: scale(0.97); }
         .cblock.pos { background: var(--pos-bg); border: 1px solid rgba(34,209,139,0.3); }
@@ -246,7 +246,7 @@
 
         /* Progress */
         .progress-area { margin: 0.4rem 0 0.55rem; }
-        .prog-track { height: 4px; background: var(--bg-elevated); border-radius: 3px; overflow: hidden; margin-bottom: 0.2rem; }
+        .prog-track { height: 10px; background: var(--bg-elevated); border-radius: 5px; overflow: hidden; margin-bottom: 0.2rem; }
         .prog-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
         .prog-fill.near { background: var(--warn); }
         .prog-fill.done { background: var(--pos); }
@@ -947,7 +947,6 @@ function buildCard(item, idx, exp, col) {
     let barClass = '';
     if (isKilled) barClass = 'killed';
     else if (pct >= 100) barClass = 'done';
-    else if (pct >= 75) barClass = 'near';
 
     // Card class
     let cardClass = `card ${hlClass}`;
@@ -1006,8 +1005,8 @@ function buildCard(item, idx, exp, col) {
         ? `<div style="display:flex;align-items:baseline;gap:0.55rem"><div class="count-big" style="color:${dc.pos}">${c.pos}</div>${tgt.max > 0 ? `<span class="count-unit">/ ${tgt.max} ${esc(item.unit)}</span>` : item.unit ? `<span class="count-unit">${esc(item.unit)}</span>` : ''}${c.neg > 0 ? `<span style="font-size:0.78rem;color:var(--text-faint);margin-left:0.4rem">${c.neg}L</span>` : ''}</div>`
         : isDual
         ? `<div class="counter-dual">
-            <div class="cblock pos" onclick="addEntry(${idx},'pos')" title="Tap to log a win" style="background:${solid ? dc.pos+'45' : dc.pos+'18'};border-color:${dc.pos}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.pos}">Wins</div><div class="cnum" style="color:${dc.pos}">${c.pos}</div></div>
-            <div class="cblock neg" onclick="addEntry(${idx},'neg')" title="Tap to log a loss" style="background:${solid ? (dc.negBg||dc.neg)+'45' : (dc.negBg||dc.neg)+'18'};border-color:${(dc.negBg||dc.neg)}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
+            <div class="cblock pos" onclick="addEntry(${idx},'pos')" title="Tap to log a win" style="flex:${tgt.kill > 0 && tgt.max > 0 ? tgt.max : 1};background:${solid ? dc.pos+'45' : dc.pos+'18'};border-color:${dc.pos}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.pos}">Wins</div><div class="cnum" style="color:${dc.pos}">${c.pos}</div></div>
+            <div class="cblock neg" onclick="addEntry(${idx},'neg')" title="Tap to log a loss" style="flex:${tgt.kill > 0 && tgt.max > 0 ? tgt.kill : 1};background:${solid ? (dc.negBg||dc.neg)+'45' : (dc.negBg||dc.neg)+'18'};border-color:${(dc.negBg||dc.neg)}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
           </div>`
         : `<div style="display:flex;align-items:baseline">
             <div class="count-big" style="color:${sc}">${c.simple}</div>
@@ -1088,7 +1087,7 @@ function buildCard(item, idx, exp, col) {
     } else if (tgt.max > 0) {
         const barPct = isKilled ? killPct : pct;
         const appliedBarClass = (isDual || isProgress) ? barClass : (isKilled ? 'killed' : '');
-        const fillStyle = isKilled ? '' : (!isDual ? `background:${sc}` : `background:${dc.pos}`);
+        const fillStyle = isKilled ? '' : (barClass ? '' : ((isDual || isProgress) ? `background:${dc.pos}` : `background:${sc}`));
         progressHTML = `<div class="progress-area">
             <div class="prog-track"><div class="prog-fill ${appliedBarClass}" style="width:${barPct}%;${fillStyle}"></div></div>
             <div class="prog-meta">
