@@ -246,7 +246,7 @@
 
         /* Progress */
         .progress-area { margin: 0.4rem 0 0.55rem; }
-        .prog-track { height: 10px; background: var(--bg-elevated); border-radius: 5px; overflow: hidden; margin-bottom: 0.2rem; }
+        .prog-track { height: 6px; background: var(--bg-elevated); border-radius: 4px; overflow: hidden; margin-bottom: 0.2rem; }
         .prog-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
         .prog-fill.near { background: var(--warn); }
         .prog-fill.done { background: var(--pos); }
@@ -758,10 +758,10 @@ function migrate(items) {
 // ─── HELPERS ───
 function parseTarget(s) {
     if (!s) return { max: 0, kill: 0 };
-    const nums = s.match(/\d+/g);
-    if (!nums) return { max: 0, kill: 0 };
-    const max = parseInt(nums[nums.length - 1]);
-    return { max, kill: Math.ceil(max / 2) };
+    const parts = String(s).split('/');
+    const max = parseInt(parts[0]) || 0;
+    const kill = parts.length > 1 ? (parseInt(parts[1]) || 0) : (max > 0 ? Math.ceil(max / 2) : 0);
+    return { max, kill };
 }
 function getCounts(item) {
     const cs = Array.isArray(item.comments) ? item.comments : [];
@@ -1310,7 +1310,7 @@ function selectAddType(btn) {
     document.getElementById('newSimpleStyle').style.display = isDualOrProg ? 'none' : '';
     const tgtEl = document.getElementById('newTarget');
     tgtEl.style.display = isChallenge ? 'none' : '';
-    tgtEl.placeholder = isDualOrProg ? 'Target (e.g. 10 or 10/5)' : 'Target (e.g. 10)';
+    tgtEl.placeholder = 'Target (e.g. 10)';
     if (isChallenge) { tgtEl.value = ''; document.getElementById('newDeadline').focus(); }
 }
 function selectEditType(btn, idx) {
@@ -1635,6 +1635,7 @@ function addTally() {
     document.getElementById('newName').value = '';
     document.getElementById('newTarget').value = '';
     document.getElementById('newDeadline').value = '';
+
     // Collapse add form after adding
     document.getElementById('addForm')?.classList.remove('open');
     localStorage.setItem(AFK, '0');
