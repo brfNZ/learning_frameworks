@@ -364,6 +364,11 @@
         .dropdown-menu.open { display: block; }
         .dropdown-item { display: block; width: 100%; text-align: left; padding: 0.55rem 0.85rem; font-size: 0.78rem; color: var(--text-dim); background: none; border: none; cursor: pointer; transition: background 0.15s; }
         .dropdown-item:hover { background: var(--bg-card); color: var(--text); }
+        .type-seg { display: flex; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; flex-shrink: 0; }
+        .type-seg-btn { flex: 1; padding: 0.38rem 0.4rem; font-size: 0.72rem; background: none; border: none; border-right: 1px solid var(--border); cursor: pointer; color: var(--text-muted); transition: background 0.15s, color 0.15s; white-space: nowrap; }
+        .type-seg-btn:last-child { border-right: none; }
+        .type-seg-btn.seg-active { background: var(--accent); color: #fff; font-weight: 600; }
+        .type-seg-btn:hover:not(.seg-active) { background: var(--bg-elevated); color: var(--text); }
         .dropdown-section { padding: 0.8rem 1rem 0.6rem; }
         .dropdown-section-title { font-weight: 700; font-size: 0.78rem; color: var(--text-heading); margin-bottom: 0.2rem; }
         .dropdown-section-desc { font-size: 0.70rem; color: var(--text-muted); margin-bottom: 0.6rem; line-height: 1.4; }
@@ -448,10 +453,13 @@
             <input type="text" class="inp-unit" id="newUnit" placeholder="Unit" value="times">
         </div>
         <div class="form-row" style="margin-top:0.4rem">
-            <select id="newType" onchange="updateFormSelects()">
-                <option value="simple">Simple counter</option>
-                <option value="dual">Dual (+/−) counter</option>
-            </select>
+            <div class="type-seg">
+                <button class="type-seg-btn seg-active" data-val="simple" onclick="selectAddType(this)">Count</button>
+                <button class="type-seg-btn" data-val="progress" onclick="selectAddType(this)">Progress</button>
+                <button class="type-seg-btn" data-val="dual" onclick="selectAddType(this)">Win / Loss</button>
+                <button class="type-seg-btn" data-val="challenge" onclick="selectAddType(this)">Challenge</button>
+            </div>
+            <input type="hidden" id="newType" value="simple">
             <select id="newDualStyle" title="Dual button colours" style="display:none">
                 <option value="default">Default colours</option>
                 <option value="blue-orange">Blue / Orange</option>
@@ -915,12 +923,13 @@ function buildCard(item, idx, exp, col) {
 
     const tgt = parseTarget(item.target);
     const isDual = item.type === 'dual';
+    const isProgress = item.type === 'progress';
     const c = getCounts(item);
-    const curr = isDual ? c.pos : c.simple;
+    const curr = (isDual || isProgress) ? c.pos : c.simple;
     const pct = tgt.max > 0 ? Math.min((curr / tgt.max) * 100, 100) : 0;
     const killPct = tgt.kill > 0 ? Math.min((c.neg / tgt.kill) * 100, 100) : 0;
-    const isKilled = isDual && tgt.kill > 0 && c.neg >= tgt.kill;
-    const isWin = tgt.max > 0 && !isKilled && (isDual ? c.pos >= tgt.max : c.simple >= tgt.max);
+    const isKilled = (isDual || isProgress) && tgt.kill > 0 && c.neg >= tgt.kill;
+    const isWin = tgt.max > 0 && !isKilled && ((isDual || isProgress) ? c.pos >= tgt.max : c.simple >= tgt.max);
     // Pre-calculate daysLeft for consistent timezone handling
     const _deadlineDaysLeft = item.deadline ? (() => {
         const d = new Date(item.deadline);
@@ -956,7 +965,7 @@ function buildCard(item, idx, exp, col) {
     const statusHTML = isWin
         ? `<div class="status-banner status-win">🏆 Goal reached!</div>`
         : isKilled
-        ? `<div class="status-banner status-fail">💥 Killed — too many losses.</div>`
+        ? (isProgress ? `<div class="status-banner status-fail">⛔ Loss limit reached — ${c.neg}/${tgt.kill} losses</div>` : `<div class="status-banner status-fail">💥 Killed — too many losses.</div>`)
         : isChallengeDone
         ? `<div class="status-banner status-challenge">🏁 Challenge done — ${curr} ${esc(item.unit||'times')} in ${challengeDays} days</div>`
         : isExpired
@@ -991,7 +1000,9 @@ function buildCard(item, idx, exp, col) {
     const sc = simpleColours[item.simpleStyle || 'default'];
 
     const solid = isSolid();
-    let counterHTML = isDual
+    let counterHTML = isProgress
+        ? `<div style="display:flex;align-items:baseline;gap:0.55rem"><div class="count-big" style="color:${dc.pos}">${c.pos}</div>${tgt.max > 0 ? `<span class="count-unit">/ ${tgt.max} ${esc(item.unit)}</span>` : item.unit ? `<span class="count-unit">${esc(item.unit)}</span>` : ''}${c.neg > 0 ? `<span style="font-size:0.78rem;color:var(--text-faint);margin-left:0.4rem">${c.neg}L</span>` : ''}</div>`
+        : isDual
         ? `<div class="counter-dual">
             <div class="cblock pos" style="background:${solid ? dc.pos+'45' : dc.pos+'18'};border-color:${dc.pos}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.pos}">Wins</div><div class="cnum" style="color:${dc.pos}">${c.pos}</div></div>
             <div class="cblock neg" style="background:${solid ? (dc.negBg||dc.neg)+'45' : (dc.negBg||dc.neg)+'18'};border-color:${(dc.negBg||dc.neg)}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
@@ -1052,7 +1063,7 @@ function buildCard(item, idx, exp, col) {
     }
 
     // Progress
-    const themeColor = isDual ? dc.pos : sc;
+    const themeColor = (isDual || isProgress) ? dc.pos : sc;
     let progressHTML = '';
     // Challenge mode: segmented tally grid
     if (item.deadline && !tgt.max && !tgt.kill) {
@@ -1074,7 +1085,7 @@ function buildCard(item, idx, exp, col) {
         progressHTML = total > 0 ? '<div class="tally-grid">' + squaresHTML + '</div>' : '';
     } else if (tgt.max > 0) {
         const barPct = isKilled ? killPct : pct;
-        const appliedBarClass = isDual ? barClass : (isKilled ? 'killed' : '');
+        const appliedBarClass = (isDual || isProgress) ? barClass : (isKilled ? 'killed' : '');
         const fillStyle = isKilled ? '' : (!isDual ? `background:${sc}` : `background:${dc.pos}`);
         progressHTML = `<div class="progress-area">
             <div class="prog-track"><div class="prog-fill ${appliedBarClass}" style="width:${barPct}%;${fillStyle}"></div></div>
@@ -1082,7 +1093,7 @@ function buildCard(item, idx, exp, col) {
                 <span>${isKilled ? `${c.neg}/${tgt.kill} kills` : `${curr} / ${tgt.max}`}</span>
                 <span>${Math.round(isKilled ? killPct : pct)}%</span>
             </div>
-            ${isDual && tgt.kill > 0 ? `<div class="kill-line ${c.neg > 0 && !isKilled ? (c.neg >= tgt.kill * 0.7 ? 'danger' : '') : isKilled ? 'danger' : ''}">Kill threshold: ${tgt.kill} losses</div>` : ''}
+            ${(isDual || isProgress) && tgt.kill > 0 ? `<div class="kill-line ${c.neg > 0 && !isKilled ? (c.neg >= tgt.kill * 0.7 ? 'danger' : '') : isKilled ? 'danger' : ''}">Loss limit: ${tgt.kill}${isProgress ? '' : ' kills'}</div>` : ''}
             ${paceLine}
         </div>`;
     }
@@ -1093,7 +1104,20 @@ function buildCard(item, idx, exp, col) {
     if (!locked) {
         const moodBtns = ['😊','😐','😞']
             .map(e => `<button class="mood-btn" onclick="setEmoji(${idx},'${e}')" title="${e}">${e}</button>`).join('');
-        if (isDual) {
+        if (isProgress) {
+            const solid = isSolid();
+            const posStyle = solid ? `background:${dc.pos};color:#fff` : `background:${dc.pos}20;border:1px solid ${dc.pos}55;color:${dc.pos}`;
+            const negStyle = solid ? `background:${dc.negBg||dc.neg};color:#fff` : `background:${(dc.negBg||dc.neg)}20;border:1px solid ${(dc.negBg||dc.neg)}55;color:${dc.neg}`;
+            actionHTML = `<div class="action-row">
+                <div style="position:relative;flex:1;min-width:130px">
+                    <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to submit)" style="width:100%" onkeydown="noteKeydown(event,${idx})" oninput="noteInput(event,${idx})">
+                    <div class="tag-ac" id="tag-ac-${idx}" style="display:none"></div>
+                </div>
+                <div class="mood-strip">${moodBtns}</div>
+                <button class="btn-pos" style="${posStyle}" onclick="addEntry(${idx},'pos')">✓ Win</button>
+                <button class="btn-neg" style="font-size:0.75rem;padding:0.3rem 0.6rem;opacity:0.7;${negStyle}" onclick="addEntry(${idx},'neg')">✗ L</button>
+            </div>`;
+        } else if (isDual) {
             const solid = isSolid();
             const posStyle = solid ? `background:${dc.pos};color:#fff` : `background:${dc.pos}20;border:1px solid ${dc.pos}55;color:${dc.pos}`;
             const negStyle = solid ? `background:${dc.negBg||dc.neg};color:#fff` : `background:${(dc.negBg||dc.neg)}20;border:1px solid ${(dc.negBg||dc.neg)}55;color:${dc.neg}`;
@@ -1145,10 +1169,18 @@ function buildCard(item, idx, exp, col) {
         <input type="text" id="et-${idx}" value="${esc(item.target||'')}" placeholder="Target" onkeydown="if(event.key==='Enter'){saveEdit(${idx});event.preventDefault()}">
         <input type="text" id="eu-${idx}" value="${esc(item.unit||'')}" placeholder="Unit" onkeydown="if(event.key==='Enter'){saveEdit(${idx});event.preventDefault()}">
         ${swatchHTML}
-        ${isDual
-            ? `<select id="eds-${idx}" title="Dual button colours">${dualStyleOpts}</select>`
-            : `<select id="ess-${idx}" title="Counter colour">${simpleStyleOpts}</select>`
-        }
+        <div class="type-seg" style="flex:0 0 auto">
+            <button class="type-seg-btn ${item.type==='simple'||!item.type?'seg-active':''}" data-val="simple" onclick="selectEditType(this,${idx})">Count</button>
+            <button class="type-seg-btn ${item.type==='progress'?'seg-active':''}" data-val="progress" onclick="selectEditType(this,${idx})">Progress</button>
+            <button class="type-seg-btn ${item.type==='dual'?'seg-active':''}" data-val="dual" onclick="selectEditType(this,${idx})">Win/Loss</button>
+        </div>
+        <input type="hidden" id="ety-${idx}" value="${item.type||'simple'}">
+        <div id="style-sel-${idx}">
+            ${(isDual||isProgress)
+                ? `<select id="eds-${idx}" title="Dual button colours">${dualStyleOpts}</select>`
+                : `<select id="ess-${idx}" title="Counter colour">${simpleStyleOpts}</select>`
+            }
+        </div>
         <input type="date" id="ec-${idx}" value="${toLocalDateStr(item.created)}" title="Click to edit date added" readonly onclick="this.removeAttribute('readonly')" onkeydown="if(event.key==='Enter'){saveEdit(${idx});event.preventDefault()}" style="flex:0 0 auto;width:130px;color-scheme:dark;font-size:0.72rem;opacity:0.45;cursor:pointer" onfocus="this.style.opacity='1'" onblur="if(!this.value||this.value===this.defaultValue){this.setAttribute('readonly','');this.style.opacity='0.45';}">
         <input type="text" id="ed-${idx}" value="${item.deadline||''}" placeholder="7d, 1m, DD, DD/MM/YYYY" onkeydown="if(event.key==='Enter'){saveEdit(${idx});event.preventDefault()}" title="Deadline (optional)" style="flex:0.8;min-width:140px">
         <button class="btn-primary" onclick="saveEdit(${idx})">Save</button>
@@ -1221,7 +1253,7 @@ function buildCard(item, idx, exp, col) {
     if (deadlinePill) metaHTML += deadlinePill;
 
     // Mini count shown when collapsed
-    const miniVal = isDual ? `${c.pos}W ${c.neg}L` : `${c.simple}${tgt.max > 0 ? '/' + tgt.max : ''}`;
+    const miniVal = isDual ? `${c.pos}W ${c.neg}L` : isProgress ? (c.pos + 'W' + (c.neg > 0 ? ' <span style="opacity:0.55;font-size:0.9em">' + c.neg + 'L</span>' : '')) : (c.simple + (tgt.max > 0 ? '/' + tgt.max : ''));
     const miniCls = isWin ? 'mini-count mini-win' : isKilled ? 'mini-count mini-fail' : isChallengeDone ? 'mini-count' : 'mini-count';
     // % and pace for collapsed view
     let miniExtra = '';
@@ -1236,7 +1268,7 @@ function buildCard(item, idx, exp, col) {
     } else if (isChallengeDone) {
         miniExtra = `<span class="mini-extra on">🏁 ${curr}</span>`;
     }
-    const miniStatus = isWin ? `<span class="mini-status mini-status-win">🏆 Goal</span>` : isKilled ? `<span class="mini-status mini-status-fail">💥 Lost</span>` : isChallengeDone ? `<span class="mini-status mini-status-win" style="color:#f59e0b;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3)">🏁 Done</span>` : isExpired ? `<span class="mini-status" style="color:var(--hl-grey);background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3)">⏰ Expired</span>` : '';
+    const miniStatus = isWin ? `<span class="mini-status mini-status-win">🏆 Goal</span>` : isKilled ? (isProgress ? `<span class="mini-status mini-status-fail">⛔ Limit</span>` : `<span class="mini-status mini-status-fail">💥 Lost</span>`) : isChallengeDone ? `<span class="mini-status mini-status-win" style="color:#f59e0b;background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3)">🏁 Done</span>` : isExpired ? `<span class="mini-status" style="color:var(--hl-grey);background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3)">⏰ Expired</span>` : '';
     const miniCount = `<span class="${miniCls}">${miniVal}</span>${miniStatus}${miniExtra}`;
 
     return `<div class="${cardClass}" data-name="${esc(item.name)}" data-index="${idx}" data-completed="${isWin || isKilled || isChallengeDone || isExpired ? '1' : '0'}"
@@ -1268,8 +1300,28 @@ function buildCard(item, idx, exp, col) {
     </div>`;
 }
 
+function selectAddType(btn) {
+    btn.closest('.type-seg').querySelectorAll('.type-seg-btn').forEach(b => b.classList.remove('seg-active'));
+    btn.classList.add('seg-active');
+    const val = btn.dataset.val;
+    document.getElementById('newType').value = val === 'challenge' ? 'simple' : val;
+    const isChallenge = val === 'challenge';
+    const isDualOrProg = val === 'dual' || val === 'progress';
+    document.getElementById('newDualStyle').style.display = val === 'dual' ? '' : 'none';
+    document.getElementById('newSimpleStyle').style.display = isDualOrProg ? 'none' : '';
+    const tgtEl = document.getElementById('newTarget');
+    tgtEl.style.display = isChallenge ? 'none' : '';
+    tgtEl.placeholder = isDualOrProg ? 'Target (e.g. 10 or 10/5)' : 'Target (e.g. 10)';
+    if (isChallenge) { tgtEl.value = ''; document.getElementById('newDeadline').focus(); }
+}
+function selectEditType(btn, idx) {
+    btn.closest('.type-seg').querySelectorAll('.type-seg-btn').forEach(b => b.classList.remove('seg-active'));
+    btn.classList.add('seg-active');
+    document.getElementById(`ety-${idx}`).value = btn.dataset.val;
+}
 function updateFormSelects() {
-    const isDual = document.getElementById('newType').value === 'dual';
+    const val = document.getElementById('newType').value;
+    const isDual = val === 'dual';
     document.getElementById('newDualStyle').style.display = isDual ? '' : 'none';
     document.getElementById('newSimpleStyle').style.display = isDual ? 'none' : '';
 }
@@ -1671,6 +1723,7 @@ function saveEdit(idx) {
     data[idx].style = document.getElementById(`es-${idx}`).value;
     data[idx].dualStyle = document.getElementById(`eds-${idx}`)?.value || data[idx].dualStyle;
     data[idx].simpleStyle = document.getElementById(`ess-${idx}`)?.value || data[idx].simpleStyle;
+    data[idx].type = document.getElementById(`ety-${idx}`)?.value || data[idx].type || 'simple';
     data[idx].deadline = parseDeadline(document.getElementById(`ed-${idx}`).value) || '';
     const ecVal = document.getElementById(`ec-${idx}`)?.value;
     if (ecVal) { const orig = new Date(data[idx].created||new Date()); const [ey,em,ed] = ecVal.split('-').map(Number); orig.setFullYear(ey,em-1,ed); data[idx].created = orig.toISOString(); }
@@ -1742,7 +1795,7 @@ function showUndoToast() {
     const el = document.getElementById('toast');
     el.classList.remove('show');
     void el.offsetWidth;
-    el.innerHTML = `Comment deleted &nbsp;<span onclick="undoDeleteComment()" style="color:var(--accent);cursor:pointer;font-weight:700;text-decoration:underline">Undo</span>`;
+    el.innerHTML = `Comment deleted &nbsp;<span onclick="undoDeleteComment()" style="color:var(--accent);cursor:pointer;font-weight:700;text-decoration:underline">Restore comment</span>`;
     el.classList.add('show');
     deletedCommentTimer = setTimeout(() => { el.classList.remove('show'); deletedCommentCache = null; }, 10000);
 }
