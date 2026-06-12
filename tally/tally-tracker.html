@@ -232,7 +232,9 @@
         .count-big { font-family: 'DM Mono', monospace; font-size: 2.4rem; font-weight: 500; color: var(--accent); line-height: 1; }
         .count-unit { font-size: 0.8rem; color: var(--text-muted); margin-left: 0.4rem; }
         .counter-dual { display: flex; gap: 0.6rem; }
-        .cblock { flex: 1; text-align: center; padding: 0.5rem 0.4rem; border-radius: 8px; }
+        .cblock { flex: 1; text-align: center; padding: 0.5rem 0.4rem; border-radius: 8px; cursor: pointer; user-select: none; transition: filter 0.12s, transform 0.1s; }
+        .cblock:hover { filter: brightness(1.15); }
+        .cblock:active { transform: scale(0.97); }
         .cblock.pos { background: var(--pos-bg); border: 1px solid rgba(34,209,139,0.3); }
         .cblock.neg { background: var(--neg-bg); border: 1px solid rgba(255,77,103,0.3); }
         .cblock .clabel { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 0.1rem; }
@@ -1004,8 +1006,8 @@ function buildCard(item, idx, exp, col) {
         ? `<div style="display:flex;align-items:baseline;gap:0.55rem"><div class="count-big" style="color:${dc.pos}">${c.pos}</div>${tgt.max > 0 ? `<span class="count-unit">/ ${tgt.max} ${esc(item.unit)}</span>` : item.unit ? `<span class="count-unit">${esc(item.unit)}</span>` : ''}${c.neg > 0 ? `<span style="font-size:0.78rem;color:var(--text-faint);margin-left:0.4rem">${c.neg}L</span>` : ''}</div>`
         : isDual
         ? `<div class="counter-dual">
-            <div class="cblock pos" style="background:${solid ? dc.pos+'45' : dc.pos+'18'};border-color:${dc.pos}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.pos}">Wins</div><div class="cnum" style="color:${dc.pos}">${c.pos}</div></div>
-            <div class="cblock neg" style="background:${solid ? (dc.negBg||dc.neg)+'45' : (dc.negBg||dc.neg)+'18'};border-color:${(dc.negBg||dc.neg)}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
+            <div class="cblock pos" onclick="addEntry(${idx},'pos')" title="Tap to log a win" style="background:${solid ? dc.pos+'45' : dc.pos+'18'};border-color:${dc.pos}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.pos}">Wins</div><div class="cnum" style="color:${dc.pos}">${c.pos}</div></div>
+            <div class="cblock neg" onclick="addEntry(${idx},'neg')" title="Tap to log a loss" style="background:${solid ? (dc.negBg||dc.neg)+'45' : (dc.negBg||dc.neg)+'18'};border-color:${(dc.negBg||dc.neg)}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
           </div>`
         : `<div style="display:flex;align-items:baseline">
             <div class="count-big" style="color:${sc}">${c.simple}</div>
@@ -1127,8 +1129,6 @@ function buildCard(item, idx, exp, col) {
                     <div class="tag-ac" id="tag-ac-${idx}" style="display:none"></div>
                 </div>
                 <div class="mood-strip">${moodBtns}</div>
-                <button class="btn-pos" style="${posStyle}" onclick="addEntry(${idx},'pos')">✓ Win</button>
-                <button class="btn-neg" style="${negStyle}" onclick="addEntry(${idx},'neg')">✗ Loss</button>
             </div>`;
         } else {
             const countStyle = isSolid() ? `background:${sc};color:#fff` : `background:${sc}20;border:1px solid ${sc}55;color:${sc}`;
