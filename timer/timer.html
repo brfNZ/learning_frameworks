@@ -6,7 +6,6 @@
     <title>Countdown Timer</title>
     
     <style>
-
     /* Hide scrollbar everywhere */
     html, body {
         scrollbar-width: none;
@@ -19,7 +18,6 @@
         width: 0;
         height: 0;
     }
-    
 
     :root {
         /* ── THEME: Cyan · Light (default) ── */
@@ -34,19 +32,6 @@
         --t-block-full:     #007777;
         --t-block-empty:    #d0d0d0;
         --t-block-border:   #f0f0f0;
-    }
-
-    /* Hide scrollbar - Chrome/Safari/Opera */
-    body::-webkit-scrollbar {
-        display: none;
-    }
-    /* Hide scrollbar - Firefox */
-    body {
-        scrollbar-width: none;
-    }
-    /* Hide scrollbar - IE/Edge */
-    body {
-        -ms-overflow-style: none;
     }
 
     /* Semantic aliases on body so dark-mode/theme overrides resolve in same scope */
@@ -161,14 +146,146 @@
         --t-block-empty:   #ddd;
         --t-block-border:  #f5f5f5;
     }
-    body.theme-ink.dark-mode {
-        --t-bg:           #111;
-        --t-text:         #eee;
-        --t-digital-bg:   #ddd;
-        --t-digital-text: #111;
-        --t-block-full:   #aaa;
-        --t-block-empty:  #333;
-        --t-block-border: #111;
+    /* ── THEME: Neon Yellow ── */
+    body.theme-neonyellow {
+        --t-primary:       #ccbb00;
+        --t-primary-hover: #aaaa00;
+        --t-bg:            #fffff0;
+        --t-text:          #1a1a00;
+        --t-digital-bg:    #1a1a00;
+        --t-digital-text:  #ffff99;
+        --t-accent-rgb:    204,187,0;
+        --t-red-rgb:       200,100,0;
+        --t-block-full:    #ccbb00;
+        --t-block-empty:   #f0f0b3;
+        --t-block-border:  #fffff0;
+    }
+    body.theme-neonyellow.dark-mode {
+        --t-bg:           #1a1a00;
+        --t-text:         #ffff99;
+        --t-digital-bg:   #ffff99;
+        --t-digital-text: #1a1a00;
+        --t-block-full:   #dddd00;
+        --t-block-empty:  #3a3a00;
+        --t-block-border: #1a1a00;
+    }
+    body.theme-hotpink {
+        --t-primary:       #cc0066;
+        --t-primary-hover: #aa0055;
+        --t-bg:            #fff0f5;
+        --t-text:          #1a0010;
+        --t-digital-bg:    #1a0010;
+        --t-digital-text:  #ffb3d9;
+        --t-accent-rgb:    204,0,102;
+        --t-red-rgb:       220,0,80;
+        --t-block-full:    #cc0066;
+        --t-block-empty:   #f5c0d8;
+        --t-block-border:  #fff0f5;
+    }
+    body.theme-hotpink.dark-mode {
+        --t-bg:           #1a0010;
+        --t-text:         #ffb3d9;
+        --t-digital-bg:   #ffb3d9;
+        --t-digital-text: #1a0010;
+        --t-block-full:   #ff3399;
+        --t-block-empty:  #4a0028;
+        --t-block-border: #1a0010;
+    }
+
+    /* ── THEME: Neon Orange ── */
+    body.theme-neonorange {
+        --t-primary:       #ff6600;
+        --t-primary-hover: #cc5200;
+        --t-bg:            #fff5ee;
+        --t-text:          #1a0a00;
+        --t-digital-bg:    #1a0a00;
+        --t-digital-text:  #ffcc99;
+        --t-accent-rgb:    255,102,0;
+        --t-red-rgb:       220,40,0;
+        --t-block-full:    #ff6600;
+        --t-block-empty:   #ffd4b3;
+        --t-block-border:  #fff5ee;
+    }
+    body.theme-neonorange.dark-mode {
+        --t-bg:           #1a0a00;
+        --t-text:         #ffcc99;
+        --t-digital-bg:   #ffcc99;
+        --t-digital-text: #1a0a00;
+        --t-block-full:   #ff8833;
+        --t-block-empty:  #4a1f00;
+        --t-block-border: #1a0a00;
+    }
+
+    /* ── THEME: Electric Blue ── */
+    body.theme-electricblue {
+        --t-primary:       #0055ff;
+        --t-primary-hover: #0033cc;
+        --t-bg:            #f0f4ff;
+        --t-text:          #000a1a;
+        --t-digital-bg:    #000a1a;
+        --t-digital-text:  #99bbff;
+        --t-accent-rgb:    0,85,255;
+        --t-red-rgb:       220,40,80;
+        --t-block-full:    #0055ff;
+        --t-block-empty:   #b3c8ff;
+        --t-block-border:  #f0f4ff;
+    }
+    body.theme-electricblue.dark-mode {
+        --t-bg:           #000a1a;
+        --t-text:         #99bbff;
+        --t-digital-bg:   #99bbff;
+        --t-digital-text: #000a1a;
+        --t-block-full:   #3377ff;
+        --t-block-empty:  #001a4a;
+        --t-block-border: #000a1a;
+    }
+
+    /* ── THEME: Lime ── */
+    body.theme-lime {
+        --t-primary:       #44cc00;
+        --t-primary-hover: #33aa00;
+        --t-bg:            #f2fff0;
+        --t-text:          #0a1a00;
+        --t-digital-bg:    #0a1a00;
+        --t-digital-text:  #bbffaa;
+        --t-accent-rgb:    68,204,0;
+        --t-red-rgb:       200,60,0;
+        --t-block-full:    #44cc00;
+        --t-block-empty:   #ccf5b3;
+        --t-block-border:  #f2fff0;
+    }
+    body.theme-lime.dark-mode {
+        --t-bg:           #0a1a00;
+        --t-text:         #bbffaa;
+        --t-digital-bg:   #bbffaa;
+        --t-digital-text: #0a1a00;
+        --t-block-full:   #66dd22;
+        --t-block-empty:  #1a3a00;
+        --t-block-border: #0a1a00;
+    }
+
+    /* ── THEME: Purple ── */
+    body.theme-purple {
+        --t-primary:       #7700cc;
+        --t-primary-hover: #5500aa;
+        --t-bg:            #f8f0ff;
+        --t-text:          #0f0020;
+        --t-digital-bg:    #0f0020;
+        --t-digital-text:  #ddaaff;
+        --t-accent-rgb:    119,0,204;
+        --t-red-rgb:       180,0,120;
+        --t-block-full:    #7700cc;
+        --t-block-empty:   #ddb3ff;
+        --t-block-border:  #f8f0ff;
+    }
+    body.theme-purple.dark-mode {
+        --t-bg:           #0f0020;
+        --t-text:         #ddaaff;
+        --t-digital-bg:   #ddaaff;
+        --t-digital-text: #0f0020;
+        --t-block-full:   #9922ee;
+        --t-block-empty:  #2a0050;
+        --t-block-border: #0f0020;
     }
 
     /* Random-active — uses current theme primary */
@@ -911,6 +1028,28 @@
                     background: 'var(--bg-color)',
                     color: 'var(--text-color)'
                 }
+            },
+            'blocks-up': {
+                name: 'Blocks ↑',
+                element: 'blocksDisplay',
+                supportsSize: true,
+                drawFunction: 'drawBlocksUpTimer',
+                clickHandler: 'handleTimerClick',
+                nameDisplayClass: 'blocks-mode',
+                containerWidth: '360px',
+                containerHeight: '460px',
+                windowWidth: 400,
+                windowHeight: 440,
+                buttonStyle: {
+                    background: 'var(--t-primary)',
+                    color: 'white',
+                    backgroundHover: 'var(--t-primary-hover)'
+                },
+                inputStyle: {
+                    borderColor: 'var(--t-primary)',
+                    background: 'var(--bg-color)',
+                    color: 'var(--text-color)'
+                }
             }
         };
 
@@ -1023,6 +1162,8 @@
                 updateDigitalDisplay();
             } else if (currentDisplayMode === 'blocks') {
                 drawBlocksTimer();
+            } else if (currentDisplayMode === 'blocks-up') {
+                drawBlocksUpTimer();
             }
         }
 
@@ -1319,8 +1460,8 @@
         }
 
         // ── Color theme cycling ──
-        const colorThemes = ['', 'theme-ember', 'theme-forest', 'theme-slate', 'theme-ink'];
-        const colorThemeLabels = ['Cyan', 'Ember', 'Forest', 'Slate', 'Ink'];
+        const colorThemes = ['', 'theme-ember', 'theme-forest', 'theme-slate', 'theme-ink', 'theme-hotpink', 'theme-neonorange', 'theme-electricblue', 'theme-lime', 'theme-purple', 'theme-neonyellow'];
+        const colorThemeLabels = ['Cyan', 'Ember', 'Forest', 'Slate', 'Ink', 'Hot Pink', 'Neon Orange', 'Electric Blue', 'Lime', 'Purple', 'Neon Yellow'];
         let currentColorThemeIndex = 0;
 
         function cycleColorTheme() {
@@ -1563,7 +1704,7 @@
                 }
             });
 
-            // Label — show PAUSED or TIME'S UP!
+            // Label
             if (isExpired) {
                 label.textContent = 'TIME\'S UP!';
                 label.style.visibility = 'visible';
@@ -1577,6 +1718,115 @@
                 label.style.visibility = 'hidden';
                 label.classList.remove('expired');
             }
+        }
+
+        function drawBlocksUpTimer() {
+            var grid = document.getElementById('blocksGrid');
+            var label = document.getElementById('blocksLabel');
+            if (!grid || !label) return;
+
+            var totalMinutes = totalTime > 0 ? Math.round(totalTime / 60) : (parseInt(document.getElementById('timeInput').value) || 25);
+            var remainMinutes = remainingTime > 0 ? Math.ceil(remainingTime / 60) : (isExpired ? 0 : totalMinutes);
+            var elapsedMinutes = totalMinutes - remainMinutes; // how many minutes have passed
+
+            var blockPx = currentSize === 'small' ? 28 : currentSize === 'medium' ? 36 : 44;
+            var gapPx   = currentSize === 'small' ? 3  : currentSize === 'medium' ? 4  : 5;
+            var gridWidth = 5 * blockPx + 4 * gapPx;
+            grid.style.gridTemplateColumns = 'repeat(5, ' + blockPx + 'px)';
+            grid.style.gap = gapPx + 'px';
+            grid.style.width = gridWidth + 'px';
+
+            // Active block partial fill — grows as minute progresses
+            var secsLeft = remainingTime > 0 ? ((remainingTime - 1) % 60) + 1 : 0;
+            var activeFillPct = ((60 - secsLeft) / 60) * 100; // grows from 0→100 during the minute
+
+            var blockColor = getComputedStyle(document.body).getPropertyValue('--t-block-full').trim() || '#007777';
+            var emptyColor = getComputedStyle(document.body).getPropertyValue('--t-block-empty').trim() || '#d0d0d0';
+
+            var cellCount = Math.ceil(totalMinutes / 5) * 5;
+            if (grid.children.length !== cellCount || grid.dataset.blockPx !== String(blockPx)) {
+                grid.dataset.blockPx = blockPx;
+                grid.innerHTML = '';
+                for (var i = 0; i < cellCount; i++) {
+                    var cell = document.createElement('div');
+                    cell.className = 'block-cell';
+                    cell.style.width  = blockPx + 'px';
+                    cell.style.height = blockPx + 'px';
+                    cell.style.borderRadius = '6px';
+                    cell.style.border = '2px solid ' + blockColor;
+                    cell.style.boxSizing = 'border-box';
+                    cell.style.overflow = 'hidden';
+                    cell.style.position = 'relative';
+                    cell.style.backgroundColor = 'transparent';
+                    var fill = document.createElement('div');
+                    fill.className = 'block-fill';
+                    fill.style.height = blockPx + 'px';
+                    fill.style.borderRadius = '4px';
+                    fill.style.backgroundColor = blockColor;
+                    cell.appendChild(fill);
+                    grid.appendChild(cell);
+                }
+            }
+
+            // Update border/fill colour in case theme changed
+            grid.style.setProperty('--block-color', blockColor);
+            var cells = grid.querySelectorAll('.block-cell');
+            var cellCount2 = cells.length;
+
+            cells.forEach(function(cell, i) {
+                // Same layout as deplete: minute 1 = bottom-left, fills left→right bottom→top
+                // blockNum 1 = bottom-left, blockNum N = top-right
+                var row = Math.floor(i / 5);
+                var col = i % 5;
+                var blockNum = cellCount2 - (row * 5 + (4 - col));
+                var fill = cell.querySelector('.block-fill');
+
+                cell.style.border = '2px solid ' + blockColor;
+
+                if (blockNum > totalMinutes || blockNum < 1) {
+                    cell.style.visibility = 'hidden';
+                    return;
+                }
+                cell.style.visibility = 'visible';
+
+                if (isExpired) {
+                    fill.style.width = '100%';
+                    cell.classList.add('expired');
+                } else {
+                    cell.classList.remove('expired');
+                    if (blockNum <= elapsedMinutes) {
+                        // Fully elapsed — filled
+                        fill.style.width = '100%';
+                    } else if (blockNum === elapsedMinutes + 1 && (isRunning || isPaused) && !isExpired) {
+                        // Active block — partially filling
+                        fill.style.width = activeFillPct.toFixed(1) + '%';
+                    } else {
+                        // Future — empty (outlined only)
+                        fill.style.width = '0%';
+                    }
+                }
+            });
+
+            // Label
+            if (isExpired) {
+                label.textContent = "TIME'S UP!";
+                label.style.visibility = 'visible';
+                label.classList.add('expired');
+            } else if (isPaused) {
+                label.textContent = 'PAUSED';
+                label.style.visibility = 'visible';
+                label.classList.remove('expired');
+            } else {
+                label.textContent = '';
+                label.style.visibility = 'hidden';
+                label.classList.remove('expired');
+            }
+            label.style.width = gridWidth + 'px';
+            label.style.margin = '10px auto 8px auto';
+            label.style.textAlign = 'center';
+            label.style.display = 'block';
+            label.style.color = '#999';
+            label.style.opacity = '1';
         }
 
         function startTimer() {
@@ -1675,8 +1925,10 @@
             startAngle = null;
             totalTime = 0;
             remainingTime = 0;
-            // Clear blocks expired state
+            // Clear blocks expired state and rebuild grid to reset any inline styles
             document.querySelectorAll('.block-cell.expired').forEach(function(c) { c.classList.remove('expired'); });
+            var blocksGrid = document.getElementById('blocksGrid');
+            if (blocksGrid) { blocksGrid.innerHTML = ''; delete blocksGrid.dataset.blockPx; }
             var bl = document.getElementById('blocksLabel');
             if (bl) bl.classList.remove('expired');
             if (randomChimeSelected) {
