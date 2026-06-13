@@ -246,7 +246,7 @@
 
         /* Progress */
         .progress-area { margin: 0.4rem 0 0.55rem; }
-        .prog-track { height: 6px; background: var(--bg-elevated); border-radius: 4px; overflow: hidden; margin-bottom: 0.2rem; }
+        .prog-track { height: 8px; background: var(--bg-elevated); border-radius: 4px; overflow: hidden; margin-bottom: 0.2rem; }
         .prog-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
         .prog-fill.near { background: var(--warn); }
         .prog-fill.done { background: var(--pos); }
@@ -293,6 +293,21 @@
         /* Actions */
         .action-row { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; margin-top: 0.5rem; }
         .note-inp { flex: 1; min-width: 130px; font-size: 0.78rem; padding: 0.38rem 0.55rem; }
+        .emoji-picker-popup { position: fixed; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem; display: flex; flex-wrap: wrap; gap: 0.15rem; box-shadow: 0 6px 20px rgba(0,0,0,0.35); z-index: 999; max-width: 180px; }
+        .emoji-picker-popup button { background: none; border: none; font-size: 1.1rem; padding: 0.2rem 0.3rem; cursor: pointer; border-radius: 4px; line-height: 1; transition: background 0.1s; }
+        .emoji-picker-popup button:hover { background: var(--bg-card); }
+        .emoji-trigger-btn { background: none; border: 1px solid var(--border); border-radius: 5px; font-size: 0.9rem; padding: 0.3rem 0.4rem; cursor: pointer; color: var(--text-muted); line-height: 1; flex-shrink: 0; }
+        .emoji-trigger-btn:hover { background: var(--bg-elevated); }
+        .entry-emoji-row { display: inline-flex; gap: 0.1rem; }
+        .entry-emoji-btn { background: none; border: 1.5px solid transparent; border-radius: 5px; font-size: 0.85rem; padding: 0.08rem 0.2rem; cursor: pointer; line-height: 1; transition: border-color 0.12s, background 0.12s; }
+        .entry-emoji-btn:hover { background: var(--bg-elevated); }
+        .entry-emoji-btn.esel { border-color: var(--accent); background: var(--accent-dim); }
+        .review-section { margin-top: 0.55rem; border-top: 1px solid var(--border-light); padding-top: 0.5rem; }
+        .review-emoji-row { display: flex; gap: 0.5rem; align-items: center; }
+        .review-emoji-btn { background: none; border: 2px solid transparent; border-radius: 8px; font-size: 1.3rem; padding: 0.2rem 0.45rem; cursor: pointer; transition: border-color 0.15s, background 0.15s; line-height: 1; }
+        .review-emoji-btn:hover { background: var(--bg-elevated); }
+        .review-emoji-btn.selected { border-color: var(--accent); background: var(--accent-dim); }
+        .review-note-row { display: flex; gap: 0.35rem; align-items: center; margin-top: 0.4rem; }
         .mood-strip { display: flex; gap: 0.15rem; }
         .mood-btn { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 5px; padding: 0.22rem 0.38rem; font-size: 0.85rem; cursor: pointer; line-height: 1; transition: transform 0.1s; }
         .mood-btn:hover { transform: scale(1.18); }
@@ -305,7 +320,7 @@
         .chevron { font-size: 0.55rem; transition: transform 0.2s; display: inline-block; }
         .comments-toggle.open .chevron { transform: rotate(90deg); }
         .comments-list { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; border-left: 2px solid var(--border); padding-left: 0.7rem; display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.4rem; }
-        .comments-list.open { max-height: 700px; }
+        .comments-list.open { max-height: 900px; }
         .c-entry { display: flex; align-items: flex-start; gap: 0.35rem; font-size: 0.76rem; padding: 0.15rem 0; }
         .c-badge { font-size: 0.59rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.08rem 0.32rem; border-radius: 3px; flex-shrink: 0; margin-top: 0.1rem; }
         .badge-pos { background: var(--pos-bg); color: var(--pos); }
@@ -1110,11 +1125,6 @@ function buildCard(item, idx, exp, col) {
             const posStyle = solid ? `background:${dc.pos};color:#fff` : `background:${dc.pos}20;border:1px solid ${dc.pos}55;color:${dc.pos}`;
             const negStyle = solid ? `background:${dc.negBg||dc.neg};color:#fff` : `background:${(dc.negBg||dc.neg)}20;border:1px solid ${(dc.negBg||dc.neg)}55;color:${dc.neg}`;
             actionHTML = `<div class="action-row">
-                <div style="position:relative;flex:1;min-width:130px">
-                    <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to submit)" style="width:100%" onkeydown="noteKeydown(event,${idx})" oninput="noteInput(event,${idx})">
-                    <div class="tag-ac" id="tag-ac-${idx}" style="display:none"></div>
-                </div>
-                <div class="mood-strip">${moodBtns}</div>
                 <button class="btn-pos" style="${posStyle}" onclick="addEntry(${idx},'pos')">✓ Win</button>
                 <button class="btn-neg" style="font-size:0.75rem;padding:0.3rem 0.6rem;opacity:0.7;${negStyle}" onclick="addEntry(${idx},'neg')">✗ L</button>
             </div>`;
@@ -1122,21 +1132,10 @@ function buildCard(item, idx, exp, col) {
             const solid = isSolid();
             const posStyle = solid ? `background:${dc.pos};color:#fff` : `background:${dc.pos}20;border:1px solid ${dc.pos}55;color:${dc.pos}`;
             const negStyle = solid ? `background:${dc.negBg||dc.neg};color:#fff` : `background:${(dc.negBg||dc.neg)}20;border:1px solid ${(dc.negBg||dc.neg)}55;color:${dc.neg}`;
-            actionHTML = `<div class="action-row">
-                <div style="position:relative;flex:1;min-width:130px">
-                    <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to submit)" style="width:100%" onkeydown="noteKeydown(event,${idx})" oninput="noteInput(event,${idx})">
-                    <div class="tag-ac" id="tag-ac-${idx}" style="display:none"></div>
-                </div>
-                <div class="mood-strip">${moodBtns}</div>
-            </div>`;
+            actionHTML = '';
         } else {
             const countStyle = isSolid() ? `background:${sc};color:#fff` : `background:${sc}20;border:1px solid ${sc}55;color:${sc}`;
             actionHTML = `<div class="action-row">
-                <div style="position:relative;flex:1;min-width:130px">
-                    <input type="text" class="note-inp" id="note-${idx}" placeholder="Note… (Enter to submit)" style="width:100%" onkeydown="noteKeydown(event,${idx})" oninput="noteInput(event,${idx})">
-                    <div class="tag-ac" id="tag-ac-${idx}" style="display:none"></div>
-                </div>
-                <div class="mood-strip">${moodBtns}</div>
                 <button class="btn-primary" style="${countStyle}" onclick="addEntry(${idx},'simple')">+ Count</button>
             </div>`;
         }
@@ -1191,7 +1190,7 @@ function buildCard(item, idx, exp, col) {
     const comments = Array.isArray(item.comments) ? item.comments : [];
     const isExpanded = exp[idx] || false;
     let commentsHTML = '';
-    if (comments.length > 0) {
+    {
         const sortedComments = [...comments].sort((a,b) => new Date(a.date||0) - new Date(b.date||0));
         const displayComments = [...sortedComments.reverse()];
         displayComments.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
@@ -1208,6 +1207,11 @@ function buildCard(item, idx, exp, col) {
             const emoji = c.emoji ? `${c.emoji} ` : '';
             const tagText = esc(c.text||'').replace(/#(\w+)/g, '<span class="hash-tag">#$1</span>');
             const pinBtn = isNote ? `<button class="btn-icon${c.pinned?' active':''}" onclick="pinComment(${idx},${ai})" title="${c.pinned?'Unpin':'Pin to top'}">📌</button>` : '';
+            const emojiBtns = !isNote ? `<span class="entry-emoji-row">
+                <button class="entry-emoji-btn${c.emoji==='😊'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😊')">😊</button>
+                <button class="entry-emoji-btn${c.emoji==='😐'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😐')">😐</button>
+                <button class="entry-emoji-btn${c.emoji==='😞'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😞')">😞</button>
+            </span>` : '';
             return `<div class="c-entry${c.pinned?' pinned-note':''}" ${pinnedRowStyle} ondblclick="startCEdit(${idx},${di})" title="Double-click to edit">
                 <span class="c-badge ${bcls}" ${badgeStyle}>${blabel}</span>
                 <span class="c-time">${fmtDate(c.date||new Date().toISOString())}</span>
@@ -1222,17 +1226,29 @@ function buildCard(item, idx, exp, col) {
                     <button class="btn-ghost" onclick="cancelCEdit(${idx},${di})">✕</button>
                 </div>
                 <div class="c-actions" id="ca-${idx}-${di}">
+                    ${emojiBtns}
                     ${pinBtn}
                     <button class="btn-icon" onclick="startCEdit(${idx},${di})" title="Edit">✎</button>
                     <button class="btn-icon btn-del" onclick="deleteComment(${idx},${ai})" title="Delete">×</button>
                 </div>
             </div>`;
         }).join('');
+        const reviewUI = locked ? '' : `<div class="review-section" style="margin-bottom:${rows ? '0.55rem' : '0'}">
+            <div style="display:flex;gap:0.35rem;align-items:center">
+                <button class="emoji-trigger-btn" onclick="openEmojiPicker(event,${idx})" title="Add emoji">😊</button>
+                <div style="position:relative;flex:1">
+                    <input type="text" class="note-inp" id="note-${idx}" placeholder="Add note… (Enter to submit)" style="width:100%" onkeydown="reviewKeydown(event,${idx})" oninput="noteInput(event,${idx})">
+                    <div class="tag-ac" id="tag-ac-${idx}" style="display:none"></div>
+                </div>
+                <button class="btn-ghost" onclick="submitReview(${idx})" style="padding:0.3rem 0.6rem">Add</button>
+            </div>
+        </div>`;
+        const historyLabel = comments.length > 0 ? `Review history (${comments.length})` : 'Review history';
         commentsHTML = `<div class="comments-section">
             <div class="comments-toggle ${isExpanded ? 'open' : ''}" onclick="toggleComments(${idx})">
-                <span class="chevron">▶</span> ${comments.length} comment${comments.length !== 1 ? 's' : ''}
+                <span class="chevron">▶</span> ${historyLabel}
             </div>
-            <div class="comments-list ${isExpanded ? 'open' : ''}" id="cmts-${idx}">${rows}</div>
+            <div class="comments-list ${isExpanded ? 'open' : ''}" id="cmts-${idx}">${reviewUI}${rows}</div>
         </div>`;
     }
 
@@ -1461,6 +1477,103 @@ function addEntry(idx, type) {
     const label = type === 'note-only' ? '📝 Note added' : type === 'pos' ? '✓ Win logged' : type === 'neg' ? '✗ Loss logged' : '+ Counted';
     const isCountedEntry = type !== 'note-only';
     showEntryUndoToast(idx, label, isCountedEntry);
+}
+
+// ─── REVIEW SECTION ───
+// ─── EMOJI PICKER ───
+const ALL_EMOJIS = ['😊','😐','😞','😤','😬','🤔','💪','🔥','✅','❌','⚡','🎯','💡','👍','👎','😅','🤦'];
+let emojiPickerTarget = null;
+
+function openEmojiPicker(e, idx) {
+    e.stopPropagation();
+    closeEmojiPicker();
+    const btn = e.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    const popup = document.createElement('div');
+    popup.className = 'emoji-picker-popup';
+    popup.id = 'emojiPickerPopup';
+    ALL_EMOJIS.forEach(em => {
+        const b = document.createElement('button');
+        b.textContent = em;
+        b.onclick = (ev) => { ev.stopPropagation(); insertEmojiIntoNote(idx, em); closeEmojiPicker(); };
+        popup.appendChild(b);
+    });
+    document.body.appendChild(popup);
+    const top = rect.bottom + 4;
+    const left = rect.left;
+    popup.style.top = top + 'px';
+    popup.style.left = left + 'px';
+    emojiPickerTarget = idx;
+}
+
+function insertEmojiIntoNote(idx, em) {
+    const el = document.getElementById(`note-${idx}`);
+    if (!el) return;
+    const pos = el.selectionStart ?? el.value.length;
+    el.value = el.value.slice(0, pos) + em + el.value.slice(pos);
+    el.setSelectionRange(pos + em.length, pos + em.length);
+    el.focus();
+}
+
+function closeEmojiPicker() {
+    document.getElementById('emojiPickerPopup')?.remove();
+    emojiPickerTarget = null;
+}
+
+document.addEventListener('click', () => closeEmojiPicker());
+
+function setEntryEmoji(idx, ai, emoji) {
+    const data = load();
+    if (!data[idx]?.comments[ai]) return;
+    // Toggle off if same emoji
+    data[idx].comments[ai].emoji = data[idx].comments[ai].emoji === emoji ? '' : emoji;
+    save(data);
+    render();
+}
+
+function reviewEmoji(idx, btn, emoji) {
+    const row = btn.closest('.review-emoji-row');
+    const noteRow = document.getElementById(`rn-${idx}`);
+    const alreadySelected = btn.classList.contains('selected');
+    // Deselect all
+    row.querySelectorAll('.review-emoji-btn').forEach(b => b.classList.remove('selected'));
+    if (alreadySelected) {
+        // Deselect — hide note row if empty
+        const noteEl = document.getElementById(`note-${idx}`);
+        if (!noteEl?.value.trim()) noteRow.style.display = 'none';
+        delete pendingEmoji[idx];
+    } else {
+        btn.classList.add('selected');
+        pendingEmoji[idx] = emoji;
+        noteRow.style.display = 'contents';
+        // Show note row inline
+        noteRow.style.display = '';
+        document.getElementById(`note-${idx}`)?.focus();
+    }
+}
+function reviewKeydown(e, idx) {
+    if (acNavigate(e, `tag-ac-${idx}`)) return;
+    if (e.key === 'Enter') { submitReview(idx); e.preventDefault(); }
+}
+function submitReview(idx) {
+    const noteEl = document.getElementById(`note-${idx}`);
+    const note = noteEl ? noteEl.value.trim() : '';
+    const emoji = pendingEmoji[idx] || '';
+    if (!note && !emoji) return;
+    // Clear state
+    if (noteEl) noteEl.value = '';
+    delete pendingEmoji[idx];
+    const rn = document.getElementById(`rn-${idx}`);
+    if (rn) rn.style.display = 'none';
+    document.querySelectorAll(`[id^="re-${idx}-"]`).forEach(b => b.classList.remove('selected'));
+    // Add as note-only entry
+    const data = load();
+    if (!data[idx]) return;
+    if (!data[idx].comments) data[idx].comments = [];
+    data[idx].comments.push({ type: 'note', text: note, emoji, counted: false, date: new Date().toISOString() });
+    save(data);
+    render();
+    toast(emoji && note ? `${emoji} Note added` : emoji ? `${emoji} logged` : '📝 Note added');
 }
 
 // ─── REPAINT FIX: force card repaint on note input focus to prevent grey-out ───
