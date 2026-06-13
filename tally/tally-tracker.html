@@ -97,7 +97,7 @@
         .stat-item strong { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--text-heading); font-weight: 500; }
         .stat-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 
-        .search-wrap { position: relative; margin-top: 0.55rem; }
+        .search-wrap { position: relative; margin-top: 0.55rem; max-width: 23rem; }
         .badge-note-pinned { font-weight: 700; }
         .c-entry.pinned-note { border-radius: 4px; }
         .period-pill { padding: 0.18rem 0.6rem; border-radius: 20px; font-size: 0.72rem; border: 1px solid var(--border); color: var(--text-muted); background: none; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
@@ -112,7 +112,7 @@
 
         /* ─── ADD FORM ─── */
         .add-form { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1.1rem; overflow: hidden; }
-        .add-form-toggle { display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.1rem; cursor: pointer; color: var(--text-muted); font-size: 0.82rem; user-select: none; transition: color 0.15s; }
+        .add-form-toggle { display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.1rem; cursor: pointer; color: var(--text-muted); font-size: 0.82rem; font-weight: 700; user-select: none; transition: color 0.15s; }
         .add-form-toggle:hover { color: var(--text); }
         .add-form-toggle .af-icon { color: var(--accent); font-size: 1rem; line-height: 1; transition: transform 0.25s; }
         .add-form-toggle .af-chevron { font-size: 0.55rem; color: var(--text-faint); transition: transform 0.25s; margin-left: auto; }
@@ -230,6 +230,11 @@
         /* Counters */
         .counter-area { margin: 0.55rem 0; }
         .count-big { font-family: 'DM Mono', monospace; font-size: 2.4rem; font-weight: 500; color: var(--accent); line-height: 1; }
+        .count-big.tappable { cursor: pointer; user-select: none; transition: filter 0.1s, transform 0.1s; border-radius: 6px; padding: 0 0.1rem; }
+        .count-big.tappable:hover { filter: brightness(1.25); }
+        .count-big.tappable:active { transform: scale(0.93); }
+        .count-neg-tap { cursor: pointer; user-select: none; border-radius: 4px; padding: 0.1rem 0.2rem; transition: background 0.15s; }
+        .count-neg-tap:hover { background: rgba(255,77,103,0.15); }
         .count-unit { font-size: 0.8rem; color: var(--text-muted); margin-left: 0.4rem; }
         .counter-dual { display: flex; gap: 0.6rem; }
         .cblock { flex: 1; text-align: center; padding: 0.5rem 0.4rem; border-radius: 8px; cursor: pointer; user-select: none; transition: filter 0.12s, transform 0.1s; min-width: 3rem; }
@@ -245,21 +250,21 @@
         .cblock.neg .cnum { color: var(--neg); }
 
         /* Progress */
-        .progress-area { margin: 0.4rem 0 0.55rem; }
-        .prog-track { height: 8px; background: var(--bg-elevated); border-radius: 4px; overflow: hidden; margin-bottom: 0.2rem; }
+        .progress-area { margin: 0.3rem 0 0.35rem; }
+        .prog-track { height: 8px; background: var(--bg-elevated); border-radius: 4px; overflow: hidden; margin-bottom: 0.15rem; }
         .prog-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.4s ease; }
         .prog-fill.near { background: var(--warn); }
         .prog-fill.done { background: var(--pos); }
         .prog-fill.killed { background: var(--neg); }
         .prog-meta { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
-        .kill-line { font-size: 0.65rem; color: var(--text-muted); text-align: center; margin-top: 0.15rem; }
+        .kill-line { font-size: 0.65rem; color: var(--text-muted); text-align: center; margin-top: 0.1rem; }
         .kill-line.danger { color: var(--neg); font-weight: 600; }
         .deadline-pill { display: inline-flex; align-items: center; gap: 0.15rem; padding: 0.08rem 0.4rem; border-radius: 20px; font-size: 0.70rem; font-weight: 700; background: var(--bg-elevated); border: 1px solid var(--border); }
         .deadline-pill.ok { color: var(--accent); }
         .deadline-pill.warn { color: var(--warn); }
         .deadline-pill.over { color: var(--neg); }
         .deadline-pill.ahead { color: var(--pos); }
-        .pace-line { font-size: 0.65rem; text-align: right; margin-top: 0.15rem; }
+        .pace-line { font-size: 0.65rem; text-align: right; margin-bottom: 0.3rem; }
         .pace-line.ahead { color: var(--pos); }
         .pace-line.on { color: var(--accent); }
         .pace-line.behind { color: var(--warn); }
@@ -1017,14 +1022,20 @@ function buildCard(item, idx, exp, col) {
 
     const solid = isSolid();
     let counterHTML = isProgress
-        ? `<div style="display:flex;align-items:baseline;gap:0.55rem"><div class="count-big" style="color:${dc.pos}">${c.pos}</div>${tgt.max > 0 ? `<span class="count-unit">/ ${tgt.max} ${esc(item.unit)}</span>` : item.unit ? `<span class="count-unit">${esc(item.unit)}</span>` : ''}${c.neg > 0 ? `<span style="font-size:0.78rem;color:var(--text-faint);margin-left:0.4rem">${c.neg}L</span>` : ''}</div>`
+        ? `<div style="display:flex;align-items:baseline;gap:0.55rem">
+            <div class="count-big tappable" style="color:${dc.pos}"
+                onmousedown="lpStart(${idx},'neg')" onmouseup="lpEnd(${idx},'pos')" onmouseleave="lpCancel()" ontouchstart="lpStart(${idx},'neg');event.preventDefault()" ontouchend="lpEnd(${idx},'pos');event.preventDefault()"
+                title="Tap = win · Hold = loss">${c.pos}</div>
+            ${tgt.max > 0 ? `<span class="count-unit">/ ${tgt.max} ${esc(item.unit)}</span>` : item.unit ? `<span class="count-unit">${esc(item.unit)}</span>` : ''}
+            ${c.neg > 0 ? `<span class="count-neg-tap" style="font-size:0.78rem;color:#c93050;margin-left:0.4rem" onclick="addEntry(${idx},'neg')" title="Tap to log loss">${c.neg}L</span>` : ''}
+           </div>`
         : isDual
         ? `<div class="counter-dual">
             <div class="cblock pos" onclick="addEntry(${idx},'pos')" title="Tap to log a win" style="flex:${tgt.kill > 0 && tgt.max > 0 ? tgt.max : 1};background:${solid ? dc.pos+'45' : dc.pos+'18'};border-color:${dc.pos}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.pos}">Wins</div><div class="cnum" style="color:${dc.pos}">${c.pos}</div></div>
             <div class="cblock neg" onclick="addEntry(${idx},'neg')" title="Tap to log a loss" style="flex:${tgt.kill > 0 && tgt.max > 0 ? tgt.kill : 1};background:${solid ? (dc.negBg||dc.neg)+'45' : (dc.negBg||dc.neg)+'18'};border-color:${(dc.negBg||dc.neg)}${solid ? '80' : '40'}"><div class="clabel" style="color:${dc.neg}">Losses</div><div class="cnum" style="color:${dc.neg}">${c.neg}</div></div>
           </div>`
         : `<div style="display:flex;align-items:baseline">
-            <div class="count-big" style="color:${sc}">${c.simple}</div>
+            <div class="count-big tappable" style="color:${sc}" onclick="addEntry(${idx},'simple')" title="Tap to count">  ${c.simple}</div>
             ${tgt.max > 0 ? `<span class="count-unit">/ ${tgt.max} ${esc(item.unit)}</span>` : item.unit ? `<span class="count-unit">${esc(item.unit)}</span>` : ''}
           </div>`;
 
@@ -1104,13 +1115,13 @@ function buildCard(item, idx, exp, col) {
         const appliedBarClass = (isDual || isProgress) ? barClass : (isKilled ? 'killed' : '');
         const fillStyle = isKilled ? '' : (barClass ? '' : ((isDual || isProgress) ? `background:${dc.pos}` : `background:${sc}`));
         progressHTML = `<div class="progress-area">
+            ${paceLine}
             <div class="prog-track"><div class="prog-fill ${appliedBarClass}" style="width:${barPct}%;${fillStyle}"></div></div>
             <div class="prog-meta">
                 <span>${isKilled ? `${c.neg}/${tgt.kill} kills` : `${curr} / ${tgt.max}`}</span>
                 <span>${Math.round(isKilled ? killPct : pct)}%</span>
             </div>
-            ${(isDual || isProgress) && tgt.kill > 0 ? `<div class="kill-line ${c.neg > 0 && !isKilled ? (c.neg >= tgt.kill * 0.7 ? 'danger' : '') : isKilled ? 'danger' : ''}">Loss limit: ${tgt.kill}${isProgress ? '' : ' kills'}</div>` : ''}
-            ${paceLine}
+            ${(isDual || isProgress) && tgt.kill > 0 ? `<div class="kill-line">Loss limit: ${tgt.kill}${isProgress ? '' : ' kills'}</div>` : ''}
         </div>`;
     }
 
@@ -1124,20 +1135,14 @@ function buildCard(item, idx, exp, col) {
             const solid = isSolid();
             const posStyle = solid ? `background:${dc.pos};color:#fff` : `background:${dc.pos}20;border:1px solid ${dc.pos}55;color:${dc.pos}`;
             const negStyle = solid ? `background:${dc.negBg||dc.neg};color:#fff` : `background:${(dc.negBg||dc.neg)}20;border:1px solid ${(dc.negBg||dc.neg)}55;color:${dc.neg}`;
-            actionHTML = `<div class="action-row">
-                <button class="btn-pos" style="${posStyle}" onclick="addEntry(${idx},'pos')">✓ Win</button>
-                <button class="btn-neg" style="font-size:0.75rem;padding:0.3rem 0.6rem;opacity:0.7;${negStyle}" onclick="addEntry(${idx},'neg')">✗ L</button>
-            </div>`;
+            actionHTML = '';
         } else if (isDual) {
             const solid = isSolid();
             const posStyle = solid ? `background:${dc.pos};color:#fff` : `background:${dc.pos}20;border:1px solid ${dc.pos}55;color:${dc.pos}`;
             const negStyle = solid ? `background:${dc.negBg||dc.neg};color:#fff` : `background:${(dc.negBg||dc.neg)}20;border:1px solid ${(dc.negBg||dc.neg)}55;color:${dc.neg}`;
             actionHTML = '';
         } else {
-            const countStyle = isSolid() ? `background:${sc};color:#fff` : `background:${sc}20;border:1px solid ${sc}55;color:${sc}`;
-            actionHTML = `<div class="action-row">
-                <button class="btn-primary" style="${countStyle}" onclick="addEntry(${idx},'simple')">+ Count</button>
-            </div>`;
+            actionHTML = '';
         }
     }
 
@@ -1480,6 +1485,27 @@ function addEntry(idx, type) {
 }
 
 // ─── REVIEW SECTION ───
+// ─── LONG PRESS ───
+let lpTimer = null;
+let lpFired = false;
+function lpStart(idx, type) {
+    lpFired = false;
+    lpTimer = setTimeout(() => {
+        lpFired = true;
+        addEntry(idx, type);
+        navigator.vibrate?.(40);
+    }, 500);
+}
+function lpEnd(idx, type) {
+    clearTimeout(lpTimer);
+    if (!lpFired) addEntry(idx, type);
+    lpFired = false;
+}
+function lpCancel() {
+    clearTimeout(lpTimer);
+    lpFired = false;
+}
+
 // ─── EMOJI PICKER ───
 const ALL_EMOJIS = ['😊','😐','😞','😤','😬','🤔','💪','🔥','✅','❌','⚡','🎯','💡','👍','👎','😅','🤦'];
 let emojiPickerTarget = null;
