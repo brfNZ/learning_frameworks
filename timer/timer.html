@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -2217,10 +2217,16 @@
         }
 
         // ── Blocks ⇅ alternating direction ──
-        // 'up' = filling, 'down' = depleting. Flips each completed session.
         var blocksAltDirection = localStorage.getItem('blocksAltDirection') || 'up';
+        var blocksAltLastDirection = null;
 
         function drawBlocksAltTimer() {
+            // Force grid rebuild when direction changes
+            if (blocksAltLastDirection !== blocksAltDirection) {
+                const grid = document.getElementById('blocksGrid');
+                if (grid) { grid.innerHTML = ''; delete grid.dataset.blockPx; }
+                blocksAltLastDirection = blocksAltDirection;
+            }
             if (blocksAltDirection === 'up') {
                 drawBlocksUpTimer();
             } else {
