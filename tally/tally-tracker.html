@@ -404,6 +404,12 @@
         .toast.show { transform: translateX(-50%) translateY(0); }
 
         /* Empty state */
+        .picker-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border-light); cursor: pointer; }
+        .picker-item:last-child { border-bottom: none; }
+        .picker-item:hover { background: var(--bg-elevated); }
+        .picker-item input[type="checkbox"] { width: auto; flex-shrink: 0; cursor: pointer; }
+        .picker-item-name { font-size: 0.82rem; color: var(--text-heading); font-weight: 600; flex: 1; }
+        .picker-item-meta { font-size: 0.70rem; color: var(--text-muted); }
         .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
         .empty-state .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
 
@@ -536,6 +542,22 @@
     </div>
 </main>
 
+<div class="modal-bg" id="pickerModal" onclick="closePickerModal()">
+    <div class="modal-box" style="max-width:480px;max-height:80vh;display:flex;flex-direction:column" onclick="event.stopPropagation()">
+        <div class="modal-title">📂 Select Tallies to Restore</div>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 0.6rem">Choose which tallies to append to your current data.</p>
+        <div style="display:flex;gap:0.4rem;margin-bottom:0.5rem">
+            <button class="btn-ghost" onclick="pickerSelectAll(true)" style="font-size:0.72rem">Select all</button>
+            <button class="btn-ghost" onclick="pickerSelectAll(false)" style="font-size:0.72rem">Deselect all</button>
+        </div>
+        <div id="pickerList" style="overflow-y:auto;flex:1;border:1px solid var(--border);border-radius:6px;margin-bottom:0.75rem"></div>
+        <div class="modal-actions">
+            <button class="btn-ghost" onclick="closePickerModal()">Cancel</button>
+            <button class="btn-primary" onclick="confirmPickerRestore()">Restore Selected</button>
+        </div>
+    </div>
+</div>
+
 <div class="modal-bg" id="lockModal">
     <div class="modal-box">
         <div class="modal-title" id="modalTitle">🔒 Lock Tally</div>
@@ -586,24 +608,28 @@
             <button class="info-box-close" onclick="closeInfo()" title="Close">✕</button>
         </div>
         <div class="info-box-content">
-        <h4>Mood Emojis</h4>
-        <div class="info-row-compact"><span class="ei">😊</span><span>Good session</span></div>
-        <div class="info-row-compact"><span class="ei">😐</span><span>Neutral / okay</span></div>
-        <div class="info-row-compact"><span class="ei">😞</span><span>Tough session</span></div>
+        <h4>Tally Types</h4>
+        <div class="info-row-compact"><span class="ei">🔢</span><span><strong>Count</strong> — tap the big number to count up.</span></div>
+        <div class="info-row-compact"><span class="ei">📈</span><span><strong>Progress</strong> — tap = win, hold = loss. Small red L shown alongside wins.</span></div>
+        <div class="info-row-compact"><span class="ei">⚔️</span><span><strong>Win/Loss</strong> — tap either coloured block to log. Block widths reflect the win/loss ratio.</span></div>
+        <div class="info-row-compact"><span class="ei">🎯</span><span><strong>Challenge</strong> — deadline only, no target. Tap count to log. Ends when deadline passes.</span></div>
+        <h4>Target &amp; Loss Limit</h4>
+        <div class="info-row"><span class="ei">🎯</span><span>Enter target as <strong>10</strong> for wins only, or <strong>10/3</strong> to set a loss limit of 3. Default loss limit is target÷2.</span></div>
+        <h4>▶ Review History</h4>
+        <div class="info-row"><span class="ei">😊</span><span>Tap 😊 to open an emoji picker for standalone notes. Tap an emoji on any count entry to rate it. Pin notes after adding via the 📌 button in the entry.</span></div>
         <h4>🔥 Streak</h4>
         <div class="info-row"><span class="ei">🔥</span><span>Consecutive calendar days logged. <strong>🔥 3d</strong> = 3 days in a row. Miss a day and it resets.</span></div>
         <h4>📌 Pin</h4>
         <div class="info-row"><span class="ei">📌</span><span>Click to pin a tally to the top. <strong>Ctrl+click</strong> pins with hot pink glow.</span></div>
         <h4>12W 3L</h4>
-        <div class="info-row"><span class="ei">🃏</span><span>Collapsed card summary. <strong>W</strong> = wins, <strong>L</strong> = losses. Also shows % completion and pace when a target is set.</span></div>
+        <div class="info-row"><span class="ei">🃏</span><span>Collapsed card summary. <strong>W</strong> = wins, <strong>L</strong> = losses. Also shows % and pace.</span></div>
         <h4>📅 Deadline</h4>
-        <div class="info-row"><span class="ei">📅</span><span>Set when adding or editing. <strong>Green</strong> = time to spare, <strong>amber</strong> = 7 days or less, <strong>red</strong> = overdue. Pace line shows ahead / on track / behind when a target is set.</span></div>
+        <div class="info-row"><span class="ei">📅</span><span>Set when adding or editing. <strong>Green</strong> = time to spare, <strong>amber</strong> = 7 days or less, <strong>red</strong> = overdue. Pace line appears above the bar.</span></div>
         <h4>💾 Backup &amp; Restore</h4>
         <div class="info-row"><span class="ei">💾</span><span><strong>Export to file</strong> — full JSON backup of all tallies.</span></div>
         <div class="info-row"><span class="ei">📋</span><span><strong>Copy JSON</strong> — copies all data to clipboard.</span></div>
-        <div class="info-row"><span class="ei">📂</span><span><strong>Import from file</strong> — restores from JSON. Single tally always appends; multiple tallies uses the Append checkbox in the dropdown.</span></div>
-        <div class="info-row"><span class="ei">📋</span><span><strong>Paste JSON</strong> — paste a backup to restore. Tick Append in the dropdown before importing to add without replacing.</span></div>
-        <div class="info-row"><span class="ei">📤</span><span><strong>Per-tally export</strong> — open Edit on any card and tap Export to save just that tally. Reimport via Import from file — it appends automatically.</span></div>
+        <div class="info-row"><span class="ei">📂</span><span><strong>Import from file</strong> — opens a picker to choose which tallies to restore. All append to existing data.</span></div>
+        <div class="info-row"><span class="ei">📋</span><span><strong>Paste JSON</strong> — paste a backup, then pick which tallies to restore from the list.</span></div>
         </div>
     </div>
 </div>
@@ -1188,7 +1214,6 @@ function buildCard(item, idx, exp, col) {
         <input type="text" id="ed-${idx}" value="${item.deadline||''}" placeholder="7d, 1m, DD, DD/MM/YYYY" onkeydown="if(event.key==='Enter'){saveEdit(${idx});event.preventDefault()}" title="Deadline (optional)" style="flex:0.8;min-width:140px">
         <button class="btn-primary" onclick="saveEdit(${idx})">Save</button>
         <button class="btn-ghost" onclick="closeEdit(${idx})">Cancel</button>
-        <button class="btn-ghost" onclick="exportTally(${idx})" title="Export this tally as JSON">📤 Export</button>
     </div>`;
 
     // Comments
@@ -2077,20 +2102,7 @@ function handleRestore(e) {
         try {
             const parsed = JSON.parse(ev.target.result);
             if (!Array.isArray(parsed)) { toast('⚠ Invalid backup file'); return; }
-            const existing = load();
-            // Auto-detect: fewer tallies than current = single/partial restore → append
-            // Single tally export → always append; multiple → use checkbox
-            const shouldAppend = parsed.length === 1 || document.getElementById('restoreAppend')?.checked;
-            if (shouldAppend) {
-                save(migrate([...existing, ...parsed]));
-                render();
-                toast(`✓ ${parsed.length} tall${parsed.length===1?'y':'ies'} appended`);
-            } else {
-                save(migrate(parsed));
-                localStorage.removeItem(EK);
-                render();
-                toast(`✓ Restored ${parsed.length} tallies`);
-            }
+            showTallyPicker(parsed);
         } catch(err) { toast('⚠ Error: ' + err.message); }
     };
     reader.readAsText(file);
@@ -2117,6 +2129,54 @@ function exportCSV() {
     a.download = `tally-export-${new Date().toISOString().slice(0,10)}.csv`;
     a.click();
     toast('📊 CSV exported');
+}
+
+// ─── TALLY PICKER ───
+let pickerData = [];
+
+function showTallyPicker(tallies) {
+    pickerData = tallies;
+    const list = document.getElementById('pickerList');
+    const getCounts2 = (item) => {
+        const cs = Array.isArray(item.comments) ? item.comments : [];
+        return { pos: cs.filter(c=>c&&c.type==='pos'&&c.counted).length, neg: cs.filter(c=>c&&c.type==='neg'&&c.counted).length, simple: cs.filter(c=>c&&c.type==='simple'&&c.counted).length };
+    };
+    list.innerHTML = tallies.map((item, i) => {
+        if (item.locked) return `<div class="picker-item"><input type="checkbox" id="pk-${i}" checked><label for="pk-${i}" style="cursor:pointer;flex:1;display:flex;align-items:center;gap:0.6rem"><span class="picker-item-name">🔒 Locked tally</span></label></div>`;
+        const c = getCounts2(item);
+        const total = c.pos + c.neg + c.simple;
+        const type = item.type || 'simple';
+        const typeLabel = type==='dual'?'Win/Loss':type==='progress'?'Progress':type==='challenge'?'Challenge':'Count';
+        const score = type==='dual'||type==='progress' ? `${c.pos}W ${c.neg}L` : `${c.simple}`;
+        const created = item.created ? new Date(item.created).toLocaleDateString() : '';
+        return `<div class="picker-item" onclick="document.getElementById('pk-${i}').click()">
+            <input type="checkbox" id="pk-${i}" checked onclick="event.stopPropagation()">
+            <div style="flex:1">
+                <div class="picker-item-name">${esc(item.name)}</div>
+                <div class="picker-item-meta">${typeLabel} · ${score} · ${total} entr${total===1?'y':'ies'}${created?' · Added '+created:''}</div>
+            </div>
+        </div>`;
+    }).join('');
+    document.getElementById('pickerModal').classList.add('open');
+}
+
+function pickerSelectAll(val) {
+    document.querySelectorAll('#pickerList input[type="checkbox"]').forEach(cb => cb.checked = val);
+}
+
+function closePickerModal() {
+    document.getElementById('pickerModal').classList.remove('open');
+    pickerData = [];
+}
+
+function confirmPickerRestore() {
+    const selected = pickerData.filter((_, i) => document.getElementById(`pk-${i}`)?.checked);
+    if (!selected.length) { toast('⚠ Nothing selected'); return; }
+    const existing = load();
+    save(migrate([...existing, ...selected]));
+    closePickerModal();
+    render();
+    toast(`✓ ${selected.length} tall${selected.length===1?'y':'ies'} restored`);
 }
 
 // ─── BACKUP DROPDOWN ───
@@ -2157,35 +2217,13 @@ function importClipboard() {
     try {
         const parsed = JSON.parse(raw);
         if (!Array.isArray(parsed)) throw new Error();
-        const append = parsed.length === 1 || document.getElementById('restoreAppend')?.checked;
-        if (append) {
-            const existing = load();
-            save(migrate([...existing, ...parsed]));
-            closeClipModal();
-            render();
-            toast(`✓ ${parsed.length} tall${parsed.length===1?'y':'ies'} appended`);
-        } else {
-            save(migrate(parsed));
-            closeClipModal();
-            render();
-            toast('✓ Data imported');
-        }
+        closeClipModal();
+        showTallyPicker(parsed);
     } catch {
         toast('⚠ Invalid JSON — check your paste');
     }
 }
 
-function exportTally(idx) {
-    const data = load();
-    if (!data[idx]) return;
-    const blob = new Blob([JSON.stringify([data[idx]], null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    const safeName = (data[idx].name || 'tally').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    a.download = `tally-${safeName}-${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    toast(`📤 "${data[idx].name}" exported`);
-}
 
 function exportFullCSV() {
     const data = load();
@@ -2216,7 +2254,7 @@ function exportFullCSV() {
     toast('📊 Full CSV exported');
 }
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeInfo(); closeDeleteModal(); closeClipModal(); }
+    if (e.key === 'Escape') { closeModal(); closeInfo(); closeDeleteModal(); closeClipModal(); closePickerModal(); }
     if (e.key === 'Enter' && document.getElementById('lockModal').classList.contains('open')) {
         e.preventDefault();
         confirmLock();
