@@ -1476,7 +1476,7 @@
                     currentSize = 'large';
                 }
             }
-            else if (currentDisplayMode === 'blocks') {
+            else if (currentDisplayMode === 'blocks' || currentDisplayMode === 'blocks-up' || currentDisplayMode === 'blocks-updown' || currentDisplayMode === 'blocks-alt') {
                 if (currentSize === 'large') {
                     currentSize = 'medium';
                 } else if (currentSize === 'medium') {
@@ -1484,6 +1484,9 @@
                 } else {
                     currentSize = 'large';
                 }
+                // Force grid rebuild so new size applies
+                const grid = document.getElementById('blocksGrid');
+                if (grid) { grid.innerHTML = ''; delete grid.dataset.blockPx; }
             }
             
             drawTimer();
