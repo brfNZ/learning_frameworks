@@ -727,8 +727,8 @@
 
     #weekChart { margin-bottom: 25px !important; }
     .alert-menu-item {
-        padding: 7px 14px;
-        font-size: 13px;
+        padding: 5px 12px;
+        font-size: 12px;
         cursor: pointer;
         color: var(--text-color);
     }
@@ -1385,8 +1385,11 @@
         var menu = document.getElementById('alertMenu');
         updateAlertButton();
         menu.style.display = 'block';
+        var menuH = menu.offsetHeight || 120;
+        var spaceBelow = window.innerHeight - e.clientY;
+        var top = spaceBelow < menuH ? e.clientY - menuH : e.clientY;
         menu.style.left = Math.min(e.clientX, window.innerWidth - 200) + 'px';
-        menu.style.top = Math.min(e.clientY, window.innerHeight - 160) + 'px';
+        menu.style.top = Math.max(0, top) + 'px';
     }
 
     document.addEventListener('click', function(e) {
@@ -1518,8 +1521,11 @@
                 item.classList.toggle('active', isActive);
             });
             menu.style.display = 'block';
+            const menuH = menu.offsetHeight || 180;
+            const spaceBelow = window.innerHeight - e.clientY;
+            const top = spaceBelow < menuH ? e.clientY - menuH : e.clientY;
             menu.style.left = Math.min(e.clientX, window.innerWidth - 170) + 'px';
-            menu.style.top = Math.min(e.clientY, window.innerHeight - 180) + 'px';
+            menu.style.top = Math.max(0, top) + 'px';
         }
 
         function selectDisplayMode(mode) {
