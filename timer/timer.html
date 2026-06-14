@@ -1001,24 +1001,16 @@
     <!-- History Modal -->
     <div id="historyModal" class="modal" style="display:none">
         <div class="modal-content">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;">
-            <button type="button"
-                    onclick="exportHistoryCSV()"
-                    aria-label="Export session history as CSV"
-                    style="background:none;border:none;color:var(--primary-cyan);font-size:12px;cursor:pointer;white-space:nowrap;padding:4px 6px;">
-                Export CSV
-            </button>
-
+            <div style="display:flex;align-items:center;margin-bottom:10px;position:relative;">
             <h3 id="historyModalTitle" style="margin:0;position:absolute;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;">
                 Session History
             </h3>
-
             <button type="button"
                     onclick="closeHistoryModal()"
                     aria-label="Close session history"
                     title="Close"
-                    style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-color);opacity:0.5;padding:4px 8px;">
-                ×    <!-- Multiplication glyph/sign as close icon -->
+                    style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-color);opacity:0.5;padding:4px 8px;margin-left:auto;">
+                ×
             </button>
         </div>
 
@@ -1064,7 +1056,9 @@
             </style>
           
             <div id="historyList" style="margin-top: 12px;"></div>
-            <div style="text-align: center; margin-top: 15px;">
+            <div style="text-align: center; margin-top: 15px; display:flex; justify-content:center; gap:8px;">
+                <button class="modal-button primary" onclick="exportHistoryCSV()">Export CSV</button>
+                <button class="modal-button primary" onclick="exportHistoryJSON()">Export JSON</button>
                 <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
             </div>
         </div>
@@ -2751,6 +2745,17 @@
 }
 
     /* ---------- CSV EXPORT (newest first, correct NZ heat-map) ---------- */
+    function exportHistoryJSON() {
+        const sessions = getSessionHistory();
+        if (sessions.length === 0) { alert('No sessions to export'); return; }
+        const blob = new Blob([JSON.stringify(sessions, null, 2)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'timer-sessions.json';
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
+
     function exportHistoryCSV() {
         const sessions = getSessionHistory();
         if (sessions.length === 0) {
