@@ -1002,6 +1002,12 @@
     <div id="historyModal" class="modal" style="display:none">
         <div class="modal-content">
             <div style="display:flex;align-items:center;margin-bottom:10px;position:relative;">
+            <button type="button"
+                    onclick="toggleExportMenu(event)"
+                    aria-label="Export session history"
+                    style="background:none;border:none;color:var(--primary-cyan);font-size:12px;cursor:pointer;white-space:nowrap;padding:4px 6px;">
+                Export ▾
+            </button>
             <h3 id="historyModalTitle" style="margin:0;position:absolute;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;">
                 Session History
             </h3>
@@ -1012,6 +1018,10 @@
                     style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-color);opacity:0.5;padding:4px 8px;margin-left:auto;">
                 ×
             </button>
+        </div>
+        <div id="exportMenu" style="display:none;position:absolute;z-index:999;background:var(--bg-color);border:1px solid var(--t-primary);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);padding:4px 0;min-width:140px;">
+            <div class="alert-menu-item" onclick="exportHistoryCSV(); document.getElementById('exportMenu').style.display='none';">Export CSV</div>
+            <div class="alert-menu-item" onclick="exportHistoryJSON(); document.getElementById('exportMenu').style.display='none';">Export JSON</div>
         </div>
 
 
@@ -1056,9 +1066,7 @@
             </style>
           
             <div id="historyList" style="margin-top: 12px;"></div>
-            <div style="text-align: center; margin-top: 15px; display:flex; justify-content:center; gap:8px;">
-                <button class="modal-button primary" onclick="exportHistoryCSV()">Export CSV</button>
-                <button class="modal-button primary" onclick="exportHistoryJSON()">Export JSON</button>
+            <div style="text-align: center; margin-top: 15px;">
                 <button class="modal-button secondary" onclick="closeHistoryModal()">Close</button>
             </div>
         </div>
@@ -2756,10 +2764,35 @@
         const blob = new Blob([JSON.stringify(sessions, null, 2)], {type: 'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'timer-sessions.json';
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+        a.download = 'timer-sessions-' + dd + '-' + mm + '-' + yyyy + '.json';
         a.click();
         URL.revokeObjectURL(a.href);
     }
+
+    function toggleExportMenu(e) {
+        e.stopPropagation();
+        const menu = document.getElementById('exportMenu');
+        const open = menu.style.display === 'none' || !menu.style.display;
+        if (open) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            menu.style.position = 'fixed';
+            menu.style.left = rect.left + 'px';
+            menu.style.top = rect.bottom + 'px';
+            menu.style.display = 'block';
+        } else {
+            menu.style.display = 'none';
+        }
+    }
+    document.addEventListener('click', function(e) {
+        const menu = document.getElementById('exportMenu');
+        if (menu && menu.style.display === 'block' && !menu.contains(e.target) && e.target.getAttribute('onclick') !== 'toggleExportMenu(event)') {
+            menu.style.display = 'none';
+        }
+    });
 
     function exportHistoryCSV() {
         const sessions = getSessionHistory();
@@ -2823,7 +2856,10 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'timer-sessions-' + nzToday.toISOString().slice(0,10) + '.csv';
+        const dd = String(nzToday.getDate()).padStart(2, '0');
+        const mm = String(nzToday.getMonth() + 1).padStart(2, '0');
+        const yyyy = nzToday.getFullYear();
+        a.download = 'timer-sessions-' + dd + '-' + mm + '-' + yyyy + '.csv';
         a.click();
         URL.revokeObjectURL(url);
     }
