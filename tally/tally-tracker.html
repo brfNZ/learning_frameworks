@@ -1260,16 +1260,17 @@ function buildCard(item, idx, exp, col) {
             const emoji = c.emoji ? `${c.emoji} ` : '';
             const tagText = esc(c.text||'').replace(/#(\w+)/g, '<span class="hash-tag">#$1</span>');
             const pinBtn = isNote ? `<button class="btn-icon${c.pinned?' active':''}" onclick="pinComment(${idx},${ai})" title="${c.pinned?'Unpin':'Pin to top'}">📌</button>` : '';
-            const emojiBtns = !isNote ? `<span class="entry-emoji-row">
-                <button class="entry-emoji-btn${c.emoji==='😊'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😊')">😊</button>
-                <button class="entry-emoji-btn${c.emoji==='😐'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😐')">😐</button>
-                <button class="entry-emoji-btn${c.emoji==='😞'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😞')">😞</button>
-            </span>` : '';
+            const emojiBtns = '';
             return `<div class="c-entry${c.pinned?' pinned-note':''}" ${pinnedRowStyle} ondblclick="startCEdit(${idx},${di})" title="Double-click to edit">
                 <span class="c-badge ${bcls}" ${badgeStyle}>${blabel}</span>
                 <span class="c-time">${fmtDate(c.date||new Date().toISOString())}</span>
                 <span class="c-text" id="ct-${idx}-${di}">${emoji}${tagText}</span>
                 <div class="c-edit-form" id="cef-${idx}-${di}">
+                    ${!isNote ? `<span class="entry-emoji-row" style="flex-shrink:0">
+                        <button class="entry-emoji-btn${c.emoji==='😊'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😊')">😊</button>
+                        <button class="entry-emoji-btn${c.emoji==='😐'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😐')">😐</button>
+                        <button class="entry-emoji-btn${c.emoji==='😞'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😞')">😞</button>
+                    </span>` : ''}
                     <div style="position:relative;flex:1;min-width:0">
                         <input type="text" value="${esc(c.text||'')}" id="ci-${idx}-${di}" style="width:100%" oninput="noteInput(event,${idx},'ci-${idx}-${di}')" onkeydown="ciKeydown(event,${idx},${ai},${di})">
                         <div class="tag-ac" id="tag-ac-ci-${idx}-${di}" style="display:none"></div>
@@ -1286,15 +1287,17 @@ function buildCard(item, idx, exp, col) {
                 </div>
             </div>`;
         }).join('');
-        const reviewUI = locked ? '' : `<div class="review-section" style="margin-bottom:${rows ? '0.55rem' : '0'}">
-            <div style="display:flex;gap:0.35rem;align-items:center">
+        const reviewUI = `<div class="review-section" style="margin-bottom:${rows ? '0.35rem' : '0'}">
+            <div id="note-row-${idx}" style="display:none;gap:0.35rem;align-items:center" class="note-row-open">
                 <button class="emoji-trigger-btn" onclick="openEmojiPicker(event,${idx})" title="Add emoji">😊</button>
                 <div style="position:relative;flex:1">
                     <input type="text" class="note-inp" id="note-${idx}" placeholder="Add note… (Enter to submit)" style="width:100%" onkeydown="reviewKeydown(event,${idx})" oninput="noteInput(event,${idx})">
                     <div class="tag-ac" id="tag-ac-${idx}" style="display:none"></div>
                 </div>
                 <button class="btn-ghost" onclick="submitReview(${idx})" style="padding:0.3rem 0.6rem">Add</button>
+                <button class="btn-ghost" onclick="toggleNoteRow(${idx})" style="padding:0.3rem 0.5rem">✕</button>
             </div>
+            <button class="btn-ghost" id="note-btn-${idx}" onclick="toggleNoteRow(${idx})" style="font-size:0.72rem;padding:0.2rem 0.5rem">+ Add note</button>
         </div>`;
         const historyLabel = comments.length > 0 ? `Review history (${comments.length})` : 'Review history';
         commentsHTML = `<div class="comments-section">
@@ -1761,10 +1764,21 @@ document.addEventListener('click', () => closeColourPicker());
 function setEntryEmoji(idx, ai, emoji) {
     const data = load();
     if (!data[idx]?.comments[ai]) return;
-    // Toggle off if same emoji
-    data[idx].comments[ai].emoji = data[idx].comments[ai].emoji === emoji ? '' : emoji;
+    const newEmoji = data[idx].comments[ai].emoji === emoji ? '' : emoji;
+    data[idx].comments[ai].emoji = newEmoji;
     save(data);
-    render();
+    // If an edit form is open, don't re-render — just update emoji buttons in-place
+    if (document.querySelector('.c-edit-form.open')) {
+        document.querySelectorAll('.entry-emoji-btn').forEach(btn => {
+            const fn = btn.getAttribute('onclick') || '';
+            const match = fn.match(/setEntryEmoji\((\d+),(\d+),'(.+?)'\)/);
+            if (match && parseInt(match[1]) === idx && parseInt(match[2]) === ai) {
+                btn.classList.toggle('esel', match[3] === newEmoji);
+            }
+        });
+    } else {
+        render();
+    }
 }
 
 function reviewEmoji(idx, btn, emoji) {
@@ -1791,6 +1805,16 @@ function reviewKeydown(e, idx) {
     if (acNavigate(e, `tag-ac-${idx}`)) return;
     if (e.key === 'Enter') { submitReview(idx); e.preventDefault(); }
 }
+function toggleNoteRow(idx) {
+    const row = document.getElementById(`note-row-${idx}`);
+    const btn = document.getElementById(`note-btn-${idx}`);
+    if (!row) return;
+    const open = row.style.display === 'none' || row.style.display === '';
+    row.style.display = open ? 'flex' : 'none';
+    if (btn) btn.style.display = open ? 'none' : '';
+    if (open) setTimeout(() => document.getElementById(`note-${idx}`)?.focus(), 50);
+}
+
 function submitReview(idx) {
     const noteEl = document.getElementById(`note-${idx}`);
     const note = noteEl ? noteEl.value.trim() : '';
@@ -1810,6 +1834,8 @@ function submitReview(idx) {
     save(data);
     render();
     toast(emoji && note ? `${emoji} Note added` : emoji ? `${emoji} logged` : '📝 Note added');
+    // Re-open history so user sees the new entry
+    const expState = loadExp(); expState[idx] = true; saveExp(expState);
 }
 
 // ─── REPAINT FIX: force card repaint on note input focus to prevent grey-out ───
