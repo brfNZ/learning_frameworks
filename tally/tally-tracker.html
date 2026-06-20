@@ -1270,7 +1270,7 @@ function buildCard(item, idx, exp, col) {
                         <button class="entry-emoji-btn${c.emoji==='😊'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😊')">😊</button>
                         <button class="entry-emoji-btn${c.emoji==='😐'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😐')">😐</button>
                         <button class="entry-emoji-btn${c.emoji==='😞'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😞')">😞</button>
-                    </span>` : ''}
+                    </span>` : `<button class="emoji-trigger-btn" onclick="openEmojiPicker(event,${idx},'ci-${idx}-${di}')" title="Add emoji" style="flex-shrink:0">😊</button>`}
                     <div style="position:relative;flex:1;min-width:0">
                         <textarea id="ci-${idx}-${di}" style="width:100%;resize:none;overflow:hidden;line-height:1.4;min-height:2rem;font-family:inherit;font-size:0.76rem;padding:0.18rem 0.38rem" rows="1" oninput="autoResize(this);noteInput(event,${idx},'ci-${idx}-${di}')" onkeydown="ciKeydown(event,${idx},${ai},${di})">${esc(c.text||'')}</textarea>
                         <div class="tag-ac" id="tag-ac-ci-${idx}-${di}" style="display:none"></div>
@@ -1598,7 +1598,7 @@ function lpCancel() {
 const ALL_EMOJIS = ['😊','😐','😞','😤','😬','🤔','💪','🔥','✅','❌','⚡','🎯','💡','👍','👎','😅','🤦'];
 let emojiPickerTarget = null;
 
-function openEmojiPicker(e, idx) {
+function openEmojiPicker(e, idx, inputId) {
     e.stopPropagation();
     closeEmojiPicker();
     const btn = e.currentTarget;
@@ -1609,7 +1609,12 @@ function openEmojiPicker(e, idx) {
     ALL_EMOJIS.forEach(em => {
         const b = document.createElement('button');
         b.textContent = em;
-        b.onclick = (ev) => { ev.stopPropagation(); insertEmojiIntoNote(idx, em); closeEmojiPicker(); };
+        b.onclick = (ev) => {
+            ev.stopPropagation();
+            if (inputId) insertEmojiIntoNote(idx, em, inputId);
+            else insertEmojiIntoNote(idx, em);
+            closeEmojiPicker();
+        };
         popup.appendChild(b);
     });
     document.body.appendChild(popup);
@@ -1620,8 +1625,8 @@ function openEmojiPicker(e, idx) {
     emojiPickerTarget = idx;
 }
 
-function insertEmojiIntoNote(idx, em) {
-    const el = document.getElementById(`note-${idx}`);
+function insertEmojiIntoNote(idx, em, inputId) {
+    const el = document.getElementById(inputId || `note-${idx}`);
     if (!el) return;
     const pos = el.selectionStart ?? el.value.length;
     el.value = el.value.slice(0, pos) + em + el.value.slice(pos);
