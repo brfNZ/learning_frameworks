@@ -300,7 +300,8 @@
 
         /* Actions */
         .action-row { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; margin-top: 0.5rem; }
-        .note-inp { flex: 1; min-width: 130px; font-size: 0.78rem; padding: 0.38rem 0.55rem; }
+        .note-inp { flex: 1; min-width: 130px; font-size: 0.78rem; padding: 0.38rem 0.55rem; resize: none; overflow: hidden; line-height: 1.4; min-height: 2rem; font-family: inherit; }
+        .c-text { color: var(--text); flex: 1; line-height: 1.4; white-space: pre-wrap; word-break: break-word; }
         .emoji-picker-popup { position: fixed; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem; display: flex; flex-wrap: wrap; gap: 0.15rem; box-shadow: 0 6px 20px rgba(0,0,0,0.35); z-index: 999; max-width: 180px; }
         .emoji-picker-popup button { background: none; border: none; font-size: 1.1rem; padding: 0.2rem 0.3rem; cursor: pointer; border-radius: 4px; line-height: 1; transition: background 0.1s; }
         .emoji-picker-popup button:hover { background: var(--bg-card); }
@@ -336,7 +337,6 @@
         .badge-note { background: var(--bg-elevated); color: var(--text-muted); border: 1px solid var(--border); }
         .badge-simple { background: var(--accent-dim); color: var(--accent); }
         .c-time { font-family: 'DM Mono', monospace; color: var(--text-faint); font-size: 0.66rem; white-space: nowrap; flex-shrink: 0; margin-top: 0.12rem; }
-        .c-text { color: var(--text); flex: 1; line-height: 1.4; }
         .c-actions { display: flex; gap: 0.12rem; opacity: 0; transition: opacity 0.15s; flex-shrink: 0; }
         .c-entry:hover .c-actions { opacity: 1; }
         .c-actions button { padding: 0.1rem 0.28rem; font-size: 0.68rem; }
@@ -1272,7 +1272,7 @@ function buildCard(item, idx, exp, col) {
                         <button class="entry-emoji-btn${c.emoji==='😞'?' esel':''}" onclick="setEntryEmoji(${idx},${ai},'😞')">😞</button>
                     </span>` : ''}
                     <div style="position:relative;flex:1;min-width:0">
-                        <input type="text" value="${esc(c.text||'')}" id="ci-${idx}-${di}" style="width:100%" oninput="noteInput(event,${idx},'ci-${idx}-${di}')" onkeydown="ciKeydown(event,${idx},${ai},${di})">
+                        <textarea id="ci-${idx}-${di}" style="width:100%;resize:none;overflow:hidden;line-height:1.4;min-height:2rem;font-family:inherit;font-size:0.76rem;padding:0.18rem 0.38rem" rows="1" oninput="autoResize(this);noteInput(event,${idx},'ci-${idx}-${di}')" onkeydown="ciKeydown(event,${idx},${ai},${di})">${esc(c.text||'')}</textarea>
                         <div class="tag-ac" id="tag-ac-ci-${idx}-${di}" style="display:none"></div>
                     </div>
                     <input type="date" id="cd-${idx}-${di}" value="${toLocalDateStr(c.date||'')}" onkeydown="if(event.key==='Enter'){saveCEdit(${idx},${ai},${di});event.preventDefault()}" style="font-size:0.68rem;flex:0 0 auto;width:110px;color-scheme:dark">
@@ -1291,7 +1291,7 @@ function buildCard(item, idx, exp, col) {
             <div id="note-row-${idx}" style="display:none;gap:0.35rem;align-items:center" class="note-row-open">
                 <button class="emoji-trigger-btn" onclick="openEmojiPicker(event,${idx})" title="Add emoji">😊</button>
                 <div style="position:relative;flex:1">
-                    <input type="text" class="note-inp" id="note-${idx}" placeholder="Add note… (Enter to submit)" style="width:100%" onkeydown="reviewKeydown(event,${idx})" oninput="noteInput(event,${idx})">
+                    <textarea class="note-inp" id="note-${idx}" placeholder="Add note… (Shift+Enter for new line)" style="width:100%" onkeydown="reviewKeydown(event,${idx})" oninput="autoResize(this);noteInput(event,${idx})" rows="1"></textarea>
                     <div class="tag-ac" id="tag-ac-${idx}" style="display:none"></div>
                 </div>
                 <button class="btn-ghost" onclick="submitReview(${idx})" style="padding:0.3rem 0.6rem">Add</button>
@@ -1803,7 +1803,7 @@ function reviewEmoji(idx, btn, emoji) {
 }
 function reviewKeydown(e, idx) {
     if (acNavigate(e, `tag-ac-${idx}`)) return;
-    if (e.key === 'Enter') { submitReview(idx); e.preventDefault(); }
+    if (e.key === 'Enter' && !e.shiftKey) { submitReview(idx); e.preventDefault(); }
 }
 function toggleNoteRow(idx) {
     const row = document.getElementById(`note-row-${idx}`);
@@ -1821,7 +1821,7 @@ function submitReview(idx) {
     const emoji = pendingEmoji[idx] || '';
     if (!note && !emoji) return;
     // Clear state
-    if (noteEl) noteEl.value = '';
+    if (noteEl) { noteEl.value = ''; noteEl.style.height = 'auto'; }
     delete pendingEmoji[idx];
     const rn = document.getElementById(`rn-${idx}`);
     if (rn) rn.style.display = 'none';
@@ -1837,6 +1837,14 @@ function submitReview(idx) {
     // Re-open history so user sees the new entry
     const expState = loadExp(); expState[idx] = true; saveExp(expState);
 }
+
+// ─── AUTO-RESIZE TEXTAREA ───
+function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+}
+// Auto-resize on edit form open
+const _origStartCEdit = startCEdit;
 
 // ─── REPAINT FIX: force card repaint on note input focus to prevent grey-out ───
 document.addEventListener('focusin', e => {
@@ -1950,7 +1958,7 @@ function noteKeydown(e, idx) {
 
 function ciKeydown(e, idx, ai, di) {
     if (acNavigate(e, `tag-ac-ci-${idx}-${di}`)) return;
-    if (e.key === 'Enter') { saveCEdit(idx, ai, di); e.preventDefault(); }
+    if (e.key === 'Enter' && !e.shiftKey) { saveCEdit(idx, ai, di); e.preventDefault(); }
 }
 
 document.addEventListener('click', e => {
@@ -2184,7 +2192,8 @@ function startCEdit(ti, di) {
     const ca = document.getElementById(`ca-${ti}-${di}`);
     if (ca) ca.style.display = 'none';
     void document.body.offsetHeight; // force repaint — prevents compositing grey-out
-    document.getElementById(`ci-${ti}-${di}`).focus();
+    const taEl = document.getElementById(`ci-${ti}-${di}`);
+    if (taEl) { taEl.focus(); autoResize(taEl); }
 }
 function cancelCEdit(ti, di) {
     document.getElementById(`ct-${ti}-${di}`).style.display = '';
