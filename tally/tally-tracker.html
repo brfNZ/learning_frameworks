@@ -996,7 +996,7 @@ function buildCard(item, idx, exp, col) {
     const isWin = tgt.max > 0 && !isKilled && ((isDual || isProgress) ? c.pos >= tgt.max : c.simple >= tgt.max);
     // Pre-calculate daysLeft for consistent timezone handling
     const _deadlineDaysLeft = item.deadline ? (() => {
-        const d = new Date(item.deadline);
+        const d = new Date(item.deadline + 'T00:00:00');
         if (isNaN(d.getTime())) return null;
         const now = new Date(); now.setHours(0,0,0,0);
         return Math.round((d - now) / 86400000);
@@ -1021,7 +1021,7 @@ function buildCard(item, idx, exp, col) {
 
     // Status banner
     const challengeDays = isChallengeDone ? (() => {
-        const dl = new Date(item.deadline);
+        const dl = new Date(item.deadline + 'T00:00:00');
         const cr = new Date(item.created || item.deadline);
         return Math.max(1, Math.round((dl - cr) / 86400000));
     })() : 0;
@@ -1084,7 +1084,7 @@ function buildCard(item, idx, exp, col) {
     // Deadline
     let deadlinePill = '', paceLine = '';
     if (item.deadline && _deadlineDaysLeft !== null) {
-        const dl = new Date(item.deadline);
+        const dl = new Date(item.deadline + 'T00:00:00');
         const now = new Date(); now.setHours(0,0,0,0);
         const daysLeft = _deadlineDaysLeft;
         const overdue = daysLeft < 0;
