@@ -1409,7 +1409,7 @@ function parseDeadline(val) {
         if (unit.startsWith('w')) d.setDate(d.getDate() + n * 7);
         else if (unit.startsWith('m')) d.setMonth(d.getMonth() + n);
         else d.setDate(d.getDate() + n);
-        return d.toISOString().slice(0, 10);
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
     if (/^\d{1,2}$/.test(v)) { const d = parseInt(v); if (d>=1&&d<=31) return `${y}-${m}-${String(d).padStart(2,'0')}`; }
     const dm = v.match(/^(\d{1,2})[\/\-\.](\d{1,2})$/);
@@ -1437,7 +1437,7 @@ function smartDate(e, el) {
         if (unit.startsWith('w')) d.setDate(d.getDate() + n * 7);
         else if (unit.startsWith('m')) d.setMonth(d.getMonth() + n);
         else d.setDate(d.getDate() + n);
-        iso = d.toISOString().slice(0, 10);
+        iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     } else if (/^\d{1,2}$/.test(val)) {
         const d = parseInt(val);
         if (d >= 1 && d <= 31) iso = `${y}-${m}-${String(d).padStart(2,'0')}`;
@@ -2099,6 +2099,9 @@ function maybeEditTitle(e, idx) {
     const panel = document.getElementById(`ep-${idx}`);
     if (!panel?.classList.contains('open')) return;
     e.stopPropagation();
+    const card = document.querySelector(`.card[data-index="${idx}"]`);
+    const titleEl = card?.querySelector('.card-name');
+    if (titleEl?.contentEditable === 'true') return;
     activateTitleEdit(idx);
 }
 
@@ -2338,7 +2341,7 @@ function backupData() {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `tally-backup-${new Date().toISOString().slice(0,10)}.json`;
+    a.download = `tally-backup-${toLocalDateStr(new Date().toISOString())}.json`;
     a.click();
     toast('💾 Backup downloaded');
 }
@@ -2375,7 +2378,7 @@ function exportCSV() {
     const blob = new Blob([csv], { type: 'text/csv' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `tally-export-${new Date().toISOString().slice(0,10)}.csv`;
+    a.download = `tally-export-${toLocalDateStr(new Date().toISOString())}.csv`;
     a.click();
     toast('📊 CSV exported');
 }
@@ -2498,7 +2501,7 @@ function exportFullCSV() {
     const blob = new Blob([csv], { type: 'text/csv' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `tally-full-export-${new Date().toISOString().slice(0,10)}.csv`;
+    a.download = `tally-full-export-${toLocalDateStr(new Date().toISOString())}.csv`;
     a.click();
     toast('📊 Full CSV exported');
 }
