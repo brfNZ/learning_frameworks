@@ -1030,9 +1030,9 @@ function buildCard(item, idx, exp, col) {
         : isKilled
         ? (isProgress ? `<div class="status-banner status-fail">⛔ Loss limit reached — ${c.neg}/${tgt.kill} losses</div>` : `<div class="status-banner status-fail">💥 Killed — too many losses.</div>`)
         : isChallengeDone
-        ? `<div class="status-banner status-challenge">🏁 Challenge done — ${curr} ${esc(item.unit||'times')} in ${challengeDays} days</div>`
+        ? `<div class="status-banner status-challenge" style="display:flex;align-items:center;justify-content:space-between">🏁 Challenge done — ${curr} ${esc(item.unit||'times')} in ${challengeDays} days<button class="btn-ghost" onclick="duplicateTally(${idx})" style="font-size:0.72rem;padding:0.2rem 0.5rem">↻ Run again</button></div>`
         : isExpired
-        ? `<div class="status-banner" style="background:rgba(148,163,184,0.1);color:var(--hl-grey);border:1px solid rgba(148,163,184,0.3)">⏰ Time expired — ${curr}/${tgt.max} ${esc(item.unit||'')}</div>`
+        ? `<div class="status-banner" style="background:rgba(148,163,184,0.1);color:var(--hl-grey);border:1px solid rgba(148,163,184,0.3);display:flex;align-items:center;justify-content:space-between">⏰ Time expired — ${curr}/${tgt.max} ${esc(item.unit||'')}<button class="btn-ghost" onclick="duplicateTally(${idx})" style="font-size:0.72rem;padding:0.2rem 0.5rem">↻ Run again</button></div>`
         : '';
 
     // Dual colour scheme
@@ -1237,6 +1237,7 @@ function buildCard(item, idx, exp, col) {
         <input type="text" id="ed-${idx}" value="${item.deadline||''}" placeholder="7d, 1m, DD, DD/MM/YYYY" onkeydown="if(event.key==='Enter'){saveEdit(${idx});event.preventDefault()}" title="Deadline (optional)" style="flex:0.8;min-width:140px">
         <button class="btn-primary" onclick="saveEdit(${idx})">Save</button>
         <button class="btn-ghost" onclick="closeEdit(${idx})">Cancel</button>
+        <button class="btn-ghost" onclick="duplicateTally(${idx})" title="Duplicate this tally">⧉ Duplicate</button>
     </div>`;
 
     // Comments
@@ -2001,6 +2002,40 @@ function undoLastEntry() {
     render();
     void document.getElementById('tallyList')?.offsetHeight;
     toast('↩ Entry removed');
+}
+
+// ─── DUPLICATE / RUN AGAIN ───
+function duplicateTally(idx) {
+    const data = load();
+    const src = data[idx];
+    if (!src) return;
+    let newDeadline = '';
+    if (src.deadline && src.created) {
+        const origStart = new Date(src.created.slice(0,10) + 'T00:00:00');
+        const origEnd = new Date(src.deadline + 'T00:00:00');
+        const origDays = Math.round((origEnd - origStart) / 86400000);
+        if (origDays > 0) {
+            const d = new Date();
+            d.setDate(d.getDate() + origDays);
+            newDeadline = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+    }
+    data.push({
+        name: src.name,
+        type: src.type || 'simple',
+        target: src.target || '',
+        unit: src.unit || 'times',
+        style: src.style || 'default',
+        dualStyle: src.dualStyle || 'default',
+        simpleStyle: src.simpleStyle || 'default',
+        deadline: newDeadline,
+        comments: [], locked: false, encrypted: null,
+        lockHint: '', pinned: false,
+        created: new Date().toISOString()
+    });
+    save(data);
+    render();
+    toast(`↻ "${src.name}" duplicated`);
 }
 
 // ─── TALLY CRUD ───
