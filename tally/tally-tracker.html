@@ -105,6 +105,8 @@
         .period-pill:hover { border-color: var(--accent); color: var(--accent); }
         .period-pill.active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); font-weight: 600; }
         .search-icon { position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); color: var(--text-faint); font-size: 0.8rem; pointer-events: none; }
+        .search-clear { position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-faint); font-size: 0.9rem; cursor: pointer; padding: 0.1rem 0.2rem; line-height: 1; display: none; }
+        .search-clear:hover { color: var(--text); }
         .search-field { width: 100%; background: var(--bg-input); border: 1px solid var(--border); color: var(--text); padding: 0.45rem 0.75rem 0.45rem 2rem; border-radius: 7px; font-size: 0.82rem; outline: none; font-family: inherit; transition: border-color 0.15s; }
         .search-field:focus { border-color: var(--accent); }
 
@@ -471,7 +473,9 @@
     <div class="stats-bar" id="statsBar"></div>
     <div class="search-wrap">
         <span class="search-icon">⌕</span>
-        <input type="text" class="search-field" id="searchInput" placeholder="Filter tallies by name…" oninput="filterTallies()">    </div>
+        <input type="text" class="search-field" id="searchInput" placeholder="Filter tallies by name…" oninput="filterTallies();toggleClearBtn()" style="padding-right:1.8rem">
+        <button class="search-clear" id="searchClear" onclick="clearSearch()" title="Clear">✕</button>
+    </div>
     <div class="period-pills" style="display:flex;align-items:center;flex-wrap:wrap;gap:0.3rem;margin-top:0.6rem;padding-top:0.25rem;border-top:1px solid var(--border-light)">
         <button class="period-pill active" data-period="all"     onclick="setPeriod(this)">All</button>
         <button class="period-pill"        data-period="active"  onclick="setPeriod(this)">Active</button>
@@ -480,7 +484,8 @@
         <button class="period-pill"        data-period="week"    onclick="setPeriod(this)">Week</button>
         <button class="period-pill"        data-period="month"   onclick="setPeriod(this)">Month</button>
         <button class="period-pill"        data-period="year"    onclick="setPeriod(this)">Year</button>
-            <select id="sortSelect" onchange="render()" style="font-size:0.68rem;padding:0.18rem 0.2rem;background:var(--bg-input);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);cursor:pointer;margin-left:0.4rem;width:105px">            <option value="default">Sort: default</option>
+        <select id="sortSelect" onchange="render()" style="font-size:0.68rem;padding:0.18rem 0.2rem;background:var(--bg-input);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);cursor:pointer;margin-left:0.4rem">
+            <option value="default">Sort: default</option>
             <option value="start-new">Start: newest</option>
             <option value="start-old">Start: oldest</option>
             <option value="name">Name A–Z</option>
@@ -915,6 +920,15 @@ function initFilter() {
     } catch(e) {}
 }
 
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchClear').style.display = 'none';
+    filterTallies();
+}
+function toggleClearBtn() {
+    const val = document.getElementById('searchInput').value;
+    document.getElementById('searchClear').style.display = val ? 'block' : 'none';
+}
 function filterTallies() {
     const q = document.getElementById('searchInput').value.toLowerCase();
     const now = new Date();
