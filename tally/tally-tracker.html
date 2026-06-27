@@ -472,7 +472,7 @@
     <div class="search-wrap">
         <span class="search-icon">⌕</span>
         <input type="text" class="search-field" id="searchInput" placeholder="Filter tallies by name…" oninput="filterTallies()">    </div>
-    <div class="period-pills">
+    <div class="period-pills" style="display:flex;align-items:center;flex-wrap:wrap;gap:0.3rem;margin-top:0.6rem;padding-top:0.25rem;border-top:1px solid var(--border-light)">
         <button class="period-pill active" data-period="all"     onclick="setPeriod(this)">All</button>
         <button class="period-pill"        data-period="active"  onclick="setPeriod(this)">Active</button>
         <button class="period-pill"        data-period="done"    onclick="setPeriod(this)">Done</button>
@@ -480,14 +480,12 @@
         <button class="period-pill"        data-period="week"    onclick="setPeriod(this)">Week</button>
         <button class="period-pill"        data-period="month"   onclick="setPeriod(this)">Month</button>
         <button class="period-pill"        data-period="year"    onclick="setPeriod(this)">Year</button>
-    <div id="sortWrap" style="display:none;margin-top:0.35rem">
-        <select id="sortSelect" onchange="render()" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);cursor:pointer">
-            <option value="default">Order: default</option>
-            <option value="start-new">Start date: newest first</option>
-            <option value="start-old">Start date: oldest first</option>
+            <select id="sortSelect" onchange="render()" style="font-size:0.68rem;padding:0.18rem 0.2rem;background:var(--bg-input);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);cursor:pointer;margin-left:0.4rem;width:105px">            <option value="default">Sort: default</option>
+            <option value="start-new">Start: newest</option>
+            <option value="start-old">Start: oldest</option>
             <option value="name">Name A–Z</option>
+            <option value="name-z">Name Z–A</option>
         </select>
-    </div>
     </div>
 </header>
 
@@ -893,8 +891,6 @@ let activePeriod = 'all';
 function setPeriod(btn) {
     activePeriod = btn.dataset.period;
     document.querySelectorAll('.period-pill').forEach(p => p.classList.toggle('active', p === btn));
-    const sortWrap = document.getElementById('sortWrap');
-    if (sortWrap) sortWrap.style.display = (activePeriod === 'done') ? '' : 'none';
     saveFilter();
     filterTallies();
 }
@@ -980,6 +976,8 @@ function render() {
             if (sortVal === 'start-new') return new Date(b.item.created||0) - new Date(a.item.created||0);
             if (sortVal === 'start-old') return new Date(a.item.created||0) - new Date(b.item.created||0);
             if (sortVal === 'name') return (a.item.name||'').localeCompare(b.item.name||'');
+            if (sortVal === 'name-z') return (b.item.name||'').localeCompare(a.item.name||'');
+            if (sortVal === 'name-z') return (b.item.name||'').localeCompare(a.item.name||'');
             return 0;
         });
 
