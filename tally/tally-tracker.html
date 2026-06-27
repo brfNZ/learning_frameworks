@@ -480,6 +480,14 @@
         <button class="period-pill"        data-period="week"    onclick="setPeriod(this)">Week</button>
         <button class="period-pill"        data-period="month"   onclick="setPeriod(this)">Month</button>
         <button class="period-pill"        data-period="year"    onclick="setPeriod(this)">Year</button>
+    <div id="sortWrap" style="display:none;margin-top:0.35rem">
+        <select id="sortSelect" onchange="render()" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-muted);cursor:pointer">
+            <option value="default">Order: default</option>
+            <option value="start-new">Start date: newest first</option>
+            <option value="start-old">Start date: oldest first</option>
+            <option value="name">Name A–Z</option>
+        </select>
+    </div>
     </div>
 </header>
 
@@ -536,8 +544,8 @@
                     <div class="dropdown-section-title">Export Backup</div>
                     <div class="dropdown-section-desc">Backup all tallies as JSON file or copy to clipboard</div>
                     <div class="dropdown-section-btns">
-                        <button class="btn-ghost" onclick="backupData();closeBackupMenu()">💾 Export to file</button>
                         <button class="btn-ghost" onclick="copyBackupJSON();closeBackupMenu()">📋 Copy JSON</button>
+                        <button class="btn-ghost" onclick="backupData();closeBackupMenu()">💾 Export to file</button>
                     </div>
                 </div>
                 <div class="dropdown-divider"></div>
@@ -545,8 +553,8 @@
                     <div class="dropdown-section-title">Restore Backup</div>
                     <div class="dropdown-section-desc">Select which tallies to restore from a picker — all append to existing data.</div>
                     <div class="dropdown-section-btns">
-                        <button class="btn-ghost" onclick="triggerRestore()">📂 Import from file</button>
                         <button class="btn-ghost" onclick="closeBackupMenu();openPasteModal()">📋 Paste JSON</button>
+                        <button class="btn-ghost" onclick="triggerRestore()">💾 Import from file</button>
                     </div>
                 </div>
             </div>
@@ -885,6 +893,8 @@ let activePeriod = 'all';
 function setPeriod(btn) {
     activePeriod = btn.dataset.period;
     document.querySelectorAll('.period-pill').forEach(p => p.classList.toggle('active', p === btn));
+    const sortWrap = document.getElementById('sortWrap');
+    if (sortWrap) sortWrap.style.display = (activePeriod === 'done') ? '' : 'none';
     saveFilter();
     filterTallies();
 }
@@ -960,9 +970,18 @@ function render() {
         return;
     }
 
-    // Sort: pinned first
+    // Sort: pinned first, then by user selection
+    const sortVal = document.getElementById('sortSelect')?.value || 'default';
     const ordered = data.map((item, i) => ({ item, i }))
-        .sort((a, b) => (b.item.pinned ? 1 : 0) - (a.item.pinned ? 1 : 0));
+        .sort((a, b) => {
+            // Pinned always first
+            const pDiff = (b.item.pinned ? 1 : 0) - (a.item.pinned ? 1 : 0);
+            if (pDiff !== 0) return pDiff;
+            if (sortVal === 'start-new') return new Date(b.item.created||0) - new Date(a.item.created||0);
+            if (sortVal === 'start-old') return new Date(a.item.created||0) - new Date(b.item.created||0);
+            if (sortVal === 'name') return (a.item.name||'').localeCompare(b.item.name||'');
+            return 0;
+        });
 
     list.innerHTML = ordered.map(({ item, i }) => buildCard(item, i, exp, col)).join('');
     void list.offsetHeight; // force repaint — clears stale compositing state
