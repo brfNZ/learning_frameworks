@@ -953,7 +953,7 @@
             <div id="sizeButtonContainer">
                 <button id="smallButton"       onclick="toggleSize()"         title="Size">◯</button>
                 <button id="displayModeButton" onclick="openDisplayMenu(event); this.blur()" title="Display mode">⊡</button>
-                <button id="colorThemeButton"  onclick="cycleColorTheme()"    title="Color theme">◈</button>
+                <button id="colorThemeButton" onclick="openColorMenu(event); this.blur()" title="Color theme">◈</button>
                 <button id="themeToggleButton" onclick="toggleTheme()"        title="Light / Dark">☾</button>
                 <button id="randomButton" onclick="openAlertMenu(event); this.blur();" title="Sound &amp; pattern">♬</button>
                 <button id="resetButton"       onclick="resetTimer()"         title="Reset">⟳</button>
@@ -964,6 +964,19 @@
             </div>
         </div>
     </div>
+    <!-- Colour theme menu -->
+    <div id="colorMenu" style="display:none;position:fixed;z-index:999;background:var(--bg-color);border:1px solid var(--t-primary);border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,0.25);padding:10px 12px;">
+        <div style="font-size:10px;color:var(--text-color);opacity:0.4;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Colour</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;">
+            <span style="font-size:9px;color:var(--text-color);opacity:0.4;text-transform:uppercase;letter-spacing:0.5px;width:30px;flex-shrink:0;">Muted</span>
+            <div id="colorSwatchRow1" style="display:grid;grid-template-columns:repeat(10,18px);gap:4px;"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:9px;color:var(--text-color);opacity:0.4;text-transform:uppercase;letter-spacing:0.5px;width:30px;flex-shrink:0;">Vivid</span>
+            <div id="colorSwatchRow2" style="display:grid;grid-template-columns:repeat(9,18px);gap:4px;"></div>
+        </div>
+    </div>
+
     <!-- Display mode menu -->
     <div id="displayMenu" style="display:none;position:fixed;z-index:999;background:var(--bg-color);border:1px solid var(--t-primary);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);padding:4px 0;min-width:160px;">
         <div style="font-size:11px;color:var(--text-color);opacity:0.5;padding:4px 12px 2px;text-transform:uppercase;letter-spacing:1px;">Display</div>
@@ -1597,6 +1610,10 @@
         if (displayMenu && !displayMenu.contains(e.target)) {
             displayMenu.style.display = 'none';
         }
+        var colorMenu = document.getElementById('colorMenu');
+        if (colorMenu && !colorMenu.contains(e.target)) {
+            colorMenu.style.display = 'none';
+        }
     });
 
     function playBeepTriple() {
@@ -1752,6 +1769,73 @@
         const colorThemes = ['', 'theme-ember', 'theme-forest', 'theme-slate', 'theme-ink', 'theme-hotpink', 'theme-neonorange', 'theme-electricblue', 'theme-lime', 'theme-purple', 'theme-neonyellow', 'theme-neongreen', 'theme-neonred', 'theme-neoncyan', 'theme-neonwhite', 'theme-neoncoral', 'theme-neongold', 'theme-neonviolet', 'theme-neonteal'];
         const colorThemeLabels = ['Cyan', 'Ember', 'Forest', 'Slate', 'Ink', 'Hot Pink', 'Neon Orange', 'Electric Blue', 'Lime', 'Purple', 'Neon Yellow', 'Neon Green', 'Neon Red', 'Neon Cyan', 'Neon White', 'Neon Coral', 'Neon Gold', 'Neon Violet', 'Neon Teal'];
         let currentColorThemeIndex = 0;
+
+        function openColorMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('colorMenu');
+            const row1 = document.getElementById('colorSwatchRow1');
+            const row2 = document.getElementById('colorSwatchRow2');
+            const swatchColors = [
+                // Row 1 — Base (10)
+                '#007777', '#ba4810', '#2e7d32', '#3a6ea8', '#333333',
+                '#cc0066', '#ff6600', '#0055ff', '#44cc00', '#7700cc',
+                // Row 2 — Neon (9)
+                '#ccbb00', '#00ff41', '#ff0033', '#00ffff', '#f0f0ff',
+                '#ff4444', '#ffcc00', '#cc00ff', '#00ccaa'
+            ];
+
+            function makeSwatch(i) {
+                const swatch = document.createElement('div');
+                swatch.title = colorThemeLabels[i];
+                const isActive = i === currentColorThemeIndex;
+                swatch.style.cssText = `
+                    width:18px;height:18px;border-radius:4px;cursor:pointer;
+                    background:${swatchColors[i]};
+                    box-sizing:border-box;
+                    border: 2px solid transparent;
+                    transition: transform 0.1s, box-shadow 0.1s;
+                    ${isActive ? `box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px ${swatchColors[i]};` : ''}
+                `;
+                swatch.onmouseenter = () => {
+                    swatch.style.transform = 'scale(1.2)';
+                    if (i !== currentColorThemeIndex) swatch.style.boxShadow = `0 0 0 1px ${swatchColors[i]}`;
+                };
+                swatch.onmouseleave = () => {
+                    swatch.style.transform = '';
+                    swatch.style.boxShadow = i === currentColorThemeIndex ? `0 0 0 2px var(--bg-color), 0 0 0 4px ${swatchColors[i]}` : '';
+                };
+                swatch.onclick = () => selectColorTheme(i);
+                return swatch;
+            }
+
+            row1.innerHTML = '';
+            row2.innerHTML = '';
+            for (let i = 0; i < 10; i++) row1.appendChild(makeSwatch(i));
+            for (let i = 10; i < swatchColors.length; i++) row2.appendChild(makeSwatch(i));
+
+            menu.style.display = 'block';
+            const btnPanel = document.getElementById('sizeButtonContainer');
+            const panelRect = btnPanel ? btnPanel.getBoundingClientRect() : e.target.getBoundingClientRect();
+            const menuW = menu.offsetWidth || 210;
+            const menuH = menu.offsetHeight || 80;
+            const centerX = panelRect.left + panelRect.width / 2 - menuW / 2;
+            menu.style.left = Math.max(4, Math.min(centerX, window.innerWidth - menuW - 4)) + 'px';
+            menu.style.top = Math.max(4, panelRect.top - menuH - 6) + 'px';
+        }
+
+        function selectColorTheme(index) {
+            if (colorThemes[currentColorThemeIndex]) {
+                document.body.classList.remove(colorThemes[currentColorThemeIndex]);
+            }
+            currentColorThemeIndex = index;
+            if (colorThemes[currentColorThemeIndex]) {
+                document.body.classList.add(colorThemes[currentColorThemeIndex]);
+            }
+            localStorage.setItem('colorTheme', currentColorThemeIndex);
+            document.getElementById('colorMenu').style.display = 'none';
+            updateModeSpecificButtons();
+            drawTimer();
+        }
 
         function cycleColorTheme() {
             if (colorThemes[currentColorThemeIndex]) {
