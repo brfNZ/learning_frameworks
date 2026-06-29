@@ -1056,6 +1056,8 @@
                     </div>
                 </div>
 
+                </div><!-- /weekChart -->
+
             <style>
             .weekRow{display:flex;align-items:center;margin-bottom:4px}
             .weekLabel{width:70px;font-size:12px;color:#777}
@@ -1924,6 +1926,7 @@
 
             var totalMinutes = totalTime > 0 ? Math.round(totalTime / 60) : (parseInt(document.getElementById('timeInput').value) || 25);
             var remainMinutes = remainingTime > 0 ? Math.ceil(remainingTime / 60) : (isExpired ? 0 : totalMinutes);
+
             var blockPx = currentSize === 'small' ? 28 : currentSize === 'medium' ? 36 : 44;
             var gapPx   = currentSize === 'small' ? 3  : currentSize === 'medium' ? 4  : 5;
             var gridWidth = 5 * blockPx + 4 * gapPx;
@@ -1935,11 +1938,9 @@
             label.style.textAlign = 'center';
             label.style.display = 'block';
 
-            // Active block fill: shrinks by 1 sliver per second (60 slivers per minute)
-            var secsLeft = remainingTime > 0 ? (remainingTime % 60 === 0 ? 60 : remainingTime % 60) : 0;
+            var secsLeft = remainingTime > 0 ? ((remainingTime - 1) % 60) + 1 : 0;
             var activeFillPct = (secsLeft / 60) * 100;
 
-            // Rebuild grid when count or size changes
             var cellCount = Math.ceil(totalMinutes / 5) * 5;
             if (grid.children.length !== cellCount || grid.dataset.blockPx !== String(blockPx)) {
                 grid.dataset.blockPx = blockPx;
@@ -1975,13 +1976,13 @@
                 cell.style.visibility = 'visible';
 
                 if (isExpired) {
-                    fill.style.width = '0%';
+                    fill.style.width = '100%';
                     cell.classList.add('expired');
                 } else {
                     cell.classList.remove('expired');
                     if (blockNum > remainMinutes) {
                         fill.style.width = '0%';
-                    } else if (blockNum === activeBlock && (isRunning || isPaused) && !isExpired) {
+                    } else if (blockNum === remainMinutes && (isRunning || isPaused) && !isExpired) {
                         fill.style.width = activeFillPct.toFixed(1) + '%';
                     } else {
                         fill.style.width = '100%';
@@ -1989,7 +1990,6 @@
                 }
             });
 
-            // Label
             if (isExpired) {
                 label.textContent = "TIME'S UP!";
                 label.style.visibility = 'visible';
@@ -2004,7 +2004,6 @@
                 label.classList.remove('expired');
             }
         }
-
         function drawBlocksUpTimer() {
             var grid = document.getElementById('blocksGrid');
             var label = document.getElementById('blocksLabel');
