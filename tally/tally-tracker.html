@@ -636,26 +636,34 @@
         <div class="info-box-content">
         <h4>Tally Types</h4>
         <div class="info-row-compact"><span class="ei">🔢</span><span><strong>Count</strong> — tap the big number to count up.</span></div>
-        <div class="info-row-compact"><span class="ei">📈</span><span><strong>Progress</strong> — tap = win, hold = loss. Small red L shown alongside wins.</span></div>
-        <div class="info-row-compact"><span class="ei">⚔️</span><span><strong>Win/Loss</strong> — tap either coloured block to log. Block widths reflect the win/loss ratio.</span></div>
-        <div class="info-row-compact"><span class="ei">🎯</span><span><strong>Challenge</strong> — deadline only, no target. Tap count to log. Ends when deadline passes.</span></div>
+        <div class="info-row-compact"><span class="ei">📈</span><span><strong>Progress</strong> — tap number = win, hold = loss. Loss shown in red alongside wins.</span></div>
+        <div class="info-row-compact"><span class="ei">⚔️</span><span><strong>Win/Loss</strong> — tap either block to log. Block widths reflect win/loss ratio.</span></div>
+        <div class="info-row-compact"><span class="ei">🎯</span><span><strong>Challenge</strong> — deadline only, no target. Ends when deadline passes.</span></div>
         <h4>Target &amp; Loss Limit</h4>
-        <div class="info-row"><span class="ei">🎯</span><span>Enter target as <strong>10</strong> for wins only, or <strong>10/3</strong> to set a loss limit of 3. Default loss limit is target÷2.</span></div>
+        <div class="info-row"><span class="ei">🎯</span><span>Enter <strong>10</strong> for target only, or <strong>10/3</strong> to set a loss limit of 3. Default loss limit is target÷2.</span></div>
+        <h4>Editing</h4>
+        <div class="info-row-compact"><span class="ei">✎</span><span>Opens edit panel. Click the title to rename inline.</span></div>
+        <div class="info-row-compact"><span class="ei">⧉</span><span><strong>Duplicate</strong> — in edit panel. Copies settings, clears history, recalculates deadline.</span></div>
+        <div class="info-row-compact"><span class="ei">↻</span><span><strong>Run again</strong> — appears on expired/done banners. Same as Duplicate.</span></div>
+        <div class="info-row-compact"><span class="ei">🎨</span><span>Colour rectangle = tally tint. Dot pair = button colour. Both open popup pickers.</span></div>
         <h4>▶ Review History</h4>
-        <div class="info-row"><span class="ei">😊</span><span>Tap 😊 to open an emoji picker for standalone notes. Tap an emoji on any count entry to rate it. Pin notes after adding via the 📌 button in the entry.</span></div>
+        <div class="info-row-compact"><span class="ei">+</span><span><strong>Add note</strong> — tap to open note input. Use 😊 for emoji picker. Shift+Enter for new line.</span></div>
+        <div class="info-row-compact"><span class="ei">😊</span><span>On count entries — emoji buttons appear in edit form (✎) to rate that entry.</span></div>
+        <div class="info-row-compact"><span class="ei">→</span><span>In entry edit form — copies that entry to another tally, preserving date and text.</span></div>
+        <div class="info-row-compact"><span class="ei">📌</span><span>Pin a note to top of history via the 📌 button in its entry row.</span></div>
         <h4>🔥 Streak</h4>
         <div class="info-row"><span class="ei">🔥</span><span>Consecutive calendar days logged. <strong>🔥 3d</strong> = 3 days in a row. Miss a day and it resets.</span></div>
-        <h4>📌 Pin</h4>
+        <h4>📌 Pin tally</h4>
         <div class="info-row"><span class="ei">📌</span><span>Click to pin a tally to the top. <strong>Ctrl+click</strong> pins with hot pink glow.</span></div>
         <h4>12W 3L</h4>
         <div class="info-row"><span class="ei">🃏</span><span>Collapsed card summary. <strong>W</strong> = wins, <strong>L</strong> = losses. Also shows % and pace.</span></div>
+        <h4>Sort &amp; Filter</h4>
+        <div class="info-row"><span class="ei">↕</span><span>Sort dropdown sits right of the period pills — sort by start date or name across any filter view.</span></div>
         <h4>📅 Deadline</h4>
-        <div class="info-row"><span class="ei">📅</span><span>Set when adding or editing. <strong>Green</strong> = time to spare, <strong>amber</strong> = 7 days or less, <strong>red</strong> = overdue. Pace line appears above the bar.</span></div>
+        <div class="info-row"><span class="ei">📅</span><span>Set when adding or editing. Formats: <strong>7d · 2w · 1m · DD/MM/YYYY</strong>. Pace line appears above the bar. Hidden once tally is done.</span></div>
         <h4>💾 Backup &amp; Restore</h4>
-        <div class="info-row"><span class="ei">💾</span><span><strong>Export to file</strong> — full JSON backup of all tallies.</span></div>
-        <div class="info-row"><span class="ei">📋</span><span><strong>Copy JSON</strong> — copies all data to clipboard.</span></div>
-        <div class="info-row"><span class="ei">📂</span><span><strong>Import from file</strong> — opens a picker to choose which tallies to restore. All append to existing data.</span></div>
-        <div class="info-row"><span class="ei">📋</span><span><strong>Paste JSON</strong> — paste a backup, then pick which tallies to restore from the list.</span></div>
+        <div class="info-row"><span class="ei">💾</span><span><strong>Export / Import from file</strong> — full JSON backup. Import opens a picker — select which tallies to restore, all append to existing data.</span></div>
+        <div class="info-row"><span class="ei">📋</span><span><strong>Copy / Paste JSON</strong> — clipboard backup. Paste opens same picker for selective restore.</span></div>
         </div>
     </div>
 </div>
@@ -1307,9 +1315,10 @@ function buildCard(item, idx, exp, col) {
                         <textarea id="ci-${idx}-${di}" style="width:100%;resize:none;overflow:hidden;line-height:1.4;min-height:2rem;font-family:inherit;font-size:0.76rem;padding:0.18rem 0.38rem" rows="1" oninput="autoResize(this);noteInput(event,${idx},'ci-${idx}-${di}')" onkeydown="ciKeydown(event,${idx},${ai},${di})">${esc(c.text||'')}</textarea>
                         <div class="tag-ac" id="tag-ac-ci-${idx}-${di}" style="display:none"></div>
                     </div>
-                    <input type="date" id="cd-${idx}-${di}" value="${toLocalDateStr(c.date||'')}" onkeydown="if(event.key==='Enter'){saveCEdit(${idx},${ai},${di});event.preventDefault()}" style="font-size:0.68rem;flex:0 0 auto;width:110px;color-scheme:dark">
+                    <input type="date" id="cd-${idx}-${di}" value="${toLocalDateStr(c.date||'')}" onkeydown="if(event.key==='Enter'){saveCEdit(${idx},${ai},${di});event.preventDefault()}" style="font-size:0.68rem;flex:0 0 auto;width:78px;color-scheme:dark">
                     <button class="btn-primary" onclick="saveCEdit(${idx},${ai},${di})" style="padding:0.18rem 0.45rem;font-size:0.7rem">✓</button>
                     <button class="btn-ghost" onclick="cancelCEdit(${idx},${di})">✕</button>
+                    <button class="btn-ghost" onclick="openCopyEntry(event,${idx},${ai})" title="Copy to another tally" style="padding:0.18rem 0.45rem;font-size:0.7rem">→</button>
                 </div>
                 <div class="c-actions" id="ca-${idx}-${di}">
                     ${emojiBtns}
@@ -2034,6 +2043,48 @@ function undoLastEntry() {
     void document.getElementById('tallyList')?.offsetHeight;
     toast('↩ Entry removed');
 }
+
+// ─── COPY ENTRY TO ANOTHER TALLY ───
+function openCopyEntry(e, srcIdx, ai) {
+    e.stopPropagation();
+    document.getElementById('copyEntryPopup')?.remove();
+    const data = load();
+    const entry = data[srcIdx]?.comments[ai];
+    if (!entry) return;
+    const popup = document.createElement('div');
+    popup.id = 'copyEntryPopup';
+    popup.style.cssText = 'position:fixed;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:0.4rem;box-shadow:0 6px 20px rgba(0,0,0,0.35);z-index:999;min-width:160px;max-height:240px;overflow-y:auto';
+    const title = document.createElement('div');
+    title.textContent = 'Copy to tally';
+    title.style.cssText = 'font-size:0.65rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.06em;padding:0.1rem 0.5rem 0.4rem';
+    popup.appendChild(title);
+    data.forEach((item, i) => {
+        if (i === srcIdx || item.locked) return;
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0.5rem;border-radius:5px;cursor:pointer;font-size:0.75rem;color:var(--text-dim)';
+        row.textContent = item.name;
+        row.onmouseenter = () => row.style.background = 'var(--bg-card)';
+        row.onmouseleave = () => row.style.background = '';
+        row.onclick = (ev) => { ev.stopPropagation(); copyEntryTo(srcIdx, ai, i); popup.remove(); };
+        popup.appendChild(row);
+    });
+    document.body.appendChild(popup);
+    const rect = e.currentTarget.getBoundingClientRect();
+    popup.style.top = (rect.bottom + 4) + 'px';
+    popup.style.left = rect.left + 'px';
+}
+function copyEntryTo(srcIdx, ai, tgtIdx) {
+    const data = load();
+    const entry = data[srcIdx]?.comments[ai];
+    if (!entry || !data[tgtIdx]) return;
+    const copy = { ...entry };  // preserves type, text, emoji, date
+    if (!data[tgtIdx].comments) data[tgtIdx].comments = [];
+    data[tgtIdx].comments.push(copy);
+    save(data);
+    render();
+    toast(`→ Entry copied to "${data[tgtIdx].name}"`);
+}
+document.addEventListener('click', () => document.getElementById('copyEntryPopup')?.remove());
 
 // ─── DUPLICATE / RUN AGAIN ───
 function duplicateTally(idx) {
