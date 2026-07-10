@@ -2107,7 +2107,7 @@ function openCopyEntry(e, srcIdx, ai) {
         popup.appendChild(hdr);
         group.forEach(({ item, i }) => {
             const row = document.createElement('div');
-            row.style.cssText = 'padding:0.22rem 0.5rem;border-radius:4px;cursor:pointer;font-size:0.75rem;color:var(--text-dim)';
+            row.style.cssText = 'padding:0.12rem 0.5rem;border-radius:4px;cursor:pointer;font-size:0.75rem;color:var(--text-dim)';
             row.textContent = item.name;
             row.onmouseenter = () => row.style.background = 'var(--bg-card)';
             row.onmouseleave = () => row.style.background = '';
