@@ -695,6 +695,13 @@ const QUOTES = {
         { text: "Do not pray for an easy life. Pray for the strength to endure a difficult one.", author: "Bruce Lee" },
         { text: "Victory is sweetest when you've known defeat.", author: "Malcolm Forbes" },
         { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+        { text: "He who conquers others is strong; he who conquers himself is mighty.", author: "Lao Tzu" },
+        { text: "The greater the difficulty, the more glory in surmounting it.", author: "Epicurus" },
+        { text: "Man is not disturbed by events, but by the opinions about events.", author: "Epictetus" },
+        { text: "No man is free who is not master of himself.", author: "Epictetus" },
+        { text: "Excellence is never an accident. It is always the result of high intention and sincere effort.", author: "Aristotle" },
+        { text: "The purpose of life is to live in agreement with nature.", author: "Zeno of Citium" },
+        { text: "Waste no more time arguing about what a good man should be. Be one.", author: "Marcus Aurelius" },
     ],
     streak: [
         { text: "First forget inspiration. Habit is more dependable. Habit will sustain you whether you're inspired or not.", author: "Octavia Butler" },
@@ -703,6 +710,12 @@ const QUOTES = {
         { text: "The chains of habit are too light to be felt until they are too heavy to be broken.", author: "Warren Buffett" },
         { text: "We first make our habits, and then our habits make us.", author: "John Dryden" },
         { text: "Consistency is the hallmark of the unimaginative.", author: "Oscar Wilde" },
+        { text: "Begin at once to live, and count each separate day as a separate life.", author: "Seneca" },
+        { text: "It is not that we have a short time to live, but that we waste much of it.", author: "Seneca" },
+        { text: "Confine yourself to the present.", author: "Marcus Aurelius" },
+        { text: "Do not indulge in dreams of what you have not, but count the blessings you actually possess.", author: "Marcus Aurelius" },
+        { text: "Progress is not achieved by luck or accident, but by working on yourself daily.", author: "Epictetus" },
+        { text: "Under the discipline of adversity, man finds himself.", author: "Pythagoras" },
     ],
     loss: [
         { text: "You may encounter many defeats, but you must not be defeated.", author: "Maya Angelou" },
@@ -710,6 +723,13 @@ const QUOTES = {
         { text: "Difficulties strengthen the mind, as labour does the body.", author: "Seneca" },
         { text: "The impediment to action advances action. What stands in the way becomes the way.", author: "Marcus Aurelius" },
         { text: "It's not whether you get knocked down; it's whether you get up.", author: "Vince Lombardi" },
+        { text: "He who has a why to live can bear almost any how.", author: "Friedrich Nietzsche" },
+        { text: "The obstacle is the path.", author: "Zen Proverb" },
+        { text: "Endure and persist; this pain will turn to your good by and by.", author: "Ovid" },
+        { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+        { text: "Turn your wounds into wisdom.", author: "Oprah Winfrey" },
+        { text: "That which does not kill us makes us stronger.", author: "Friedrich Nietzsche" },
+        { text: "A gem cannot be polished without friction, nor a man perfected without trials.", author: "Seneca" },
     ],
 };
 
@@ -723,7 +743,7 @@ function showQuote(category, label) {
     document.getElementById('quoteAuthor').textContent = `— ${q.author}`;
     el.classList.add('show');
     if (quoteTimer) clearTimeout(quoteTimer);
-    quoteTimer = setTimeout(() => el.classList.remove('show'), 6500);
+    quoteTimer = setTimeout(() => el.classList.remove('show'), 9500);
     el.onclick = () => { el.classList.remove('show'); clearTimeout(quoteTimer); };
 }
 
@@ -2058,16 +2078,37 @@ function openCopyEntry(e, srcIdx, ai) {
     title.textContent = 'Copy to tally';
     title.style.cssText = 'font-size:0.65rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.06em;padding:0.1rem 0.5rem 0.4rem';
     popup.appendChild(title);
-    data.forEach((item, i) => {
-        if (i === srcIdx || item.locked) return;
-        const row = document.createElement('div');
-        row.style.cssText = 'display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0.5rem;border-radius:5px;cursor:pointer;font-size:0.75rem;color:var(--text-dim)';
-        row.textContent = item.name;
-        row.onmouseenter = () => row.style.background = 'var(--bg-card)';
-        row.onmouseleave = () => row.style.background = '';
-        row.onclick = (ev) => { ev.stopPropagation(); copyEntryTo(srcIdx, ai, i); popup.remove(); };
-        popup.appendChild(row);
-    });
+
+    // Split into active and done, each alphabetical
+    const others = data.map((item, i) => ({ item, i }))
+        .filter(({ item, i }) => i !== srcIdx && !item.locked);
+    const isCompleted = ({ item }) => {
+        const c = getCounts(item);
+        const tgt = parseTarget(item.target);
+        const isWin = tgt.max > 0 && c.pos >= tgt.max;
+        return isWin || (item.deadline && new Date(item.deadline + 'T00:00:00') < new Date());
+    };
+    const active = others.filter(o => !isCompleted(o)).sort((a,b) => a.item.name.localeCompare(b.item.name));
+    const done = others.filter(o => isCompleted(o)).sort((a,b) => a.item.name.localeCompare(b.item.name));
+
+    const addGroup = (label, group) => {
+        if (!group.length) return;
+        const hdr = document.createElement('div');
+        hdr.textContent = label;
+        hdr.style.cssText = 'font-size:0.62rem;color:var(--text-faint);padding:0.3rem 0.5rem 0.1rem;text-transform:uppercase;letter-spacing:0.05em';
+        popup.appendChild(hdr);
+        group.forEach(({ item, i }) => {
+            const row = document.createElement('div');
+            row.style.cssText = 'padding:0.35rem 0.5rem;border-radius:5px;cursor:pointer;font-size:0.75rem;color:var(--text-dim)';
+            row.textContent = item.name;
+            row.onmouseenter = () => row.style.background = 'var(--bg-card)';
+            row.onmouseleave = () => row.style.background = '';
+            row.onclick = (ev) => { ev.stopPropagation(); copyEntryTo(srcIdx, ai, i); popup.remove(); };
+            popup.appendChild(row);
+        });
+    };
+    addGroup('Active', active);
+    addGroup('Done', done);
     document.body.appendChild(popup);
     const rect = e.currentTarget.getBoundingClientRect();
     popup.style.top = (rect.bottom + 4) + 'px';
@@ -2077,12 +2118,18 @@ function copyEntryTo(srcIdx, ai, tgtIdx) {
     const data = load();
     const entry = data[srcIdx]?.comments[ai];
     if (!entry || !data[tgtIdx]) return;
-    const copy = { ...entry };  // preserves type, text, emoji, date
+    const tgtName = data[tgtIdx].name;
+    const copy = { ...entry, text: ((entry.text||'')).trim() + (entry.text ? '  +added' : '+added') };
     if (!data[tgtIdx].comments) data[tgtIdx].comments = [];
     data[tgtIdx].comments.push(copy);
     save(data);
     render();
-    toast(`→ Entry copied to "${data[tgtIdx].name}"`);
+    // Scroll to target card
+    setTimeout(() => {
+        const tgtCard = document.querySelector(`.card[data-index="${tgtIdx}"]`);
+        if (tgtCard) tgtCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+    toast(`→ Copied to "${tgtName}"`, 4000);
 }
 document.addEventListener('click', () => document.getElementById('copyEntryPopup')?.remove());
 
