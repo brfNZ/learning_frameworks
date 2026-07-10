@@ -2085,8 +2085,16 @@ function openCopyEntry(e, srcIdx, ai) {
     const isCompleted = ({ item }) => {
         const c = getCounts(item);
         const tgt = parseTarget(item.target);
-        const isWin = tgt.max > 0 && c.pos >= tgt.max;
-        return isWin || (item.deadline && new Date(item.deadline + 'T00:00:00') < new Date());
+        const isDual = item.type === 'dual';
+        const isProgress = item.type === 'progress';
+        const isKilled = (isDual || isProgress) && tgt.kill > 0 && c.neg >= tgt.kill;
+        const isWin = tgt.max > 0 && !isKilled && ((isDual || isProgress) ? c.pos >= tgt.max : c.simple >= tgt.max);
+        const dl = item.deadline ? new Date(item.deadline + 'T00:00:00') : null;
+        const now = new Date(); now.setHours(0,0,0,0);
+        const daysLeft = dl ? Math.round((dl - now) / 86400000) : null;
+        const isChallengeDone = !!(dl && !tgt.max && !tgt.kill && daysLeft !== null && daysLeft < 0);
+        const isExpired = !!(dl && tgt.max > 0 && !isWin && !isKilled && daysLeft !== null && daysLeft < 0);
+        return isWin || isKilled || isChallengeDone || isExpired;
     };
     const active = others.filter(o => !isCompleted(o)).sort((a,b) => a.item.name.localeCompare(b.item.name));
     const done = others.filter(o => isCompleted(o)).sort((a,b) => a.item.name.localeCompare(b.item.name));
