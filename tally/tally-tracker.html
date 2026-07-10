@@ -2103,11 +2103,11 @@ function openCopyEntry(e, srcIdx, ai) {
         if (!group.length) return;
         const hdr = document.createElement('div');
         hdr.textContent = label;
-        hdr.style.cssText = 'font-size:0.62rem;color:var(--text-faint);padding:0.3rem 0.5rem 0.1rem;text-transform:uppercase;letter-spacing:0.05em';
+        hdr.style.cssText = 'font-size:0.62rem;color:var(--text-faint);padding:0.2rem 0.5rem 0.1rem;text-transform:uppercase;letter-spacing:0.05em';
         popup.appendChild(hdr);
         group.forEach(({ item, i }) => {
             const row = document.createElement('div');
-            row.style.cssText = 'padding:0.35rem 0.5rem;border-radius:5px;cursor:pointer;font-size:0.75rem;color:var(--text-dim)';
+            row.style.cssText = 'padding:0.22rem 0.5rem;border-radius:4px;cursor:pointer;font-size:0.75rem;color:var(--text-dim)';
             row.textContent = item.name;
             row.onmouseenter = () => row.style.background = 'var(--bg-card)';
             row.onmouseleave = () => row.style.background = '';
